@@ -542,55 +542,6 @@ export default function Alert({ position, rotation }) {
       }
     }
     
-    const cameraOffset = 0.4
-    // by quadrant
-    const joinAlertPositions = {
-      0: [
-          -Math.cos(((1 + 5) * (Math.PI * 2)) / 20) * 5 + 0.7,
-          0.1,
-          Math.sin(((1 + 5) * (Math.PI * 2)) / 20) * 5 + cameraOffset - 2.8,
-      ],
-      1: [
-        -Math.cos(((1 + 5) * (Math.PI * 2)) / 20) * 5 + 0.6,
-        0.5,
-        Math.sin(((1 + 5) * (Math.PI * 2)) / 20) * 5 + cameraOffset - 6.7,
-      ],
-      2: [
-        -Math.cos(((1 + 5) * (Math.PI * 2)) / 20) * 5 - 3.6,
-        0.5,
-        Math.sin(((1 + 5) * (Math.PI * 2)) / 20) * 5 + cameraOffset - 6.7,
-      ],
-      3: [
-        -Math.cos(((1 + 5) * (Math.PI * 2)) / 20) * 5 - 3.6,
-        0.5,
-        Math.sin(((1 + 5) * (Math.PI * 2)) / 20) * 5 + cameraOffset - 2.8,
-      ],
-    }
-    // test this function
-    // input: tile
-    // output: position
-    // expect quadrant output
-    function tileToQuadrant(tile) {
-      let positionQuadrant = 0;
-      if (tile >= 1 && tile <= 4) {
-        positionQuadrant = 0
-      } else if (tile >= 5 && tile <= 9) {
-        positionQuadrant = 1
-      } else if (tile >= 10 && tile <= 14) {
-        positionQuadrant = 2
-      } else if (tile >= 15 && tile <= 19) {
-        positionQuadrant = 3
-      } else if (tile >= 20 && tile <= 21) {
-        positionQuadrant = 1
-      } else if (tile >= 22 && tile <= 24) {
-        positionQuadrant = 2
-      } else if (tile >= 25 && tile <= 26) {
-        positionQuadrant = 2
-      } else if (tile >= 27 && tile <= 28) {
-        positionQuadrant = 3
-      }
-      return positionQuadrant
-    }
     function addSpark(position) {
       console.log('addSpark')
     }
@@ -629,14 +580,11 @@ export default function Alert({ position, rotation }) {
         } else if (alerts[0] && alerts[0].includes('join')) {
           const alertString = alerts[0]
           const tile = parseInt(alertString.substring(4, alertString.length));
-          const position = joinAlertPositions[tileToQuadrant(tile)]
+          const position = tilePositions[tile]
           addSpark(position)
         }
       }
     }, [alerts, pieceAnimationPlaying])
-
-    // make 'game start!' component and 'turn' component
-    // useSpring to animate via scale
 
     function TurnAlert() {
       const [currentPlayerName] = useAtom(currentPlayerNameAtom)
@@ -1278,9 +1226,18 @@ export default function Alert({ position, rotation }) {
 
     function JoinAlert() {      
       const alertString = alerts[0]
-      let tile = alertString && parseInt(alertString.substring(4, alertString.length));;
+      let tile = alertString && parseInt(alertString.substring(4, alertString.length));
       // specific location for each tile
-      const position = joinAlertPositions[tileToQuadrant(tile)]
+      let position;
+      if (tile) {
+        position = [
+          tilePositions[tile][0],
+          tilePositions[tile][1] + 0.5,
+          tilePositions[tile][2] - 1.5,
+        ]
+      } else {
+        position = [0,0,0]
+      }
 
       const borderMesh0Ref = useRef();
       const borderMesh1Ref = useRef();
