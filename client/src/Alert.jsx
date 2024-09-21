@@ -27,6 +27,7 @@ import Catch4UfoAlert from "./alerts/Catch4UfoAlert";
 import YootAlertPregame from "./alerts/YootAlertPregame";
 import MoAlertPregame from "./alerts/MoAlertPregame";
 import { useFireworksShader } from "./shader/fireworks/FireworksShader";
+import { useSparkShader } from "./shader/spark/SparkShader";
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import tilePositions from './tilePositions';
 
@@ -39,6 +40,8 @@ export default function Alert({ position, rotation }) {
     const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
     const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
     const [CreateFirework] = useFireworksShader();
+    const [CreateSpark] = useSparkShader();
+
     // adding it in useEffect throws uncaught Promise
     const fireworkTextures = [
       // useLoader(TextureLoader, 'textures/particles/1.png'),
@@ -50,6 +53,7 @@ export default function Alert({ position, rotation }) {
       // useLoader(TextureLoader, 'textures/particles/7.png'),
       useLoader(TextureLoader, 'textures/particles/8.png'),
     ]
+    const sparkTexture = useLoader(TextureLoader, 'textures/particles/4.png')
 
     const [springs, api] = useSpring(() => ({
       from: {
@@ -323,7 +327,6 @@ export default function Alert({ position, rotation }) {
     }
 
     function launchScoreFireworks(team, numScored) {
-      console.log(`[launchScoreFireworks] ${team} ${numScored}`)
       const hue = team === 0 ? 0.01 : 0.5
 
       if (numScored === 4) {
@@ -543,6 +546,9 @@ export default function Alert({ position, rotation }) {
     }
     
     function addSpark(position) {
+      //change color based on team
+
+      CreateSpark({ position, texture: sparkTexture });
       console.log('addSpark')
     }
 
