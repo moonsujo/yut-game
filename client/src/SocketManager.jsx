@@ -416,7 +416,7 @@ export const SocketManager = () => {
       let alerts = []
       let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
       if (joined.result) {
-        alerts.push(`join${joined.tile}`)
+        alerts.push(`join${turnPrev.team}${joined.tile}`)
       }
 
       if (turnPrev.team !== turnUpdate.team) {

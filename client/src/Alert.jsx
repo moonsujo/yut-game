@@ -53,7 +53,7 @@ export default function Alert({ position, rotation }) {
       // useLoader(TextureLoader, 'textures/particles/7.png'),
       useLoader(TextureLoader, 'textures/particles/8.png'),
     ]
-    const sparkTexture = useLoader(TextureLoader, 'textures/particles/4.png')
+    const sparkTexture = useLoader(TextureLoader, 'textures/particles/6.png')
 
     const [springs, api] = useSpring(() => ({
       from: {
@@ -319,7 +319,7 @@ export default function Alert({ position, rotation }) {
                 tension: 170,
                 friction: 26
             },
-            delay: 1000
+            delay: 1500
           })
         }
       }
@@ -545,11 +545,13 @@ export default function Alert({ position, rotation }) {
       }
     }
     
-    function addSpark(position) {
+    function addSpark(position, team) {
+     
       //change color based on team
-
-      CreateSpark({ position, texture: sparkTexture });
-      console.log('addSpark')
+      const hue = team === 0 ? 0.01 : 0.5
+      const color = new THREE.Color();
+      color.setHSL(hue, 0.7, 0.5)
+      CreateSpark({ position, texture: sparkTexture, color });
     }
 
     useEffect(() => {
@@ -585,9 +587,14 @@ export default function Alert({ position, rotation }) {
           launchScoreFireworks(team, numScored)
         } else if (alerts[0] && alerts[0].includes('join')) {
           const alertString = alerts[0]
-          const tile = parseInt(alertString.substring(4, alertString.length));
-          const position = tilePositions[tile]
-          addSpark(position)
+          const team = parseInt(alertString[4]);
+          const tile = parseInt(alertString.substring(5, alertString.length));
+          const positionVec3 = new THREE.Vector3(
+            tilePositions[tile][0] + 1.48,
+            tilePositions[tile][1] + 1.8,
+            tilePositions[tile][2] - 0.21
+          )
+          addSpark(positionVec3, team)
         }
       }
     }, [alerts, pieceAnimationPlaying])
@@ -1232,14 +1239,18 @@ export default function Alert({ position, rotation }) {
 
     function JoinAlert() {      
       const alertString = alerts[0]
-      let tile = alertString && parseInt(alertString.substring(4, alertString.length));
+
+      // alertString[4] is the team index
+      let team = alertString && parseInt(alertString[4]);
+      let tile = alertString && parseInt(alertString.substring(5, alertString.length));
+
       // specific location for each tile
       let position;
       if (tile) {
         position = [
-          tilePositions[tile][0],
+          tilePositions[tile][0] + 1.5,
           tilePositions[tile][1] + 0.5,
-          tilePositions[tile][2] - 1.5,
+          tilePositions[tile][2] - 0.7,
         ]
       } else {
         position = [0,0,0]
@@ -1262,9 +1273,9 @@ export default function Alert({ position, rotation }) {
         borderMesh6Ref
       ]
 
-      const height = 0.8
-      const width = 1.5
-      const starScale = 0.12
+      const height = 0.7
+      const width = 1.8
+      const starScale = 0.08
       useFrame((state, delta) => {
         for (let i = 0; i < borderMeshRefs.length; i++) {      
           borderMeshRefs[i].current.position.x = Math.cos(state.clock.elapsedTime / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
@@ -1280,35 +1291,35 @@ export default function Alert({ position, rotation }) {
           </mesh>
           <Text3D
             font="fonts/Luckiest Guy_Regular.json" 
-            position={[-1.0, 0.1, 0.2]}
+            position={[-1.27, 0.1, 0.11]}
             rotation={[-Math.PI/2, 0, 0]}
             height={0.01}
             lineHeight={0.9} 
-            size={0.4}
+            size={0.35}
           >
-            {`joined!`}
-            <meshStandardMaterial color='green'/>
+            {`piggyback!`}
+            <meshStandardMaterial color={team === 0 ? 'red': 'turquoise'}/>
           </Text3D>
           <group ref={borderMesh0Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
           <group ref={borderMesh1Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
           <group ref={borderMesh2Ref}>
-            <Star scale={starScale} color='green'/>
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'}/>
           </group>
           <group ref={borderMesh3Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
           <group ref={borderMesh4Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
           <group ref={borderMesh5Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
           <group ref={borderMesh6Ref}>
-            <Star scale={starScale} color='green' />
+            <Star scale={starScale} color={team === 0 ? 'red': 'turquoise'} />
           </group>
       </animated.group>
     }

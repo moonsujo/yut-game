@@ -204,7 +204,7 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    onStart: () => setPieceAnimationPlaying(true),
+                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -330,7 +330,7 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    onStart: () => setPieceAnimationPlaying(true),
+                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -454,7 +454,7 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    onStart: () => setPieceAnimationPlaying(true),
+                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -578,7 +578,7 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    onStart: () => setPieceAnimationPlaying(true),
+                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -703,7 +703,7 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    onStart: () => setPieceAnimationPlaying(true),
+                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {

@@ -24,43 +24,34 @@ export function useSparkShader() {
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
     })
 
-    function CreateSpark({count, position, size, texture, radius, color}) {
-        console.log('CreateSpark')
-        const positionsArray = new Float32Array(count * 3)
-        const sizesArray = new Float32Array(count)
-        const timeMultipliersArray = new Float32Array(count)
+    function CreateSpark({ position, texture, color }) {
 
-        for (let i = 0; i < count; i++) {
-            const i3 = i * 3
+        // particle left
+        const leftPositionArray = new Float32Array(6)
+        const leftSizeArray = new Float32Array(2)
 
-            const spherical = new THREE.Spherical(
-                radius * (0.8 + Math.random() * 0.2),
-                Math.random() * Math.PI,
-                Math.random() * Math.PI * 2
-            )
-            const position = new THREE.Vector3()
-            position.setFromSpherical(spherical)
+        const startDistance = 1.0
 
-            positionsArray[i3] = position.x
-            positionsArray[i3+1] = position.y
-            positionsArray[i3+2] = position.z
+        leftPositionArray[0] = -startDistance
+        leftPositionArray[1] = 0.0
+        leftPositionArray[2] = 0.0
+        leftPositionArray[3] = startDistance
+        leftPositionArray[4] = 0.0
+        leftPositionArray[5] = 0.0
 
-            sizesArray[i] = Math.random()
-
-            timeMultipliersArray[i] = 1 + Math.random()
-        }
+        leftSizeArray[0] = 0.6
+        leftSizeArray[1] = 0.6
 
         texture.flipY = false;
 
         const geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3))
-        geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(sizesArray, 1))
-        geometry.setAttribute('aTimeMultiplier', new THREE.Float32BufferAttribute(timeMultipliersArray, 1));
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(leftPositionArray, 3))
+        geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(leftSizeArray, 1))
         const material = new THREE.ShaderMaterial({
             vertexShader: sparkVertexShader,
             fragmentShader: sparkFragmentShader,
             uniforms: {
-                uSize: new THREE.Uniform(size), // needs the THREE.Uniform object
+                uSize: new THREE.Uniform(1.0), // needs the THREE.Uniform object
                 uResolution: new THREE.Uniform(sizes.resolution),
                 uTexture: new THREE.Uniform(texture),
                 uColor: new THREE.Uniform(color),
@@ -81,7 +72,7 @@ export function useSparkShader() {
 
         gsap.to(
             material.uniforms.uProgress,
-            { value: 1, duration: 2, ease: 'linear', onComplete: destroy }
+            { value: 1, duration: 2.79, ease: 'linear', onComplete: destroy }
         )
 
         // point 1: comes from left
@@ -89,6 +80,8 @@ export function useSparkShader() {
         // time 0 - 1: come to the middle
         // time 1 - 2: scale up and down (sin func)
         // time 2 - 3: scale down to 0
+        // try it above the pieces so it doesn't overlap
+        // move 'joined!' to the side. it gets cut above the star when it's on the saturn
 
         scene.add(points)
     }
