@@ -11,7 +11,6 @@ import MoToken from './moveTokens/MoToken';
 import GulToken from './moveTokens/GulToken';
 import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
-// import moveToText from './moveToText';
 
 export default function MoveList({ position, rotation, tokenScale, tokenPosition }) {
     const [moves] = useAtom(displayMovesAtom)

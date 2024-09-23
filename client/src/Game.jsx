@@ -35,7 +35,6 @@ import {
   yootActiveAtom,
   animationPlayingAtom,
   teamsAtom,
-  throwCountAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";

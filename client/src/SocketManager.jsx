@@ -326,6 +326,9 @@ export const SocketManager = () => {
       setAnimationPlaying(true)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
       setGameLogs(gameLogs)
+      if (gamePhaseUpdate === 'game') {
+        setDisplayMoves(teams[turnUpdate.team].moves)
+      }
     })
 
     function calculateNumPiecesCaught(piecesPrev, piecesUpdate) {
@@ -375,6 +378,7 @@ export const SocketManager = () => {
         setThrowCount(teamsUpdate[turnUpdate.team].throws)
       }
 
+      setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
       setAlerts(alerts)
       setAnimationPlaying(true)
       setPieceAnimationPlaying(true)
@@ -430,6 +434,7 @@ export const SocketManager = () => {
         setThrowCount(teamsUpdate[turnUpdate].throws)
       }
 
+      setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
       setAlerts(alerts)
       setAnimationPlaying(true)
       setPieceAnimationPlaying(true)
@@ -472,8 +477,6 @@ export const SocketManager = () => {
         } else {
           setReadyToStart(false)
         }
-
-        
     })
     
     socket.on("joinTeam", ({ spectators, teams, gamePhase }) => {
