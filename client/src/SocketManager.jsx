@@ -245,7 +245,8 @@ export const SocketManager = () => {
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
-      setHasTurn(clientHasTurn(socket.id, teams, turn))
+      // setHasTurn(clientHasTurn(socket.id, teams, turn))
+      // setAnimationPlaying() is run in YootButtonNew onClick
       setThrowCount(teams[turn.team].throws)
     })
 
@@ -379,6 +380,7 @@ export const SocketManager = () => {
       }
 
       setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
+      setHelperTiles({})
       setAlerts(alerts)
       setAnimationPlaying(true)
       setPieceAnimationPlaying(true)
@@ -435,6 +437,7 @@ export const SocketManager = () => {
       }
 
       setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
+      setHelperTiles({})
       setAlerts(alerts)
       setAnimationPlaying(true)
       setPieceAnimationPlaying(true)
@@ -460,6 +463,19 @@ export const SocketManager = () => {
       // handle
       setSelection(selection)
       setLegalTiles(legalTiles)
+      // calculate helper tile in server to prevent passing 'tiles'
+      
+      let helperTiles = {}
+
+      // helper tiles
+      for (const legalTile of Object.keys(legalTiles)) {
+        if (legalTile !== '29') {
+          let moveInfo = legalTiles[legalTile]
+          helperTiles[legalTile] = parseInt(moveInfo.move)
+        }
+      }
+
+      setHelperTiles(helperTiles)
     })
 
     // emitted to other clients when a client joins
