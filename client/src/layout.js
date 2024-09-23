@@ -1319,7 +1319,7 @@ export default {
         scale: 1.2
       },
       throwCount: {
-        position: [1.5, 0, 9],
+        position: [1.7, 0, -0.8],
         orientation: 'downUp'
       },
       scoreButtons: {
@@ -2750,7 +2750,7 @@ export default {
         scale: 1
       },
       throwCount: {
-        position: [7.7, 0, 5.4],
+        position: [-1, 0, -1.3],
         orientation: 'downUp'
       },
       scoreButtons: {

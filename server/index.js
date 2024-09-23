@@ -195,7 +195,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
           io.to(userSocketId).emit("recordThrow", {
             teams: roomPopulated.teams,
             gamePhaseUpdate: data.fullDocument.gamePhase,
-            turn: data.fullDocument.turn,
+            turnUpdate: data.fullDocument.turn,
             pregameOutcome: data.fullDocument.pregameOutcome,
             yootOutcome: data.fullDocument.yootOutcome,
             gameLogs: data.fullDocument.gameLogs

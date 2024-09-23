@@ -35,6 +35,7 @@ import {
   yootActiveAtom,
   animationPlayingAtom,
   teamsAtom,
+  throwCountAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -614,6 +615,8 @@ export default function Game() {
     </group>
   }
 
+
+
   // UI prop guideline
   // Pass position, rotation and scale
   // pass device if component has another responsive attribute
@@ -714,6 +717,7 @@ export default function Game() {
           rotation={layout[device].game.yootButton.rotation}
           scale={layout[device].game.yootButton.scale}
           hasThrow={teams[turn.team].throws > 0}
+          device={device}
         /> }
         <SettingsButton 
         position={layout[device].game.settings.position}

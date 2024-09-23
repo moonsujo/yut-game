@@ -3,11 +3,12 @@ import { useFrame, useGraph } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
-import { animationPlayingAtom, hasTurnAtom, pieceAnimationPlayingAtom } from './GlobalState';
+import { animationPlayingAtom, clientAtom, hasTurnAtom, pieceAnimationPlayingAtom, throwCountAtom, turnAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
+import layout from './layout';
 
-export default function YootButtonNew({ position, rotation, scale, hasThrow }) {
+export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
   const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
   const { scene } = useGLTF("/models/yoot-for-button.glb");
   const yootMaterials = useGLTF("/models/yoot-for-button.glb").materials
@@ -20,6 +21,11 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow }) {
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
   const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
+  console.log('[YootButtonNew] animation playing', animationPlaying, 'piece animation playing', pieceAnimationPlaying, 'has turn', hasTurn, 'has throw', hasThrow)
+
+  // for the throw count
+  const [client] = useAtom(clientAtom);
+  const [turn] = useAtom(turnAtom);
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]
@@ -51,6 +57,28 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow }) {
       setAnimationPlaying(true)
       socket.emit('throwYoot', { roomId: params.id })
     }
+  }
+
+  function ThrowCount({position, orientation}) {
+    const [throwCount] = useAtom(throwCountAtom)
+
+    function positionByOrientation(index, orientation) {
+      if (orientation === 'downUp') {
+        return [0, 0, -index*0.5]
+      } else if (orientation === 'leftRight') {
+        return [0, 0, index*0.4]
+      }
+    }
+
+    const tempArray = [...Array(throwCount)]
+    return <group position={position}>
+      {tempArray.map((_value, index) => {
+        return <mesh key={index} position={positionByOrientation(index, orientation)}>
+          <sphereGeometry args={[0.1, 32, 16]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+      })}
+    </group>
   }
 
   return <group 
@@ -143,5 +171,9 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow }) {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh> 
     </group>
+    { client.team === turn.team && <ThrowCount 
+      position={layout[device].game.throwCount.position}
+      orientation={layout[device].game.throwCount.orientation}
+    /> }
   </group>
 }

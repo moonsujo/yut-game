@@ -122,44 +122,7 @@ export const SocketManager = () => {
       console.log(`[SocketManager] room`, room)
 
       setMessages(room.messages)
-      setTeams((prevTeams) => {
-        // detect movement
-        // so it runs in the same render as the setMainAlert
-        const newTeams = room.teams
-        for (let i = 0; i < 2; i++) {
-          const prevPieces = prevTeams[i].pieces
-          const newPieces = newTeams[i].pieces
-          for (let j = 0; j < 4; j++) {
-            if (prevPieces[j].tile !== newPieces[j].tile) {
-              setAnimationPlaying(true)
-            }
-          }
-        }
-        
-        // detect catch
-        // so it runs in the same render as the setMainAlert
-        for (let i = 0; i < 2; i++) {
-          const enemyTeam = room.turn.team === 1 ? 0 : 1
-          const prevPiecesEnemy = prevTeams[enemyTeam].pieces
-          const newPiecesEnemy = newTeams[enemyTeam].pieces
-          let numCaught = 0
-          for (let j = 0; j < 4; j++) {
-            if (prevPiecesEnemy[j].tile !== -1 && newPiecesEnemy[j].tile === -1) {
-              numCaught++
-            }
-          }
-          if (numCaught > 0) {
-            setMainAlert({
-              type: 'catch',
-              team: room.turn.team,
-              amount: numCaught,
-              time: Date.now()
-            })
-          }
-        }
-        
-        return newTeams
-      })
+      setTeams(room.teams)
       setSpectators(room.spectators)
 
       // nothing can be rendering MainAlert
@@ -178,27 +141,6 @@ export const SocketManager = () => {
       }
 
       findAndStoreClient(room.spectators, room.teams);
-
-      if (room.gamePhase === 'pregame' && room.yootThrown.player && !room.yootThrown.flag && (room.teams[0].pregameRoll === null) && (room.teams[1].pregameRoll === null)) {
-        setPregameAlert({
-          type: 'pregameTie'
-        })
-      }
-
-      function makeTurnAlertObj(room) {
-        const currentTeam = room.turn.team
-        const currentPlayer = room.turn.players[currentTeam]
-        if (!room.teams[currentTeam].players[currentPlayer]) {
-          return { type: '' }
-        } else {
-          const alert = {
-            type: 'turn',
-            team: currentTeam,
-            name: room.teams[currentTeam].players[currentPlayer].name
-          }
-          return alert
-        }
-      }
 
       setGamePhase((lastPhase) => {
         if (lastPhase === 'pregame' && room.gamePhase === 'game') {
@@ -222,8 +164,6 @@ export const SocketManager = () => {
         setYootActive(false)
       }
 
-      setYootThrown(room.yootThrown)
-
       // Enable 'Let's play' button
       if (room.gamePhase === 'lobby' && 
       room.teams[0].players.length > 0 && 
@@ -233,17 +173,7 @@ export const SocketManager = () => {
         setReadyToStart(false)
       }
 
-      setTurn((prevTurn) => {
-        // if pregame result points turn to the same person
-        // display alert with the same person's name
-        const nextTurn = room.turn
-        if (room.gamePhase !== 'lobby' && prevTurn.team !== nextTurn.team) {
-          const turnAlert = makeTurnAlertObj(room)
-          console.log('[setTurn] set main alert')
-          setMainAlert(turnAlert)
-        }
-        return room.turn
-      })
+      setTurn(room.turn)
 
       if (room.gamePhase === 'game') {
         setDisplayMoves(room.teams[room.turn.team].moves)
@@ -312,18 +242,18 @@ export const SocketManager = () => {
 
     })
 
-    // hybrid: yoot thrown should not be set in room update.
-    // it should only be updated on throw yoot (from the server).
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
       setHasTurn(clientHasTurn(socket.id, teams, turn))
+      setThrowCount(teams[turn.team].throws)
     })
 
     socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs }) => {
       setTeams(teams) // only update the throw count of the current team
       setGamePhase(gamePhase)
       setTurn(turn)
+      setThrowCount(teams[turn.team].throws)
       
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
@@ -334,7 +264,7 @@ export const SocketManager = () => {
       setGameLogs(gameLogs)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turn, pregameOutcome, yootOutcome, gameLogs }) => {      
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {      
       setTeams(teams) // only update the throw count of the current team
       setTurn(turn)
       // this invocation is within a useEffect
@@ -344,7 +274,12 @@ export const SocketManager = () => {
         gamePhasePrev = prev;
         return gamePhaseUpdate
       })
-      
+      let turnPrev;
+      setTurn((prev) => {
+        turnPrev = prev;
+        return turnUpdate
+      })
+
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
 
@@ -359,8 +294,10 @@ export const SocketManager = () => {
         }
         if (pregameOutcome === 'pass') {
           setAlerts([yootOutcomeAlertName, 'turn'])
+          setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === 'tie') {
           setAlerts([yootOutcomeAlertName, 'pregameTie', 'turn'])
+          setThrowCount(teams[turnUpdate.team].throws)
         }
       } else if (gamePhasePrev === 'pregame' && gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName;
@@ -371,20 +308,23 @@ export const SocketManager = () => {
         }
         if (pregameOutcome === '0') { // changes from int to string
           setAlerts([yootOutcomeAlertName, 'pregameRocketsWin', 'turn'])
+          setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === '1') {
           setAlerts([yootOutcomeAlertName, 'pregameUfosWin', 'turn'])
+          setThrowCount(teams[turnUpdate.team].throws)
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
-        if (yootOutcome === 0) {
+        if (yootOutcome === 0 && teams[turnPrev].throws === 0) {
           setAlerts([yootOutcomeAlertName, 'turn'])
+          setThrowCount(teams[turnUpdate.team].throws)
         } else {
           setAlerts([yootOutcomeAlertName])
         }
       }
 
       setAnimationPlaying(true)
-      setHasTurn(clientHasTurn(socket.id, teams, turn))
+      setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
       setGameLogs(gameLogs)
     })
 
@@ -421,6 +361,7 @@ export const SocketManager = () => {
 
       if (turnPrev.team !== turnUpdate.team) {
         alerts.push('turn')
+        setThrowCount(teamsUpdate[turnUpdate.team].throws)
       } else {
         const opposingTeam = turnUpdate.team === 0 ? 1 : 0;
         const opposingTeamPiecesPrev = teamsPrev[opposingTeam].pieces;
@@ -431,6 +372,7 @@ export const SocketManager = () => {
         } else {
           alerts = []
         }
+        setThrowCount(teamsUpdate[turnUpdate.team].throws)
       }
 
       setAlerts(alerts)
@@ -485,6 +427,7 @@ export const SocketManager = () => {
 
       if (turnPrev.team !== turnUpdate.team) {
         alerts.push('turn')
+        setThrowCount(teamsUpdate[turnUpdate].throws)
       }
 
       setAlerts(alerts)
@@ -514,11 +457,11 @@ export const SocketManager = () => {
       setLegalTiles(legalTiles)
     })
 
+    // emitted to other clients when a client joins
     socket.on("joinRoom", ({ spectators, teams, host, gamePhase }) => {
-      console.log("[joinRoom]")
-      setSpectators(spectators)
+      setSpectators(spectators);
       setTeams(teams);
-      setHostName(host.name)
+      setHostName(host.name);
 
       findAndStoreClient(spectators, teams)
       
@@ -529,6 +472,8 @@ export const SocketManager = () => {
         } else {
           setReadyToStart(false)
         }
+
+        
     })
     
     socket.on("joinTeam", ({ spectators, teams, gamePhase }) => {
