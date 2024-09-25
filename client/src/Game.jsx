@@ -832,7 +832,7 @@ export default function Game() {
           setShowRulebook={setShowRulebook}
         />
       </group>}
-      {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
+      { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
       {/* host */}
       <DisplayHostAndSpectating/>
     </>
