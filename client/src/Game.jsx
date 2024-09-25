@@ -614,7 +614,76 @@ export default function Game() {
     </group>
   }
 
+  function DisplayHostAndSpectating() {
+    // case 0: spectating
+    const Spectating = () => {
+      return <Text3D 
+        name='spectating-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.spectating.position}
+        rotation={layout[device].game.spectating.rotation}
+        size={layout[device].game.spectating.size}
+        height={layout[device].game.spectating.height}
+      >
+        {`SPECTATING`}
+        <meshStandardMaterial color='grey'/>
+      </Text3D>
+    }
+    
+    // case 1: spectating and hosting
+    const SpectatingAndHosting = () => {
+      return <group>
+        <Text3D 
+          name='spectating-text'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.spectatingAndHosting.line0Pos}
+          rotation={layout[device].game.spectatingAndHosting.rotation}
+          size={layout[device].game.spectatingAndHosting.size}
+          height={layout[device].game.spectatingAndHosting.height}
+        >
+          {`SPECTATING`}
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+        <Text3D 
+          name='host-text'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.spectatingAndHosting.line1Pos}
+          rotation={layout[device].game.spectatingAndHosting.rotation}
+          size={layout[device].game.spectatingAndHosting.size}
+          height={layout[device].game.spectatingAndHosting.height}
+        >
+          {`HOST`}
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+    }
 
+    // case 2: hosting
+    const Hosting = () => {
+      return <Text3D 
+        name='host-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.hosting.position}
+        rotation={layout[device].game.hosting.rotation}
+        size={layout[device].game.hosting.size}
+        height={layout[device].game.hosting.height}
+      >
+        {`HOST`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+    }
+
+    console.log('client name', client.name, 'host name', hostName)
+    if (client.team === -1 && client.name === hostName) {
+      return <SpectatingAndHosting/>
+    } else if (client.team === -1) {
+      return <Spectating/>
+    } else if (client.team !== -1 && client.name === hostName) {
+      return <Hosting/>
+    } else {
+      return <></>
+    }
+  }
 
   // UI prop guideline
   // Pass position, rotation and scale
@@ -763,7 +832,9 @@ export default function Game() {
           setShowRulebook={setShowRulebook}
         />
       </group>}
-      { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
+      {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
+      {/* host */}
+      <DisplayHostAndSpectating/>
     </>
   );
 }

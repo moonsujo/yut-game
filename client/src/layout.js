@@ -1076,8 +1076,21 @@ export default {
           }
         }
       },
-      hostName: {
-        position: [-4.6, 0.025, 4.5],
+      spectating: {
+        position: [-4.5, 0, -4.4],
+        rotation: [-Math.PI/2, 0, 0],
+        size: 0.3,
+        height: 0.01
+      },
+      spectatingAndHosting: {
+        line0Pos: [-4.5, 0, -4.4],
+        line1Pos: [-4.5, 0, -3.9],
+        rotation: [-Math.PI/2, 0, 0],
+        size: 0.3,
+        height: 0.01
+      },
+      hosting: {
+        position: [-4.5, 0, -4.4],
         rotation: [-Math.PI/2, 0, 0],
         size: 0.3,
         height: 0.01
@@ -2510,8 +2523,21 @@ export default {
           }
         }
       },
-      hostName: {
-        position: [8, 0.025, -3.95],
+      spectating: {
+        position: [7.8, 0, -4.0],
+        rotation: [-Math.PI/2, 0, 0],
+        size: 0.3,
+        height: 0.01
+      },
+      spectatingAndHosting: {
+        line0Pos: [7.8, 0, -4.0],
+        line1Pos: [9.1, 0, -3.5],
+        rotation: [-Math.PI/2, 0, 0],
+        size: 0.3,
+        height: 0.01
+      },
+      hosting: {
+        position: [9.1, 0, -4.0],
         rotation: [-Math.PI/2, 0, 0],
         size: 0.3,
         height: 0.01
