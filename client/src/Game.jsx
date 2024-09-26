@@ -35,6 +35,7 @@ import {
   yootActiveAtom,
   animationPlayingAtom,
   teamsAtom,
+  hasTurnAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -60,6 +61,7 @@ export default function Game() {
   // To adjust board size
   const [gamePhase] = useAtom(gamePhaseAtom)
   const [turn] = useAtom(turnAtom)
+  const [hasTurn] = useAtom(hasTurnAtom);
   // To pass to Board
   const [legalTiles] = useAtom(legalTilesAtom)
   const [helperTiles] = useAtom(helperTilesAtom)
@@ -72,8 +74,6 @@ export default function Game() {
   const [teams] = useAtom(teamsAtom)
 
   const [yootAnimation, setYootAnimation] = useAtom(yootAnimationAtom);
-  const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom);
-  const [yootActive] = useAtom(yootActiveAtom)
   
   const params = useParams();
 
@@ -805,6 +805,7 @@ export default function Game() {
           textSize={layout[device].game.scoreButtons.textSize}
           lineHeight={layout[device].game.scoreButtons.lineHeight}
           legalTiles={legalTiles}
+          enabled={hasTurn}
         /> }
         <PiecesOnBoard/>
         { gamePhase === 'game' && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles))) && <MoveList

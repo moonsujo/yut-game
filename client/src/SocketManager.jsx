@@ -433,7 +433,7 @@ export const SocketManager = () => {
 
       if (turnPrev.team !== turnUpdate.team) {
         alerts.push('turn')
-        setThrowCount(teamsUpdate[turnUpdate].throws)
+        setThrowCount(teamsUpdate[turnUpdate.team].throws)
       }
 
       setDisplayMoves(teamsUpdate[turnUpdate.team].moves)

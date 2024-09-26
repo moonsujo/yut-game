@@ -4,7 +4,7 @@ import { socket } from "./SocketManager";
 import { useParams } from "wouter";
 import * as THREE from 'three';
 
-export default function ScoreButtons({ position, rotation, scale, legalTiles, text, buttonPos, textSize }) {
+export default function ScoreButtons({ position, rotation, scale, legalTiles, text, buttonPos, textSize, enabled }) {
   
   const params = useParams()
 
@@ -48,7 +48,8 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, te
         onPointerEnter={scorePointerEnter}
         onPointerLeave={scorePointerOut}
         onPointerDown={() => {
-          socket.emit("score", { roomId: params.id, selectedMove: moveInfo });
+          if (enabled)
+            socket.emit("score", { roomId: params.id, selectedMove: moveInfo });
         }}
       >
         <cylinderGeometry args={[0.5, 0.5, 0.15]}/>
