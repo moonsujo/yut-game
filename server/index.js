@@ -343,51 +343,61 @@ io.on("connect", async (socket) => {
     }
   })
 
+  async function removeUser(user) {        
+    await Room.updateOne(
+      { 
+        _id: user.roomId
+      }, 
+      { 
+        $pullAll: { 
+          'spectators': [
+            { _id: user._id }
+          ],
+          'teams.0.players': [
+            { _id: user._id }
+          ],
+          'teams.1.players': [
+            { _id: user._id }
+          ]
+        }
+      }
+    ).exec()
+  }
+
   socket.on("joinRoom", async ({ roomId }) => {
     // Add user to room
     try {
       let user = await User.findOne({ 'socketId': socket.id }).exec()
-      let room;
+      let room = await Room.findOne({ _id: roomId }).exec()
+      let operation = {}
       if (user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
         if (user.team === -1) { // if spectator
-          room = await Room.findOneAndUpdate(
-            { _id: roomId }, 
-            { 
-              $addToSet: { "spectators": user._id },
-              $set: { 
-                "serverEvent": 'joinRoom',
-                "lastJoinedUser": user._id
-              }
-            })
-            .exec()
+          operation['$addToSet'] = { "spectators": user._id }
+          operation['$set'] = { 
+            "serverEvent": 'joinRoom',
+            "lastJoinedUser": user._id
+          }
         } else {
-          room = await Room.findOneAndUpdate(
-            { _id: roomId, "teams._id": user.team }, 
-            { 
-              $addToSet: { [`teams.$.players`]: user._id },
-              $set: { 
-                "serverEvent": 'joinRoom',
-                "lastJoinedUser": user._id
-              }
-            })
-            .exec()
+          operation['$addToSet'] = { [`teams.${user.team}.players`]: user._id }
+          operation['$set'] = { 
+            "serverEvent": 'joinRoom',
+            "lastJoinedUser": user._id
+          }
         }
       } else { // Use default values (add as spectator)
-        room = await Room.findOneAndUpdate(
-          { _id: roomId }, 
-          { 
-            $addToSet: { "spectators": user._id },
-            $set: { 
-              "serverEvent": 'joinRoom',
-              "lastJoinedUser": user._id
-            }
-          })
-          .exec()
+        operation['$addToSet'] = { "spectators": user._id }
+        operation['$set'] = { 
+          "serverEvent": 'joinRoom',
+          "lastJoinedUser": user._id
+        }
         user.roomId = roomId
         user.team = -1
         user.save()
       }
-      await room.save();
+      if (room.host === null) {
+        operation['host'] = user._id
+      }
+      await Room.findOneAndUpdate( { _id: roomId }, operation )
     } catch (err) {
       console.log(`[joinRoom] error adding user to room as spectator`, err)
     }
@@ -414,27 +424,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  async function removeUser(user) {        
-    await Room.updateOne(
-      { 
-        _id: user.roomId
-      }, 
-      { 
-        $pullAll: { 
-          'spectators': [
-            { _id: user._id }
-          ],
-          'teams.0.players': [
-            { _id: user._id }
-          ],
-          'teams.1.players': [
-            { _id: user._id }
-          ]
-        }
-      }
-    ).exec()
-  }
-
+  
   socket.on("joinTeam", async ({ team, name }, callback) => {
     console.log(`[joinTeam]`)
     let player;
@@ -454,8 +444,7 @@ io.on("connect", async (socket) => {
       await Room.findOneAndUpdate(
         { _id: player.roomId }, 
         operation
-      )
-        .exec()
+      ).exec()
     } catch (err) {
       console.log(`[joinTeam] error joining team`, err)
       return callback()
