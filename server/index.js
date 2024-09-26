@@ -247,7 +247,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
           io.to(userSocketId).emit("joinTeam", { 
             spectators: roomPopulated.spectators,
             teams: roomPopulated.teams,
-            gamePhase: roomPopulated.gamePhase
+            gamePhase: roomPopulated.gamePhase,
+            host: roomPopulated.host
           })
         } else {
           console.log(`[Room.watch] no serverEvent match`)

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import layout from './layout';
 import { useAtom } from 'jotai';
-import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostNameAtom, turnAtom } from './GlobalState';
+import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom } from './GlobalState';
 import { Html, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import Piece from './components/Piece';
 import { formatName, pieceStatus } from './helpers/helpers';
@@ -14,7 +14,7 @@ import { animated, useSpring } from '@react-spring/three';
 export default function Team({ position=[0,0,0], scale=1, team, device }) {
   const [teams] = useAtom(teamsAtom)
   const [gamePhase] = useAtom(gamePhaseAtom);
-  const [hostName] = useAtom(hostNameAtom);
+  const [host] = useAtom(hostAtom);
   const [turn] = useAtom(turnAtom)
   const [client] = useAtom(clientAtom);
 
@@ -187,7 +187,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
             ref={(ref => playerIdsRef.current[team][index] = ref)}
           >
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
-            + (value.name === hostName ? ' (h) ' : '')}
+            + (value.socketId === host.socketId ? ' (h) ' : '')}
             <meshStandardMaterial color='yellow'/>
           </Text3D>
           <group ref={yootIconRef} scale={0} position={[0, 0.17, 0]}>

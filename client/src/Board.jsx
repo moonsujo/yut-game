@@ -311,8 +311,8 @@ export default function Board({
     <WolfConstellation position={[-2.1,0,-1.2]} rotation={[-Math.PI/2, 0, 0]} scale={0.85}/>
     <RhinoConstellation position={[2.1,0,-1.3]} rotation={[-Math.PI/2, 0, 0]} scale={0.8}/>
     {/* <PegasusConstellation position={[-2.4, 0, 2.1]} scale={0.09}/> */}
-    <AriesConstellation position={[-1.9,0,3.4]} rotation={[-Math.PI/2, 0, 0]} scale={0.7}/>
-    {/* <TaurusConstellation position={[2.3, 0, 3.5]} scale={0.8} rotation={[-Math.PI/2, 0, Math.PI/16]}/> */}
+    <AriesConstellation position={[-2.2,0,3.8]} rotation={[-Math.PI/2, 0, 0]} scale={0.8}/>
+    <TaurusConstellation position={[2.3, 0, 3.5]} scale={0.8} rotation={[-Math.PI/2, 0, Math.PI/16]}/>
     {/* <TaurusConstellationShiny 
       meshDir={"taurus-constellation-dhazele-2.glb"} 
       lightTexDir={'lightTaurusTexture.png'}
@@ -331,6 +331,6 @@ export default function Board({
       lightRotation = {[80.1,0.0,0.0]}
       lightMultiplier = {2}
     /> */}
-    <DottedTaurus position={[2.2, 0, 2.1]} scale={0.9}/>
+    {/* <DottedTaurus position={[2.2, 0, 2.1]} scale={0.9}/> */}
   </animated.group>;
 }

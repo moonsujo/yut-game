@@ -21,7 +21,7 @@ import { useParams } from "wouter";
 import { 
   deviceAtom, 
   readyToStartAtom, 
-  hostNameAtom, 
+  hostAtom, 
   disconnectAtom, 
   gamePhaseAtom, 
   turnAtom,
@@ -66,7 +66,7 @@ export default function Game() {
   const [tiles] = useAtom(tilesAtom)
   const [winner] = useAtom(winnerAtom)
   const [readyToStart] = useAtom(readyToStartAtom)
-  const [hostName] = useAtom(hostNameAtom)
+  const [host] = useAtom(hostAtom)
   const [showRulebook, setShowRulebook] = useState(false);
   const [client] = useAtom(clientAtom)
   const [teams] = useAtom(teamsAtom)
@@ -225,14 +225,14 @@ export default function Game() {
     }
 
     return <group>
-      { hostName === client.name && gamePhase === 'lobby' && <group position={position}>
+      { host.socketId === client.socketId && gamePhase === 'lobby' && <group position={position}>
         { readyToStart ? <ActivatedButton
         position={layout[device].game.letsPlayButton.activeButton.position}/> : <DisabledButton 
         position={layout[device].game.letsPlayButton.disabledButton.position}
         scale={layout[device].game.letsPlayButton.disabledButton.scale}
         /> }
       </group> }
-      { hostName !== client.name && gamePhase === 'lobby' && <group position={position}>
+      { host.socketId !== client.socketId && gamePhase === 'lobby' && <group position={position}>
         { readyToStart ? <WaitingForHostButton
         position={layout[device].game.letsPlayButton.waitingForHostButton.position}
         scale={layout[device].game.letsPlayButton.waitingForHostButton.scale}/> : <DisabledButton 
@@ -673,12 +673,11 @@ export default function Game() {
       </Text3D>
     }
 
-    console.log('client name', client.name, 'host name', hostName)
-    if (client.team === -1 && client.name === hostName) {
+    if (client.team === -1 && client.socketId === host.socketId) {
       return <SpectatingAndHosting/>
     } else if (client.team === -1) {
       return <Spectating/>
-    } else if (client.team !== -1 && client.name === hostName) {
+    } else if (client.team !== -1 && client.socketId === host.socketId) {
       return <Hosting/>
     } else {
       return <></>

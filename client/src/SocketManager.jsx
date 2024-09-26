@@ -7,7 +7,7 @@ import {
   boomTextAtom, 
   pregameAlertAtom, 
   clientAtom, 
-  disconnectAtom, displayMovesAtom, gamePhaseAtom, hasTurnAtom, helperTilesAtom, hostNameAtom, initialYootThrowAtom, legalTilesAtom, mainAlertAtom, messagesAtom, particleSettingAtom, pieceTeam0Id0Atom, pieceTeam0Id1Atom, pieceTeam0Id2Atom, pieceTeam0Id3Atom, pieceTeam1Id0Atom, pieceTeam1Id1Atom, pieceTeam1Id2Atom, pieceTeam1Id3Atom, readyToStartAtom, roomAtom, selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
+  disconnectAtom, displayMovesAtom, gamePhaseAtom, hasTurnAtom, helperTilesAtom, hostAtom, initialYootThrowAtom, legalTilesAtom, mainAlertAtom, messagesAtom, particleSettingAtom, pieceTeam0Id0Atom, pieceTeam0Id1Atom, pieceTeam0Id2Atom, pieceTeam0Id3Atom, pieceTeam1Id0Atom, pieceTeam1Id1Atom, pieceTeam1Id2Atom, pieceTeam1Id3Atom, readyToStartAtom, roomAtom, selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
   yootOutcomeAtom,
   currentPlayerNameAtom,
   alertsAtom,
@@ -39,7 +39,7 @@ export const SocketManager = () => {
   const [_room, setRoom] = useAtom(roomAtom);
   const [_messages, setMessages] = useAtom(messagesAtom);
   const [_gameLogs, setGameLogs] = useAtom(gameLogsAtom);
-  const [_hostName, setHostName] = useAtom(hostNameAtom)
+  const [_host, setHost] = useAtom(hostAtom)
   const [_spectators, setSpectators] = useAtom(spectatorsAtom)
   const [_readyToStart, setReadyToStart] = useAtom(readyToStartAtom)
   const [_yootActive, setYootActive] = useAtom(yootActiveAtom)
@@ -137,7 +137,7 @@ export const SocketManager = () => {
 
       // Set host name for display
       if (room.host !== null) {
-          setHostName(room.host.name)
+          setHost(room.host)
       }
 
       findAndStoreClient(room.spectators, room.teams);
@@ -482,7 +482,7 @@ export const SocketManager = () => {
     socket.on("joinRoom", ({ spectators, teams, host, gamePhase }) => {
       setSpectators(spectators);
       setTeams(teams);
-      setHostName(host.name);
+      setHost(host);
 
       findAndStoreClient(spectators, teams)
       
@@ -495,10 +495,11 @@ export const SocketManager = () => {
         }
     })
     
-    socket.on("joinTeam", ({ spectators, teams, gamePhase }) => {
+    socket.on("joinTeam", ({ spectators, teams, gamePhase, host }) => {
       console.log("[joinTeam]")
       setSpectators(spectators)
       setTeams(teams);
+      setHost(host);
       
       findAndStoreClient(spectators, teams)
       
