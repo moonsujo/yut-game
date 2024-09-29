@@ -199,7 +199,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         </group>
       ))}
       {/* add 'copy link to share' if game hasn't started yet */}
-      { gamePhase === 'lobby' && client.team !== -1 && <CopyLink position={[0.1, -teams[team].players.length * 0.5-0.1, 0]}/> }
+      {/* { gamePhase === 'lobby' && client.team !== -1 && <CopyLink position={[0.1, -teams[team].players.length * 0.5-0.1, 0]}/> } */}
     </group>
   }
 

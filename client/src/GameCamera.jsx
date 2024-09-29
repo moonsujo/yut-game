@@ -4,7 +4,7 @@ import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 
 function calcZoom() {
   if (window.innerWidth < mediaValues.landscapeCutoff) {
-    const zoomMax = 50;
+    const zoomMax = 42;
     const newZoom = zoomMax * (window.innerWidth / mediaValues.landscapeCutoff)
     return newZoom
   } else {

@@ -27,14 +27,14 @@ export default {
       position: [0,0,0],
       rotation: [0,0,0],
       text: {
-        position: [-4,0,-8.3],
+        position: [-5,0,-11],
         rotation: [-Math.PI/2,0,0],
-        scale: 3.5
+        scale: 4.5
       },
       yoots: {
-        position: [2.5, 0, -6.3],
+        position: [3, 0, -8.4],
         rotation: [0,Math.PI/2,0],
-        scale: 0.35
+        scale: 0.43
       },
       tiles: {
         position: [0, 0, -0.1],
@@ -43,33 +43,33 @@ export default {
       },
       about: {
         show: false,
-        position: [0, 0, 5.8],
+        position: [0, 0, 7.4],
         rotation: [0,0,0],
-        scale: 1.7
+        scale: 2
       },
       howToPlay: {
-        position: [0, 0, 7],
+        position: [0, 0, 8.8],
         rotation: [0,0,0],
-        scale: 1.7
+        scale: 2
       },
       letsPlay: {
-        position: [0, 0, 8.2],
+        position: [0, 0, 10.2],
         rotation: [0,0,0],
-        scale: 1.7
+        scale: 2
       },
       pieces: {
         position: [0,0,0],
         scale: 0.5
       },
       board: {
-        position: [0, 0, 0.5],
-        scale: 0.75
+        position: [0, 0, 0],
+        scale: 1
       }
     },
     howToPlay: {
       position: [0,0,0],
       rotation: [0,0,0],
-      scale: 0.8,
+      scale: 0.9,
       pickingTheTeamsPage: {
         cursorPos: [
           [4,0,0],
@@ -994,9 +994,9 @@ export default {
       }
     },
     about: {
-      position: [-4, 0, -3.3],
+      position: [-4.9, 0, -4.2],
       rotation: [-Math.PI/2,0,0],
-      scale: 0.5,
+      scale: 0.6,
       mainDescription: {
         size: 0.6,
         line0Position: [0,0.5,0],
@@ -1041,8 +1041,8 @@ export default {
         position: [3.7,0,7.7],
         rotation: [-Math.PI / 2, 0, 0],
         disabledButton: {
-          position: [-0.5,0,0.5],
-          scale: 1.8,
+          position: [-0.1,0,1.2],
+          scale: 2,
           text: {
             position: [-0.6, 0.025, -0.25],
             rotation: [-Math.PI/2, 0, 0],
@@ -1052,8 +1052,8 @@ export default {
           }
         },
         waitingForHostButton: {
-          position: [-0.5,0,0.5],
-          scale: 1.8,
+          position: [-0.2,0,0.4],
+          scale: 2,
           text: {
             position: [-0.6, 0.025, -0.25],
             rotation: [-Math.PI/2, 0, 0],
@@ -1065,8 +1065,8 @@ export default {
         activeButton: {
           backdropWidth: 1.4,
           backdropHeight: 1.1,
-          scale: 1.1,
-          position: [-0.4, 0, 0.4],
+          scale: 1.25,
+          position: [-0.1, 0, 0.4],
           text: {
             position: [-0.8,0,-0.15],
             rotation: [-Math.PI/2,0,0],
@@ -1077,27 +1077,27 @@ export default {
         }
       },
       spectating: {
-        position: [-4.5, 0, -4.4],
+        position: [-5.4, 0, -5.5],
         rotation: [-Math.PI/2, 0, 0],
-        size: 0.3,
+        size: 0.37,
         height: 0.01
       },
       spectatingAndHosting: {
-        line0Pos: [-4.5, 0, -4.4],
-        line1Pos: [-4.5, 0, -3.9],
+        line0Pos: [-5.4, 0, -5.5],
+        line1Pos: [-5.4, 0, -4.8],
         rotation: [-Math.PI/2, 0, 0],
-        size: 0.3,
+        size: 0.37,
         height: 0.01
       },
       hosting: {
-        position: [-4.5, 0, -4.4],
+        position: [-5.3, 0, -5.5],
         rotation: [-Math.PI/2, 0, 0],
-        size: 0.3,
+        size: 0.37,
         height: 0.01
       },
       team0: {
-        position: [-4.5, 0, -8],
-        scale: 1,
+        position: [-5.3, 0, -10],
+        scale: 1.2,
         title: {
           position: [0,0,0],
           rotation: [-Math.PI / 2, 0, 0],
@@ -1136,8 +1136,8 @@ export default {
         }
       },
       team1: {
-        scale: 1,
-        position: [0.2, 0, -8],
+        scale: 1.2,
+        position: [0.1, 0, -10],
         title: {
           position: [0,0,0],
           rotation: [-Math.PI / 2, 0, 0],
@@ -1181,15 +1181,15 @@ export default {
         scale: [1.3, 1.3, 1.3]
       },
       chat: {
-        position: [-4.7,0,5.6],
+        position: [-5.7,0,6.1],
         rotation: [-Math.PI/2, 0, 0],
         scale: [0.5, 0.5, 0.5],
         box: {
           borderRadius: '5px',
-          height: '320px',
-          width: '220px',
+          height: '420px',
+          width: '270px',
           padding: '10px',
-          fontSize: '24px',
+          fontSize: '30px',
         },
         input: {
           height: '15px',
@@ -1230,15 +1230,15 @@ export default {
       },
       board: {
         lobby: {
-          scale: 0.85,
+          scale: 1,
           position: [0, 0, 0]
         },
         pregame: {
           scale: 0.2,
-          position: [4.2, 0, -2.2]
+          position: [4.2, 0, -2.7]
         },
         game: {
-          scale: 0.85,
+          scale: 1,
           position: [0, 0, 0]
         },
         finished: {
@@ -1248,13 +1248,13 @@ export default {
       },
       whoGoesFirst: {
         title: {
-          position: [-4.5, 0, -4],
+          position: [-5.3, 0, -4.5],
           rotation: [-Math.PI/2,0,0],
           size: 0.5,
           height: 0.01
         },
         description: {
-          position: [-4.5, 0, -3.3],
+          position: [-5.3, 0, -3.8],
           rotation: [-Math.PI/2,0,0],
           size: 0.3,
           height: 0.01,
@@ -1262,8 +1262,8 @@ export default {
         }
       },
       settings: {
-        position: [4.1, 0, -4.5],
-        scale: 0.9,
+        position: [4.6, 0, -5.5],
+        scale: 1.1,
         text: {
           position: [-0.9, 0.025, 0.15],
           rotation: [-Math.PI/2, 0, 0],
@@ -1272,13 +1272,15 @@ export default {
         }
       },
       rulebookButton: {
-        position: [4.375, 0, -3.9],
-        scale: 0.9,
+        position: [4.95, 0, -4.7],
+        scale: 1.1,
       },
       rulebook: {
         position: [0, 9, 3],
+        scale: 0.8,
         blocker: {
-          args: [12, 0.1, 10]
+          args: [11, 0.1, 10],
+          position: [0,8,3]
         },
         closeButton: {
           position: [5.7,0,-5],
@@ -1286,7 +1288,7 @@ export default {
         }
       },
       piecesSection: {
-        position: [-0.6, 0, 7.3],
+        position: [-0.7, 0, 8.2],
         emptyPieces: {
           positions: [
             [0, 0, -0.3],
@@ -1299,18 +1301,21 @@ export default {
           rotation: [0, 0, 0],
           positions: [
             [0, 0, -1],
-            [1.2, 0, -1],
-            [0, 0, 0.2],
-            [1.2, 0, 0.2]
+            [1.5, 0, -1],
+            [0, 0, 0.4],
+            [1.5, 0, 0.4]
           ],
-          scale: 1.3
+          scale: 1.6
         }
       },
       moveList: {
-        position: [-1.2, 0, 9],
+        position: [-1.3, 0, 10.5],
         rotation: [-Math.PI/2, 0, 0],
-        tokenScale: 0.8,
-        tokenPosition: [0.5, 0, 0.5]
+        tokenScale: 1,
+        tokenPosition: [0.6, 0, 0.7],
+        size: 0.43,
+        piecePosition: [2.5, 0, -0.3],
+        pieceScale: 0.8
       },
       currentPlayer: {
         position: [3.2, 0, 5],
@@ -1327,9 +1332,9 @@ export default {
         scale: 1.2
       },
       yootButton: {
-        position: [3.2, 0, 8],
+        position: [3.7, 0, 9.3],
         rotation: [0, Math.PI/2, 0],
-        scale: 1.2
+        scale: 1.4
       },
       throwCount: {
         position: [1.7, 0, -0.8],
@@ -2722,8 +2727,10 @@ export default {
       },
       rulebook: {
         position: [-1.5, 9, 3],
+        scale: 0.8,
         blocker: {
-          args: [12, 0.1, 9]
+          args: [12, 0.1, 9],
+          position: [0.5,8,3]
         },
         closeButton: {
           position: [9,0,5.3],
@@ -2752,10 +2759,13 @@ export default {
         }
       },
       moveList: {
-        position: [8, 0, -2],
+        position: [7.8, 0, -2.2],
         rotation: [-Math.PI/2, 0, 0],
         tokenScale: 0.9,
-        tokenPosition: [0.5, 0, 0.6]
+        tokenPosition: [0.6, 0, 0.6],
+        size: 0.35,
+        piecePosition: [2.05, 0, -0.3],
+        pieceScale: 0.8
       },
       currentPlayer: {
         position: [8.4, 0, -3],

@@ -32,8 +32,6 @@ import {
   clientAtom,
   joinTeamAtom,
   yootAnimationAtom,
-  yootActiveAtom,
-  animationPlayingAtom,
   teamsAtom,
   hasTurnAtom,
 } from "./GlobalState.jsx";
@@ -813,6 +811,9 @@ export default function Game() {
           rotation={layout[device].game.moveList.rotation}
           tokenScale={layout[device].game.moveList.tokenScale}
           tokenPosition={layout[device].game.moveList.tokenPosition}
+          size={layout[device].game.moveList.size}
+          piecePosition={layout[device].game.moveList.piecePosition}
+          pieceScale={layout[device].game.moveList.pieceScale}
         /> }
       </animated.group> }
       { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
@@ -820,14 +821,14 @@ export default function Game() {
         { (gamePhase === 'finished' && winner === 1) && <UfosWin/>}
       </animated.group> }
       { showRulebook && gamePhase !== 'finished' && <group>
-        <mesh name='blocker' position={[0.5,8,3]}>
+        <mesh name='blocker' position={layout[device].game.rulebook.blocker.position}>
           <boxGeometry args={layout[device].game.rulebook.blocker.args}/>
           <meshStandardMaterial color='black' transparent opacity={0.95}/>
         </mesh>
         <HowToPlay 
           device={device} 
           position={layout[device].game.rulebook.position} 
-          scale={0.8}
+          scale={layout[device].game.rulebook.scale}
           closeButton={true}
           setShowRulebook={setShowRulebook}
         />

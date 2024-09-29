@@ -23,9 +23,8 @@ export default function PiecesOnBoard() {
     
     // const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
     const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
-    const [device] = useAtom(deviceAtom);
     const [gamePhase] = useAtom(gamePhaseAtom)
-    const responsiveScale = layout[device].game.board.game.scale
+    const responsiveScale = 1
 
     const [springs0_0, api0_0] = useSpring(() => ({        
         from: {

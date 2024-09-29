@@ -12,7 +12,7 @@ import GulToken from './moveTokens/GulToken';
 import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 
-export default function MoveList({ position, rotation, tokenScale, tokenPosition }) {
+export default function MoveList({ position, rotation, tokenScale, tokenPosition, size, piecePosition, pieceScale }) {
     const [moves] = useAtom(displayMovesAtom)
     const [turn] = useAtom(turnAtom)
     const moveList = movesToArray()
@@ -33,13 +33,13 @@ export default function MoveList({ position, rotation, tokenScale, tokenPosition
       <Text3D
       font="fonts/Luckiest Guy_Regular.json"
       rotation={rotation} 
-      size={0.35}
+      size={size}
       height={0.03}>
         MOVES:
         <meshStandardMaterial color='yellow'/>
       </Text3D>
-      { turn.team === 0 && <Rocket position={[2, 0, -0.2]} scale={0.6}/>}
-      { turn.team === 1 && <Ufo position={[2, 0, -0.2]} scale={0.6}/>}
+      { turn.team === 0 && <Rocket position={piecePosition} scale={pieceScale}/>}
+      { turn.team === 1 && <Ufo position={piecePosition} scale={pieceScale}/>}
       {
         moveList.map((value, index) => 
           <group key={index}>
