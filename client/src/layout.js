@@ -64,6 +64,21 @@ export default {
       board: {
         position: [0, 0, 0],
         scale: 1
+      },
+      milkyWay: {
+        rotation: [-Math.PI/2, 0, -35.0],
+        position: [0, -1, -0.5],
+        scale: 15,
+        brightness: 0.3,
+        colorTint1: [
+          0.0, 1.0, 1.0, 1.0
+        ],
+        colorTint2: [
+          0.0, 1.0, 1.0, 1.0
+        ],
+        colorTint3: [
+          0.0, 1.0, 1.0, 1.0
+        ]
       }
     },
     howToPlay: {
@@ -1518,6 +1533,21 @@ export default {
       board: {
         position: [4.5, 0, 0],
         scale: 0.9
+      },
+      milkyWay: {
+        rotation: [-Math.PI/2, 0, -35.0],
+        position: [4, -1, -0.5],
+        scale: 10,
+        brightness: 0.3,
+        colorTint1: [
+          0.0, 1.0, 1.0, 1.0
+        ],
+        colorTint2: [
+          0.0, 1.0, 1.0, 1.0
+        ],
+        colorTint3: [
+          0.0, 1.0, 1.0, 1.0
+        ]
       }
     },
     about: {

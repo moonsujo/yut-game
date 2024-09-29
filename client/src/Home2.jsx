@@ -294,13 +294,28 @@ export default function Home2() {
     
     {/* stops on re-render */}
     <MilkyWay
-      rotation={[-Math.PI/2, 0, -35.0]} 
-      position={[4, -1, -0.5]} 
-      scale={10}
-      brightness={0.3}
-      colorTint1={new THREE.Vector4(0, 1, 1, 1.0)}
-      colorTint2={new THREE.Vector4(0, 1, 1, 1.0)}
-      colorTint3={new THREE.Vector4(0, 1, 1, 1.0)}
+      rotation={layout[device].title.milkyWay.rotation} 
+      position={layout[device].title.milkyWay.position} 
+      scale={layout[device].title.milkyWay.scale}
+      brightness={layout[device].title.milkyWay.brightness}
+      colorTint1={new THREE.Vector4(
+        layout[device].title.milkyWay.colorTint1[0], 
+        layout[device].title.milkyWay.colorTint1[1], 
+        layout[device].title.milkyWay.colorTint1[2], 
+        layout[device].title.milkyWay.colorTint1[3]
+      )}
+      colorTint2={new THREE.Vector4(
+        layout[device].title.milkyWay.colorTint2[0], 
+        layout[device].title.milkyWay.colorTint2[1], 
+        layout[device].title.milkyWay.colorTint2[2], 
+        layout[device].title.milkyWay.colorTint2[3]
+      )}
+      colorTint3={new THREE.Vector4(
+        layout[device].title.milkyWay.colorTint3[0], 
+        layout[device].title.milkyWay.colorTint3[1], 
+        layout[device].title.milkyWay.colorTint3[2], 
+        layout[device].title.milkyWay.colorTint3[3]
+      )}
     />
   </>
 }
