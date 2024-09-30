@@ -120,6 +120,7 @@ export const SocketManager = () => {
 
     socket.on('room', (room) => {
       console.log(`[SocketManager] room`, room)
+      console.log('[SocketManager][room] yootOutcome', room.yootOutcome)
 
       setMessages(room.messages)
       setTeams(room.teams)
@@ -266,6 +267,7 @@ export const SocketManager = () => {
     })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {      
+      console.log('record throw')
       setTeams(teams) // only update the throw count of the current team
       setTurn(turn)
       // this invocation is within a useEffect
@@ -316,7 +318,8 @@ export const SocketManager = () => {
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
-        if (yootOutcome === 0 && teams[turnPrev].throws === 0) {
+        console.log('[recordThrow] yootOutcome', yootOutcome)
+        if (yootOutcome === 0 && teams[turnPrev.team].throws === 0) {
           setAlerts([yootOutcomeAlertName, 'turn'])
           setThrowCount(teams[turnUpdate.team].throws)
         } else {
@@ -343,6 +346,7 @@ export const SocketManager = () => {
     }
 
     socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection }) => {
+      console.log('move')
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -480,6 +484,7 @@ export const SocketManager = () => {
 
     // emitted to other clients when a client joins
     socket.on("joinRoom", ({ spectators, teams, host, gamePhase }) => {
+      console.log('joinRoom')
       setSpectators(spectators);
       setTeams(teams);
       setHost(host);
@@ -495,8 +500,27 @@ export const SocketManager = () => {
         }
     })
     
-    socket.on("joinTeam", ({ spectators, teams, gamePhase, host }) => {
+    socket.on("joinTeam", ({ spectators, teams, gamePhase, host, turn }) => {
       console.log("[joinTeam]")
+      setSpectators(spectators)
+      setTeams(teams);
+      setHost(host);
+      if (gamePhase === 'pregame' || gamePhase === 'game') {
+        setThrowCount(teams[turn.team].throws)
+      }
+      
+      findAndStoreClient(spectators, teams)
+      
+      if (gamePhase === 'lobby' && 
+        teams[0].players.length > 0 && 
+        teams[1].players.length > 0) {
+          setReadyToStart(true)
+        } else {
+          setReadyToStart(false)
+        }
+    })
+    socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
+      console.log("[userDisconnect]")
       setSpectators(spectators)
       setTeams(teams);
       setHost(host);

@@ -21,84 +21,84 @@ export default function PiecesOnBoard() {
     const [pieceTeam1Id2] = useAtom(pieceTeam1Id2Atom)
     const [pieceTeam1Id3] = useAtom(pieceTeam1Id3Atom)
     
-    // const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
     const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
     const responsiveScale = 1
-
-    const [springs0_0, api0_0] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], // Filler values
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs0_1, api0_1] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs0_2, api0_2] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs0_3, api0_3] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs1_0, api1_0] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs1_1, api1_1] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs1_2, api1_2] = useSpring(() => ({        
-        from: {
-            position: [0,0,0],
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-    const [springs1_3, api1_3] = useSpring(() => ({        
-        from: {
-            position: [0,0,0], 
-            scale: 0,
-            sizeTwink: 0,
-            welcomeTextScale: 0
-        }
-    }))
-
     const idOffsets = [
         [-0.3, 0, -0.25],
         [0.3, 0, -0.25],
         [-0.3, 0, 0.25],
         [0.3, 0, 0.25],
     ]
-
     const heightOffset = 0.9
+
+    function getPositionByTile(tile, pieceId) {
+        if (tile === -1 || tile === 29) {
+            return [0,0,0]
+        } else {
+            return [
+                roundNum(tilePositions[tile][0] + idOffsets[pieceId][0], 1) * responsiveScale,
+                roundNum(tilePositions[tile][1] + heightOffset + idOffsets[pieceId][1], 1) * responsiveScale,
+                roundNum(tilePositions[tile][2] + idOffsets[pieceId][2], 1) * responsiveScale,
+            ]
+        }
+    }
+    function getScaleByTile(tile) {
+        if (tile === -1 || tile === 29) {
+            return 0
+        } else {
+            return 1
+        }
+    }
+
+    const [springs0_0, api0_0] = useSpring(() => ({
+        from: {
+            position: getPositionByTile(pieceTeam0Id0.tile, 0), 
+            scale: getScaleByTile(pieceTeam0Id0.tile),
+        }
+    }))
+    const [springs0_1, api0_1] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam0Id1.tile, 1), 
+            scale: getScaleByTile(pieceTeam0Id1.tile),
+        }
+    }))
+    const [springs0_2, api0_2] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam0Id2.tile, 2), 
+            scale: getScaleByTile(pieceTeam0Id2.tile),
+        }
+    }))
+    const [springs0_3, api0_3] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam0Id3.tile, 3), 
+            scale: getScaleByTile(pieceTeam0Id3.tile),
+        }
+    }))
+    const [springs1_0, api1_0] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam1Id0.tile, 0), 
+            scale: getScaleByTile(pieceTeam1Id0.tile),
+        }
+    }))
+    const [springs1_1, api1_1] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam1Id1.tile, 1), 
+            scale: getScaleByTile(pieceTeam1Id1.tile),
+        }
+    }))
+    const [springs1_2, api1_2] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam1Id2.tile, 2), 
+            scale: getScaleByTile(pieceTeam1Id2.tile),
+        }
+    }))
+    const [springs1_3, api1_3] = useSpring(() => ({        
+        from: {
+            position: getPositionByTile(pieceTeam1Id3.tile, 3), 
+            scale: getScaleByTile(pieceTeam1Id3.tile),
+        }
+    }))
 
     function startCheck(tile, lastPath) {
         const condition0 = (tile === 0 && lastPath[0] === 1)
@@ -233,6 +233,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api0_0.start({
+                from: {
+                    position: getPositionByTile(pieceTeam0Id0.tile, 0),
+                    scale: getScaleByTile(pieceTeam0Id0.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam0Id0])
 
@@ -357,6 +368,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api0_1.start({
+                from: {
+                    position: getPositionByTile(pieceTeam0Id1.tile, 1),
+                    scale: getScaleByTile(pieceTeam0Id1.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam0Id1])
 
@@ -481,6 +503,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api0_2.start({
+                from: {
+                    position: getPositionByTile(pieceTeam0Id2.tile, 2),
+                    scale: getScaleByTile(pieceTeam0Id2.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam0Id2])
 
@@ -606,6 +639,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api0_3.start({
+                from: {
+                    position: getPositionByTile(pieceTeam0Id3.tile, 3),
+                    scale: getScaleByTile(pieceTeam0Id3.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam0Id3])
 
@@ -732,6 +776,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api1_0.start({
+                from: {
+                    position: getPositionByTile(pieceTeam1Id0.tile, 0),
+                    scale: getScaleByTile(pieceTeam1Id0.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam1Id0])
 
@@ -858,6 +913,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api1_1.start({
+                from: {
+                    position: getPositionByTile(pieceTeam1Id1.tile, 1),
+                    scale: getScaleByTile(pieceTeam1Id1.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam1Id1])
 
@@ -983,6 +1049,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api1_2.start({
+                from: {
+                    position: getPositionByTile(pieceTeam1Id2.tile, 2),
+                    scale: getScaleByTile(pieceTeam1Id2.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam1Id2])
 
@@ -1108,6 +1185,17 @@ export default function PiecesOnBoard() {
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
+        } else {
+            api1_3.start({
+                from: {
+                    position: getPositionByTile(pieceTeam1Id3.tile, 3),
+                    scale: getScaleByTile(pieceTeam1Id3.tile),
+                },
+                to: [],
+                loop: false,
+                // onStart: () => setPieceAnimationPlaying(true),
+                onRest: () => setPieceAnimationPlaying(false),
+            })
         }
     }, [pieceTeam1Id3])
     

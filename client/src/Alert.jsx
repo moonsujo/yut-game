@@ -35,7 +35,6 @@ export default function Alert({ position, rotation }) {
     const { nodes, materials } = useGLTF('models/alert-background.glb')
     
     const [alerts] = useAtom(alertsAtom)
-    const [yootOutcome] = useAtom(yootOutcomeAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
     const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
     const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
@@ -624,7 +623,7 @@ export default function Alert({ position, rotation }) {
           },
           to: toAnimations,
           loop: false,
-          onStart: () => setAnimationPlaying(true),
+          // onStart: () => setAnimationPlaying(true),
           onRest: () => setAnimationPlaying(false),
         })
         

@@ -248,6 +248,16 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             spectators: roomPopulated.spectators,
             teams: roomPopulated.teams,
             gamePhase: roomPopulated.gamePhase,
+            host: roomPopulated.host,
+            turn: roomPopulated.turn // to set the throw count for the current team
+          })
+        } else if (serverEvent === 'userDisconnect') {
+          console.log('user disconnect', roomPopulated.host);
+
+          io.to(userSocketId).emit("userDisconnect", { 
+            spectators: roomPopulated.spectators,
+            teams: roomPopulated.teams,
+            gamePhase: roomPopulated.gamePhase,
             host: roomPopulated.host
           })
         } else {
@@ -359,6 +369,9 @@ io.on("connect", async (socket) => {
           'teams.1.players': [
             { _id: user._id }
           ]
+        },
+        $set: {
+          'serverEvent': 'userDisconnect'
         }
       }
     ).exec()

@@ -223,14 +223,14 @@ export default function Game() {
     }
 
     return <group>
-      { host.socketId === client.socketId && gamePhase === 'lobby' && <group position={position}>
+      { host && host.socketId === client.socketId && gamePhase === 'lobby' && <group position={position}>
         { readyToStart ? <ActivatedButton
         position={layout[device].game.letsPlayButton.activeButton.position}/> : <DisabledButton 
         position={layout[device].game.letsPlayButton.disabledButton.position}
         scale={layout[device].game.letsPlayButton.disabledButton.scale}
         /> }
       </group> }
-      { host.socketId !== client.socketId && gamePhase === 'lobby' && <group position={position}>
+      { host && host.socketId !== client.socketId && gamePhase === 'lobby' && <group position={position}>
         { readyToStart ? <WaitingForHostButton
         position={layout[device].game.letsPlayButton.waitingForHostButton.position}
         scale={layout[device].game.letsPlayButton.waitingForHostButton.scale}/> : <DisabledButton 
@@ -671,11 +671,11 @@ export default function Game() {
       </Text3D>
     }
 
-    if (client.team === -1 && client.socketId === host.socketId) {
+    if (host && client.team === -1 && client.socketId === host.socketId) {
       return <SpectatingAndHosting/>
     } else if (client.team === -1) {
       return <Spectating/>
-    } else if (client.team !== -1 && client.socketId === host.socketId) {
+    } else if (host && client.team !== -1 && client.socketId === host.socketId) {
       return <Hosting/>
     } else {
       return <></>

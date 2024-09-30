@@ -187,7 +187,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
             ref={(ref => playerIdsRef.current[team][index] = ref)}
           >
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
-            + (value.socketId === host.socketId ? ' (h) ' : '')}
+            + (host && value.socketId === host.socketId ? ' (h) ' : '')}
             <meshStandardMaterial color='yellow'/>
           </Text3D>
           <group ref={yootIconRef} scale={0} position={[0, 0.17, 0]}>
