@@ -318,7 +318,7 @@ export default function Alert({ position, rotation }) {
                 tension: 170,
                 friction: 26
             },
-            delay: 1500
+            delay: 1000
           })
         }
       }
@@ -633,15 +633,15 @@ export default function Alert({ position, rotation }) {
           const numScored = parseInt(alerts[0][6]);
           launchScoreFireworks(team, numScored)
         } else if (alerts[0] && alerts[0].includes('join')) {
-          const alertString = alerts[0]
-          const team = parseInt(alertString[4]);
-          const tile = parseInt(alertString.substring(5, alertString.length));
-          const positionVec3 = new THREE.Vector3(
-            tilePositions[tile][0] + 1.48,
-            tilePositions[tile][1] + 2.7,
-            tilePositions[tile][2] + 0.23
-          )
-          addSpark(positionVec3, team)
+          // const alertString = alerts[0]
+          // const team = parseInt(alertString[4]);
+          // const tile = parseInt(alertString.substring(5, alertString.length));
+          // const positionVec3 = new THREE.Vector3(
+          //   tilePositions[tile][0] + 0,
+          //   tilePositions[tile][1] + 2.7,
+          //   tilePositions[tile][2] - 0.35
+          // )
+          // addSpark(positionVec3, team)
         }
       }
     }, [alerts, pieceAnimationPlaying])
@@ -1293,11 +1293,17 @@ export default function Alert({ position, rotation }) {
 
       // specific location for each tile
       let position;
-      if (tile) {
+      if (tile === 9 || tile === 10 || tile === 11) { 
         position = [
-          tilePositions[tile][0] + 1.5,
+          tilePositions[tile][0] + 0,
           tilePositions[tile][1] + 0.5,
-          tilePositions[tile][2] - 0.7,
+          tilePositions[tile][2] + 1.6,
+        ]
+      } else if (tile === 0 || tile) {
+        position = [
+          tilePositions[tile][0] + 0,
+          tilePositions[tile][1] + 0.5,
+          tilePositions[tile][2] - 1.3,
         ]
       } else {
         position = [0,0,0]
@@ -1338,7 +1344,7 @@ export default function Alert({ position, rotation }) {
           </mesh>
           <Text3D
             font="fonts/Luckiest Guy_Regular.json" 
-            position={[-1.27, 0.1, 0.11]}
+            position={[-1.27, 0.1, 0.2]}
             rotation={[-Math.PI/2, 0, 0]}
             height={0.01}
             lineHeight={0.9} 
