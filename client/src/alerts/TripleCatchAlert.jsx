@@ -10,7 +10,6 @@ import { turnAtom } from "../GlobalState";
 import { useAtom } from "jotai";
 
 export default function TripleCatchAlert({ position, rotation }) {
-  console.log(`[TripleCatchAlert]`)
   
   const { nodes, materials } = useGLTF('models/alert-background.glb')
   const [turn] = useAtom(turnAtom)

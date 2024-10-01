@@ -524,7 +524,6 @@ export default function Game() {
 
     function handlePointerDown(e) {
       e.stopPropagation();
-      console.log('settings button click')
     }
 
     return <group position={position} scale={scale}>

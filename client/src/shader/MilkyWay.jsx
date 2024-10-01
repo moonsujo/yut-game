@@ -79,7 +79,6 @@ void main(){
 `
 
 function MilkyWay(props) {
-    console.log(`[MilkyWay]`)
     const meshRef = useRef();
     const secondMeshRef = useRef();
     const thirdMeshRef = useRef();

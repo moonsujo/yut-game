@@ -262,7 +262,6 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       inputc.select();
       document.execCommand('copy');
       inputc.parentNode.removeChild(inputc);
-      console.log('copied')
 
       // animation
       api.start({

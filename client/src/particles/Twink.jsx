@@ -3,7 +3,6 @@ import * as THREE from "three";
 import { animated } from "@react-spring/three";
 
 export default function Twink({ position, size }) {
-  console.log(`[Twink] size`, size)
   const textureLoader = new THREE.TextureLoader();
   const pointsMap = textureLoader.load("textures/particles/8.png");
   const positionArray = new Float32Array(3);

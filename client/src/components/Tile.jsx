@@ -131,20 +131,19 @@ export default function Tile({
   })
 
   function PathNumHelper({pathNum}) {
-    console.log(`[PathNumHelper] pathNum`, pathNum, `tile`, tile)
     const Move = ({ position }) => {
       return <>
-        { pathNum === -1 && <BackdoToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
-        { pathNum === 1 && <DoToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
-        { pathNum === 2 && <GeToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
-        { pathNum === 3 && <GulToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
-        { pathNum === 4 && <YootToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
-        { pathNum === 5 && <MoToken position={position} scale={0.7} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === -1 && <BackdoToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === 1 && <DoToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === 2 && <GeToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === 3 && <GulToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === 4 && <YootToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
+        { pathNum === 5 && <MoToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
       </>
     }
 
     return <>
-      <Move position={[0.8,1.5,0]}/>
+      <Move position={[1,2.3,0]}/>
     </>
   }
 

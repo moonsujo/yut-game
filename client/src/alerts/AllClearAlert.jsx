@@ -10,7 +10,6 @@ import { turnAtom } from "../GlobalState";
 import { useAtom } from "jotai";
 
 export default function AllClearAlert({ position, rotation }) {
-  console.log(`[AllClearAlert]`)
   const { nodes, materials } = useGLTF('models/alert-background.glb')
   const [turn] = useAtom(turnAtom)
 

@@ -123,8 +123,6 @@ function TaurusConstellationShiny(props){
   noise.wrapS = THREE.RepeatWrapping;
   noise.wrapT = THREE.RepeatWrapping;
 
-  console.log(lightTexture);
-
   var baseColor = new THREE.Vector4(0.5,0.5,0.5,1.0);
   var lightColor;
   var glistenSpeed = 4.0;

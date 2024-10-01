@@ -5,7 +5,6 @@ import { useFrame } from "@react-three/fiber";
 import Star from "./meshes/Star";
 
 export default function RocketsGoFirst({ position, rotation, scale }) {
-  console.log(`[RocketsGoFirst]`)
   const { nodes, materials } = useGLTF('models/alert-background.glb')
 
   const borderMesh0Ref = useRef();

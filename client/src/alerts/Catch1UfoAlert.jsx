@@ -10,7 +10,6 @@ import { turnAtom } from "../GlobalState";
 import { useAtom } from "jotai";
 
 export default function Catch1UfoAlert({ position, rotation }) {
-  console.log(`[Catch1UfoAlert]`)
   const { nodes, materials } = useGLTF('models/alert-background.glb')
   const [turn] = useAtom(turnAtom)
 

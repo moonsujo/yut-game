@@ -89,18 +89,13 @@ export const SocketManager = () => {
 
   useEffect(() => {
 
-    console.log("[SocketManager] connect")
-
     socket.connect();
 
     socket.on('connect', () => {})
     
     socket.on('connect_error', err => { 
-      console.log("[connect_error]", err); 
       setDisconnect(true) 
     })
-    
-    // socket.on('connect_failed', err => { console.log("[connect_failed]", err); setDisconnect(true) })
 
     function findAndStoreClient(spectators, teams) {
       // Find client from users
@@ -109,7 +104,6 @@ export const SocketManager = () => {
       // Set it in global store and local storage
       for (const user of users) {
         if (user.socketId === socket.id) {
-          console.log('client found')
           setClient(user)
           localStorage.setItem('yootGame', JSON.stringify({
             ...user
@@ -119,8 +113,6 @@ export const SocketManager = () => {
     }
 
     socket.on('room', (room) => {
-      console.log(`[SocketManager] room`, room)
-      console.log('[SocketManager][room] yootOutcome', room.yootOutcome)
 
       setMessages(room.messages)
       setTeams(room.teams)
@@ -200,7 +192,6 @@ export const SocketManager = () => {
 
       // helper tiles
       for (const legalTile of Object.keys(legalTiles)) {
-        console.log(`[SocketManager] legalTile`, legalTile)
         let moveInfo;
         if (legalTile !== '29') {
           moveInfo = legalTiles[legalTile]
@@ -239,7 +230,6 @@ export const SocketManager = () => {
 
       setGameLogs(room.gameLogs)
 
-      console.log('[SocketManager] finished ingesting room state')
 
     })
 
@@ -266,8 +256,7 @@ export const SocketManager = () => {
       setGameLogs(gameLogs)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {      
-      console.log('record throw')
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {     
       setTeams(teams) // only update the throw count of the current team
       setTurn(turn)
       // this invocation is within a useEffect
@@ -318,7 +307,6 @@ export const SocketManager = () => {
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
-        console.log('[recordThrow] yootOutcome', yootOutcome)
         if (yootOutcome === 0 && teams[turnPrev.team].throws === 0) {
           setAlerts([yootOutcomeAlertName, 'turn'])
           setThrowCount(teams[turnUpdate.team].throws)
@@ -346,7 +334,6 @@ export const SocketManager = () => {
     }
 
     socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection }) => {
-      console.log('move')
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -484,7 +471,6 @@ export const SocketManager = () => {
 
     // emitted to other clients when a client joins
     socket.on("joinRoom", ({ spectators, teams, host, gamePhase }) => {
-      console.log('joinRoom')
       setSpectators(spectators);
       setTeams(teams);
       setHost(host);
@@ -501,7 +487,6 @@ export const SocketManager = () => {
     })
     
     socket.on("joinTeam", ({ spectators, teams, gamePhase, host, turn }) => {
-      console.log("[joinTeam]")
       setSpectators(spectators)
       setTeams(teams);
       setHost(host);
@@ -519,9 +504,8 @@ export const SocketManager = () => {
           setReadyToStart(false)
         }
     })
-    
+
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
-      console.log("[userDisconnect]")
       setSpectators(spectators)
       setTeams(teams);
       setHost(host);
@@ -538,7 +522,6 @@ export const SocketManager = () => {
     })
 
     socket.on('disconnect', () => {
-      console.log("[disconnect]")
       setDisconnect(true);
     })
 

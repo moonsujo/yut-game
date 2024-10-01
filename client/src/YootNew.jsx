@@ -45,7 +45,6 @@ export default function YootNew({ setAnimation, animation, scale, position, devi
   }, [animation])
 
   useEffect(() => {
-    console.log(`[YootNew] sleepCount ${sleepCount}`)
     if (sleepCount === 4) {
       if (hasTurn) {
         socket.emit("recordThrow", { move: yootOutcome, roomId: params.id })

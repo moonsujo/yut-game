@@ -817,7 +817,6 @@ export default function HowToPlay({
               yoot3.current.position.y = 0
               
             } else if (startTime + highlightYoot0Time > time) {
-              console.log(yoot0Mat.current)
               yoot0Mat.current.opacity = 1
             } else if (startTime + highlightYoot1Time > time) {
               yoot1Mat.current.opacity = 1
@@ -1317,11 +1316,8 @@ export default function HowToPlay({
             ]
           })
         }, 9000)
-        console.log(fireTimeoutId)
         return () => {
-          console.log('page 2 unmount') // triggers on page switch
           setParticleSetting(null)
-          console.log(`fireTimeoutId ${fireTimeoutId}`) // triggers on page switch
           clearTimeout(fireTimeoutId)
         }
       }, [device])

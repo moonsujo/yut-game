@@ -43,7 +43,6 @@ export default function DoubleCatchAlert({ position, rotation }) {
       delay: 500
   })
 
-  console.log(`[DoubleCatchAlert]`)
   const borderMesh0Ref = useRef();
   const borderMesh1Ref = useRef();
   const borderMesh2Ref = useRef();

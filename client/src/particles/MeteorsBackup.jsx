@@ -63,7 +63,6 @@ export default function Meteors() {
   colors.shouldRandomize = true
 
   useEffect(() => {
-    console.log("[Celebration] no dependency use effect")
     system.current = new System();
     const renderer = new SpriteRenderer(scene, THREE);
     system.current.addRenderer(renderer)
@@ -80,7 +79,6 @@ export default function Meteors() {
   }, [])
 
   useEffect(() => {
-    console.log(`[Meteors] useEffect`)
     for (let i = 0; i < numMeteors; i++) {
       setTimeout(() => {
         const alpha = generateRandomNumberInRange(1, 0.4)

@@ -25,7 +25,6 @@ export function useFireworksShader() {
     })
 
     function CreateFirework({count, position, size, texture, radius, color}) {
-        console.log('CreateFirework')
         const positionsArray = new Float32Array(count * 3)
         const sizesArray = new Float32Array(count)
         const timeMultipliersArray = new Float32Array(count)

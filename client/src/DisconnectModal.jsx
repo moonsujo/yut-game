@@ -7,11 +7,9 @@ export default function DisconnectModal({ position=[0,0,0], rotation=[0,0,0] }) 
   const buttonMaterial = new MeshStandardMaterial({ color: new Color('yellow')});
 
   function handleDisconnectPointerEnter(e) {
-    console.log('pointer enter')
     e.stopPropagation()
   }
   function handleDisconnectPointerLeave(e) {
-    console.log('pointer leave')
     e.stopPropagation()
   }
   function handleDisconnectPointerDown(e) {

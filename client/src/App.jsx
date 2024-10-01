@@ -28,7 +28,6 @@ export default function App () {
   }
 
   useEffect(() => {
-    console.log(`[App] window innerWidth change`)
     window.addEventListener("resize", handleResize, false);
   }, [window.innerWidth]);
 

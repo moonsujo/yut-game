@@ -4,7 +4,6 @@ export const useRocketStore = create((set) => ({
   selection: null,
   setSelection: (payload) =>
     set((state) => {
-      console.log("[setSelection]", payload);
       if (payload == null) {
         return { selection: null };
       }

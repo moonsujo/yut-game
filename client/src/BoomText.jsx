@@ -14,7 +14,6 @@ import { boomTextAtom } from './GlobalState';
   // throw the yoot
   // button click - start game
 export default function BoomText({ rotation, initialScale }) {
-  console.log(`[BoomText]`)
   const { nodes, materials } = useGLTF("models/boom-wrap.glb");
   const [_text, setText] = useAtom(boomTextAtom)
 
@@ -168,7 +167,6 @@ export default function BoomText({ rotation, initialScale }) {
   //   </Float>
   // }
   function GameStart({ position, rotation, scale }) {
-    console.log(`[BoomText][GameStart]`)
 
     return <animated.group position={position} rotation={rotation} scale={scale}>
       <mesh

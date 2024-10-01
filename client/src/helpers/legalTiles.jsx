@@ -10,7 +10,6 @@ import { pieceStatus } from "./helpers.js";
 //   ]
 // }
 export function getLegalTiles(tile, moves, pieces, history) {
-  console.log(`[getLegalTiles]`)
   let legalTiles = {}
 
   for (let move in moves) {
@@ -32,9 +31,7 @@ export function getLegalTiles(tile, moves, pieces, history) {
           forks = checkFinishRule(forks) 
         } else {
           // If you have no history, present both paths. If you do, take the last tile from the history
-          console.log(`[getLegalTiles] forks backdo`, forks, `history`, history)
           forks = checkBackdoFork(forks, history)
-          console.log(`[getLegalTiles] forks backdo after check`, forks)
         }
   
         for (let i = 0; i < forks.length; i++) {
@@ -42,7 +39,6 @@ export function getLegalTiles(tile, moves, pieces, history) {
           // Initialize path
           let path = pieceStatus(tile) === 'home' ? [0] : [tile]
           let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path)
-          console.log(`[getLegalTiles] destination`, destination)
           
           let forkHistory = makeNewHistory(
             history, 
@@ -69,7 +65,6 @@ export function getLegalTiles(tile, moves, pieces, history) {
 }
 
 function makeNewHistory(history, path, forward) {
-  console.log(`[makeNewHistory] history`, history, `path`, path, `forward`, forward)
   if (forward) {
     return history.concat(path)
   } else {

@@ -28,14 +28,11 @@ function DustParticle({position, delay, sprite}) {
   emitter.current = new Emitter();
 
   useEffect(() => {
-    console.log("useEffect")
     // couldn't abstract the renderer or the system
     system.current = new System(); 
     const renderer = new SpriteRenderer(scene, THREE);
     system.current.addRenderer(renderer)
     return () => {
-      console.log("return")
-      // system.current.removeRenderer(renderer)
       emitter.current.removeAllParticles();
       emitter.current.destroy();
     }

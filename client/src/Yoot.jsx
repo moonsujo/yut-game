@@ -53,10 +53,6 @@ export default function Yoot({ device }) {
   }
 
   useEffect(() => {
-    // set timer
-    // clear on yoot rest
-    // clear on throw
-    // on timer expire, record throw
     setTimer((prevTimer) => {
       clearTimeout(prevTimer);
       return setTimeout(() => {
@@ -172,14 +168,11 @@ export default function Yoot({ device }) {
   const outIndicator = useRef();
   const yootMatFloorRef = useRef();
   useFrame((state, delta) => {
-    // console.log('[Yoot] throwAlert', throwAlert, 'outShineStartTime', outShineStartTime)
     if (throwAlert.num === 0 && !outShinePlayed) {
       if (outShineStartTime === null) {
         outShineStartTime = state.clock.elapsedTime;
       } else if ((outShineStartTime + yootOutShineSec) > state.clock.elapsedTime) {
         yootMatFloorRef.current.opacity = Math.floor(state.clock.elapsedTime - outShineStartTime) % 2 === 1 ? 0.3 : 0.1;
-        // outIndicator.current.position.x = Math.sin(Math.floor(state.clock.elapsedTime*20)/10) * 6
-        // outIndicator.current.position.z = Math.cos(Math.floor(state.clock.elapsedTime*20)/10) * 6
       } else {
         outShineStartTime = null;
         outShinePlayed = true;
