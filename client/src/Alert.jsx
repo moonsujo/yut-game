@@ -65,6 +65,8 @@ export default function Alert({ position, rotation }) {
         yootOutcome5PregameAlertScale: 0,
         yootOutcome4AlertScale: 0,
         yootOutcome5AlertScale: 0,
+        yootOutcomeOutAlertScale: 0,
+        yootOutcomeBackdoAlertScale: 0,
         pregameTieAlertScale: 0,
         pregameRocketsWinAlertScale: 0,
         pregameUfosWinAlertScale: 0,
@@ -215,6 +217,38 @@ export default function Alert({ position, rotation }) {
           })
           animations.push({
             yootOutcome5AlertScale: 0,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+            delay: 1000
+          })
+        } else if (alerts[i] === 'yootOutcome0') {
+          animations.push({
+            yootOutcomeOutAlertScale: 1,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+          })
+          animations.push({
+            yootOutcomeOutAlertScale: 0,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+            delay: 1000
+          })
+        } else if (alerts[i] === 'yootOutcome-1') {
+          animations.push({
+            yootOutcomeBackdoAlertScale: 1,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+          })
+          animations.push({
+            yootOutcomeBackdoAlertScale: 0,
             config: {
                 tension: 170,
                 friction: 26
@@ -615,6 +649,8 @@ export default function Alert({ position, rotation }) {
             yootOutcome5PregameAlertScale: 0,
             yootOutcome4AlertScale: 0,
             yootOutcome5AlertScale: 0,
+            yootOutcomeOutAlertScale: 0,
+            yootOutcomeBackdoAlertScale: 0,
             pregameTieAlertScale: 0,
             pregameUfosWinAlertScale: 0,
             catchAlertScale: 0,
@@ -1200,6 +1236,16 @@ export default function Alert({ position, rotation }) {
         <MoAlert/>
       </animated.group>
     }
+    function YootOutcomeOutAlert() {
+      return <animated.group scale={springs.yootOutcomeOutAlertScale} rotation={[0, Math.PI/2, 0]}>
+        <OutAlert/>
+      </animated.group>
+    }
+    function YootOutcomeBackdoAlert() {
+      return <animated.group scale={springs.yootOutcomeBackdoAlertScale} rotation={[0, Math.PI/2, 0]}>
+        <BackdoAlert/>
+      </animated.group>
+    }
 
     function CatchAlert() { // refactor like score alert with substring matching
       const teamCaught = alerts[0] && parseInt(alerts[0][5]);
@@ -1390,6 +1436,8 @@ export default function Alert({ position, rotation }) {
       <YootOutcome5PregameAlert/>
       <YootOutcome4Alert/>
       <YootOutcome5Alert/>
+      <YootOutcomeOutAlert/>
+      <YootOutcomeBackdoAlert/>
       <CatchAlert/>
       <ScoreAlert/>
       <JoinAlert/>

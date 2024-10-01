@@ -1,5 +1,6 @@
 import { Text3D, useGLTF } from "@react-three/drei";
 import { animated } from "@react-spring/three";
+import BackdoToken from "../moveTokens/BackdoToken";
 
 export default function BackdoAlert({ position, rotation, scale }) {
   const { nodes, materials } = useGLTF('models/alert-background.glb')
@@ -33,26 +34,7 @@ export default function BackdoAlert({ position, rotation, scale }) {
         BACKDO
         <meshStandardMaterial color="yellow"/>
       </Text3D>
-      <group name='move-token' position={[0, 0.09, 1.2]}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[Math.PI/2, Math.PI, Math.PI/2]}
-          position={[-0.17,-0.01,-0.22]}
-          size={0.35}
-          height={0.1}
-        >
-          -1
-          <meshStandardMaterial color="yellow"/>
-        </Text3D>
-        <mesh rotation={[0, 0, 0]}>
-          <cylinderGeometry args={[0.43, 0.43, 0.1]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh rotation={[0, 0, 0]}>
-          <cylinderGeometry args={[0.38, 0.38, 0.11]}/>
-        <meshStandardMaterial color='black' opacity={0.9} transparent/>
-        </mesh>
-      </group>
+      <BackdoToken position={[0, 0.09, 1.2]}/>
     </animated.group>
   )
 }

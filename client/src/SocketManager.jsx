@@ -519,6 +519,7 @@ export const SocketManager = () => {
           setReadyToStart(false)
         }
     })
+    
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       console.log("[userDisconnect]")
       setSpectators(spectators)
