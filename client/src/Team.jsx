@@ -138,12 +138,35 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
     let rollText;
     if (teams[team].pregameRoll === null) {
       rollText = '';
+    } else if (teams[team].pregameRoll === 0) {
+      rollText = '&#10007'
     } else {
       rollText = teams[team].pregameRoll.toString()
     }
 
     return <group position={layout[device].game[`team${team}`].pregameRoll.position}>
-      <Text3D
+      { teams[team].pregameRoll === 0 ? <group>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.9, 0.025, 0.15]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={layout[device].game[`team${team}`].pregameRoll.size}
+          height={layout[device].game[`team${team}`].pregameRoll.height}
+        >
+          {`roll:`}
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[0.35, 0.025, 0.15]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={layout[device].game[`team${team}`].pregameRoll.size}
+          height={layout[device].game[`team${team}`].pregameRoll.height}
+        >
+          {'X'}
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+      </group> : <Text3D
         font="fonts/Luckiest Guy_Regular.json"
         position={[-0.9, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
@@ -152,7 +175,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       >
         {`roll: ${rollText}`}
         <meshStandardMaterial color='yellow'/>
-      </Text3D>
+      </Text3D> }
     </group>
   }
 

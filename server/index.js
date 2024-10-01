@@ -666,11 +666,11 @@ io.on("connect", async (socket) => {
         // Clear pregame rolls
         // return passTurn(currentTurn, teams)
         return "tie"
-      } else if (team0Roll > team1Roll) {
+      } else if (team0Roll > team1Roll || team1Roll === 0) {
         // Proceed to the game phase
         // return setTurn(currentTurn, 0)
         return 0
-      } else if (team1Roll > team0Roll) {
+      } else if (team1Roll > team0Roll || team0Roll === 0) {
         // Proceed to the game phase
         // return setTurn(currentTurn, 1)
         return 1
