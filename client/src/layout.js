@@ -1359,7 +1359,7 @@ export default {
         text: "touch\ndown",
         textSize: 0.6,
         lineHeight: 0.8,
-        position: [-1.2, 0, 6.9],
+        position: [-1.2, 0, 7.7],
         rotation: [-Math.PI/2, 0, 0],
         scale: 0.8,
         buttons: {

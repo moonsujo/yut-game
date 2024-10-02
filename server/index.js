@@ -550,7 +550,6 @@ io.on("connect", async (socket) => {
     const nakProb = 0.02
     const probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
     const randomNum = Math.random()
-    console.log(`[pickOutcome] randomNum`, randomNum)
     if (randomNum < sumArray(probs.slice(0, 1))) {
       return 1
     } else if (randomNum >= sumArray(probs.slice(0, 1)) && randomNum < sumArray(probs.slice(0, 2))) {

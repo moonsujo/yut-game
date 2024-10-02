@@ -14,14 +14,18 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, te
 
     function scorePointerEnter(event) {
       event.stopPropagation();
-      document.body.style.cursor = "pointer";
-      buttonMatInner.current.color = new THREE.Color('green')
+      if (enabled) {
+        document.body.style.cursor = "pointer";
+        buttonMatInner.current.color = new THREE.Color('green')
+      }
     }
   
     function scorePointerOut(event) {
       event.stopPropagation();
-      document.body.style.cursor = "default";
-      buttonMatInner.current.color = new THREE.Color('black')
+      if (enabled) {
+        document.body.style.cursor = "default";
+        buttonMatInner.current.color = new THREE.Color('black')
+      }
     }
 
     return <group position={position}>
