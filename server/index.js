@@ -251,9 +251,15 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             host: roomPopulated.host,
             turn: roomPopulated.turn // to set the throw count for the current team
           })
+        } else if (serverEvent === "reset") {
+          io.to(userSocketId).emit("reset", {
+            gamePhase: roomPopulated.gamePhase,
+            tiles: roomPopulated.tiles,
+            turn: roomPopulated.turn,
+            teams: roomPopulated.teams,
+          })
         } else if (serverEvent === 'userDisconnect') {
           console.log('user disconnect', roomPopulated.host);
-
           io.to(userSocketId).emit("userDisconnect", { 
             spectators: roomPopulated.spectators,
             teams: roomPopulated.teams,
@@ -1117,12 +1123,6 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("reset", async ({ roomId }) => {
-    // change gamePhase to lobby
-    // reset tiles
-    // reset teams except the player names (pieces, moves, throws)
-    // pregame outcome, legal tiles, selection
-    // set turn to someone random
-    // yoot thrown
     try {
       let operation = {};
       operation['$set'] = {}
@@ -1133,7 +1133,6 @@ io.on("connect", async (socket) => {
       operation['$set']['pregameOutcome'] = null
       operation['$set']['turn'] = {
         team: -1,
-        // team: generateRandomNumberInRange(1, 1) > 1 ? 0 : 1,
         players: [0, 0]
       }
       operation['$set'][`teams.0.pieces`] = JSON.parse(JSON.stringify(initialState.initialPiecesTeam0))
@@ -1144,6 +1143,8 @@ io.on("connect", async (socket) => {
       operation['$set'][`teams.1.throws`] = 0
       operation['$set'][`teams.1.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
       operation['$set'][`teams.1.pregameRoll`] = null
+
+      operation['$set']['serverEvent'] = 'reset'
 
       await Room.findOneAndUpdate(
         { 

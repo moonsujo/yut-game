@@ -251,7 +251,7 @@ export const SocketManager = () => {
       setCurrentPlayerName(currentPlayerName)
       setAlerts(['gameStart', 'turn'])
       setAnimationPlaying(true)
-      // in order to turn off yoot at start
+      
       setHasTurn(clientHasTurn(socket.id, teams, turn))
       setGameLogs(gameLogs)
     })
@@ -416,22 +416,25 @@ export const SocketManager = () => {
       const currentPlayerName = teamsUpdate[turnUpdate.team].players[turnUpdate.players[turnUpdate.team]].name
       setCurrentPlayerName(currentPlayerName)
       
-      const alerts = []
-      const scoringTeamPiecesPrev = teamsPrev[turnPrev.team].pieces;
-      const scoringTeamPiecesUpdate = teamsUpdate[turnPrev.team].pieces
-      let numPiecesScored = calculateNumPiecesScored(scoringTeamPiecesPrev, scoringTeamPiecesUpdate)
-      alerts.push(`score${turnPrev.team}${numPiecesScored}`)
-
-      if (turnPrev.team !== turnUpdate.team) {
-        alerts.push('turn')
-        setThrowCount(teamsUpdate[turnUpdate.team].throws)
+      if (gamePhase !== 'finished') {
+        const alerts = []
+        const scoringTeamPiecesPrev = teamsPrev[turnPrev.team].pieces;
+        const scoringTeamPiecesUpdate = teamsUpdate[turnPrev.team].pieces
+        let numPiecesScored = calculateNumPiecesScored(scoringTeamPiecesPrev, scoringTeamPiecesUpdate)
+        alerts.push(`score${turnPrev.team}${numPiecesScored}`)
+  
+        if (turnPrev.team !== turnUpdate.team) {
+          alerts.push('turn')
+          setThrowCount(teamsUpdate[turnUpdate.team].throws)
+        }
+        
+        setAlerts(alerts)
+        setAnimationPlaying(true)
+        setPieceAnimationPlaying(true)
       }
 
       setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
       setHelperTiles({})
-      setAlerts(alerts)
-      setAnimationPlaying(true)
-      setPieceAnimationPlaying(true)
       // whenever turn could have changed
       setHasTurn(clientHasTurn(socket.id, teamsUpdate, turnUpdate))
       setLegalTiles(legalTiles)
@@ -503,6 +506,30 @@ export const SocketManager = () => {
         } else {
           setReadyToStart(false)
         }
+    })
+
+    socket.on("reset", ({ gamePhase, tiles, turn, teams }) => {
+      setGamePhase(gamePhase);
+      setTiles(tiles);
+      setTurn(turn);
+      setTeams(teams);
+      setPieceTeam0Id0(teams[0].pieces[0])
+      setPieceTeam0Id1(teams[0].pieces[1])
+      setPieceTeam0Id2(teams[0].pieces[2])
+      setPieceTeam0Id3(teams[0].pieces[3])
+      setPieceTeam1Id0(teams[1].pieces[0])
+      setPieceTeam1Id1(teams[1].pieces[1])
+      setPieceTeam1Id2(teams[1].pieces[2])
+      setPieceTeam1Id3(teams[1].pieces[3])
+      
+      if (teams[0].players.length > 0 && 
+        teams[1].players.length > 0) {
+          setReadyToStart(true)
+        } else {
+          setReadyToStart(false)
+        }
+
+      setParticleSetting(null)
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {

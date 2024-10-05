@@ -21,6 +21,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
   const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
+  // console.log('animationPlaying', animationPlaying, 'pieceAnimationPlaying', pieceAnimationPlaying, 'hasTurn', hasTurn, 'hasThrow', hasThrow)
 
   // for the throw count
   const [client] = useAtom(clientAtom);
