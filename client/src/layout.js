@@ -1353,7 +1353,7 @@ export default {
       },
       throwCount: {
         position: [1.7, 0, -0.8],
-        orientation: 'downUp'
+        orientation: 'leftRight'
       },
       scoreButtons: {
         text: "touch\ndown",

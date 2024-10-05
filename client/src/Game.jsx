@@ -835,7 +835,7 @@ export default function Game() {
       </group>}
       { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
       {/* host */}
-      <DisplayHostAndSpectating/>
+      { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
     </>
   );
 }

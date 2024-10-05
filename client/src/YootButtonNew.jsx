@@ -64,7 +64,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
 
     function positionByOrientation(index, orientation) {
       if (orientation === 'downUp') {
-        return [0, 0, -index*0.5]
+        return [index*0.5, 0, 0]
       } else if (orientation === 'leftRight') {
         return [0, 0, index*0.4]
       }
