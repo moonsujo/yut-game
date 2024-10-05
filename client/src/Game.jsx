@@ -711,6 +711,7 @@ export default function Game() {
           position={layout[device].game.joinTeamModal.position}
           rotation={layout[device].game.joinTeamModal.rotation}
           scale={layout[device].game.joinTeamModal.scale}
+          teams={teams}
         />
         {/* { !disconnect && <Chatbox 
           position={layout[device].game.chat.position}

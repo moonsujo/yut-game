@@ -4,7 +4,7 @@ import { socket } from './SocketManager';
 import { useAtom } from 'jotai';
 import { joinTeamAtom } from './GlobalState';
 
-export default function JoinTeamModal({ position, rotation, scale }) {
+export default function JoinTeamModal({ position, rotation, scale, teams }) {
 
   const [name, setName] = useState('')
   const [alert, setAlert] = useState('')
@@ -26,10 +26,23 @@ export default function JoinTeamModal({ position, rotation, scale }) {
     return true;
   };
 
+  function isUniqueName(name, teams) {
+    for (let j = 0; j < teams.length; j++) {
+      for (let i = 0; i < teams[j].players.length; i++) {
+        if (teams[j].players[i].name === name) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   function handleJoinSubmit(e) {
     e.preventDefault();
     if (name.length == 0) {
       setAlert('Enter something')
+    } else if (!isUniqueName(name, teams)) {
+      setAlert('Another player has the same name.')
     } else if (name.length > 15) {
       setAlert('Must be shorter than 16 characters.')
     } else if (!isAlphaNumeric(name)) { // prevent user from imitating host by adding '(host)'
@@ -71,14 +84,9 @@ export default function JoinTeamModal({ position, rotation, scale }) {
     rotation={rotation}
     scale={scale}
   >
-    <Html 
-      transform
-    >
-      <div style={{
-        position: 'absolute'
-      }}>
-        <form
-          onSubmit={e => handleJoinSubmit(e)}>
+    <Html transform>
+      <div style={{ position: 'absolute' }}>
+        <form onSubmit={e => handleJoinSubmit(e)}>
           <div style={{
             top: '40%',
             width: '155px',
