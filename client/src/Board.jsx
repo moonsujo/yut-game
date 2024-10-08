@@ -35,7 +35,7 @@ function getMeshByTile(tile) {
   } else if (tile == 22) {
     return <Moon scale={0.35} shiny/>
   } else {
-    return <Star scale={0.35}/>
+    return <Star scale={0.35} color={[1.1, 1.1, 0]}/>
   }
 }
 
@@ -311,7 +311,7 @@ export default function Board({
       </mesh>
     </group>
     
-    <WolfConstellation position={[-2.1,0,-1.3]} rotation={[-Math.PI/2, 0, 0]} scale={0.85}/>
+    <WolfConstellation position={[-2.1,0,-1.2]} rotation={[-Math.PI/2, 0, 0]} scale={0.85}/>
     <RhinoConstellation position={[2.1,0,-1.3]} rotation={[-Math.PI/2, 0, 0]} scale={0.8}/>
     {/* <PegasusConstellation position={[-2.4, 0, 2.1]} scale={0.09}/> */}
     <AriesConstellation position={[-2.3,0,4.1]} rotation={[-Math.PI/2, 0, 0]} scale={0.75}/>

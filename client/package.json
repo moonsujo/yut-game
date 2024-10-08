@@ -20,7 +20,7 @@
     "@react-spring/three": "^9.7.3",
     "@react-three/drei": "^9.108.1",
     "@react-three/fiber": "8.16.8",
-    "@react-three/postprocessing": "^2.15.12",
+    "@react-three/postprocessing": "2.16",
     "@react-three/rapier": "^1.4.0",
     "@reduxjs/toolkit": "^1.9.5",
     "decimal.js": "^10.4.3",

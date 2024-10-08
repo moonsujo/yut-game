@@ -17,7 +17,7 @@ export default function App () {
   console.log(ToneMappingMode)
   const created = ({ gl }) =>
   {
-      gl.setClearColor('#131822', 1)
+      gl.setClearColor('#030615', 1)
   }
 
   // Responsive UI
@@ -43,13 +43,15 @@ export default function App () {
       {/* <directionalLight position={ [ 0, 10, 0 ] } intensity={ 4 } />
       <ambientLight intensity={ 0.9 } /> */}
       
+      {/* <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
+        <ambientLight intensity={ 1.5 } /> */}
       <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
         <ambientLight intensity={ 1.5 } />
       <ParticleSystem/>
       <SocketManager/>
       <EffectComposer>
-      <ToneMapping mode={ ToneMappingMode.ACES_FILMIC } />
-        <Bloom mipmapBlur/>
+        <ToneMapping mode={ ToneMappingMode.ACES_FILMIC } />
+        <Bloom mipmapBlur intensity={2} luminanceThreshold={0.5} opacity={0.2}/>
       </EffectComposer>
       <Route path="/">
         <Home2/>

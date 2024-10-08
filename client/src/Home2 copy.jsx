@@ -110,7 +110,7 @@ export default function Home2() {
     return <group position={position} rotation={rotation} scale={scale}>
       <mesh>
         <boxGeometry args={[1.5, 0.03, 0.55]}/>
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </mesh>
       <mesh>
         <boxGeometry args={[1.45, 0.04, 0.5]}/>
@@ -133,7 +133,7 @@ export default function Home2() {
         height={0.01}
       >
         About
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </Text3D>
     </group>
   }
@@ -159,7 +159,7 @@ export default function Home2() {
     return <group position={position} rotation={rotation} scale={scale}>
       <mesh>
         <boxGeometry args={[2.8, 0.03, 0.55]}/>
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </mesh>
       <mesh>
         <boxGeometry args={[2.75, 0.04, 0.5]}/>
@@ -182,7 +182,7 @@ export default function Home2() {
         height={0.01}
       >
         How To Play
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </Text3D>
     </group>
   }
@@ -210,7 +210,7 @@ export default function Home2() {
     return <group position={position} rotation={rotation} scale={scale}>
       <mesh>
         <boxGeometry args={[3, 0.03, 0.55]}/>
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </mesh>
       <mesh>
         <boxGeometry args={[2.95, 0.04, 0.5]}/>
@@ -233,7 +233,7 @@ export default function Home2() {
         height={0.01}
       >
         Start a game
-        <meshStandardMaterial color={ hover ? 'green': [0.7, 0.7, 0]}/>
+        <meshStandardMaterial color={ hover ? 'green': 'yellow'}/>
       </Text3D>
     </group>
   }
@@ -298,7 +298,7 @@ export default function Home2() {
     />
     
     {/* stops on re-render */}
-    {/* <MilkyWay
+    <MilkyWay
       rotation={layout[device].title.milkyWay.rotation} 
       position={layout[device].title.milkyWay.position} 
       scale={layout[device].title.milkyWay.scale}
@@ -321,6 +321,6 @@ export default function Home2() {
         layout[device].title.milkyWay.colorTint3[2], 
         layout[device].title.milkyWay.colorTint3[3]
       )}
-    /> */}
+    />
   </>
 }
