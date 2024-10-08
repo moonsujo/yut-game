@@ -20,6 +20,8 @@ import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 import MilkyWay from './shader/MilkyWay';
 import * as THREE from 'three';
+import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
+import { ToneMappingMode } from 'postprocessing';
 
 export default function Home2() {
 
@@ -293,7 +295,7 @@ export default function Home2() {
     <StarsShader count={1000} size={0.2}/>
     
     {/* stops on re-render */}
-    <MilkyWay
+    {/* <MilkyWay
       rotation={layout[device].title.milkyWay.rotation} 
       position={layout[device].title.milkyWay.position} 
       scale={layout[device].title.milkyWay.scale}
@@ -316,6 +318,6 @@ export default function Home2() {
         layout[device].title.milkyWay.colorTint3[2], 
         layout[device].title.milkyWay.colorTint3[3]
       )}
-    />
+    /> */}
   </>
 }

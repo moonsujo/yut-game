@@ -3,7 +3,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 
 export function AriesConstellation(props) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/aries-constellation-dhazele-5.glb')
+  const { nodes, materials, animations } = useGLTF('models/aries-constellation-dhazele-6.glb')
   const { actions } = useAnimations(animations, group)
   return (
     <group ref={group} {...props} dispose={null}>
@@ -13,10 +13,10 @@ export function AriesConstellation(props) {
           castShadow
           receiveShadow
           geometry={nodes.BezierCurve001.geometry}
-          material={materials['Material.003']}
-          position={[0,0,0]}
+          material={materials.Material}
+          position={[-0.025, -0.247, 1.705]}
           rotation={[Math.PI / 2, 0, 0]}
-          scale={0.977}
+          scale={0.991}
         />
       </group>
     </group>
