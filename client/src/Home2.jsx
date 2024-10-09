@@ -22,9 +22,11 @@ import MilkyWay from './shader/MilkyWay';
 import * as THREE from 'three';
 import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
+import useResponsiveSetting from './ResponsiveSetting';
 
 export default function Home2() {
 
+  useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
   const [client] = useAtom(clientAtom)
@@ -239,7 +241,10 @@ export default function Home2() {
   }
   
   return <>
-    <GameCamera position={layout[device].camera.position}/>
+    <GameCamera 
+    position={layout[device].title.camera.position}
+    lookAt={layout[device].title.camera.lookAt}
+    />
     <group>
       <Title 
         position={layout[device].title.text.position}
@@ -291,36 +296,8 @@ export default function Home2() {
         />}
       </Physics>
     </group>
-    
     <StarsShader
-    count={7000}
-    size={5}
-    />
-    
-    {/* stops on re-render */}
-    <MilkyWay
-      rotation={layout[device].title.milkyWay.rotation} 
-      position={layout[device].title.milkyWay.position} 
-      scale={layout[device].title.milkyWay.scale}
-      brightness={layout[device].title.milkyWay.brightness}
-      colorTint1={new THREE.Vector4(
-        layout[device].title.milkyWay.colorTint1[0], 
-        layout[device].title.milkyWay.colorTint1[1], 
-        layout[device].title.milkyWay.colorTint1[2], 
-        layout[device].title.milkyWay.colorTint1[3]
-      )}
-      colorTint2={new THREE.Vector4(
-        layout[device].title.milkyWay.colorTint2[0], 
-        layout[device].title.milkyWay.colorTint2[1], 
-        layout[device].title.milkyWay.colorTint2[2], 
-        layout[device].title.milkyWay.colorTint2[3]
-      )}
-      colorTint3={new THREE.Vector4(
-        layout[device].title.milkyWay.colorTint3[0], 
-        layout[device].title.milkyWay.colorTint3[1], 
-        layout[device].title.milkyWay.colorTint3[2], 
-        layout[device].title.milkyWay.colorTint3[3]
-      )}
+      count={7000}
     />
   </>
 }

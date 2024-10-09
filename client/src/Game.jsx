@@ -50,10 +50,12 @@ import HowToPlay from "./HowToPlay.jsx";
 import { MeshDistortMaterial } from '@react-three/drei'
 import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
+import useResponsiveSetting from "./ResponsiveSetting.jsx";
 
 // There should be no state
 export default function Game() {
   
+  useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
   const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
@@ -693,7 +695,7 @@ export default function Game() {
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
-      <GameCamera position={layout[device].camera.position}/>
+      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
       { gamePhase !== 'finished' && <animated.group scale={gameScale}>
         <Team 
           position={layout[device].game.team0.position}

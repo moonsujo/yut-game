@@ -23,12 +23,12 @@ export default function Experience() {
     />
     <MilkyWay 
       rotation={[-Math.PI/2, 0, -35.0]} 
-      position={[0, -3, 0]} 
+      position={[0, -1, 0]} 
       scale={5}
       brightness={0.5}
-      colorTint1={new THREE.Vector4(0, 1, 1, 1.0)}
-      colorTint2={new THREE.Vector4(0, 1, 1, 1.0)}
-      colorTint3={new THREE.Vector4(0, 1, 1, 1.0)}
+      colorTint1={new THREE.Vector4(0.0, 1.0, 1.0, 1.0)}
+      colorTint2={new THREE.Vector4(0.0, 1.0, 1.0, 1.0)}
+      colorTint3={new THREE.Vector4(0.0, 1.0, 1.0, 1.0)}
     />
     {/* <TaurusConstellationShiny 
       meshDir={"taurus-constellation-dhazele-2.glb"} 

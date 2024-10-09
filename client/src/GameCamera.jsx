@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mediaValues from './mediaValues';
-import { OrbitControls, OrthographicCamera } from '@react-three/drei';
+import { CameraControls, OrthographicCamera } from '@react-three/drei';
+import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 
 function calcZoom() {
   if (window.innerWidth < mediaValues.landscapeCutoff) {
@@ -14,7 +16,7 @@ function calcZoom() {
   }
 }
 
-export default function GameCamera({ position }) {
+export default function GameCamera({ position=[0, 17, 7], lookAt=[0,0,0] }) {
   
   const [zoom, setZoom] = useState(calcZoom());
   
@@ -27,12 +29,19 @@ export default function GameCamera({ position }) {
     window.addEventListener("resize", handleResize, false);
   }, []);
 
+  const camera = useRef();
+  useFrame(() => {
+    const lookAtVector3 = new THREE.Vector3(lookAt[0], lookAt[1], lookAt[2])
+    camera.current.lookAt(lookAtVector3)
+  })
+
   return <>
-    <OrbitControls/>
+    <CameraControls enabled={false}/>
     <OrthographicCamera
       makeDefault
       zoom={zoom}
       position={position}
+      ref={camera}
     />
   </>
 }
