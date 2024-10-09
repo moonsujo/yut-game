@@ -35,7 +35,7 @@ function getMeshByTile(tile) {
   } else if (tile == 22) {
     return <Moon scale={0.35} shiny/>
   } else {
-    return <Star scale={0.35} color={[1.1, 1.1, 0]}/>
+    return <Star scale={0.35}/>
   }
 }
 

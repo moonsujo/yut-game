@@ -1501,43 +1501,43 @@ export default {
     },
     title: {
       text: {
-        position: [-11,0,-5],
+        position: [-10, 0, -5.5],
         rotation: [-Math.PI/2,0,0],
-        scale: 4,
+        scale: 4.2,
       },
       about: {
         show: true,
-        position: [-9.5, 0, 0.5],
+        position: [-8.3, 0, 0.8],
         rotation: [0,0,0],
-        scale: 2
+        scale: 2.2
       },
       howToPlay: {
-        position: [-8.2, 0, 2],
+        position: [-6.87, 0, 2.3],
         rotation: [0, 0, 0],
-        scale: 2
+        scale: 2.2
       },      
       letsPlay: {
-        position: [-8, 0, 3.5],
+        position: [-6.65, 0, 3.8],
         rotation: [0, 0, 0],
-        scale: 2
+        scale: 2.2
       },
       pieces: {
         position: [0,0,0],
         scale: 1
       },
       yoots: {
-        position: [-3.5, 0, -2.8],
+        position: [-2.6,0,-3.8],
         rotation: [Math.PI/2,Math.PI/2,-Math.PI/2],
-        scale: 0.4
+        scale: 0.27
       },
       board: {
-        position: [4.5, 0, 0],
-        scale: 0.9
+        position: [4.1, 0, 0],
+        scale: 1
       },
       milkyWay: {
         rotation: [-Math.PI/2, 0, -35.0],
-        position: [4, -1, -0.5],
-        scale: 5,
+        position: [3.7, -1, -0.5],
+        scale: 4,
         brightness: 0.5,
         colorTint1: [
           0.0, 1.0, 1.0, 1.0
