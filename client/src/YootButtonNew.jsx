@@ -1,6 +1,7 @@
 import { Text3D, useGLTF } from '@react-three/drei';
 import { useFrame, useGraph } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
+import { useState, useEffect } from 'react';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
 import { animationPlayingAtom, clientAtom, hasTurnAtom, pieceAnimationPlayingAtom, throwCountAtom, turnAtom } from './GlobalState';
@@ -20,7 +21,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
-  const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
+  const [enabledLocal, setEnabledLocal] = useState(false);
+  const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
   // console.log('animationPlaying', animationPlaying, 'pieceAnimationPlaying', pieceAnimationPlaying, 'hasTurn', hasTurn, 'hasThrow', hasThrow)
 
   // for the throw count
@@ -44,6 +46,12 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     }
   })
 
+  useEffect(() => {
+    if (!animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow) {
+      setEnabledLocal(true);
+    }
+  }, [hasTurn, hasThrow, animationPlaying, pieceAnimationPlaying])
+
   function handlePointerEnter() {
     document.body.style.cursor = "pointer";
   }
@@ -54,6 +62,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     e.stopPropagation();
 
     if (enabled) {
+      setEnabledLocal(false)
       setAnimationPlaying(true)
       socket.emit('throwYoot', { roomId: params.id })
     }
@@ -70,7 +79,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
       }
     }
 
-    const tempArray = [...Array(throwCount)]
+    console.log(`[YootButtonNew] throwCount ${throwCount}`)
+    const tempArray = [...Array(throwCount > 0 ? throwCount : 0)]
     return <group position={position}>
       {tempArray.map((_value, index) => {
         return <mesh key={index} position={positionByOrientation(index, orientation)}>

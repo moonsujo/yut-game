@@ -1557,7 +1557,7 @@ export default {
       }
     },
     about: {
-      position: [1, 0, -4],
+      position: [-3, 0, -4],
       rotation: [-Math.PI/2,0,0],
       scale: 0.6,
       mainDescription: {
@@ -1600,7 +1600,7 @@ export default {
       }
     },
     howToPlay: {
-      position: [3,0,0],
+      position: [-1,0,0],
       rotation: [0,Math.PI/32,Math.PI/64],
       scale: 1,
       pickingTheTeamsPage: {
@@ -2353,13 +2353,13 @@ export default {
       },
       readingTheDicePage: {
         text: {
-          position: [-3.7,0,-4],
+          position: [-3.2,0,-4],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
         },
         do: {
-          position: [-3.6, 0, -1.2],
+          position: [-3.1, 0, -1.2],
           scale: 0.6,
           text: {
             line0: {
@@ -2381,7 +2381,7 @@ export default {
           }
         },
         ge: {
-          position: [-0.6, 0, -1.2],
+          position: [-0.2, 0, -1.2],
           scale: 0.6,
           text: {
             line0: {
@@ -2425,7 +2425,7 @@ export default {
           }
         },
         yoot: {
-          position: [-3.6, 0, 3.5],
+          position: [-3.1, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
@@ -2453,7 +2453,7 @@ export default {
           }
         },
         mo: {
-          position: [-0.6, 0, 3.5],
+          position: [-0.1, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
@@ -2481,7 +2481,7 @@ export default {
           }
         },
         backdo: {
-          position: [2.6, 0, 3.5],
+          position: [2.8, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
