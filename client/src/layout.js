@@ -24,8 +24,10 @@ export default {
       position: [0,17,7],
     },
     title: {
-      position: [0,0,0],
-      rotation: [0,0,0],
+      camera: {
+        position: [0,17,7],
+        lookAt: [0, 0, 0]
+      },
       text: {
         position: [-5,0,-11],
         rotation: [-Math.PI/2,0,0],
@@ -1500,24 +1502,28 @@ export default {
       lookAtOffset: [0, 0, 0]
     },
     title: {
+      camera: {
+        position: [-4,17,7],
+        lookAt: [-4, 0, 0]
+      },
       text: {
-        position: [-10, 0, -5.5],
+        position: [-14, 0, -5.5],
         rotation: [-Math.PI/2,0,0],
-        scale: 4.2,
+        scale: 4,
       },
       about: {
         show: true,
-        position: [-8.3, 0, 0.8],
+        position: [-12.3, 0, 0.8],
         rotation: [0,0,0],
         scale: 2.2
       },
       howToPlay: {
-        position: [-6.87, 0, 2.3],
+        position: [-10.87, 0, 2.3],
         rotation: [0, 0, 0],
         scale: 2.2
       },      
       letsPlay: {
-        position: [-6.65, 0, 3.8],
+        position: [-10.65, 0, 3.8],
         rotation: [0, 0, 0],
         scale: 2.2
       },
@@ -1526,12 +1532,12 @@ export default {
         scale: 1
       },
       yoots: {
-        position: [-2.6,0,-3.8],
+        position: [-6.6,0,-3.8],
         rotation: [Math.PI/2,Math.PI/2,-Math.PI/2],
-        scale: 0.27
+        scale: 0.35
       },
       board: {
-        position: [4.1, 0, 0],
+        position: [0, 0, 0],
         scale: 1
       },
       milkyWay: {
@@ -1551,7 +1557,7 @@ export default {
       }
     },
     about: {
-      position: [1, 0, -4],
+      position: [-3, 0, -4],
       rotation: [-Math.PI/2,0,0],
       scale: 0.6,
       mainDescription: {
@@ -1594,7 +1600,7 @@ export default {
       }
     },
     howToPlay: {
-      position: [3,0,0],
+      position: [-1,0,0],
       rotation: [0,Math.PI/32,Math.PI/64],
       scale: 1,
       pickingTheTeamsPage: {
@@ -2347,13 +2353,13 @@ export default {
       },
       readingTheDicePage: {
         text: {
-          position: [-3.7,0,-4],
+          position: [-3.2,0,-4],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
         },
         do: {
-          position: [-3.6, 0, -1.2],
+          position: [-3.1, 0, -1.2],
           scale: 0.6,
           text: {
             line0: {
@@ -2375,7 +2381,7 @@ export default {
           }
         },
         ge: {
-          position: [-0.6, 0, -1.2],
+          position: [-0.2, 0, -1.2],
           scale: 0.6,
           text: {
             line0: {
@@ -2419,7 +2425,7 @@ export default {
           }
         },
         yoot: {
-          position: [-3.6, 0, 3.5],
+          position: [-3.1, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
@@ -2447,7 +2453,7 @@ export default {
           }
         },
         mo: {
-          position: [-0.6, 0, 3.5],
+          position: [-0.1, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
@@ -2475,7 +2481,7 @@ export default {
           }
         },
         backdo: {
-          position: [2.6, 0, 3.5],
+          position: [2.8, 0, 3.5],
           scale: 0.6,
           text: {
             line0: {
