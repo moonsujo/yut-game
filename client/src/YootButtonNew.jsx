@@ -79,7 +79,6 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
       }
     }
 
-    console.log(`[YootButtonNew] throwCount ${throwCount}`)
     const tempArray = [...Array(throwCount > 0 ? throwCount : 0)]
     return <group position={position}>
       {tempArray.map((_value, index) => {

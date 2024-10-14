@@ -350,6 +350,7 @@ export const SocketManager = () => {
       
       let alerts = []
       let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
+      console.log('[SocketManager] joined', joined)
       if (joined.result) {
         alerts.push(`join${turnPrev.team}${joined.tile}`)
       }
@@ -364,8 +365,6 @@ export const SocketManager = () => {
         let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
         if (numPiecesCaught > 0) {
           alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
-        } else {
-          alerts = []
         }
         setThrowCount(teamsUpdate[turnUpdate.team].throws)
       }

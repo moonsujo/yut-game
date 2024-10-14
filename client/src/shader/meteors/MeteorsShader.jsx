@@ -11,20 +11,20 @@ export default function useMeteorsShader() {
     const { scene } = useThree();
 
     const sizes = {
-        // width: window.innerWidth,
-        // height: window.innerHeight,
-        width: 2000,
-        height: 1000,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        // width: 2000,
+        // height: 1000,
         pixelRatio: Math.min(window.devicePixelRatio, 1)
     }
     sizes.resolution = new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 
     window.addEventListener('resize', () => {
         // Update sizes
-        // sizes.width = window.innerWidth
-        // sizes.height = window.innerHeight
-        sizes.width = 2000,
-        sizes.height = 1000,
+        sizes.width = window.innerWidth
+        sizes.height = window.innerHeight
+        // sizes.width = 2000,
+        // sizes.height = 1000,
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 1)
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
     })
@@ -88,27 +88,4 @@ export default function useMeteorsShader() {
     }
 
     return [CreateMeteor]
-    // function CreateRandomMeteor() {
-    //     const count = Math.round(400 + Math.random() * 1000);
-    //     const position = new THREE.Vector3(
-    //         (Math.random()-0.5) * 5 + 3, 
-    //         (Math.random()-0.5) * 5 + 3,
-    //         (Math.random()-0.5) * 5, 
-    //     )
-    //     const size = 0.15 + Math.random() * 0.02
-    //     const texture = textures[Math.floor(Math.random() * textures.length)]
-    //     const radius = 0.01 + Math.random() * 0.005
-    //     const color = new THREE.Color();
-    //     color.setHSL(0.3, 0.1, 0.1)
-    //     CreateMeteor({
-    //         count,
-    //         position,
-    //         size,
-    //         texture,
-    //         radius,
-    //         color
-    //     })
-    // }
-
-    return 
 }
