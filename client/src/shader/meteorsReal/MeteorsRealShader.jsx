@@ -6,8 +6,9 @@ import { useLoader, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 
-export default function useMeteorsRealShader() {
+export default function MeteorsRealShader() {
 
+    console.log('MeteorsRealShader')
     const { scene } = useThree();
 
     const sizes = {
@@ -107,40 +108,37 @@ export default function useMeteorsRealShader() {
       ] 
 
     // falling meteor background
-    const [meteorTimeout, setMeteorTimeout] = useState(null);
-    function createRandomMeteorReal() {
-        const count = Math.round(400 + Math.random() * 1000);
-        const position = new THREE.Vector3(
-            (Math.random()-0.5) * 10, 
-            -2,
-            (Math.random()-0.5) * 20, 
-        )
-        const size = 0.5 + Math.random() * 0.02
-        const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
-        const color = new THREE.Color();
-        color.setHSL(0.05, 0.7, 0.4)
-        const speedX = 5.0 + (Math.random() - 0.5) * 6.0;
-        const speedY = 4.0 + (Math.random() - 0.5) * 3.0;
-        const duration = 5.0 + (Math.random() - 0.5) * 5.0;
-        if (document.hasFocus()) {
-            CreateMeteorReal({
-                count,
-                position,
-                size,
-                texture,
-                color,
-                speedX,
-                speedY,
-                duration
-            })
-        }
-        const timeout = setTimeout(createRandomMeteorReal, 4000 + Math.random() * 3);
-        setMeteorTimeout(timeout)
-    }
-    useEffect(() => {
-        createRandomMeteorReal();
+    useEffect(() => {       
+        const interval = setInterval(() => {
+            const count = Math.round(400 + Math.random() * 1000);
+            const position = new THREE.Vector3(
+                (Math.random()-0.5) * 10, 
+                -2,
+                (Math.random()-0.5) * 20, 
+            )
+            const size = 0.5 + Math.random() * 0.02
+            const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
+            const color = new THREE.Color();
+            color.setHSL(0.05, 0.7, 0.4)
+            const speedX = 5.0 + (Math.random() - 0.5) * 6.0;
+            const speedY = 4.0 + (Math.random() - 0.5) * 3.0;
+            const duration = 5.0 + (Math.random() - 0.5) * 5.0;
+            if (document.hasFocus()) {
+                CreateMeteorReal({
+                    count,
+                    position,
+                    size,
+                    texture,
+                    color,
+                    speedX,
+                    speedY,
+                    duration
+                })
+            }
+        }, 2000);
         return (() => {
-            clearTimeout(meteorTimeout);
+            console.log('clear interval')
+            clearInterval(interval);
         })
     }, [])
 }

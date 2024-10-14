@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 
 export default function Home2Experience() {
 
-    useMeteorsRealShader();
     
     return <group>
         <Home2/>

@@ -51,6 +51,7 @@ import { MeshDistortMaterial } from '@react-three/drei'
 import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
+import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 
 // There should be no state
 export default function Game() {
@@ -838,6 +839,7 @@ export default function Game() {
       { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
       {/* host */}
       { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
+      <MeteorsRealShader/>
     </>
   );
 }

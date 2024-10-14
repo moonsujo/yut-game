@@ -23,9 +23,12 @@ import * as THREE from 'three';
 import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode } from 'postprocessing';
 import useResponsiveSetting from './ResponsiveSetting';
+import useMeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
+import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 
 export default function Home2() {
 
+  console.log('Home2')
   useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
@@ -299,5 +302,6 @@ export default function Home2() {
     <StarsShader
       count={7000}
     />
+    <MeteorsRealShader/>
   </>
 }

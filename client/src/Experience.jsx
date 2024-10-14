@@ -13,10 +13,9 @@ import StarsShader from "./shader/stars/StarsShader.jsx";
 import TaurusConstellationShiny from './meshes/TaurusConstellationShiny';
 import Alert from "./Alert.jsx";
 import useMeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
+import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 
 export default function Experience() {
-  
-  useMeteorsRealShader();
 
   return <group>
     {/* add game */}
