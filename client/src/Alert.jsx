@@ -205,7 +205,7 @@ export default function Alert({ position, rotation }) {
                 tension: 170,
                 friction: 26
             },
-            delay: 1000
+            delay: 1300
           })
         } else if (alerts[i] === 'yootOutcome5') {
           animations.push({
@@ -221,7 +221,7 @@ export default function Alert({ position, rotation }) {
                 tension: 170,
                 friction: 26
             },
-            delay: 1000
+            delay: 1300
           })
         } else if (alerts[i] === 'yootOutcome0') {
           animations.push({

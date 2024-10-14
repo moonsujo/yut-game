@@ -12,7 +12,6 @@ import { socket } from './SocketManager';
 import { useParams } from 'wouter';
 import { clientAtom, gamePhaseAtom, hasTurnAtom, particleSettingAtom, yootOutcomeAtom } from './GlobalState';
 import { useAtom, useAtomValue } from 'jotai';
-import meteorSettings from './particles/Meteors';
 import useMeteorsShader from './shader/meteors/MeteorsShader';
 import { useLoader } from '@react-three/fiber';
 import * as THREE from 'three';

@@ -1,8 +1,15 @@
+import { useLoader } from "@react-three/fiber";
 import Home2 from "./Home2";
+import useMeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader";
 import MilkyWay from "./shader/MilkyWay";
 import * as THREE from 'three';
+import { TextureLoader } from 'three'
+import { useEffect, useState } from "react";
 
 export default function Home2Experience() {
+
+    useMeteorsRealShader();
+    
     return <group>
         <Home2/>
         <MilkyWay
