@@ -1,13 +1,10 @@
 uniform float uSize;
-uniform float uTime;
 
 attribute float aScale;
-attribute float aIsRainbowFlag;
+attribute vec3 aColor;
 
 varying vec3 vColor;
 varying float vAlpha;
-varying float vIsRainbowFlag;
-varying float vTime;
 varying vec3 vPosition;
 varying vec2 vUv;
 
@@ -31,30 +28,12 @@ void main()
     /**
       * Color
       */
-    vColor = color;
-
+    vColor = aColor;
+    
     /**
       * Alpha
       */
-    if (aIsRainbowFlag == 0.0) {
-      vAlpha = cos(uTime + position.y);
-    } else {
-      float time = mod(uTime, 1.0);
-      float speed = 20.0;
-      // float hue = mod(time * speed, 1.0);
-      vAlpha = mod(time * speed, 1.0);
-      // vAlpha = 1.0;
-    }
-
-    /**
-      * Is Rainbow Flag
-      */
-    vIsRainbowFlag = aIsRainbowFlag;
-
-    /**
-      * Time
-      */
-    vTime = uTime;
+    vAlpha = 1.0;
 
     /**
       * Position (for randomness)

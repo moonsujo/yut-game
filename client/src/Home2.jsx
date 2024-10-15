@@ -25,6 +25,9 @@ import { ToneMappingMode } from 'postprocessing';
 import useResponsiveSetting from './ResponsiveSetting';
 import useMeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
+import { useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import StarsPatternsShader from './shader/starsPatterns2/StarsPatternsShader';
 
 export default function Home2() {
 
@@ -37,6 +40,11 @@ export default function Home2() {
   const { scene, materials } = useGLTF(
     "models/yoot.glb"
   );
+  
+  const textureDot = useLoader(TextureLoader, 'textures/particles/1.png')
+  const textureShinyDot = useLoader(TextureLoader, 'textures/particles/3.png')
+  const textureDotSparkle = useLoader(TextureLoader, 'textures/particles/5.png')
+  const textureSparkle = useLoader(TextureLoader, 'textures/particles/6.png')
 
   function Pieces() {
     return <group>
@@ -299,9 +307,7 @@ export default function Home2() {
         />}
       </Physics>
     </group>
-    <StarsShader
-      count={7000}
-    />
+    {/* <StarsShader count={1000}/> */}
     <MeteorsRealShader/>
   </>
 }

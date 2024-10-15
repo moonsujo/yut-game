@@ -29,7 +29,7 @@ export default function useMeteorsShader() {
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
     })
 
-    function CreateMeteor({count, position, size, texture, radius, color}) {
+    function CreateMeteor({ count, position, size, texture, color }) {
         const duration = 5.0;
         count = 4;
         const positionsArray = new Float32Array(count * 3)

@@ -1,4 +1,5 @@
 uniform sampler2D uTexture;
+uniform float uTime;
 
 varying vec3 vColor;
 varying float vAlpha;
@@ -16,11 +17,12 @@ vec3 hsv2rgb(vec3 c) {
 
 void main()
 {
+  float textureAlpha = texture(uTexture, gl_PointCoord).r;
 
   // Light point
-  float strength = distance(gl_PointCoord, vec2(0.5));
-  strength = 1.0 - strength;
-  strength = pow(strength, 10.0);
+  // float strength = distance(gl_PointCoord, vec2(0.5));
+  // strength = 1.0 - strength;
+  // strength = pow(strength, 10.0);
 
   // // Disc
   // float strength = distance(gl_PointCoord, vec2(0.5));
@@ -34,23 +36,30 @@ void main()
 
   // Final color
   vec3 newColor;
+  float finalAlpha;
   if (vIsRainbowFlag == 1.0) {
-    float time = mod(vTime, 360.0);
-    float speed = 50.0;
+    float timeColor = mod(vTime, 360.0);
+    float speedColor = 50.0;
     // float hue = mod(time * speed, 1.0);
-    float hue = mod(time * speed, 1.0);
+    float hue = mod(timeColor * speedColor, 1.0);
     vec3 hsvColor = vec3(hue, 1.0, 1.0);  // HSV (Hue, Saturation, Value)
     vec3 rgbColor = hsv2rgb(hsvColor);    // Convert to RGB
     newColor = rgbColor;
+
+    float timeAlpha = mod(uTime, 1.0);
+    float speedAlpha = 20.0;
+    finalAlpha = textureAlpha * mod(timeAlpha * speedAlpha, 1.0);
   } else {
     newColor = vColor;
+    float timeFade = cos(uTime + vPosition.y) * 0.5 + 0.5;
+    finalAlpha = textureAlpha * timeFade;
   }
 
-  vec3 color = mix(vec3(0.0), newColor, strength);
+  // vec3 color = mix(vec3(0.0), newColor, strength);
 
-  gl_FragColor = vec4(color, vAlpha);
+  // gl_FragColor = vec4(color, vAlpha);
 
-  // gl_FragColor = vec4(newColor, textureAlpha);
+  gl_FragColor = vec4(newColor, finalAlpha);
   
   #include <colorspace_fragment>
 }

@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function MeteorsRealShader() {
 
-    console.log('MeteorsRealShader')
     const { scene } = useThree();
 
     const sizes = {
@@ -24,7 +23,6 @@ export default function MeteorsRealShader() {
         sizes.height = window.innerHeight
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 1)
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
-
     })
 
     // one particle in the center
@@ -105,16 +103,16 @@ export default function MeteorsRealShader() {
         // useLoader(TextureLoader, 'textures/particles/6.png'),
         useLoader(TextureLoader, 'textures/particles/7.png'), // heart
         // useLoader(TextureLoader, 'textures/particles/8.png'),
-      ] 
+    ] 
 
     // falling meteor background
     useEffect(() => {       
         const interval = setInterval(() => {
             const count = Math.round(400 + Math.random() * 1000);
             const position = new THREE.Vector3(
-                (Math.random()-0.5) * 10, 
+                (Math.random()-0.5) * 5, 
                 -2,
-                (Math.random()-0.5) * 20, 
+                (Math.random()-0.5) * 15, 
             )
             const size = 0.5 + Math.random() * 0.02
             const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
@@ -141,4 +139,9 @@ export default function MeteorsRealShader() {
             clearInterval(interval);
         })
     }, [])
+    // star shader stops when page re-renders
+    // fix: add points via scene.add (maybe scene.add is enough)
+    // for now, instantiate StarsShader again and pass in texture
+    // make position spherical
+    // make stars shine with a custom texture
 }
