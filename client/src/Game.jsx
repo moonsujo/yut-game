@@ -774,11 +774,9 @@ export default function Game() {
           </Text3D>
         </group>}
         { yootAnimation && <YootNew
-          setAnimation={setYootAnimation} 
           animation={yootAnimation}
           scale={0.22}
           position={[0, 2, 0]}
-          device={device}
         /> }
         { (gamePhase === 'pregame' || gamePhase === 'game') && <YootButtonNew
           position={layout[device].game.yootButton.position}

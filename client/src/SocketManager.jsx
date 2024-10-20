@@ -15,6 +15,10 @@ import {
   pieceAnimationPlayingAtom} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
+import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
+import * as THREE from 'three';
+import { useLoader } from "@react-three/fiber";
+import { TextureLoader } from 'three'
 
 const ENDPOINT = 'localhost:5000';
 
@@ -84,6 +88,12 @@ export const SocketManager = () => {
   const [_catchOutcome, setCatchOutcome] = useAtom(catchOutcomeAtom)
   const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
+  const [CreateMeteor] = useMeteorsShader();
+  const meteorTextures = [
+    useLoader(TextureLoader, 'textures/particles/3.png'),
+    useLoader(TextureLoader, 'textures/particles/7.png'), // heart
+  ] 
+
 
   // const params = useParams();
 
@@ -310,13 +320,40 @@ export const SocketManager = () => {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
         if (yootOutcome === 0 && teams[turnPrev.team].throws === 0) {
           setAlerts([yootOutcomeAlertName, 'turn'])
-          setThrowCount(teams[turnUpdate.team].throws)
         } else {
           setAlerts([yootOutcomeAlertName])
+        }
+        setThrowCount(teams[turnUpdate.team].throws)
+
+        // meteor effect (alert)
+        if (yootOutcome === 4 || yootOutcome === 5) {
+          const numMeteors = 10;
+          for (let i = 0; i < numMeteors; i++) {
+            const count = Math.round(400 + Math.random() * 1000);
+            const position = new THREE.Vector3(
+              0, 
+              1,
+              0, 
+            )
+            const size = 0.4 + Math.random() * 0.02
+            const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
+            const color = new THREE.Color();
+            color.setHSL(0.06, 1.0, 0.5)
+            setTimeout(() => {
+              CreateMeteor({
+                count,
+                position,
+                size,
+                texture,
+                color
+              })
+            }, i * 300)
+          }
         }
       }
 
       setAnimationPlaying(true)
+      setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
       setGameLogs(gameLogs)
       if (gamePhaseUpdate === 'game') {
