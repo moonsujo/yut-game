@@ -37,7 +37,8 @@ const userSchema = new mongoose.Schema(
       ref: 'rooms'
     },
     name: String,
-    team: Number
+    team: Number,
+    connectedToRoom: Boolean
   },
   {
     versionKey: false,
@@ -147,16 +148,12 @@ async function addUser(socket, name) {
         socketId: socket.id,
         name,
         team: -1,
-        roomId: null
+        roomId: null,
+        connectedToRoom: false
       })
     } else {
       const savedClient = JSON.parse(socket.handshake.query.client)
-      user = new User({
-        socketId: socket.id,
-        name: savedClient.name,
-        team: savedClient.team,
-        roomId: savedClient.roomId
-      })
+      user = await User.findOneAndUpdate({ roomId: savedClient.roomId, name: savedClient.name }, { socketId: socket.id, connectedToRoom: false })
     }
     await user.save();
   } catch (err) {
@@ -360,33 +357,54 @@ io.on("connect", async (socket) => {
   })
 
   async function removeUser(user) {        
-    await Room.updateOne(
-      { 
-        _id: user.roomId
-      }, 
-      { 
+    let operation;
+    if (user.team === -1) {
+      operation = {
         $pullAll: { 
           'spectators': [
             { _id: user._id }
           ],
-          'teams.0.players': [
-            { _id: user._id }
-          ],
-          'teams.1.players': [
-            { _id: user._id }
-          ]
         },
         $set: {
           'serverEvent': 'userDisconnect'
         }
       }
+    } else if (user.team === 0) {
+      operation = {
+        $pullAll: { 
+          'teams.0.players': [
+            { _id: user._id }
+          ],
+        },
+        $set: {
+          'serverEvent': 'userDisconnect'
+        }
+      }
+    } else if (user.team === 1) {
+      operation = {
+        $pullAll: { 
+          'teams.1.players': [
+            { _id: user._id }
+          ],
+        },
+        $set: {
+          'serverEvent': 'userDisconnect'
+        }
+      }
+    }
+    
+    await Room.updateOne(
+      { 
+        _id: user.roomId
+      }, 
+      operation
     ).exec()
   }
 
   socket.on("joinRoom", async ({ roomId }) => {
     // Add user to room
     try {
-      let user = await User.findOne({ 'socketId': socket.id }).exec()
+      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
       let room = await Room.findOne({ _id: roomId }).exec()
       let operation = {}
       if (user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
@@ -411,6 +429,7 @@ io.on("connect", async (socket) => {
         }
         user.roomId = roomId
         user.team = -1
+        user.connectedToRoom = true
         user.save()
       }
       if (room.host === null) {
@@ -432,17 +451,7 @@ io.on("connect", async (socket) => {
     } catch (err) {
       console.log(`[joinRoom] error adding user as host`, err)
     }
-
-    // Update user's room id so user can be removed with socket id on disconnect
-    // This reduces the number of users to loop over in Room.watch
-    try {
-      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { roomId })
-      await user.save()
-    } catch (err) {
-      console.log(`[joinRoom] error updating user's room id`, err)
-    }
   })
-
   
   socket.on("joinTeam", async ({ team, name }, callback) => {
     console.log(`[joinTeam]`)
@@ -1163,30 +1172,41 @@ io.on("connect", async (socket) => {
     console.log(`${socket.id} disconnect`)
     try {
 
-      // Remove user from room
-      let user = await User.findOneAndDelete({ 'socketId': socket.id }).exec()
-      console.log(`[disconnect] user to remove`, user)
-      if (user && user.roomId) {
-        console.log(`[disconnect] room not null`, user.roomId)
-        let roomId = user.roomId
-        await removeUser(user)
+      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
+
+      await Room.updateOne(
+        { 
+          _id: user.roomId
+        }, 
+        {
+            $set: {
+            'serverEvent': 'userDisconnect'
+          } 
+        }
+      )
+
+      console.log(`[disconnect] user to disconnect from room`, user)
+      // if (user && user.roomId) {
+      //   console.log(`[disconnect] room not null`, user.roomId)
+        // let roomId = user.roomId
+        // await removeUser(user)
 
         // Remove host if it was the user
         // Assign another user in the room
-        let updatedRoom = await Room.findById(roomId).exec()
-        let hostId = updatedRoom.host
-        console.log(`[disconnect] hostId`, hostId)
-        let userCount = updatedRoom.spectators.length + updatedRoom.teams[0].players.length + updatedRoom.teams[1].players.length
-        if (hostId) {
-          if (user._id.valueOf() === hostId.valueOf() && userCount > 0) {
-            updatedRoom.host = await User.findOne({ 'roomId': roomId })
-            updatedRoom.save();
-          } else if (userCount === 0) { // Remove host
-            updatedRoom.host = null
-            updatedRoom.save();
-          }
-        }
-      }
+        // let updatedRoom = await Room.findById(roomId).exec()
+        // let hostId = updatedRoom.host
+        // console.log(`[disconnect] hostId`, hostId)
+        // let userCount = updatedRoom.spectators.length + updatedRoom.teams[0].players.length + updatedRoom.teams[1].players.length
+        // if (hostId) {
+        //   if (user._id.valueOf() === hostId.valueOf() && userCount > 0) {
+        //     updatedRoom.host = await User.findOne({ 'roomId': roomId })
+        //     updatedRoom.save();
+        //   } else if (userCount === 0) { // Remove host
+        //     updatedRoom.host = null
+        //     updatedRoom.save();
+        //   }
+        // }
+      // }
     } catch (err) {
       console.log(`[disconnect] error deleting user`, err)
     }

@@ -160,7 +160,8 @@ export const SocketManager = () => {
       // Enable 'Let's play' button
       if (room.gamePhase === 'lobby' && 
       room.teams[0].players.length > 0 && 
-      room.teams[1].players.length > 0) {
+      room.teams[1].players.length > 0 &&
+      allPlayersConnected(room.teams)) {
         setReadyToStart(true)
       } else {
         setReadyToStart(false)
@@ -481,7 +482,8 @@ export const SocketManager = () => {
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
-        teams[1].players.length > 0) {
+        teams[1].players.length > 0 &&
+        allPlayersConnected(teams)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -500,7 +502,8 @@ export const SocketManager = () => {
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
-        teams[1].players.length > 0) {
+        teams[1].players.length > 0 &&
+        allPlayersConnected(teams)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -522,7 +525,8 @@ export const SocketManager = () => {
       setPieceTeam1Id3(teams[1].pieces[3])
       
       if (teams[0].players.length > 0 && 
-        teams[1].players.length > 0) {
+        teams[1].players.length > 0 &&
+        allPlayersConnected(teams)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -540,7 +544,8 @@ export const SocketManager = () => {
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
-        teams[1].players.length > 0) {
+        teams[1].players.length > 0&&
+        allPlayersConnected(teams)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -559,3 +564,20 @@ export const SocketManager = () => {
   }, [])
 
 };
+
+/**
+ * 
+ * @param {object} teams 
+ * @returns boolean indicating whether all players are connected to the room
+ */
+function allPlayersConnected(teams) {
+  let flag = true;
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < teams[i].players.length; j++) {
+      if (!teams[i].players[j].connectedToRoom) {
+        flag = false
+      }
+    }
+  }
+  return flag
+}
