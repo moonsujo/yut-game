@@ -15,29 +15,33 @@ export default function Title({ position, rotation, scale, setDisplay }) {
         setDisplay('board')
     }
 
+
+
     return <group scale={scale} position={position} rotation={rotation}
     >
       {/* line 1 */}
       {/* line 2 */}
       {/* wrapper */}
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        size={0.4}
-        height={0.01}
-        position={[0, -0.5, 0]}
-      >
-        YOOT
-        <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
-      </Text3D>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        size={0.4}
-        height={0.01}
-        position={[0, -1, 0]}
-      >
-        GAME
-        <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
-      </Text3D>
+      <Float floatingRange={[-0.05, 0.05]}>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          position={[0, -0.5, 0]}
+        >
+          YOOT
+          <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
+        </Text3D>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          position={[0, -1, 0]}
+        >
+          GAME
+          <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
+        </Text3D>
+      </Float>
       <mesh 
         position={[0.7, -0.5, 0]} 
         onPointerEnter={handlePointerEnter}
@@ -47,8 +51,8 @@ export default function Title({ position, rotation, scale, setDisplay }) {
         <boxGeometry args={[1.5, 1, 0.1]}/>
         <meshStandardMaterial color="grey" transparent opacity={0}/>
       </mesh>
-      {/* <Float>
-      <Star scale={0.05} rotation={[Math.PI/2, 0, 0]}/>
+      {/* <Float floatingRange={[-0.01, 0.01]}>
+        <Star scale={0.05} rotation={[Math.PI/2, 0, 0]}/>
       </Float> */}
     </group>
 }

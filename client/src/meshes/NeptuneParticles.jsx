@@ -7,15 +7,15 @@ function randomNumberBetween(min, max) {
   return min + Math.random() * (max - min);
 }
 
-const countNeptune1 = 261;
-const countNeptune2 = 0;
+const countNeptune1 = 350;
+const countNeptune2 = 470;
 const sizeNeptune = 0.07;
-const radius1MinNeptune = 1.74;
-const radius1MaxNeptune = 3;
-const countSparkles1 = 7;
-const radius2MinNeptune = 3.09;
-const radius2MaxNeptune = 4.27;
-const countSparkles2 = 6;
+const radius1MinNeptune = 1.54;
+const radius1MaxNeptune = 2.1;
+const countSparkles1 = 50;
+const radius2MinNeptune = 2.34;
+const radius2MaxNeptune = 2.78;
+const countSparkles2 = 100;
 const colorOneHex = "#3289FF";
 const colorTwoHex = "#6EF2FE";
 const positions1 = new Float32Array(countNeptune1 * 3);
@@ -86,9 +86,9 @@ for (let i = 0; i < countNeptune2; i++) {
   colors2[i3 + 2] = mixedColor.b;
 }
 
-function NeptuneParticles2(position) {
+function NeptuneParticles2({scale}) {
   return (
-    <group position={position}>
+    <group>
       <points>
         <bufferGeometry>
           <bufferAttribute
@@ -128,12 +128,12 @@ function NeptuneParticles2(position) {
         </bufferGeometry>
         <pointsMaterial
           color="white"
-          size={sizeNeptune * 2}
+          size={sizeNeptune * 2 * scale}
           sizeAttenuation
           transparent
           blending={THREE.AdditiveBlending}
-          // depthWrite={false}
-          depthTest={false}
+          depthWrite={false}
+          // depthTest={false}
           alphaTest={0}
           map={sparklesMap}
         />
@@ -162,8 +162,8 @@ function NeptuneParticles2(position) {
           blending={THREE.AdditiveBlending}
           map={pointsMap}
           vertexColors={true}
-          // depthWrite={false}
-          depthTest={false}
+          depthWrite={false}
+          // depthTest={false}
           alphaTest={0}
         />
       </points>
@@ -189,8 +189,8 @@ function NeptuneParticles2(position) {
           sizeAttenuation
           transparent
           blending={THREE.AdditiveBlending}
-          // depthWrite={false}
-          depthTest={false}
+          depthWrite={false}
+          // depthTest={false}
           alphaTest={0}
           map={sparklesMap}
           vertexColors={true}
@@ -201,8 +201,8 @@ function NeptuneParticles2(position) {
 }
 
 export default function NeptuneParticles({
-  position,
+  scale,
 }) {
 
-  return NeptuneParticles2(position);
+  return NeptuneParticles2(scale);
 }
