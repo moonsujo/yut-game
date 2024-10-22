@@ -869,7 +869,7 @@ export default function Game() {
           enabled={hasTurn}
         /> }
         <PiecesOnBoard/>
-        { gamePhase === 'game' && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles))) && <MoveList
+        { (gamePhase === 'pregame' || gamePhase === 'game') && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles))) && <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}
           tokenScale={layout[device].game.moveList.tokenScale}
@@ -877,8 +877,9 @@ export default function Game() {
           size={layout[device].game.moveList.size}
           piecePosition={layout[device].game.moveList.piecePosition}
           pieceScale={layout[device].game.moveList.pieceScale}
+          gamePhase={gamePhase}
         /> }
-        { gamePhase === 'pregame' && <PregameMoveDisplay/> }
+        {/* { gamePhase === 'pregame' && <PregameMoveDisplay/> } */}
       </animated.group> }
       { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
         { (gamePhase === 'finished' && winner === 0) && <RocketsWin/>}
