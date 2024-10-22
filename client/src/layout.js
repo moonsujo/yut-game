@@ -1055,39 +1055,51 @@ export default {
     },
     game: {
       letsPlayButton: {
-        position: [3.7,0,7.7],
+        position: [3.9,0,7.0],
         rotation: [-Math.PI / 2, 0, 0],
         disabledButton: {
           position: [-0.1,0,1.2],
-          scale: 2,
+          scale: 1,
           text: {
-            position: [-0.6, 0.025, -0.25],
+            position: [-1.3,0.1,-0.6],
             rotation: [-Math.PI/2, 0, 0],
-            size: 0.2,
+            size: 0.45,
             height: 0.01,
             lineHeight: 0.9
+          },
+          border: {
+            position: [0,0,0],
+            scaleInner: [1.6, 0.02, 1.6],
+            scaleOuter: [1.7, 0.01, 1.7],
+            rotation: [-Math.PI, 0, -Math.PI],
           }
         },
         waitingForHostButton: {
-          position: [-0.2,0,0.4],
-          scale: 2,
+          position: [-0.2,0,1.2],
+          scale: 1,
           text: {
-            position: [-0.6, 0.025, -0.25],
+            position: [-1.3,0.1,-0.6],
             rotation: [-Math.PI/2, 0, 0],
-            size: 0.2,
+            size: 0.45,
             height: 0.01,
             lineHeight: 0.9
+          },
+          border: {
+            position: [0,0,0],
+            scaleInner: [1.6, 0.02, 1.6],
+            scaleOuter: [1.7, 0.01, 1.7],
+            rotation: [-Math.PI, 0, -Math.PI],
           }
         },
         activeButton: {
           backdropWidth: 1.4,
-          backdropHeight: 1.1,
+          backdropHeight: 1.3,
           scale: 1.25,
-          position: [-0.1, 0, 0.4],
+          position: [-0.1, 0, 0.8],
           text: {
-            position: [-0.8,0,-0.15],
+            position: [-0.9,0,-0.15],
             rotation: [-Math.PI/2,0,0],
-            size: 0.45,
+            size: 0.5,
             height: 0.01,
             lineHeight: 0.7
           }
@@ -1217,23 +1229,24 @@ export default {
         }
       },
       invite: {
-        position: [-3.05, 0, 5.4],
+        position: [-5.5, 0, 7.2],
         scale: 0.9,
-        size: 0.3,
-        height: 0.01,
         text: {
-          content: `copy room\nlink`,
-          position: [-1.5, 0.025, -9.7]
+          content: `Tap here to\ncopy the link\nand share to\ninvite`,
+          position: [0.1,0,0],
+          size: 0.35
+        },
+        border: {
+          position: [1.68, -0.5, 0.7],
+          rotation: [-Math.PI, 0, -Math.PI],
+          scaleOuter: [2, 0.01, 1.75],
+          scaleInner: [1.9, 0.02, 1.65]
         },
         copiedText: {
-          position: [-1.35, 0.025, -0.75]
+          size: 0.4,
+          height: 0.01,
+          position: [0,0,-1.3]
         },
-        outerBox: {
-          args: [3.2, 0.03, 1.3]
-        },
-        innerBox: {
-          args: [3.1, 0.04, 1.2]
-        }
       },
       discord: {
         position: [-3.75, 0, 5.8],
@@ -1308,10 +1321,10 @@ export default {
         position: [-0.7, 0, 8.2],
         emptyPieces: {
           positions: [
-            [0, 0, -0.3],
-            [1.5, 0, -0.3],
-            [0, 0, 1.1],
-            [1.5, 0, 1.1]
+            [0, 0, -1],
+            [1.5, 0, -1],
+            [0, 0, 0.6],
+            [1.5, 0, 0.6]
           ]
         },
         pieces: {
@@ -2526,34 +2539,46 @@ export default {
     },
     game: {
       letsPlayButton: {
-        position: [8.65,0,3.5],
+        position: [8.65,0,4.5],
         rotation: [-Math.PI / 2, 0, 0],
         disabledButton: {
-          position: [0.25,0,0.1],
-          scale: 1.8,
+          position: [0.3,0,0.2],
+          scale: 1,
           text: {
-            position: [-0.6, 0.025, -0.25],
+            position: [-1.3,0.1,-0.6],
             rotation: [-Math.PI/2, 0, 0],
-            size: 0.2,
+            size: 0.45,
             height: 0.01,
             lineHeight: 0.9
+          },
+          border: {
+            position: [0,0,0],
+            scaleInner: [1.6, 0.02, 1.6],
+            scaleOuter: [1.7, 0.01, 1.7],
+            rotation: [-Math.PI, 0, -Math.PI],
           }
         },
         waitingForHostButton: {
-          position: [0.25,0,0.1],
-          scale: 1.8,
+          position: [0.3,0,0.2],
+          scale: 1,
           text: {
-            position: [-0.6, 0.025, -0.25],
+            position: [-1.3,0.1,-0.6],
             rotation: [-Math.PI/2, 0, 0],
-            size: 0.2,
+            size: 0.45,
             height: 0.01,
             lineHeight: 0.9
+          },
+          border: {
+            position: [0,0,0],
+            scaleInner: [1.6, 0.02, 1.6],
+            scaleOuter: [1.7, 0.01, 1.7],
+            rotation: [-Math.PI, 0, -Math.PI],
           }
         },
         activeButton: {
           backdropWidth: 1.4,
           backdropHeight: 1.1,
-          scale: 1,
+          scale: 1.2,
           position: [0.1, 0, 0],
           text: {
             position: [-0.8,0,-0.1],
@@ -2688,23 +2713,24 @@ export default {
         }
       },
       invite: {
-        position: [-8.35, 0, 2.7],
+        position: [-10.7, 0, 3.8],
         scale: 0.9,
-        size: 0.3,
-        height: 0.01,
         text: {
-          content: `copy room link to share`,
-          position: [-2.55, 0.025, 0.15]
+          content: `Click here to\ncopy the link\nand share to\ninvite`,
+          position: [0.1,0,0],
+          size: 0.35
+        },
+        border: {
+          position: [1.68, -0.5, 0.7],
+          rotation: [-Math.PI, 0, -Math.PI],
+          scaleOuter: [2, 0.01, 1.75],
+          scaleInner: [1.9, 0.02, 1.65]
         },
         copiedText: {
-          position: [-2.55, 0.025, -0.5]
+          size: 0.4,
+          height: 0.01,
+          position: [0,0,-1.3]
         },
-        outerBox: {
-          args: [5.4, 0.03, 0.6]
-        },
-        innerBox: {
-          args: [5.3, 0.04, 0.5]
-        }
       },
       discord: {
         position: [-8.5, 0, 2.7],

@@ -40,7 +40,7 @@ import PiecesOnBoard from "./PiecesOnBoard.jsx";
 import ScoreButtons from "./ScoreButtons.jsx";
 import RocketsWin from "./RocketsWin.jsx";
 import UfosWin from "./UfosWin.jsx";
-import { Text3D } from "@react-three/drei";
+import { Text3D, useGLTF } from "@react-three/drei";
 import { Color, MeshStandardMaterial } from "three";
 import { useFrame } from "@react-three/fiber";
 import GameLog from "./GameLog.jsx";
@@ -87,20 +87,32 @@ export default function Game() {
     function DisabledButton({ position, scale }) {
       const button = useRef();
 
-      useFrame((state) => {
-        const time = state.clock.elapsedTime
-        button.current.scale.x = Math.sin(time)*0.1 + scale
-        button.current.scale.y = Math.sin(time)*0.1 + scale
-        button.current.scale.z = Math.sin(time)*0.1 + scale
-      })
+      // useFrame((state) => {
+      //   const time = state.clock.elapsedTime
+      //   button.current.scale.x = Math.sin(time)*0.1 + scale
+      //   button.current.scale.y = Math.sin(time)*0.1 + scale
+      //   button.current.scale.z = Math.sin(time)*0.1 + scale
+      // })
       return <group position={position} scale={scale} ref={button}>
-        <mesh>
-          <boxGeometry args={[1.5, 0.03, 1.3]}/>
-          <meshStandardMaterial color='grey'/>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleInner}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
         </mesh>
-        <mesh>
-          <boxGeometry args={[1.4, 0.04, 1.2]}/>
-          <meshStandardMaterial color='black'/>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleOuter}
+        >
+          <meshStandardMaterial color='gray' transparent opacity={1}/>
         </mesh>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -125,11 +137,13 @@ export default function Game() {
   
       function handlePointerEnter(e) {
           e.stopPropagation()
+          document.body.style.cursor = "pointer";
           setHover(true)
       }
       
       function handlePointerLeave(e) {
           e.stopPropagation()
+          document.body.style.cursor = "default";
           setHover(false)
       }
 
@@ -141,21 +155,18 @@ export default function Game() {
         }
       }
 
-      const letsPlayTextMaterial = new MeshStandardMaterial({ color: new Color('yellow') });
-      const letsPlayBackgroundMaterial = new MeshStandardMaterial({ color: new Color('yellow'), transparent: true, opacity: 0.05 });
+      const letsPlayTextMaterial = new MeshStandardMaterial({ color: new Color('limegreen') });
+      const letsPlayBackgroundMaterial = new MeshStandardMaterial({ color: new Color('black'), transparent: true, opacity: 1 });
       const letsPlayButton = useRef()
-      useFrame((state) => {
-        const time = state.clock.elapsedTime
-        if (Math.floor(time*1.3) % 2 === 0) {
-          letsPlayTextMaterial.color.r = 0
-          letsPlayTextMaterial.color.g = 0.3
-          letsPlayTextMaterial.color.b = 0
-        } else {
-          letsPlayTextMaterial.color.r = 1
-          letsPlayTextMaterial.color.g = 1
-          letsPlayTextMaterial.color.b = 0
-        }
-      })
+      // useFrame((state) => {
+      //   const time = state.clock.elapsedTime
+      //   if (Math.floor(time*1.3) % 2 === 0) {
+      //     letsPlayTextMaterial.color = new Color('yellow')
+      //   } else {
+      //     letsPlayTextMaterial.color = new Color('limegreen')
+      //     letsPlayBackgroundMaterial.opacity = 1
+      //   }
+      // })
 
       const springs = useSpring({
         from: {
@@ -186,6 +197,17 @@ export default function Game() {
           >
             <cylinderGeometry args={[1, 1, 0.1, 48]}/>
           </mesh>
+          <mesh 
+            position={[0, 0, 0]} 
+            rotation={[0, 0, 0]} 
+            scale={[backdropWidth+0.1, 0.05, backdropHeight+0.1]} 
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
+            onPointerDown={handlePointerDown}
+            material={letsPlayTextMaterial}
+          >
+            <cylinderGeometry args={[1, 1, 0.1, 48]}/>
+          </mesh>
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={layout[device].game.letsPlayButton.activeButton.text.position}
@@ -203,13 +225,25 @@ export default function Game() {
 
     function WaitingForHostButton({ position, scale }) {    
       return <group position={position} scale={scale}>
-        <mesh>
-          <boxGeometry args={[1.5, 0.03, 1.3]}/>
-          <meshStandardMaterial color='grey'/>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleInner}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
         </mesh>
-        <mesh>
-          <boxGeometry args={[1.4, 0.04, 1.2]}/>
-          <meshStandardMaterial color='black'/>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleOuter}
+        >
+          <meshStandardMaterial color='gray' transparent opacity={1}/>
         </mesh>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -368,101 +402,6 @@ export default function Game() {
     gameScale: gamePhase !== 'finished' ? 1 : 1,
     winScreenScale: gamePhase === 'finished' ? 1 : 0
   })
-
-  function InviteButton({ position }) {
-
-    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
-
-    const [hover, setHover] = useState(false);
-    const [springs, api] = useSpring(() => ({        
-      from: {
-        opacity: 0, 
-      }
-    }))
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      setHover(true)
-    }
-
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      setHover(false);
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();  
-      api.start({
-        from: {
-          opacity: 1
-        },
-        to: [
-          {
-            opacity: 1
-          },
-          { 
-            opacity: 0,
-            delay: 500,
-            config: {
-              tension: 170,
-              friction: 26
-            }
-          }
-        ]
-      })
-    }
-
-    return <group position={position}>
-      <mesh>
-        <boxGeometry args={layout[device].game.invite.outerBox.args}/>
-        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-      </mesh>
-      <mesh>
-        <boxGeometry args={layout[device].game.invite.innerBox.args}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-      >
-        <boxGeometry args={[
-          layout[device].game.invite.outerBox.args[0], 
-          0.1, 
-          layout[device].game.invite.outerBox.args[2], 
-        ]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.invite.text.position}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={layout[device].game.invite.size}
-        height={layout[device].game.invite.height}
-      >
-        {layout[device].game.invite.text.content}
-        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-      </Text3D>
-      <Text3D 
-        name='copied-tooltip'
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.invite.copiedText.position}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={layout[device].game.invite.size}
-        height={layout[device].game.invite.height}
-      >
-        copied!
-        <AnimatedMeshDistortMaterial
-          speed={5}
-          distort={0}
-          color='yellow'
-          transparent
-          opacity={springs.opacity}
-        />
-      </Text3D>
-    </group>
-  }
 
   function DiscordButton({ position }) {
     const [hover, setHover] = useState(false);
@@ -692,7 +631,131 @@ export default function Game() {
   // If state is contained globally, don't pass it as a prop
     // example: <Host/> is in this component. 'device' is
     // declared at the top. don't pass it in as a prop
+    // because that will make other components render
 
+  const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
+  function InviteInstructions() {
+    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+
+    const [hover, setHover] = useState(false);
+    const [springs, api] = useSpring(() => ({        
+      from: {
+        opacity: 0, 
+      }
+    }))
+
+    function handlePointerEnter(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "pointer";
+      setHover(true)
+    }
+
+    function handlePointerLeave(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "default";
+      setHover(false);
+    }
+
+    function handlePointerDown(e) {
+      e.stopPropagation();  
+      api.start({
+        from: {
+          opacity: 1
+        },
+        to: [
+          {
+            opacity: 1
+          },
+          { 
+            opacity: 0,
+            delay: 500,
+            config: {
+              tension: 170,
+              friction: 26
+            }
+          }
+        ]
+      })
+    }
+
+    return <group position={layout[device].game.invite.position}>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.invite.text.position}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={layout[device].game.invite.text.size}
+        height={0.01}
+      >
+        {layout[device].game.invite.text.content}
+        <meshStandardMaterial color='limegreen'/>
+      </Text3D>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Cube.geometry}
+        position={layout[device].game.invite.border.position}
+        rotation={layout[device].game.invite.border.rotation}
+        scale={layout[device].game.invite.border.scaleInner}
+      >
+        <meshStandardMaterial color='black' transparent opacity={0.5}/>
+      </mesh>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Cube.geometry}
+        position={layout[device].game.invite.border.position}
+        rotation={layout[device].game.invite.border.rotation}
+        scale={layout[device].game.invite.border.scaleOuter}
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerDown={e => handlePointerDown(e)}
+      >
+        <meshStandardMaterial color='limegreen' transparent opacity={1}/>
+      </mesh>
+      <Text3D 
+        name='copied-tooltip'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.invite.copiedText.position}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={layout[device].game.invite.copiedText.size}
+        height={layout[device].game.invite.copiedText.height}
+      >
+        copied!
+        <AnimatedMeshDistortMaterial
+          speed={5}
+          distort={0}
+          color='limegreen'
+          transparent
+          opacity={springs.opacity}
+        />
+      </Text3D>
+    </group>
+  }
+
+  function PregameMoveDisplay() {
+    return <group>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.5,0,10.3]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.4}
+        height={0.01}
+      >
+        {`Moves:`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.5,0,11]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.4}
+        height={0.01}
+      >
+        {`Pregame`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+    </group>
+  }
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
@@ -716,13 +779,12 @@ export default function Game() {
           scale={layout[device].game.joinTeamModal.scale}
           teams={teams}
         />
-        {/* { !disconnect && <Chatbox 
+        { !disconnect && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
-          device={device}
-        /> } */}
-        { !disconnect && <GameLog
+        /> }
+        { gamePhase === 'lobby' && <InviteInstructions
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
@@ -816,6 +878,7 @@ export default function Game() {
           piecePosition={layout[device].game.moveList.piecePosition}
           pieceScale={layout[device].game.moveList.pieceScale}
         /> }
+        { gamePhase === 'pregame' && <PregameMoveDisplay/> }
       </animated.group> }
       { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
         { (gamePhase === 'finished' && winner === 0) && <RocketsWin/>}
