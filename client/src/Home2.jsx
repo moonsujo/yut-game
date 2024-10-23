@@ -31,7 +31,6 @@ import StarsPatternsShader from './shader/starsPatterns2/StarsPatternsShader';
 
 export default function Home2() {
 
-  console.log('Home2')
   useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
@@ -40,11 +39,6 @@ export default function Home2() {
   const { scene, materials } = useGLTF(
     "models/yoot.glb"
   );
-  
-  const textureDot = useLoader(TextureLoader, 'textures/particles/1.png')
-  const textureShinyDot = useLoader(TextureLoader, 'textures/particles/3.png')
-  const textureDotSparkle = useLoader(TextureLoader, 'textures/particles/5.png')
-  const textureSparkle = useLoader(TextureLoader, 'textures/particles/6.png')
 
   function Pieces() {
     return <group>
@@ -55,7 +49,7 @@ export default function Home2() {
         floatIntensity={0.1}
         floatingRange={[-0.1, 0.1]}
       >
-        <RocketAnimated position={[4,0.5,1.8]} rotation={[-Math.PI/4, 0, 0]} scale={0.4}/>
+        <RocketAnimated position={[1.7,0.5,4.3]} rotation={[-Math.PI/4, 0, 0]} scale={0.4}/>
       </Float>
       {/* rocket on moon */}
       <Float 
@@ -66,21 +60,24 @@ export default function Home2() {
       >
         <RocketAnimated position={[0,2,-0.1]} rotation={[-Math.PI/4, 0, 0]} scale={0.4}/>
       </Float>
-      <Rocket position={[5,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
-      <Rocket position={[6,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
+      {/* rocket home pieces */}
+      <Rocket position={[5.3,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
+      <Rocket position={[6.3,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
       {/* ufo home piece */}
-      <Ufo rotation={[-Math.PI/16,0,0]} position={[3.8, 0, 4.9]} scale={1.2}/>
+      <Ufo rotation={[-Math.PI/16,0,0]} position={[4.8, 0, 4.9]} scale={1.2}/>
+      {/* ufo on mars */}
       <Float 
-      rotationIntensity={0.05} 
-      speed={4} 
-      floatIntensity={1}
-      floatingRange={[0, 0.2]}
+        rotationIntensity={0.05} 
+        speed={4} 
+        floatIntensity={1}
+        floatingRange={[0, 0.2]}
       >
-        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[4.45, 0.5, -1]} scale={0.5}/>
+        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[5.0, 0.8, -0.5]} scale={0.5}/>
       </Float>
-      <Float rotationIntensity={0.03} speed={3} floatIntensity={1} floatingRange={[-0.1, 0.1]}>
-        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[0.3, 0.5, -4.7]} scale={0.5}/>
-        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[1.1, 0.5, -4.7]} scale={0.5}/>
+      {/* ufo on saturn */}
+      <Float rotationIntensity={0.03} speed={3} floatIntensity={1} floatingRange={[-0.2, 0.2]}>
+        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[-3.3, 0.8, -4.3]} scale={0.5}/>
+        <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[-2.6, 0.8, -4.3]} scale={0.5}/>
       </Float>
     </group>
   }
@@ -290,7 +287,7 @@ export default function Home2() {
         <Board 
           showStart={true} 
           interactive={false}/>
-        {/* <Pieces/> */}
+        <Pieces/>
       </group> }
       { display === 'about' && <About 
         device={device}
