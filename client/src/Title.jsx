@@ -1,58 +1,53 @@
 import { Float, Text3D } from '@react-three/drei';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Star from './meshes/Star';
+import { useSpring, animated } from '@react-spring/three';
+import TitleStarsShader from './shader/titleStars/TitleStarsShader';
 
 export default function Title({ position, rotation, scale, setDisplay }) {
 
-    const [hover, setHover] = useState(false);
-    function handlePointerEnter() {
-        setHover(true)
-    }
-    function handlePointerLeave() {
-        setHover(false)
-    }
-    function handlePointerUp() {
-        setDisplay('board')
-    }
+  const [hover, setHover] = useState(false);
+  function handlePointerEnter() {
+      setHover(true)
+  }
+  function handlePointerLeave() {
+      setHover(false)
+  }
+  function handlePointerUp() {
+      setDisplay('board')
+  }
 
-
-
-    return <group scale={scale} position={position} rotation={rotation}
+  return <group scale={scale} position={position} rotation={rotation}>
+    {/* line 1 */}
+    {/* line 2 */}
+    {/* wrapper */}
+    <Text3D
+      font="fonts/Luckiest Guy_Regular.json"
+      size={0.4}
+      height={0.01}
+      position={[0, -0.5, 0]}
     >
-      {/* line 1 */}
-      {/* line 2 */}
-      {/* wrapper */}
-      <Float floatingRange={[-0.05, 0.05]}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          size={0.4}
-          height={0.01}
-          position={[0, -0.5, 0]}
-        >
-          YOOT
-          <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          size={0.4}
-          height={0.01}
-          position={[0, -1, 0]}
-        >
-          GAME
-          <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
-        </Text3D>
-      </Float>
-      <mesh 
-        position={[0.7, -0.5, 0]} 
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onPointerUp={handlePointerUp}
-      >
-        <boxGeometry args={[1.5, 1, 0.1]}/>
-        <meshStandardMaterial color="grey" transparent opacity={0}/>
-      </mesh>
-      {/* <Float floatingRange={[-0.01, 0.01]}>
-        <Star scale={0.05} rotation={[Math.PI/2, 0, 0]}/>
-      </Float> */}
-    </group>
+      YOOT
+      <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
+    </Text3D>
+    <Text3D
+      font="fonts/Luckiest Guy_Regular.json"
+      size={0.4}
+      height={0.01}
+      position={[0, -1, 0]}
+    >
+      GAME
+      <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
+    </Text3D>
+    <mesh 
+      position={[0.7, -0.5, 0]} 
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onPointerUp={handlePointerUp}
+    >
+      <boxGeometry args={[1.5, 1, 0.1]}/>
+      <meshStandardMaterial color="grey" transparent opacity={0}/>
+    </mesh>
+    <TitleStarsShader texturePath={'textures/particles/6.png'}/>
+  </group>
 }
