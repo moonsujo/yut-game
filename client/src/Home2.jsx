@@ -61,10 +61,22 @@ export default function Home2() {
         <RocketAnimated position={[0,2,-0.1]} rotation={[-Math.PI/4, 0, 0]} scale={0.4}/>
       </Float>
       {/* rocket home pieces */}
-      <Rocket position={[5.3,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
-      <Rocket position={[6.3,2,4]} rotation={[-Math.PI/8, 0, 0]} scale={1.2}/>
+      <Rocket 
+        position={layout[device].title.pieces.rocketHome0.position} 
+        rotation={layout[device].title.pieces.rocketHome0.rotation} 
+        scale={layout[device].title.pieces.rocketHome0.scale}
+      />
+      <Rocket 
+        position={layout[device].title.pieces.rocketHome1.position} 
+        rotation={layout[device].title.pieces.rocketHome1.rotation} 
+        scale={layout[device].title.pieces.rocketHome1.scale}
+      />
       {/* ufo home piece */}
-      <Ufo rotation={[-Math.PI/16,0,0]} position={[4.8, 0, 4.9]} scale={1.2}/>
+      <Ufo 
+        rotation={layout[device].title.pieces.ufoHome.rotation} 
+        position={layout[device].title.pieces.ufoHome.position} 
+        scale={layout[device].title.pieces.ufoHome.scale}
+      />
       {/* ufo on mars */}
       <Float 
         rotationIntensity={0.05} 

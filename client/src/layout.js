@@ -61,7 +61,22 @@ export default {
       },
       pieces: {
         position: [0,0,0],
-        scale: 0.5
+        scale: 0.5,
+        rocketHome0: {
+          position: [4.6, 2, 5.5],
+          rotation: [-Math.PI/8, 0, 0],
+          scale: 1.2
+        },
+        rocketHome1: {
+          position: [5.2, 2, 6],
+          rotation: [-Math.PI/8, 0, 0],
+          scale: 1.2
+        },
+        ufoHome: {
+          position: [3.5, 0, 6.3],
+          rotation: [-Math.PI/16,0,0],
+          scale: 1.2
+        }
       },
       board: {
         position: [0, 0, 0],
@@ -1542,7 +1557,22 @@ export default {
       },
       pieces: {
         position: [0,0,0],
-        scale: 1
+        scale: 1,
+        rocketHome0: {
+          position: [5.3,2,4],
+          rotation: [-Math.PI/8, 0, 0],
+          scale: 1.2
+        },
+        rocketHome1: {
+          position: [6.3,2,4],
+          rotation: [-Math.PI/8, 0, 0],
+          scale: 1.2
+        },
+        ufoHome: {
+          position: [4.8, 0, 4.9],
+          rotation: [-Math.PI/16,0,0],
+          scale: 1.2
+        }
       },
       yoots: {
         position: [-6.6,0,-3.8],
