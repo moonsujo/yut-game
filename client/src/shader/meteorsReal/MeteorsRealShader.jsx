@@ -95,14 +95,8 @@ export default function MeteorsRealShader() {
     }
 
     const meteorTextures = [
-        // useLoader(TextureLoader, 'textures/particles/1.png'),
-        // useLoader(TextureLoader, 'textures/particles/2.png'),
         useLoader(TextureLoader, 'textures/particles/3.png'),
-        // useLoader(TextureLoader, 'textures/particles/4.png'),
-        // useLoader(TextureLoader, 'textures/particles/5.png'),
-        // useLoader(TextureLoader, 'textures/particles/6.png'),
         useLoader(TextureLoader, 'textures/particles/7.png'), // heart
-        // useLoader(TextureLoader, 'textures/particles/8.png'),
     ] 
 
     // falling meteor background
@@ -139,9 +133,4 @@ export default function MeteorsRealShader() {
             clearInterval(interval);
         })
     }, [])
-    // star shader stops when page re-renders
-    // fix: add points via scene.add (maybe scene.add is enough)
-    // for now, instantiate StarsShader again and pass in texture
-    // make position spherical
-    // make stars shine with a custom texture
 }

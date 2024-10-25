@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import starsVertexShader from './vertex.glsl'
 import starsFragmentShader from './fragment.glsl'
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import { useFrame, useThree } from "@react-three/fiber";
 
 function randomNumberBetween(min, max) {
   return min + Math.random() * (max - min);

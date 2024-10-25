@@ -1575,9 +1575,9 @@ export default {
         }
       },
       yoots: {
-        position: [-6.6,0,-3.8],
+        position: [-6.8,0,-3.3],
         rotation: [Math.PI/2,Math.PI/2,-Math.PI/2],
-        scale: 0.35
+        scale: 0.37
       },
       board: {
         position: [0, 0, 0],

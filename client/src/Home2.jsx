@@ -316,7 +316,6 @@ export default function Home2() {
         />}
       </Physics>
     </group>
-    {/* <StarsShader count={1000}/> */}
     <MeteorsRealShader/>
   </>
 }

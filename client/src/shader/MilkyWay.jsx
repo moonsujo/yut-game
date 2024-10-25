@@ -155,9 +155,9 @@ function MilkyWay(props) {
 
 
     useFrame((state) => {
-        meshRef.current.material.uniforms.time.value = state.clock.getElapsedTime();
-        secondMeshRef.current.material.uniforms.time.value = state.clock.getElapsedTime() / 1.0;
-        thirdMeshRef.current.material.uniforms.time.value = state.clock.getElapsedTime() / 1.3;
+        meshRef.current.material.uniforms.time.value = state.clock.getElapsedTime() / 0.5;
+        secondMeshRef.current.material.uniforms.time.value = state.clock.getElapsedTime() / 0.5;
+        thirdMeshRef.current.material.uniforms.time.value = state.clock.getElapsedTime() / 0.5;
     });
    
     return(
