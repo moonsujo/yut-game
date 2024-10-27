@@ -1,36 +1,76 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import * as THREE from 'three';
 
-import { PresentationControls, Text3D } from '@react-three/drei'
-import fireworksSettings from './particles/Fireworks';
+import { Text3D } from '@react-three/drei'
 import Stars from './particles/Stars'
 import EarthModified from './meshes/EarthModified';
 import RocketWinMesh from './meshes/RocketWinMesh';
-import TextButton from './components/TextButton';
 import { useAtom } from 'jotai';
-import { deviceAtom, particleSettingAtom } from './GlobalState';
+import { deviceAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from 'wouter';
+import { useFireworksShader } from './shader/fireworks/FireworksShader';
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 export default function RocketsWin() {
 
   const [device] = useAtom(deviceAtom)
+  const [CreateFirework] = useFireworksShader();
+  const fireworkTextures = [
+    useLoader(TextureLoader, 'textures/particles/3.png'),
+    useLoader(TextureLoader, 'textures/particles/5.png'),
+    useLoader(TextureLoader, 'textures/particles/6.png'),
+    useLoader(TextureLoader, 'textures/particles/8.png'),
+  ]
   const params = useParams()
 
   const rockets = useRef();
   const textMaterialRef = useRef();
   
-  const [particleSetting, setParticleSetting] = useAtom(particleSettingAtom)
-  useEffect(() =>{
-    setParticleSetting({ emitters: fireworksSettings(device) })
-  }, [device])
-
-  useFrame((state, delta) => {   
+  // fireworks
+  useFrame((state, delta) => {
     const time = state.clock.elapsedTime 
     rockets.current.position.y = Math.sin(time) * 0.1 + 0.4
   });
+
+  useEffect(() => {
+    const intervalSide0 = setInterval(() => {
+      if (document.hasFocus()) {
+        const count = Math.round(700 + Math.random() * 400);
+        let position;
+        let size;
+        let radius;
+        if (device === 'portrait') {
+          position = new THREE.Vector3(
+              Math.random() * 3 * (Math.random() > 0.5 ? 1 : -1), 
+              -5,
+              Math.random() * 8 * (Math.random() > 0.5 ? 1 : -1), 
+          )
+          size = 0.1 + Math.random() * 0.15
+          radius = 1.5 + Math.random() * 1.0
+        } else {
+          position = new THREE.Vector3(
+              Math.random() * 8 * (Math.random() > 0.5 ? 1 : -1), 
+              -5,
+              Math.random() * 3 * (Math.random() > 0.5 ? 1 : -1), 
+          )
+          size = 0.2 + Math.random() * 0.3
+          radius = 2.0 + Math.random() * 1.0
+        }
+  
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        const color = new THREE.Color();
+        color.setHSL(Math.random(), 1, 0.6)
+  
+        CreateFirework({ count, position, size, texture, radius, color });
+      }
+    }, 300)
+    return (() => {
+      clearInterval(intervalSide0);
+    })
+  }, [])
 
   function handlePointerEnter() {
     textMaterialRef.current.color = new THREE.Color('green')

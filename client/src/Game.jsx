@@ -897,7 +897,7 @@ export default function Game() {
           closeButton={true}
           setShowRulebook={setShowRulebook}
         />
-      </group>}
+      </group> }
       { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
       {/* host */}
       { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }

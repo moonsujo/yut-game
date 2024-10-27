@@ -14,16 +14,16 @@ export default {
     ]
   },
   initialPiecesTeam0: [
-    { tile: 29, team: 0, id: 0, history: [], lastPath: [] },
-    { tile: 29, team: 0, id: 1, history: [], lastPath: [] },
-    { tile: 29, team: 0, id: 2, history: [], lastPath: [] },
-    { tile: 28, team: 0, id: 3, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
   ],
   initialPiecesTeam1: [
     { tile: 29, team: 1, id: 0, history: [], lastPath: [] },
     { tile: 29, team: 1, id: 1, history: [], lastPath: [] },
     { tile: 29, team: 1, id: 2, history: [], lastPath: [] },
-    { tile: 18, team: 1, id: 3, history: [], lastPath: [] },
+    { tile: 28, team: 1, id: 3, history: [], lastPath: [] },
   ],
   initialYootRotations: [
     // must be set to non-0 value to reset the rotation
@@ -76,6 +76,8 @@ export default {
     [], // 25
     [],
     [],
-    [],
+    [
+      { tile: 28, team: 1, id: 3, history: [], lastPath: [] },
+    ],
   ],
 };

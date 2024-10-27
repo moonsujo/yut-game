@@ -7,7 +7,7 @@ import { animated, useSpring } from "@react-spring/three";
 import Star from "./meshes/Star";
 import { useAtom, useAtomValue } from "jotai";
 import * as THREE from 'three';
-import { alertsAtom, animationPlayingAtom, catchOutcomeAtom, currentPlayerNameAtom, gamePhaseAtom, mainAlertAtom, pieceAnimationPlayingAtom, teamsAtom, turnAtom, yootOutcomeAtom } from "./GlobalState";
+import { alertsAtom, animationPlayingAtom, currentPlayerNameAtom, gamePhaseAtom, pieceAnimationPlayingAtom, turnAtom } from "./GlobalState";
 import { formatName } from "./helpers/helpers";
 import DoAlert from "./alerts/DoAlert";
 import GeAlert from "./alerts/GeAlert";
@@ -43,13 +43,9 @@ export default function Alert({ position, rotation }) {
 
     // adding it in useEffect throws uncaught Promise
     const fireworkTextures = [
-      // useLoader(TextureLoader, 'textures/particles/1.png'),
-      // useLoader(TextureLoader, 'textures/particles/2.png'),
       useLoader(TextureLoader, 'textures/particles/3.png'),
-      // useLoader(TextureLoader, 'textures/particles/4.png'),
       useLoader(TextureLoader, 'textures/particles/5.png'),
       useLoader(TextureLoader, 'textures/particles/6.png'),
-      // useLoader(TextureLoader, 'textures/particles/7.png'),
       useLoader(TextureLoader, 'textures/particles/8.png'),
     ]
     const sparkTexture = useLoader(TextureLoader, 'textures/particles/6.png')
