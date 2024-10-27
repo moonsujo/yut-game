@@ -616,6 +616,7 @@ io.on("connect", async (socket) => {
 
         const outcome = pickOutcome()
         // for testing
+        // let outcome;
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 1) {
         //     outcome = 5
@@ -623,7 +624,12 @@ io.on("connect", async (socket) => {
         //     outcome = 4
         //   }
         // } else if (room.gamePhase === 'game') {
-        //   outcome = 4
+        //   // outcome = 4
+        //   if (room.turn.team === 1) {
+        //     outcome = 1
+        //   } else {
+        //     outcome = 4
+        //   }
         // }
         const animation = pickAnimation(outcome)
         await Room.findOneAndUpdate( // consolidate into one call with the 'findOne' call from above
@@ -767,7 +773,7 @@ io.on("connect", async (socket) => {
         }, 5000)
       }
     } catch (err) {
-      console.log(`[throwYoot] error updating throw values and thrown flag, and decrementing throws`, err)
+      console.log(`[throwYoot] error on throw yoot`, err)
     }
   })
 
@@ -1107,11 +1113,43 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("reset", async ({ roomId }) => {
+    // moves in each team
+    // tiles
     try {
       let operation = {};
       operation['$set'] = {}
       operation['$set']['gamePhase'] = 'lobby'
-      operation['$set']['tiles'] = JSON.parse(JSON.stringify(initialState.initialTiles)),
+      operation['$set']['tiles'] = [
+        [], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
+        [],
+        [],
+        [],
+        [],
+        [], // 5
+        [],
+        [],
+        [],
+        [],
+        [], // 10
+        [],
+        [],
+        [],
+        [],
+        [], // 15
+        [],
+        [],
+        [],
+        [],
+        [], // 20
+        [],
+        [],
+        [],
+        [],
+        [], // 25
+        [],
+        [],
+        [],
+      ]
       operation['$set']['legalTiles'] = {}
       operation['$set']['selection'] = null
       operation['$set']['pregameOutcome'] = null
@@ -1119,11 +1157,27 @@ io.on("connect", async (socket) => {
         team: -1,
         players: [0, 0]
       }
-      operation['$set'][`teams.0.pieces`] = JSON.parse(JSON.stringify(initialState.initialPiecesTeam0))
+      operation['$set'][`teams.0.pieces`] = JSON.parse(JSON.stringify(
+        // initialState.initialPiecesTeam0
+        [
+          { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
+          { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
+          { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
+          { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
+        ]
+      ))
       operation['$set'][`teams.0.throws`] = 0
       operation['$set'][`teams.0.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
       operation['$set'][`teams.0.pregameRoll`] = null
-      operation['$set'][`teams.1.pieces`] = JSON.parse(JSON.stringify(initialState.initialPiecesTeam1))
+      operation['$set'][`teams.1.pieces`] = JSON.parse(JSON.stringify(
+        // initialState.initialPiecesTeam1
+        [
+          { tile: -1, team: 1, id: 0, history: [], lastPath: [] },
+          { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
+          { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
+          { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
+        ]
+      ))
       operation['$set'][`teams.1.throws`] = 0
       operation['$set'][`teams.1.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
       operation['$set'][`teams.1.pregameRoll`] = null
