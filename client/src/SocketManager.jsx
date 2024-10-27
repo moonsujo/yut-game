@@ -267,9 +267,8 @@ export const SocketManager = () => {
       setGameLogs(gameLogs)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {     
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {    
       setTeams(teams) // only update the throw count of the current team
-      setTurn(turn)
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
       let gamePhasePrev;
@@ -283,7 +282,7 @@ export const SocketManager = () => {
         return turnUpdate
       })
 
-      const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
+      const currentPlayerName = teams[turnUpdate.team].players[turnUpdate.players[turnUpdate.team]].name
       setCurrentPlayerName(currentPlayerName)
 
       setYootOutcome(yootOutcome)

@@ -4,8 +4,6 @@ import titleStarsVertexShader from './vertex.glsl'
 import titleStarsFragmentShader from './fragment.glsl'
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
-import { useAtom, useAtomValue } from "jotai";
-import { windowSizesAtom } from "../../GlobalState";
 
 // sparkle around the title
 export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePath }) {
@@ -16,8 +14,6 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   const scales = new Float32Array(count);
   const delays = new Float32Array(count);
   const texture = useLoader(TextureLoader, texturePath)
-  const windowSizes = useAtomValue(windowSizesAtom);
-  console.log('[TitleStarsShader]', windowSizes);
 
   positions[0] = 1.0
   positions[1] = 0.0
@@ -34,7 +30,7 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   colors[3] = 1.0
   colors[4] = 1.0
   colors[5] = 0.7
-  scales[1] = 1.5
+  scales[1] = 1.0
   delays[1] = 0.3
 
   positions[6] = -0.2
@@ -43,7 +39,7 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   colors[6] = 1.0
   colors[7] = 1.0
   colors[8] = 0.7
-  scales[2] = 1.5
+  scales[2] = 1.0
   delays[2] = 0.5
   
   positions[9] = 0.0
@@ -52,7 +48,7 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   colors[9] = 1.0
   colors[10] = 1.0
   colors[11] = 0.7
-  scales[3] = 1.5
+  scales[3] = 1.0
   delays[3] = 0.7
 
   positions[12] = -0.1
@@ -61,7 +57,7 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   colors[12] = 1.0
   colors[13] = 1.0
   colors[14] = 0.7
-  scales[4] = 1.6
+  scales[4] = 1.0
   delays[4] = 0.9
 
   positions[15] = 1.0
