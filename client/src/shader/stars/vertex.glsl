@@ -29,11 +29,6 @@ void main()
     gl_PointSize *= (1.0 / - viewPosition.z);
 
     /**
-      * Color
-      */
-    vColor = color;
-
-    /**
       * Alpha
       */
     if (aIsRainbowFlag == 0.0) {

@@ -16,6 +16,7 @@ import { useParams } from 'wouter';
 import { socket } from './SocketManager';
 import EarthModified from './meshes/EarthModified';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
+import { useBeamDustShader } from './shader/beamDust/BeamDustShader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { generateRandomNumberInRange } from './helpers/helpers';
 
@@ -23,6 +24,7 @@ export default function UfosWin({}) {
 
   const [device] = useAtom(deviceAtom)
   const [CreateFirework] = useFireworksShader();
+  const [CreateBeamDust] = useBeamDustShader();
   const fireworkTextures = [
     useLoader(TextureLoader, 'textures/particles/3.png'),
     useLoader(TextureLoader, 'textures/particles/5.png'),
@@ -30,7 +32,6 @@ export default function UfosWin({}) {
     useLoader(TextureLoader, 'textures/particles/8.png'),
   ]
   const params = useParams()
-  const beamShaderRef = useRef();
   const textMaterialRef = useRef();
   const ufo0 = useRef();
   const ufo1 = useRef();
@@ -72,40 +73,52 @@ export default function UfosWin({}) {
   });
   
   useEffect(() => {
-    const intervalSide0 = setInterval(() => {
+    const intervalFireworks = setInterval(() => {
       if (document.hasFocus()) {
         const count = Math.round(700 + Math.random() * 400);
         let position;
         let size;
         let radius;
         if (device === 'portrait') {
+          const radians = Math.random() * Math.PI*2
           position = new THREE.Vector3(
-              Math.cos(Math.random() * Math.PI*2) * generateRandomNumberInRange(4, 1), 
+              Math.cos(radians) * generateRandomNumberInRange(4, 1), 
               -5,
-              Math.sin(Math.random() * Math.PI*2) * generateRandomNumberInRange(6.5, 1.5), 
+              Math.sin(radians) * generateRandomNumberInRange(9, 1.5) - 2, 
           )
-          console.log('portrait position', position) // still goes between 0 and 1
           size = 0.1 + Math.random() * 0.15
           radius = 1.5 + Math.random() * 1.0
         } else {
+          const radians = Math.random() * Math.PI*2
           position = new THREE.Vector3(
-              generateRandomNumberInRange(6.5, 1.5) * (Math.random() > 0.5 ? 1 : -1), 
+              Math.cos(radians) * generateRandomNumberInRange(8, 2), 
               -5,
-              generateRandomNumberInRange(4, 1) * (Math.random() > 0.5 ? 1 : -1), 
+              Math.sin(radians) * generateRandomNumberInRange(8, 0.5), 
           )
-          size = 0.2 + Math.random() * 0.3
+          size = 0.3 + Math.random() * 0.3
           radius = 2.0 + Math.random() * 1.0
         }
   
         const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
-        color.setHSL(Math.random(), 1, 0.6)
+        color.setHSL(Math.random(), 0.7, 0.4)
   
         CreateFirework({ count, position, size, texture, radius, color });
       }
     }, 300)
+    const intervalBeamDust = setInterval(() => {
+      const position = new THREE.Vector3(
+        Math.random() * 3.5 * (Math.random() > 0.5 ? 1 : -1),
+        -7.5,
+        Math.random() * 1.0 * (Math.random() > 0.5 ? 1 : -1),
+      )
+      const size = 300.0 + Math.random() * 200 * (Math.random() > 0.5 ? 1 : -1);
+      const speed = 15.0 + Math.random() * 5.0 * (Math.random() > 0.5 ? 1 : -1);
+      CreateBeamDust({ position, size, speed });
+    }, 70)
     return (() => {
-      clearInterval(intervalSide0);
+      clearInterval(intervalFireworks);
+      clearInterval(intervalBeamDust);
     })
   }, [])
 
@@ -130,13 +143,17 @@ export default function UfosWin({}) {
     <Text3D 
       font="/fonts/Luckiest Guy_Regular.json" 
       size={textSize} 
-      height={0.03} 
-      position={[-2.7, 0, -5]}
+      height={0.01} 
+      position={[-2.7, 0, -5.2]}
       rotation={[-Math.PI/2, 0, 0]}
-      >
+    >
       UFOS WIN!
       <meshStandardMaterial color="yellow"/>
     </Text3D>
+    <mesh scale={[3.5, 0.01, 1.2]} rotation={[0, 0, 0]} position={[-0.1, 0, -5.55]}>
+      <cylinderGeometry args={[1, 1, 1, 32]}/>
+      <meshStandardMaterial color='black' transparent opacity={0.7}/>
+    </mesh>
     {/* UFO */}
     <group position={[-0.15, 0, 0]} rotation={[-Math.PI/2 + Math.PI/16, 0, 0]}>
       <group ref={ufo0}>
@@ -156,29 +173,14 @@ export default function UfosWin({}) {
     {/* beam */}
     <mesh position={[0, 0, 0.2]} rotation={[-Math.PI/2 + Math.PI/32, 0, 0]} material={shaderMaterial}>
       <cylinderGeometry args={[1.4, 3.8, 6, 32]}/>
-      {/* <shaderMaterial 
-        vertexShader={VertexShader}
-        fragmentShader={FragmentShader}
-        transparent={true}
-        uniforms={{
-          uOpacity: { value: 1 }
-        }}
-        ref={beamShaderRef}
-      /> */}
     </mesh>
-    {/* <Text3D font="/fonts/Luckiest Guy_Regular.json" size={0.8} height={0.01} position={[2, -5, 0]}>
-      Feedback
-      <meshStandardMaterial color="yellow"/>
-    </Text3D> */}
     <Float floatIntensity={2} speed={5} rotation={[-Math.PI/2,Math.PI/2,0]}>
       <EarthModified 
-      position={[0,-1,0]} 
-      scale={1} 
+        position={[0,-1,0]} 
+        scale={1} 
       />
     </Float>
-
     <Stars/>
-    
     <group 
     name='play-again-button' 
     position={[-3, 0, 6]}
