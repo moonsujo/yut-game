@@ -634,6 +634,7 @@ export default function Game() {
     // because that will make other components render
 
   const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
+
   function InviteInstructions() {
     const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
 
@@ -656,8 +657,31 @@ export default function Game() {
       setHover(false);
     }
 
+    function copyURLToClipboard() {
+      const url = window.location.href;
+    
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        // Modern browsers with Clipboard API support
+        navigator.clipboard.writeText(url)
+          .then(() => {
+          })
+          .catch(err => {
+            console.error("Failed to copy URL: ", err);
+          });
+      } else {
+        // Fallback for older browsers
+        const tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+        tempInput.value = url;
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      }
+    }
+
     function handlePointerDown(e) {
       e.stopPropagation();  
+      copyURLToClipboard();
       api.start({
         from: {
           opacity: 1
@@ -732,30 +756,6 @@ export default function Game() {
     </group>
   }
 
-  function PregameMoveDisplay() {
-    return <group>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={[-1.5,0,10.3]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.4}
-        height={0.01}
-      >
-        {`Moves:`}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={[-1.5,0,11]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.4}
-        height={0.01}
-      >
-        {`Pregame`}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-    </group>
-  }
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
