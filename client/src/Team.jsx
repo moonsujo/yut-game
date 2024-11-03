@@ -20,36 +20,68 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
 
   function JoinTeamButton() {
     const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
-    const yellowMaterial = new MeshStandardMaterial({ color: new Color('yellow')});
+    console.log(joinTeam)
+    const colorMaterial = new MeshStandardMaterial()
+
+    const [hover, setHover] = useState(false);
+
+    const button = useRef();
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (button.current) {
+        if (hover) {
+          // limegreen
+          colorMaterial.color.b = 0.031896033067374104;
+          colorMaterial.color.g = 0.6104955708001716;
+          colorMaterial.color.r = 0.031896033067374104;
+          button.current.scale.x = 1;
+        } else {
+          if (client.team === -1) {
+            colorMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
+            button.current.scale.x = Math.cos(time * 2) * 0.3 + 0.7;
+          } else {
+            colorMaterial.color.setHSL(1/6, 1, 0.5); // yellow
+            button.current.scale.x = 1;
+          }
+        }
+      }
+    })
 
     function handlePointerEnter(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('green')
+      // colorMaterial.color = new Color('limegreen')
+      setHover(true)
     }
 
     function handlePointerLeave(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('yellow')
+      // colorMaterial.color = new Color('yellow')
+      setHover(false)
     }
 
     function handlePointerDown(e) {
       e.stopPropagation();
       setJoinTeam(team);
+      setHover(false)
     }
 
-    return client.team !== team && joinTeam !== team && <group
+    return client.team !== team && !(joinTeam === 0 || joinTeam === 1) && <group
       position={layout[device].game[`team${team}`].join.position}
       scale={layout[device].game[`team${team}`].join.scale}
+      ref={button}
     >
       <mesh
-        material={yellowMaterial}
+        material={colorMaterial}
         name='background-outer'
+        scale={[0.75, 1, 0.34]}
       >
-        <boxGeometry args={[1.15, 0.03, 0.55]}/>
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
       </mesh>
       <mesh
-        name='background-inner'>
-        <boxGeometry args={[1.1, 0.04, 0.5]}/>
+        name='background-inner'
+        scale={[0.75, 1, 0.31]}
+      >
+        <cylinderGeometry args={[0.95, 0.95, 0.02, 32]}/>
         <meshStandardMaterial color='black'/>
       </mesh>
       <mesh 
@@ -67,7 +99,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         rotation={layout[device].game[`team${team}`].join.rotation}
         size={layout[device].game[`team${team}`].join.size}
         height={layout[device].game[`team${team}`].join.height}
-        material={yellowMaterial}
+        material={colorMaterial}
       >
         JOIN
       </Text3D>

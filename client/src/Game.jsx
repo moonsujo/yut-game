@@ -87,12 +87,6 @@ export default function Game() {
     function DisabledButton({ position, scale }) {
       const button = useRef();
 
-      // useFrame((state) => {
-      //   const time = state.clock.elapsedTime
-      //   button.current.scale.x = Math.sin(time)*0.1 + scale
-      //   button.current.scale.y = Math.sin(time)*0.1 + scale
-      //   button.current.scale.z = Math.sin(time)*0.1 + scale
-      // })
       return <group position={position} scale={scale} ref={button}>
         <mesh
           castShadow
@@ -130,62 +124,81 @@ export default function Game() {
 
     function ActivatedButton({ position }) {
 
-      const [_hover, setHover] = useState(false)
+      const [pointerDown, setPointerDown] = useState(false);
+      const [pushSprings, pushApi] = useSpring(() => ({        
+        from: {
+          scale: 1, 
+        }
+      }))
+
+      const letsPlayTextMaterial = new MeshStandardMaterial({ color: new Color('limegreen') });
+      const letsPlayBackgroundMaterial = new MeshStandardMaterial({ color: new Color('black'), transparent: true, opacity: 1 });
+      const letsPlayButton = useRef()
+      useFrame((state) => {
+        const time = state.clock.elapsedTime;
+        letsPlayTextMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
+        letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
+      })
   
       const backdropHeight = layout[device].game.letsPlayButton.activeButton.backdropHeight
       const backdropWidth = layout[device].game.letsPlayButton.activeButton.backdropWidth
   
       function handlePointerEnter(e) {
-          e.stopPropagation()
-          document.body.style.cursor = "pointer";
-          setHover(true)
+        e.stopPropagation()
+        document.body.style.cursor = "pointer";
       }
       
       function handlePointerLeave(e) {
-          e.stopPropagation()
-          document.body.style.cursor = "default";
-          setHover(false)
+        e.stopPropagation()
+        document.body.style.cursor = "default";
+        if (pointerDown) {
+          setPointerDown(false)
+          pushApi.start({
+            from: {
+              scale: 1.2
+            },
+            to: {
+              scale: 1
+            }
+          })
+        }
       }
 
       function handlePointerDown(e) {
         e.stopPropagation();
-        // only throws for the client
+        setPointerDown(true)
+        pushApi.start({
+          from: {
+            scale: 1,
+          },
+          to: {
+            scale: 1.2
+          }
+        })
+      }
+
+      function handlePointerUp(e) {
+        e.stopPropagation();
         if (readyToStart) {
           socket.emit("startGame", { roomId: params.id })
         }
-      }
-
-      const letsPlayTextMaterial = new MeshStandardMaterial({ color: new Color('limegreen') });
-      const letsPlayBackgroundMaterial = new MeshStandardMaterial({ color: new Color('black'), transparent: true, opacity: 1 });
-      const letsPlayButton = useRef()
-      // useFrame((state) => {
-      //   const time = state.clock.elapsedTime
-      //   if (Math.floor(time*1.3) % 2 === 0) {
-      //     letsPlayTextMaterial.color = new Color('yellow')
-      //   } else {
-      //     letsPlayTextMaterial.color = new Color('limegreen')
-      //     letsPlayBackgroundMaterial.opacity = 1
-      //   }
-      // })
-
-      const springs = useSpring({
-        from: {
-          scale: 0
-        },
-        to: [
-          {
-            scale: layout[device].game.letsPlayButton.activeButton.scale,
-            config: {
-              tension: 170,
-              friction: 26
-            },
+        setPointerDown(false)
+        pushApi.start({
+          from: {
+            scale: 1.2
+          },
+          to: {
+            scale: 1
           }
-        ],
-        // don't have to reset since component is conditionally rendered
-      })
+        })
+      }
   
-      return <animated.group name='animated-group' scale={springs.scale}>
-        <group name='lets-play-button-active' position={position} ref={letsPlayButton}>
+      return <animated.group 
+        name='lets-play-button-active' 
+        position={position} 
+        scale={pushSprings.scale}
+      >
+        <group ref={letsPlayButton}>
           <mesh 
             position={[0, 0, 0]} 
             rotation={[0, 0, 0]} 
@@ -193,6 +206,7 @@ export default function Game() {
             onPointerEnter={handlePointerEnter}
             onPointerLeave={handlePointerLeave}
             onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
             material={letsPlayBackgroundMaterial}
           >
             <cylinderGeometry args={[1, 1, 0.1, 48]}/>
@@ -201,9 +215,6 @@ export default function Game() {
             position={[0, 0, 0]} 
             rotation={[0, 0, 0]} 
             scale={[backdropWidth+0.1, 0.05, backdropHeight+0.1]} 
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
-            onPointerDown={handlePointerDown}
             material={letsPlayTextMaterial}
           >
             <cylinderGeometry args={[1, 1, 0.1, 48]}/>
@@ -639,9 +650,15 @@ export default function Game() {
     const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
 
     const [hover, setHover] = useState(false);
+    const [pointerDown, setPointerDown] = useState(false);
     const [springs, api] = useSpring(() => ({        
       from: {
         opacity: 0, 
+      }
+    }))
+    const [pushSprings, pushApi] = useSpring(() => ({        
+      from: {
+        scale: 1, 
       }
     }))
 
@@ -655,6 +672,17 @@ export default function Game() {
       e.stopPropagation();
       document.body.style.cursor = "default";
       setHover(false);
+      if (pointerDown) {
+        setPointerDown(false);
+        pushApi.start({
+          from: {
+            scale: 1.2
+          },
+          to: {
+            scale: 1
+          }
+        })
+      }
     }
 
     function copyURLToClipboard() {
@@ -681,6 +709,21 @@ export default function Game() {
 
     function handlePointerDown(e) {
       e.stopPropagation();  
+      setPointerDown(true)
+      pushApi.start({
+        from: {
+          scale: 1,
+        },
+        to: {
+          scale: 1.2
+        }
+      })
+    }
+
+    function handlePointerUp(e) {
+      e.stopPropagation();
+      console.log(e)
+      setPointerDown(false)
       copyURLToClipboard();
       api.start({
         from: {
@@ -700,42 +743,53 @@ export default function Game() {
           }
         ]
       })
+      pushApi.start({
+        from: {
+          scale: 1.2
+        },
+        to: {
+          scale: 1
+        }
+      })
     }
 
     return <group position={layout[device].game.invite.position}>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.invite.text.position}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={layout[device].game.invite.text.size}
-        height={0.01}
-      >
-        {layout[device].game.invite.text.content}
-        <meshStandardMaterial color='limegreen'/>
-      </Text3D>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Cube.geometry}
-        position={layout[device].game.invite.border.position}
-        rotation={layout[device].game.invite.border.rotation}
-        scale={layout[device].game.invite.border.scaleInner}
-      >
-        <meshStandardMaterial color='black' transparent opacity={0.5}/>
-      </mesh>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Cube.geometry}
-        position={layout[device].game.invite.border.position}
-        rotation={layout[device].game.invite.border.rotation}
-        scale={layout[device].game.invite.border.scaleOuter}
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-      >
-        <meshStandardMaterial color='limegreen' transparent opacity={1}/>
-      </mesh>
+      <animated.group scale={ pushSprings.scale } position={layout[device].game.invite.button.position}>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.invite.text.position}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={layout[device].game.invite.text.size}
+          height={0.01}
+        >
+          {layout[device].game.invite.text.content}
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.invite.border.position}
+          rotation={layout[device].game.invite.border.rotation}
+          scale={layout[device].game.invite.border.scaleInner}
+          onPointerEnter={e => handlePointerEnter(e)}
+          onPointerLeave={e => handlePointerLeave(e)}
+          onPointerDown={e => handlePointerDown(e)}
+          onPointerUp={e => handlePointerUp(e)}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
+        </mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.invite.border.position}
+          rotation={layout[device].game.invite.border.rotation}
+          scale={layout[device].game.invite.border.scaleOuter}
+        >
+          <meshStandardMaterial color='limegreen' transparent opacity={1}/>
+        </mesh>
+      </animated.group>
       <Text3D 
         name='copied-tooltip'
         font="fonts/Luckiest Guy_Regular.json"
@@ -898,7 +952,7 @@ export default function Game() {
           setShowRulebook={setShowRulebook}
         />
       </group> }
-      { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />}
+      {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
       {/* host */}
       { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
       <MeteorsRealShader/>

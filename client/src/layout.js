@@ -1070,7 +1070,7 @@ export default {
     },
     game: {
       letsPlayButton: {
-        position: [3.9,0,7.0],
+        position: [3.9,0,7.2],
         rotation: [-Math.PI / 2, 0, 0],
         disabledButton: {
           position: [-0.1,0,1.2],
@@ -1245,14 +1245,17 @@ export default {
       },
       invite: {
         position: [-5.5, 0, 7.2],
+        button: {
+          position: [1.68, -0.5, 0.7]
+        },
         scale: 0.9,
         text: {
-          content: `Tap here to\ncopy the link\nand share to\ninvite`,
-          position: [0.1,0,0],
+          content: `Tap here to\ncopy the link.\nShare to\ninvite`,
+          position: [-1.58,0.5,-0.7],
           size: 0.35
         },
         border: {
-          position: [1.68, -0.5, 0.7],
+          position: [0,0,0],
           rotation: [-Math.PI, 0, -Math.PI],
           scaleOuter: [2, 0.01, 1.75],
           scaleInner: [1.9, 0.02, 1.65]
@@ -2665,7 +2668,7 @@ export default {
           maxLength: 12
         },
         join: {
-          position: [3.1, 0, 0.45],
+          position: [3.3, 0, 0.45],
           rotation: [-Math.PI / 2, 0, 0],
           size: 0.3,
           height: 0.01,
@@ -2705,7 +2708,7 @@ export default {
           maxLength: 12
         },
         join: {
-          position: [3.2, 0, 0.5],
+          position: [3.45, 0, 0.5],
           rotation: [-Math.PI / 2, 0, 0],
           size: 0.3,
           height: 0.01,
@@ -2744,14 +2747,17 @@ export default {
       },
       invite: {
         position: [-10.7, 0, 3.8],
+        button: {
+          position: [1.68, -0.5, 0.7]
+        },
         scale: 0.9,
         text: {
-          content: `Click here to\ncopy the link\nand share to\ninvite`,
-          position: [0.1,0,0],
+          content: `Click here to\ncopy the link.\nShare to\ninvite`,
+          position: [-1.58,0.5,-0.7],
           size: 0.35
         },
         border: {
-          position: [1.68, -0.5, 0.7],
+          position: [0,0,0],
           rotation: [-Math.PI, 0, -Math.PI],
           scaleOuter: [2, 0.01, 1.75],
           scaleInner: [1.9, 0.02, 1.65]

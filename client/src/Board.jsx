@@ -20,6 +20,7 @@ import * as THREE from 'three';
 import { AriesConstellation } from './meshes/AriesConstellation';
 import DottedTaurus from './shader/dottedTaurus.jsx/DottedTaurus';
 import { AriesConstellation2 } from './meshes/AriesConstellation2';
+import WolfConstellationBufferGeometry from './shader/wolf/BullConstellation';
 
 // Accept flag to enable click
 // Pass flag to Tile component
