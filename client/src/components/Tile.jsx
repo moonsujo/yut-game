@@ -4,9 +4,7 @@ import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame } from "@react-three/fiber";
 import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, mainAlertAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
-import Pointer from "../meshes/Pointer";
 import { useParams } from "wouter";
-import { Text3D } from "@react-three/drei";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
 import BackdoToken from "../moveTokens/BackdoToken";
@@ -15,7 +13,7 @@ import YootToken from "../moveTokens/YootToken";
 import GulToken from "../moveTokens/GulToken";
 import GeToken from "../moveTokens/GeToken";
 import DoToken from "../moveTokens/DoToken";
-import Piece from "./Piece";
+import { animated, useSpring } from "@react-spring/three";
 
 export default function Tile({ 
   position=[0,0,0], 
@@ -30,7 +28,6 @@ export default function Tile({
 
   const [selection] = useAtom(selectionAtom);
   const [hasTurn] = useAtom(hasTurnAtom)
-  const [yootThrown] = useAtom(yootThrownAtom)
   const [tiles] = useAtom(tilesAtom)
   const [teams] = useAtom(teamsAtom)
   const [client] = useAtom(clientAtom)
@@ -91,13 +88,19 @@ export default function Tile({
     return false;
   }
 
+  const hasMovablePiece = selection === null 
+  && tiles[tile].length > 0 
+  && tiles[tile][0].team === client.team 
+  && hasTurn && hasValidMove(client.team)
+  && !animationPlaying
+  
+  const { wrapperScale } = useSpring({
+    wrapperScale: ((selection != null && legalTileInfo) || hasMovablePiece) ? 1 : 0,
+  })
+
   useFrame((state) => {
-    if (selection === null 
-      && tiles[tile].length > 0 
-      && tiles[tile][0].team === client.team 
-      && hasTurn && hasValidMove(client.team)
-      && !animationPlaying
-    ) {
+    const time = state.clock.elapsedTime;
+    if (hasMovablePiece) {
       if (Math.floor(state.clock.elapsedTime) % 2 == 0) {
         wrapperMat.current.opacity = 0.3
         if (tiles[tile][0].team === 0) {
@@ -109,23 +112,21 @@ export default function Tile({
         wrapperMat.current.opacity = 0.3
         wrapperMat.current.color = new THREE.Color('grey')
       }
+      wrapper.current.scale.x = Math.cos(time) * 0.1 + 0.9;
+      wrapper.current.scale.y = Math.cos(time) * 0.1 + 0.9;
+      wrapper.current.scale.z = Math.cos(time) * 0.1 + 0.9;
     } else if (selection != null && legalTileInfo) {
-      // group.current.scale.x = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4 + 0.5
-      // group.current.scale.y = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4 + 0.5
-      // group.current.scale.z = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4 + 0.5
-      // wrapper.current.scale.x = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4
-      // wrapper.current.scale.y = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4
-      // wrapper.current.scale.z = scale + Math.cos(state.clock.elapsedTime * 3) * 0.4
       if (turn.team === 0) {
-        wrapperMat.current.color = new THREE.Color('#EA5E5E')
+        // wrapperMat.current.color = new THREE.Color('#EA5E5E')
+        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.037, 0.85, 0.45);
       } else {
-        wrapperMat.current.color = new THREE.Color('turquoise')
+        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
       }
       wrapperMat.current.opacity = 0.3;
+      wrapper.current.scale.x = Math.cos(time) * 0.1 + 0.9;
+      wrapper.current.scale.y = Math.cos(time) * 0.1 + 0.9;
+      wrapper.current.scale.z = Math.cos(time) * 0.1 + 0.9;
     } else {
-      // group.current.scale.x = scale
-      // group.current.scale.y = scale
-      // group.current.scale.z = scale
       wrapperMat.current.opacity = 0;
     }
   })
@@ -149,11 +150,13 @@ export default function Tile({
 
   return <group position={position} rotation={rotation} scale={scale}>
     <group ref={group}>
-      <mesh
+      <animated.mesh
+        name='wrapper'
         onPointerEnter={(e) => { interactive && handlePointerEnter(e) }}
         onPointerLeave={(e) => { interactive && handlePointerLeave(e) }}
         onPointerDown={(e) => { interactive && handlePointerDown(e) }}
         ref={wrapper}
+        scale={wrapperScale}
       >
         <sphereGeometry args={[0.8, 32, 16]} />
         <meshStandardMaterial
@@ -162,14 +165,10 @@ export default function Tile({
           ref={wrapperMat}
           depthWrite={false}
         />
-      </mesh>
+      </animated.mesh>
       {mesh}
       {/* path num */}
       { pathNum && <PathNumHelper pathNum={pathNum}/> }
     </group>
-    {/* <Piece team={0} position={[0, 1, 0.3]}/>
-    <Piece team={0} position={[0, 1, 0.3]}/>
-    <Piece team={0} position={[0, 1, 0.3]}/>
-    <Piece team={0} position={[0, 1, 0.3]}/> */}
   </group>
 }

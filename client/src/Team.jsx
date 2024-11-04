@@ -5,8 +5,7 @@ import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom 
 import { Html, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import Piece from './components/Piece';
 import { formatName, pieceStatus } from './helpers/helpers';
-import { Color, MeshStandardMaterial } from 'three';
-import Yoot from './Yoot';
+import { MeshStandardMaterial } from 'three';
 import YootMesh from './meshes/YootMesh';
 import { useFrame } from '@react-three/fiber';
 import { animated, useSpring } from '@react-spring/three';
@@ -20,7 +19,6 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
 
   function JoinTeamButton() {
     const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
-    console.log(joinTeam)
     const colorMaterial = new MeshStandardMaterial()
 
     const [hover, setHover] = useState(false);
@@ -49,13 +47,11 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
 
     function handlePointerEnter(e) {
       e.stopPropagation();
-      // colorMaterial.color = new Color('limegreen')
       setHover(true)
     }
 
     function handlePointerLeave(e) {
       e.stopPropagation();
-      // colorMaterial.color = new Color('yellow')
       setHover(false)
     }
 

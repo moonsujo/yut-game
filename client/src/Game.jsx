@@ -902,8 +902,9 @@ export default function Game() {
           device={device}
         /> }
         <SettingsButton 
-        position={layout[device].game.settings.position}
-        scale={layout[device].game.settings.scale}/>
+          position={layout[device].game.settings.position}
+          scale={layout[device].game.settings.scale}
+        />
         <RulebookButton 
           position={layout[device].game.rulebookButton.position}
           scale={layout[device].game.rulebookButton.scale}
