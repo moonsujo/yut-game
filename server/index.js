@@ -952,6 +952,7 @@ io.on("connect", async (socket) => {
               team: movingTeam,
               caughtTeam: occupyingTeam,
               numPiecesCaught: tiles[to].length,
+              path
             }
           })
         } else { // Join pieces

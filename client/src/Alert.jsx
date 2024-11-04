@@ -665,15 +665,6 @@ export default function Alert({ position, rotation }) {
           const numScored = parseInt(alerts[0][6]);
           launchScoreFireworks(team, numScored)
         } else if (alerts[0] && alerts[0].includes('join')) {
-          // const alertString = alerts[0]
-          // const team = parseInt(alertString[4]);
-          // const tile = parseInt(alertString.substring(5, alertString.length));
-          // const positionVec3 = new THREE.Vector3(
-          //   tilePositions[tile][0] + 0,
-          //   tilePositions[tile][1] + 2.7,
-          //   tilePositions[tile][2] - 0.35
-          // )
-          // addSpark(positionVec3, team)
         }
       }
     }, [alerts, pieceAnimationPlaying])

@@ -95,7 +95,7 @@ export default function Tile({
   && !animationPlaying
   
   const { wrapperScale } = useSpring({
-    wrapperScale: ((selection != null && legalTileInfo) || hasMovablePiece) ? 1 : 0,
+    wrapperScale: ((selection != null && legalTileInfo) || hasMovablePiece) ? 1 : 0, // want the animation to start again when status changes
   })
 
   useFrame((state) => {
@@ -117,8 +117,7 @@ export default function Tile({
       wrapper.current.scale.z = Math.cos(time) * 0.1 + 0.9;
     } else if (selection != null && legalTileInfo) {
       if (turn.team === 0) {
-        // wrapperMat.current.color = new THREE.Color('#EA5E5E')
-        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.037, 0.85, 0.45);
+        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
       } else {
         wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
       }

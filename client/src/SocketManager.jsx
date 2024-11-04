@@ -12,7 +12,8 @@ import {
   currentPlayerNameAtom,
   alertsAtom,
   catchOutcomeAtom,
-  pieceAnimationPlayingAtom} from "./GlobalState.jsx";
+  pieceAnimationPlayingAtom,
+  catchPathAtom} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -88,6 +89,7 @@ export const SocketManager = () => {
   const [_catchOutcome, setCatchOutcome] = useAtom(catchOutcomeAtom)
   const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
+  const [_catchPath, setCatchPath] = useAtom(catchPathAtom);
   const [CreateMeteor] = useMeteorsShader();
   const meteorTextures = [
     useLoader(TextureLoader, 'textures/particles/3.png'),
@@ -387,7 +389,6 @@ export const SocketManager = () => {
       
       let alerts = []
       let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
-      console.log('[SocketManager] joined', joined)
       if (joined.result) {
         alerts.push(`join${turnPrev.team}${joined.tile}`)
       }
@@ -402,6 +403,7 @@ export const SocketManager = () => {
         let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
         if (numPiecesCaught > 0) {
           alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
+          setCatchPath(gameLogs[gameLogs.length-1].content.path)
         }
         setThrowCount(teamsUpdate[turnUpdate.team].throws)
       }
