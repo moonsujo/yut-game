@@ -9,6 +9,7 @@ import StarsPatternsShader from "./shader/starsPatterns2/StarsPatternsShader";
 import WolfConstellationBufferGeometry from "./shader/wolf/BullConstellation";
 import SaturnConstellation from "./shader/saturn/SaturnConstellation";
 import BullConstellation from "./shader/wolf/BullConstellation";
+import Constellation from "./shader/constellation/Constellation";
 
 export default function Home2Experience() {
 
@@ -29,6 +30,9 @@ export default function Home2Experience() {
         />
         {/* <SaturnConstellation position={[-12.1,0,-6]} rotation={[-Math.PI/2, 0, 0]} scale={3}/> */}
         {/* <WolfConstellationBufferGeometry position={[-10.1,0,2]} rotation={[-Math.PI/2, 0, 0]} scale={2.5}/> */}
-        <BullConstellation position={[-10.1,0,2]} rotation={[-Math.PI/2, 0, 0]} scale={4.5}/>
+        <Constellation omitFactor={3} position={[-13,0,-8]} rotation={[-Math.PI/2, 0, 0]} scale={4} modelPath={'models/star.glb'}/>
+        <Constellation omitFactor={3} position={[-10,0,-7]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2} modelPath={'models/star.glb'}/>
+        <Constellation omitFactor={3} position={[-15,0,-1]} rotation={[-Math.PI/2, 0, Math.PI/6]} scale={3} modelPath={'models/star.glb'}/>
+        <Constellation omitFactor={3} position={[-9,0,2]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2.5} modelPath={'models/star.glb'}/>
     </group>
 }

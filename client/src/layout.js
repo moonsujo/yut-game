@@ -1282,8 +1282,8 @@ export default {
           position: [0, 0, 0]
         },
         pregame: {
-          scale: 0.2,
-          position: [4.2, 0, -2.7]
+          scale: 0.7,
+          position: [0, -13, -3.5]
         },
         game: {
           scale: 1,
@@ -2783,8 +2783,8 @@ export default {
           position: [0, 0, 0]
         },
         pregame: {
-          scale: 0.2,
-          position: [5.5, 0, -3.4]
+          scale: 0.7,
+          position: [0, -13, -3.5]
         },
         game: {
           scale: 1,
