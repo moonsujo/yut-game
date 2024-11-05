@@ -46,5 +46,9 @@ export default function Home2Experience() {
         <Constellation omitFactor={3} position={[-9,-1,2]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2.5} modelPath={'models/star.glb'}/>
 
         </Float>
+        <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>
+        <Constellation omitFactor={3} position={[5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2.5} modelPath={'models/star.glb'}/>
+
+        </Float>
     </group>
 }
