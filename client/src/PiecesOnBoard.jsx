@@ -47,6 +47,16 @@ export default function PiecesOnBoard() {
         }
     }
 
+    function calculateCatchDelay(catchPath) {
+        if (catchPath[0] === 1 && catchPath[1] === 0) {
+            return (catchPath.length-1) * 610
+        } if (catchPath[0] === 0 && (catchPath[1] !== 19 && catchPath[1] !== 28)) {
+            return (catchPath.length-1) * 610
+        } else {
+            return (catchPath.length-2) * 610
+        }
+    }
+
     const [springs0_0, api0_0] = useSpring(() => ({
         from: {
             position: getPositionByTile(pieceTeam0Id0.tile, 0), 
@@ -173,7 +183,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam0Id0.tile, pieceTeam0Id0.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -198,7 +208,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -309,7 +318,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam0Id1.tile, pieceTeam0Id1.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -358,7 +367,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -370,7 +378,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -443,7 +450,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam0Id2.tile, pieceTeam0Id2.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -577,7 +584,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam0Id3.tile, pieceTeam0Id3.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -712,7 +719,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam1Id0.tile, pieceTeam1Id0.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -848,7 +855,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam1Id1.tile, pieceTeam1Id1.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -984,7 +991,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam1Id2.tile, pieceTeam1Id2.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -1119,7 +1126,7 @@ export default function PiecesOnBoard() {
                         }
                     ],
                     loop: false,
-                    delay: catchPath[0] === 0 ? (catchPath.length - 1) * 610 : (catchPath.length - 2) * 610
+                    delay: calculateCatchDelay(catchPath)
                 })
             } else if (startCheck(pieceTeam1Id3.tile, pieceTeam1Id3.lastPath)) {
                 const toAnimations = path.map((value) => {
