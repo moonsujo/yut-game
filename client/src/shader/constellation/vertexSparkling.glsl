@@ -42,6 +42,6 @@ void main()
     /**
       * Alpha
       */
-    vAlpha = cos(uTime + aRandom) * 0.5 + 0.5;
+    vAlpha = cos(uTime + aRandom) * 0.2 + 0.2;
     // vAlpha = clamp(vAlpha, 0.3, 1.0);
 }

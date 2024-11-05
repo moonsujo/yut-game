@@ -8,14 +8,14 @@ void main()
 {
   // Light point
   float strength = distance(gl_PointCoord, vec2(0.5));
-  strength = 1.0 - strength;
+  strength = 1.8 - strength;
   strength = pow(strength * 1.1, 10.0);
 
   // Final color
   vec3 newColor = vColor;
   newColor.r = 0.0;
-  newColor.g = 0.3;
-  newColor.b = 0.5 + cos(uTime + vRandom) * 0.5;
+  newColor.g = 0.01;
+  newColor.b = 0.01 + cos(uTime + vRandom) * 0.01;
   vec3 color = mix(vec3(0.0), newColor, strength);
 
   gl_FragColor = vec4(color, vAlpha);
