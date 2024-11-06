@@ -31,24 +31,26 @@ export default function Home2Experience() {
         />
         {/* <SaturnConstellation position={[-12.1,0,-6]} rotation={[-Math.PI/2, 0, 0]} scale={3}/> */}
         {/* <WolfConstellationBufferGeometry position={[-10.1,0,2]} rotation={[-Math.PI/2, 0, 0]} scale={2.5}/> */}
-        <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>
-            <Constellation omitFactor={3} position={[-13,-1,-7]} rotation={[-Math.PI/2, 0, 0]} scale={3} modelPath={'models/star.glb'}/>
-        </Float>
-        <Float  rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>        
-            <Constellation omitFactor={3} position={[-10,-1,-7]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2} modelPath={'models/star.glb'}/>
+        {/* <Float rotationIntensity={0.02} speed={2} floatingRange={[0.1, 0.1]}> */}
+            <Constellation omitFactor={2} position={[-15.5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/16]} scale={1.3} modelPath={'models/star.glb'}/>
+        {/* </Float> */}
+        {/* <Float rotationIntensity={0.05} speed={2} floatingRange={[0.1, 0.1]}>         */}
+            <Constellation omitFactor={4} position={[-8.7,-1,-7.1]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={0.9} modelPath={'models/star.glb'}/>
+        {/* </Float> */}
+        {/* <Float rotationIntensity={0.02} speed={2} floatingRange={[0.1, 0.1]}>        
+            <Constellation omitFactor={4} position={[-16,-1,-2]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1} modelPath={'models/star.glb'}/>
+        </Float> */}
+        {/* <Float rotationIntensity={0.05} speed={2} floatingRange={[0.1, 0.1]}> */}
+        <Constellation omitFactor={2} position={[-15.5,-1,3.5]} rotation={[-Math.PI/2, 0, Math.PI/6]} scale={1.2} modelPath={'models/star.glb'}/>
 
-        </Float>
-        <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>
-        <Constellation omitFactor={3} position={[-15,-1,0]} rotation={[-Math.PI/2, 0, Math.PI/6]} scale={3} modelPath={'models/star.glb'}/>
+        {/* </Float> */}
+        {/* <Float rotationIntensity={0.05} speed={2} floatingRange={[0.1, 0.1]}> */}
+        <Constellation omitFactor={2} position={[-9,-1,-1.3]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.3} modelPath={'models/star.glb'}/>
 
-        </Float>
-        <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>
-        <Constellation omitFactor={3} position={[-9,-1,2]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2.5} modelPath={'models/star.glb'}/>
+        {/* </Float> */}
+        {/* <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}> */}
+            <Constellation omitFactor={2} position={[5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.5} modelPath={'models/star.glb'}/>
 
-        </Float>
-        <Float rotationIntensity={0.1} speed={2} floatingRange={[0.1, 0.1]}>
-        <Constellation omitFactor={3} position={[5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={2.5} modelPath={'models/star.glb'}/>
-
-        </Float>
+        {/* </Float> */}
     </group>
 }

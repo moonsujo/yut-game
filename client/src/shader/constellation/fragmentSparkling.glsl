@@ -8,7 +8,7 @@ void main()
 {
   // Light point
   float strength = distance(gl_PointCoord, vec2(0.5));
-  strength = 2.0 - strength;
+  strength = 1.6 - strength;
   strength = pow(strength * 1.1, 10.0);
 
   // Final color
