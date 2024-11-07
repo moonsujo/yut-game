@@ -52,5 +52,6 @@ export default function Home2Experience() {
             <Constellation omitFactor={2} position={[5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.5} modelPath={'models/star.glb'}/>
 
         {/* </Float> */}
+            <Constellation omitFactor={2} position={[-6.1,-1,3]} rotation={[-Math.PI/2, 0, Math.PI/12]} scale={1.2} modelPath={'models/star.glb'}/>
     </group>
 }
