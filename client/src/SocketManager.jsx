@@ -96,9 +96,6 @@ export const SocketManager = () => {
     useLoader(TextureLoader, 'textures/particles/7.png'), // heart
   ] 
 
-
-  // const params = useParams();
-
   useEffect(() => {
 
     socket.connect();

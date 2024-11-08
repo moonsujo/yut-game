@@ -32,7 +32,7 @@ export default function Home2Experience() {
         {/* <SaturnConstellation position={[-12.1,0,-6]} rotation={[-Math.PI/2, 0, 0]} scale={3}/> */}
         {/* <WolfConstellationBufferGeometry position={[-10.1,0,2]} rotation={[-Math.PI/2, 0, 0]} scale={2.5}/> */}
         {/* <Float rotationIntensity={0.02} speed={2} floatingRange={[0.1, 0.1]}> */}
-            <Constellation omitFactor={2} position={[-15.5,-1,-6]} rotation={[-Math.PI/2, 0, Math.PI/16]} scale={1.3} modelPath={'models/star.glb'}/>
+            <Constellation omitFactor={2} position={[-15.5,-1,-6.5]} rotation={[-Math.PI/2, 0, Math.PI/16]} scale={1.3} modelPath={'models/star.glb'}/>
         {/* </Float> */}
         {/* <Float rotationIntensity={0.05} speed={2} floatingRange={[0.1, 0.1]}>         */}
             <Constellation omitFactor={4} position={[-8.7,-1,-7.1]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={0.9} modelPath={'models/star.glb'}/>

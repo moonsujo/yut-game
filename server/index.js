@@ -154,7 +154,22 @@ async function addUser(socket, name) {
       await user.save();
     } else {
       const savedClient = JSON.parse(socket.handshake.query.client)
+      console.log('[addUser] savedClient', savedClient)
+      // in mongodb, when client leaves, the roomId and name haven't changed
+      // room refers to player by _id
+      // room[team].players array has objectIds, and that object's team hasn't been updated, which is why the host.team is -1 and 'players' is null
       user = await User.findOneAndUpdate({ roomId: savedClient.roomId, name: savedClient.name }, { socketId: socket.id, connectedToRoom: false })
+      if (!user) {
+        user = new User({
+          socketId: socket.id,
+          name,
+          team: -1,
+          roomId: null,
+          connectedToRoom: false
+        })
+        await user.save();
+      }
+      console.log('[addUser] updated user', user)
     }
   } catch (err) {
     console.log('[addUser]', err)
@@ -176,96 +191,101 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     .exec()
     for (const user of users) {
       try {
-        let userFound = await User.findById(user, 'socketId').exec()
-        let userSocketId = userFound.socketId
-        console.log(`[Room.watch] userSocketId`, userSocketId)
-        const serverEvent = data.fullDocument.serverEvent
-        console.log(`[Room.watch] serverEvent`, serverEvent)
-        if (serverEvent === "gameStart") {
-          io.to(userSocketId).emit("gameStart", {
-            teams: roomPopulated.teams,
-            gamePhase: data.fullDocument.gamePhase,
-            turn: data.fullDocument.turn,
-            gameLogs: data.fullDocument.gameLogs
-          })
-        } else if (serverEvent === "recordThrow") {
-          io.to(userSocketId).emit("recordThrow", {
-            teams: roomPopulated.teams,
-            gamePhaseUpdate: data.fullDocument.gamePhase,
-            turnUpdate: data.fullDocument.turn,
-            pregameOutcome: data.fullDocument.pregameOutcome,
-            yootOutcome: data.fullDocument.yootOutcome,
-            gameLogs: data.fullDocument.gameLogs
-          })
-        } else if (serverEvent === "move") {
-          io.to(userSocketId).emit("move", {
-            teamsUpdate: roomPopulated.teams,
-            turnUpdate: data.fullDocument.turn,
-            legalTiles: data.fullDocument.legalTiles,
-            tiles: data.fullDocument.tiles,
-            gameLogs: data.fullDocument.gameLogs,
-            selection: data.fullDocument.selection
-          })
-        } else if (serverEvent === "select") {
-          io.to(userSocketId).emit("select", {
-            selection: data.fullDocument.selection,
-            legalTiles: data.fullDocument.legalTiles
-          })
-        } else if (serverEvent === "throwYoot") {
-          io.to(userSocketId).emit('throwYoot', { 
-            yootOutcome: data.fullDocument.yootOutcome, 
-            yootAnimation: data.fullDocument.yootAnimation, 
-            teams: roomPopulated.teams, 
-            turn: data.fullDocument.turn
-          })
-        } else if (serverEvent === "score") {
-          io.to(userSocketId).emit('score', { 
-            teamsUpdate: roomPopulated.teams, 
-            turnUpdate: data.fullDocument.turn,
-            legalTiles: data.fullDocument.legalTiles,
-            tiles: data.fullDocument.tiles,
-            gameLogs: data.fullDocument.gameLogs,
-            selection: data.fullDocument.selection,
-            results: data.fullDocument.results,
-            gamePhase: data.fullDocument.gamePhase
-          })
-        } else if (serverEvent === "joinRoom") {
-          if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
-            io.to(userSocketId).emit('room', roomPopulated)
-          } else {
-            io.to(userSocketId).emit('joinRoom', { 
+        let userFound = await User.findById(user, 'socketId connectedToRoom roomId name').exec()
+        console.log(`[Room.watch] single user`, userFound)
+        console.log(`[Room.watch] userFound.roomId.valueOf()`, userFound.roomId.valueOf())
+        console.log(`[Room.watch] data.documentKey._id`, data.documentKey._id.valueOf())
+        if (userFound.roomId.valueOf() === data.documentKey._id.valueOf() && userFound.connectedToRoom) {
+          let userSocketId = userFound.socketId
+          console.log(`[Room.watch] userSocketId`, userSocketId)
+          const serverEvent = data.fullDocument.serverEvent
+          console.log(`[Room.watch] serverEvent`, serverEvent)
+          if (serverEvent === "gameStart") {
+            io.to(userSocketId).emit("gameStart", {
+              teams: roomPopulated.teams,
+              gamePhase: data.fullDocument.gamePhase,
+              turn: data.fullDocument.turn,
+              gameLogs: data.fullDocument.gameLogs
+            })
+          } else if (serverEvent === "recordThrow") {
+            io.to(userSocketId).emit("recordThrow", {
+              teams: roomPopulated.teams,
+              gamePhaseUpdate: data.fullDocument.gamePhase,
+              turnUpdate: data.fullDocument.turn,
+              pregameOutcome: data.fullDocument.pregameOutcome,
+              yootOutcome: data.fullDocument.yootOutcome,
+              gameLogs: data.fullDocument.gameLogs
+            })
+          } else if (serverEvent === "move") {
+            io.to(userSocketId).emit("move", {
+              teamsUpdate: roomPopulated.teams,
+              turnUpdate: data.fullDocument.turn,
+              legalTiles: data.fullDocument.legalTiles,
+              tiles: data.fullDocument.tiles,
+              gameLogs: data.fullDocument.gameLogs,
+              selection: data.fullDocument.selection
+            })
+          } else if (serverEvent === "select") {
+            io.to(userSocketId).emit("select", {
+              selection: data.fullDocument.selection,
+              legalTiles: data.fullDocument.legalTiles
+            })
+          } else if (serverEvent === "throwYoot") {
+            io.to(userSocketId).emit('throwYoot', { 
+              yootOutcome: data.fullDocument.yootOutcome, 
+              yootAnimation: data.fullDocument.yootAnimation, 
+              teams: roomPopulated.teams, 
+              turn: data.fullDocument.turn
+            })
+          } else if (serverEvent === "score") {
+            io.to(userSocketId).emit('score', { 
+              teamsUpdate: roomPopulated.teams, 
+              turnUpdate: data.fullDocument.turn,
+              legalTiles: data.fullDocument.legalTiles,
+              tiles: data.fullDocument.tiles,
+              gameLogs: data.fullDocument.gameLogs,
+              selection: data.fullDocument.selection,
+              results: data.fullDocument.results,
+              gamePhase: data.fullDocument.gamePhase
+            })
+          } else if (serverEvent === "joinRoom") {
+            if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
+              io.to(userSocketId).emit('room', roomPopulated)
+            } else {
+              io.to(userSocketId).emit('joinRoom', { 
+                spectators: roomPopulated.spectators,
+                teams: roomPopulated.teams,
+                host: roomPopulated.host,
+                gamePhase: roomPopulated.gamePhase
+              })
+            }
+          } else if (serverEvent === "joinTeam") {
+            io.to(userSocketId).emit("joinTeam", { 
               spectators: roomPopulated.spectators,
               teams: roomPopulated.teams,
+              gamePhase: roomPopulated.gamePhase,
               host: roomPopulated.host,
-              gamePhase: roomPopulated.gamePhase
+              turn: roomPopulated.turn // to set the throw count for the current team
             })
+          } else if (serverEvent === "reset") {
+            io.to(userSocketId).emit("reset", {
+              gamePhase: roomPopulated.gamePhase,
+              tiles: roomPopulated.tiles,
+              turn: roomPopulated.turn,
+              teams: roomPopulated.teams,
+            })
+          } else if (serverEvent === 'userDisconnect') {
+            console.log('user disconnect');
+            io.to(userSocketId).emit("userDisconnect", { 
+              spectators: roomPopulated.spectators,
+              teams: roomPopulated.teams,
+              gamePhase: roomPopulated.gamePhase,
+              host: roomPopulated.host
+            })
+          } else {
+            console.log(`[Room.watch] no serverEvent match`)
+            io.to(userSocketId).emit('room', roomPopulated)
           }
-        } else if (serverEvent === "joinTeam") {
-          io.to(userSocketId).emit("joinTeam", { 
-            spectators: roomPopulated.spectators,
-            teams: roomPopulated.teams,
-            gamePhase: roomPopulated.gamePhase,
-            host: roomPopulated.host,
-            turn: roomPopulated.turn // to set the throw count for the current team
-          })
-        } else if (serverEvent === "reset") {
-          io.to(userSocketId).emit("reset", {
-            gamePhase: roomPopulated.gamePhase,
-            tiles: roomPopulated.tiles,
-            turn: roomPopulated.turn,
-            teams: roomPopulated.teams,
-          })
-        } else if (serverEvent === 'userDisconnect') {
-          console.log('user disconnect', roomPopulated.host);
-          io.to(userSocketId).emit("userDisconnect", { 
-            spectators: roomPopulated.spectators,
-            teams: roomPopulated.teams,
-            gamePhase: roomPopulated.gamePhase,
-            host: roomPopulated.host
-          })
-        } else {
-          console.log(`[Room.watch] no serverEvent match`)
-          io.to(userSocketId).emit('room', roomPopulated)
         }
       } catch (err) {
         console.log(`[Room.watch] error getting user's socket id`, err)
@@ -402,12 +422,13 @@ io.on("connect", async (socket) => {
   }
 
   socket.on("joinRoom", async ({ roomId }) => {
-    // Add user to room
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
+      console.log('[joinRoom] user', user)
       let room = await Room.findOne({ _id: roomId }).exec()
       let operation = {}
-      if (user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
+      
+      if (user && user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
         if (user.team === -1) { // if spectator
           operation['$addToSet'] = { "spectators": user._id }
           operation['$set'] = { 
@@ -427,17 +448,17 @@ io.on("connect", async (socket) => {
           "serverEvent": 'joinRoom',
           "lastJoinedUser": user._id
         }
-        user.roomId = roomId
+        user.name = makeId(5);
         user.team = -1
-        user.connectedToRoom = true
-        user.save()
       }
+      user.roomId = roomId
+      user.save()
       if (room.host === null) {
         operation['host'] = user._id
       }
       await Room.findOneAndUpdate( { _id: roomId }, operation )
     } catch (err) {
-      console.log(`[joinRoom] error adding user to room as spectator`, err)
+      console.log(`[joinRoom] error adding user to room`, err)
     }
 
     // Add user as host if room is empty
@@ -459,6 +480,7 @@ io.on("connect", async (socket) => {
     try {
       player = await User.findOneAndUpdate({ 'socketId': socket.id }, { team, name }).exec()
       player.save()
+      console.log('[joinTeam] player', player)
 
       let operation = {}
       operation['$pullAll'] = { 
@@ -483,6 +505,7 @@ io.on("connect", async (socket) => {
 
   function getHostTurn(room) {
     const host = room.host
+    console.log('[getHostTurn] host', host)
     let turn;
     room.teams[host.team].players.forEach(function (player, i) {
       if (player._id.valueOf() === host._id.valueOf()) {
@@ -1198,6 +1221,29 @@ io.on("connect", async (socket) => {
     }
   })
 
+  socket.on("disconnectFromRoom", async ({ roomId }) => {
+    console.log(`${socket.id} disconnectFromRoom`)
+    try {
+
+      let user = await User.findOneAndUpdate({ 'roomId': roomId, 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
+
+      await Room.updateOne(
+        { 
+          _id: roomId
+        }, 
+        {
+          $set: {
+            'serverEvent': 'userDisconnect'
+          } 
+        }
+      )
+
+      console.log(`[disconnectFromRoom] user to disconnect from room`, user)
+    } catch (err) {
+      console.log(`[disconnectFromRoom] error disconnecting user from room`, err)
+    }
+  })
+
   socket.on("disconnect", async () => {
     console.log(`${socket.id} disconnect`)
     try {
@@ -1209,7 +1255,7 @@ io.on("connect", async (socket) => {
           _id: user.roomId
         }, 
         {
-            $set: {
+          $set: {
             'serverEvent': 'userDisconnect'
           } 
         }

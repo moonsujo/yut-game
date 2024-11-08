@@ -80,6 +80,10 @@ export default function Game() {
 
   useEffect(() => {
     socket.emit('joinRoom', { roomId: params.id })
+    return (() => {
+      // remove player from room (grey text)
+      socket.emit('disconnectFromRoom', { roomId: params.id });
+    })
   }, [])
 
   function LetsPlayButton({ position }) {

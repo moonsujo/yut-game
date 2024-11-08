@@ -9,6 +9,7 @@ import { MeshStandardMaterial } from 'three';
 import YootMesh from './meshes/YootMesh';
 import { useFrame } from '@react-three/fiber';
 import { animated, useSpring } from '@react-spring/three';
+import { useParams } from 'wouter';
 
 export default function Team({ position=[0,0,0], scale=1, team, device }) {
   const [teams] = useAtom(teamsAtom)
@@ -16,6 +17,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
   const [host] = useAtom(hostAtom);
   const [turn] = useAtom(turnAtom)
   const [client] = useAtom(clientAtom);
+  const params = useParams();
 
   function JoinTeamButton() {
     const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
@@ -239,7 +241,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
           >
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h) ' : '')}
-            <meshStandardMaterial color={ value.connectedToRoom ? 'yellow' : 'gray' }/>
+            <meshStandardMaterial color={ value.roomId === params.id && value.connectedToRoom ? 'yellow' : 'gray' }/>
           </Text3D>
           <group ref={yootIconRef} scale={0} position={[0, 0.17, 0]}>
             <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04}/>

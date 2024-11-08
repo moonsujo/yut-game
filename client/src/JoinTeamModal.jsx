@@ -48,7 +48,7 @@ export default function JoinTeamModal({ position, rotation, scale, teams }) {
       setAlert('Can only contain letters and numbers.')
     } else {
       setAlert("")
-      socket.emit("joinTeam", { team: joinTeam, name }, ({ player }) => {
+      socket.emit("joinTeam", { team: joinTeam, name: name.toUpperCase() }, ({ player }) => {
         if (player) { // refactor into mongodb stream
           setName('')
           setJoinTeam(null);
