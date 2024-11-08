@@ -179,7 +179,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -314,7 +318,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -446,7 +454,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -580,7 +592,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -715,7 +731,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -851,7 +871,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -987,7 +1011,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
@@ -1122,7 +1150,11 @@ export default function PiecesOnBoard() {
                     },
                     to: [
                         {
-                            scale: 0
+                            scale: 0,
+                            config: {
+                                tension: 170,
+                                friction: 26
+                            },
                         }
                     ],
                     loop: false,
