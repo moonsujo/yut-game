@@ -154,7 +154,6 @@ async function addUser(socket, name) {
       await user.save();
     } else {
       const savedClient = JSON.parse(socket.handshake.query.client)
-      console.log('[addUser] savedClient', savedClient)
       // in mongodb, when client leaves, the roomId and name haven't changed
       // room refers to player by _id
       // room[team].players array has objectIds, and that object's team hasn't been updated, which is why the host.team is -1 and 'players' is null
@@ -169,7 +168,6 @@ async function addUser(socket, name) {
         })
         await user.save();
       }
-      console.log('[addUser] updated user', user)
     }
   } catch (err) {
     console.log('[addUser]', err)
@@ -179,11 +177,11 @@ async function addUser(socket, name) {
 
 // Room stream listener
 Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
-  console.log(`[Room.watch] data`, data)
+  // console.log(`[Room.watch] data`, data)
   if (data.operationType === 'insert' || data.operationType === 'update') {
     // Emit document to all clients in the room
     let users = data.fullDocument.spectators.concat(data.fullDocument.teams[0].players.concat(data.fullDocument.teams[1].players))
-    console.log(`[Room.watch] users`, users)
+    // console.log(`[Room.watch] users`, users)
     let roomPopulated = await Room.findById(data.documentKey._id)
     .populate('spectators')
     .populate('host')
@@ -192,14 +190,10 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     for (const user of users) {
       try {
         let userFound = await User.findById(user, 'socketId connectedToRoom roomId name').exec()
-        console.log(`[Room.watch] single user`, userFound)
-        console.log(`[Room.watch] userFound.roomId.valueOf()`, userFound.roomId.valueOf())
-        console.log(`[Room.watch] data.documentKey._id`, data.documentKey._id.valueOf())
+        // console.log(`[Room.watch] single user`, userFound)
         if (userFound.roomId.valueOf() === data.documentKey._id.valueOf() && userFound.connectedToRoom) {
           let userSocketId = userFound.socketId
-          console.log(`[Room.watch] userSocketId`, userSocketId)
           const serverEvent = data.fullDocument.serverEvent
-          console.log(`[Room.watch] serverEvent`, serverEvent)
           if (serverEvent === "gameStart") {
             io.to(userSocketId).emit("gameStart", {
               teams: roomPopulated.teams,
@@ -275,7 +269,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               teams: roomPopulated.teams,
             })
           } else if (serverEvent === 'userDisconnect') {
-            console.log('user disconnect');
             io.to(userSocketId).emit("userDisconnect", { 
               spectators: roomPopulated.spectators,
               teams: roomPopulated.teams,
@@ -283,7 +276,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               host: roomPopulated.host
             })
           } else {
-            console.log(`[Room.watch] no serverEvent match`)
             io.to(userSocketId).emit('room', roomPopulated)
           }
         }
@@ -369,7 +361,7 @@ io.on("connect", async (socket) => {
         serverEvent: ''
       })
       await room.save();
-      console.log('[createRoom] room', room)
+      // console.log('[createRoom] room', room)
       return callback({ roomId: objectId })
     } catch (err) {
       return callback({ error: err.message })
@@ -424,7 +416,6 @@ io.on("connect", async (socket) => {
   socket.on("joinRoom", async ({ roomId }) => {
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
-      console.log('[joinRoom] user', user)
       let room = await Room.findOne({ _id: roomId }).exec()
       let operation = {}
       
@@ -615,10 +606,8 @@ io.on("connect", async (socket) => {
       '5': [43],
       '0': [1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 18],
     }
-    console.log(`[pickAnimation] outcome ${outcome}`)
     const listOfAnimations = outcomeToPseudoIndex[outcome]
     let pseudoIndex = listOfAnimations[Math.floor(Math.random() * listOfAnimations.length)]
-    console.log(`[pickAnimation] length of animations ${listOfAnimations.length}, pseudoIndex ${pseudoIndex}`)
     return pseudoIndex
   }
 
@@ -1103,7 +1092,6 @@ io.on("connect", async (socket) => {
         // pass check
         let throws = room.teams[movingTeam].throws;
         moves[selectedMove.move]--;
-        console.log(`[score] throws`, throws, `moves`, moves)
         if (throws === 0 && isEmptyMoves(moves.toObject())) {
           const newTurn = passTurn(room.turn, room.teams)
           await Room.findOneAndUpdate(
@@ -1222,7 +1210,7 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("disconnectFromRoom", async ({ roomId }) => {
-    console.log(`${socket.id} disconnectFromRoom`)
+    console.log(`[disconnectFromRoom] ${socket.id} disconnectFromRoom`)
     try {
 
       let user = await User.findOneAndUpdate({ 'roomId': roomId, 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
@@ -1245,7 +1233,7 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("disconnect", async () => {
-    console.log(`${socket.id} disconnect`)
+    console.log(`[disconnect] ${socket.id} disconnect`)
     try {
 
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
