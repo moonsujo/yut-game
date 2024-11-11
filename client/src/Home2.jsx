@@ -15,19 +15,10 @@ import { clientAtom, deviceAtom } from './GlobalState';
 import Board from './Board';
 import { Physics } from '@react-three/rapier';
 import GameCamera from './GameCamera';
-import StarsShader from './shader/stars/StarsShader';
 import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
-import MilkyWay from './shader/MilkyWay';
-import * as THREE from 'three';
-import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing';
-import { ToneMappingMode } from 'postprocessing';
 import useResponsiveSetting from './ResponsiveSetting';
-import useMeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
-import { useLoader } from '@react-three/fiber';
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
-import StarsPatternsShader from './shader/starsPatterns2/StarsPatternsShader';
 
 export default function Home2() {
 

@@ -15,6 +15,7 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   const delays = new Float32Array(count);
   const texture = useLoader(TextureLoader, texturePath)
 
+  // #region particle attributes
   positions[0] = 1.0
   positions[1] = 0.0
   positions[2] = 0.5
@@ -86,6 +87,8 @@ export default function TitleStarsShader({ position=[0,0,0], size=1.0, texturePa
   colors[23] = 0.7
   scales[7] = 1.0
   delays[7] = 1.5
+
+  // #endregion
 
   const { gl } = useThree();
   gl.setPixelRatio(Math.min(window.devicePixelRatio, 1))

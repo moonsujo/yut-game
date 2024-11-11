@@ -21,22 +21,8 @@ export default function Neptune({ position=[0,0,0], rotation=[0,0,0], scale=1 })
           material={materials["Blue Planet"]}
           scale={1.3}
         />
-        <NeptuneParticles
-          countNeptune1={350}
-          countNeptune2={470}
-          sizeNeptune={0.07 * scale}
-          radius1MinNeptune={2.74}
-          radius1MaxNeptune={3.72}
-          radius2MinNeptune={4.09}
-          radius2MaxNeptune={5.27}
-          colorOne={"#3289FF"}
-          colorTwo={"#6EF2FE"}
-          countSparkles1={20}
-          countSparkles2={18}
-          scale={scale * 0.1}
-        />
+        <NeptuneParticles/>
       </group>
-      {/* <HelperArrow  */}
     </group>
   );
 }

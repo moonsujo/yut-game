@@ -5,7 +5,7 @@ import starsFragmentShader from './fragment.glsl'
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
-export default function StarsPatternsShader({ position=[0,0,0], size=1.0, count=1000, texturePath }) {
+export default function StarsPatterns2Shader({ position=[0,0,0], size=1.0, count=1000, texturePath }) {
 
   const positions1 = new Float32Array(count * 3);
   const colors1 = new Float32Array(count * 3);

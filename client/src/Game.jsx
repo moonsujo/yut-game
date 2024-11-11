@@ -73,8 +73,7 @@ export default function Game() {
   const [showRulebook, setShowRulebook] = useState(false);
   const [client] = useAtom(clientAtom)
   const [teams] = useAtom(teamsAtom)
-
-  const [yootAnimation, setYootAnimation] = useAtom(yootAnimationAtom);
+  const [yootAnimation] = useAtom(yootAnimationAtom);
   
   const params = useParams();
 

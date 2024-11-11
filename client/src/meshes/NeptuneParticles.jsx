@@ -1,6 +1,4 @@
-import React, { useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import { useRef, useEffect, useState } from "react";
+import React from "react";
 import * as THREE from "three";
 
 function randomNumberBetween(min, max) {
@@ -24,12 +22,10 @@ const positions2 = new Float32Array(countNeptune2 * 3);
 const positionsSparkles2 = new Float32Array(countSparkles2 * 3);
 const colors1 = new Float32Array(countNeptune1 * 3);
 const colors2 = new Float32Array(countNeptune2 * 3);
-const colorsSparkles2 = new Float32Array(countSparkles2 * 3);
 const colorInitial = new THREE.Color(colorOneHex);
 const colorFinal = new THREE.Color(colorTwoHex);
 const textureLoader = new THREE.TextureLoader();
 const pointsMap = textureLoader.load("/textures/particles/1.png");
-const sparklesMap = textureLoader.load("/textures/particles/8.png");
 
 for (let i = 0; i < countNeptune1; i++) {
   const i3 = i * 3;
@@ -86,7 +82,7 @@ for (let i = 0; i < countNeptune2; i++) {
   colors2[i3 + 2] = mixedColor.b;
 }
 
-function NeptuneParticles2({scale}) {
+function NeptuneParticles2() {
   return (
     <group>
       <points>
@@ -121,27 +117,6 @@ function NeptuneParticles2({scale}) {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={positionsSparkles1.length / 3}
-            array={positionsSparkles1}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          color="white"
-          size={sizeNeptune * 2 * scale}
-          sizeAttenuation
-          transparent
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          // depthTest={false}
-          alphaTest={0}
-          map={sparklesMap}
-        />
-      </points>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
             count={positions2.length / 3}
             array={positions2}
             itemSize={3}
@@ -167,42 +142,11 @@ function NeptuneParticles2({scale}) {
           alphaTest={0}
         />
       </points>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={positionsSparkles2.length / 3}
-            array={positionsSparkles2}
-            itemSize={3}
-          />
-          <bufferAttribute
-            attach="attributes-color"
-            count={colorsSparkles2.length / 3}
-            array={colorsSparkles2}
-            itemSize={3}
-            normalized
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          color="white"
-          size={sizeNeptune * 4}
-          sizeAttenuation
-          transparent
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          // depthTest={false}
-          alphaTest={0}
-          map={sparklesMap}
-          vertexColors={true}
-        />
-      </points>
     </group>
   );
 }
 
-export default function NeptuneParticles({
-  scale,
-}) {
+export default function NeptuneParticles() {
 
-  return NeptuneParticles2(scale);
+  return NeptuneParticles2();
 }

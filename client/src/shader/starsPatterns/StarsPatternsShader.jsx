@@ -1,14 +1,11 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect } from "react";
 import * as THREE from "three";
 import starsVertexShader from './vertex.glsl'
 import starsFragmentShader from './fragment.glsl'
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 export default function StarsPatternsShader({ position=[0,0,0], count=1000 }) {
-
-  console.log('stars patterns shader')
-
 
   const { scene } = useThree();
 
