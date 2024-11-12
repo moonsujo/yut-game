@@ -11,7 +11,7 @@ import { useAnimations, useGLTF } from '@react-three/drei';
 
 export default function YootNew({ animation, scale, position }) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/yoot-animated.glb')
+  const { nodes, materials, animations } = useGLTF('models/yoot-animation-2.glb')
   const { actions, mixer } = useAnimations(animations, group)
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function YootNew({ animation, scale, position }) {
   }, [animation])
 
   return <group ref={group} scale={scale} position={position} dispose={null}>
-    <group name="Scene" position={[0, 0, 0]}>
+      <group name="Scene">
       <mesh
         name="yoot1"
         castShadow
@@ -65,4 +65,5 @@ export default function YootNew({ animation, scale, position }) {
   </group>
 }
 
-useGLTF.preload('models/yoot-animated.glb')
+// must do this to prevent flash on yoot throw
+useGLTF.preload('models/yoot-animation-2.glb')

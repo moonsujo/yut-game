@@ -38,10 +38,10 @@ export const socket = io(
 // export const socket = io("http://192.168.86.158:3000"); // http://192.168.1.181:3000 //http://192.168.86.158:3000
 // doesn't work when another app is running on the same port
 export const SocketManager = () => {
-  const [client, setClient] = useAtom(clientAtom);
-  const [teams, setTeams] = useAtom(teamsAtom)
-  const [turn, setTurn] = useAtom(turnAtom);
-  const [_room, setRoom] = useAtom(roomAtom);
+  const [_client, setClient] = useAtom(clientAtom);
+  const [_teams, setTeams] = useAtom(teamsAtom)
+  const [_turn, setTurn] = useAtom(turnAtom);
+  const [_room] = useAtom(roomAtom);
   const [_messages, setMessages] = useAtom(messagesAtom);
   const [_gameLogs, setGameLogs] = useAtom(gameLogsAtom);
   const [_host, setHost] = useAtom(hostAtom)
@@ -49,24 +49,26 @@ export const SocketManager = () => {
   const [_readyToStart, setReadyToStart] = useAtom(readyToStartAtom)
   const [_yootActive, setYootActive] = useAtom(yootActiveAtom)
   const [_disconnect, setDisconnect] = useAtom(disconnectAtom)
-  const [_yootThrowValues, setYootThrowValues] = useAtom(yootThrowValuesAtom)
-  const [_initialYootThrow, setInitialYootThrow] = useAtom(initialYootThrowAtom)
-  const [_yootThrown, setYootThrown] = useAtom(yootThrownAtom)
+  const [_yootThrowValues] = useAtom(yootThrowValuesAtom)
+  const [_initialYootThrow] = useAtom(initialYootThrowAtom)
+  const [_yootThrown] = useAtom(yootThrownAtom)
   const [_hasTurn, setHasTurn] = useAtom(hasTurnAtom)
-  const [_boomText, setBoomText] = useAtom(boomTextAtom)
-  const [_mainAlert, setMainAlert] = useAtom(mainAlertAtom)
-  const [_turnAlertActive, setTurnAlertActive] = useAtom(turnAlertActiveAtom)
-  const [_moveResult, setMoveResult] = useAtom(moveResultAtom)
-  const [_throwResult, setThrowResult] = useAtom(throwResultAtom)
-  const [_pregameAlert, setPregameAlert] = useAtom(pregameAlertAtom)
-  const [_throwAlert, setThrowAlert] = useAtom(throwAlertAtom)
+  const [_boomText] = useAtom(boomTextAtom)
+  const [_mainAlert] = useAtom(mainAlertAtom)
+  const [_turnAlertActive] = useAtom(turnAlertActiveAtom)
+  const [_moveResult] = useAtom(moveResultAtom)
+  const [_throwResult] = useAtom(throwResultAtom)
+  const [_pregameAlert] = useAtom(pregameAlertAtom)
+  const [_throwAlert] = useAtom(throwAlertAtom)
+
   // Use state to check if the game phase changed
-  const [gamePhase, setGamePhase] = useAtom(gamePhaseAtom)
+  const [_gamePhase, setGamePhase] = useAtom(gamePhaseAtom)
   const [_displayMoves, setDisplayMoves] = useAtom(displayMovesAtom)
   const [_selection, setSelection] = useAtom(selectionAtom)
   const [_legalTiles, setLegalTiles] = useAtom(legalTilesAtom)
   const [_helperTiles, setHelperTiles] = useAtom(helperTilesAtom)
   const [_tiles, setTiles] = useAtom(tilesAtom)
+  
   // Pieces on the board
   const [_pieceTeam0Id0, setPieceTeam0Id0] = useAtom(pieceTeam0Id0Atom)
   const [_pieceTeam0Id1, setPieceTeam0Id1] = useAtom(pieceTeam0Id1Atom)
@@ -86,7 +88,7 @@ export const SocketManager = () => {
   const [_yootOutcome, setYootOutcome] = useAtom(yootOutcomeAtom)
   const [_currentPlayerName, setCurrentPlayerName] = useAtom(currentPlayerNameAtom)
   const [_alerts, setAlerts] = useAtom(alertsAtom)
-  const [_catchOutcome, setCatchOutcome] = useAtom(catchOutcomeAtom)
+  const [_catchOutcome] = useAtom(catchOutcomeAtom)
   const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
   const [_catchPath, setCatchPath] = useAtom(catchPathAtom);
