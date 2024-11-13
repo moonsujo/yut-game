@@ -44,6 +44,8 @@ import { useAtom } from 'jotai';
 import GulToken from './moveTokens/GulToken';
 import GeToken from './moveTokens/GeToken';
 import YootToken from './moveTokens/YootToken';
+import YootMesh from './meshes/YootMesh';
+import YootRhino from './meshes/YootRhino';
 
 export default function HowToPlay({ 
   device, 
@@ -604,6 +606,11 @@ export default function HowToPlay({
     const materials = useGLTF("models/yoot-highlight.glb").materials;
     const nodesRhino = useGLTF("models/yoot-rhino-highlight.glb").nodes;
     const materialsRhino = useGLTF("models/yoot-rhino-highlight.glb").materials;
+    
+    const nodes2 = useGLTF("models/yoot-v2-regular.glb").nodes;
+    const materials2 = useGLTF("models/yoot-v2-regular.glb").materials;
+    const nodesRhino2 = useGLTF("models/yoot-v2-backdo.glb").nodes;
+    const materialsRhino2 = useGLTF("models/yoot-v2-backdo.glb").materials;
 
     const [startTime, setStartTime] = useState(0)
     const yoot0 = useRef();
@@ -858,26 +865,13 @@ export default function HowToPlay({
           scale={0.5}
           rotation={[-Math.PI/8*6, 0, 0]}
         >
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Cylinder011.geometry}
-            material={materials["Texture wrap.008"]}
-            position={[0, -0.5, 0]}
+          <YootMesh
             rotation={[0, 0, -Math.PI / 2]}
-            scale={[1, 6.161, 1]}
           />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Plane.geometry}
-            material={nodes.Plane.material}
-            position={[0, -0.521, 0]}
-            rotation={[-Math.PI, 0, 0]}
-            scale={[4.905, 1, 0.455]}
-          >
+          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
+            <cylinderGeometry args={[1, 1, 0.01]}/>
             <meshStandardMaterial 
-              color="white" 
+              color="#B9B9B9" 
               transparent 
               opacity={0}
               ref={yoot0Mat}
@@ -899,26 +893,13 @@ export default function HowToPlay({
           scale={0.5}
           rotation={[-Math.PI/2 + Math.PI/4, 0, 0]}
         >
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Cylinder011.geometry}
-            material={materials["Texture wrap.008"]}
-            position={[0, -0.5, 0]}
+          <YootMesh
             rotation={[0, 0, -Math.PI / 2]}
-            scale={[1, 6.161, 1]}
           />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Plane.geometry}
-            material={nodes.Plane.material}
-            position={[0, -0.521, 0]}
-            rotation={[-Math.PI, 0, 0]}
-            scale={[4.905, 1, 0.455]}
-          >
+          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
+            <cylinderGeometry args={[1, 1, 0.01]}/>
             <meshStandardMaterial 
-              color="white" 
+              color="#B9B9B9" 
               transparent 
               opacity={0}
               ref={yoot1Mat}
@@ -940,26 +921,13 @@ export default function HowToPlay({
           scale={0.5}
           rotation={[Math.PI/2 + Math.PI/4, 0, 0]}
         >
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Cylinder011.geometry}
-            material={materials["Texture wrap.008"]}
-            position={[0, -0.5, 0]}
+          <YootMesh
             rotation={[0, 0, -Math.PI / 2]}
-            scale={[1, 6.161, 1]}
           />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Plane.geometry}
-            material={nodes.Plane.material}
-            position={[0, -0.521, 0]}
-            rotation={[-Math.PI, 0, 0]}
-            scale={[4.905, 1, 0.455]}
-          >
+          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
+            <cylinderGeometry args={[1, 1, 0.01]}/>
             <meshStandardMaterial 
-              color="white" 
+              color="#B9B9B9" 
               transparent 
               opacity={0}
               ref={yoot2Mat}
@@ -981,26 +949,14 @@ export default function HowToPlay({
           scale={0.5}
           rotation={[Math.PI/2 - Math.PI/4, 0, 0]}
         >
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodesRhino.Cylinder007.geometry}
-            material={materialsRhino["Texture wrap.005"]}
-            position={[0, -0.4, 0]}
+          <YootRhino
+            position={[0, 0.3, 0]}
             rotation={[0, 0, -Math.PI / 2]}
-            scale={[1, 6.161, 1]}
           />
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodesRhino.Plane001.geometry}
-            material={nodesRhino.Plane001.material}
-            position={[0, -0.422, 0]}
-            rotation={[-Math.PI, 0, 0]}
-            scale={[4.892, 1, 0.443]}
-          >
+          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
+            <cylinderGeometry args={[1, 1, 0.01]}/>
             <meshStandardMaterial 
-              color="white" 
+              color="#B9B9B9" 
               transparent 
               opacity={0}
               ref={yoot3Mat}

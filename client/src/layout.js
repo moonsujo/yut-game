@@ -1821,7 +1821,7 @@ export default {
         yoot: {
           yoot0Wrapper: {
             restPos: {
-              x: -2,
+              x: -2.2,
               y: 0,
               z: 1
             },
@@ -1831,7 +1831,7 @@ export default {
               z: 1
             },
             liePos: {
-              x: -2.7,
+              x: -2.8,
               y: 0,
               z: 1,
             }
@@ -1839,7 +1839,7 @@ export default {
           yoot1Wrapper: {
             restPos: {
               x: -1.5,
-              y: 0.5,
+              y: 1.0,
               z: 1
             },
             throwPos: {
@@ -1865,15 +1865,15 @@ export default {
               z: 1
             },
             liePos: {
-              x: -0.3,
+              x: -0.2,
               y: 0,
               z: 1,
             }
           },
           yoot3Wrapper: {
             restPos: {
-              x: -0.1,
-              y: 0.7,
+              x: 0.1,
+              y: 0.8,
               z: 1
             },
             throwPos: {
@@ -1882,7 +1882,7 @@ export default {
               z: 1
             },
             liePos: {
-              x: 0.8,
+              x: 1.1,
               y: 0,
               z: 1,
             }

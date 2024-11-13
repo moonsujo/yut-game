@@ -10,7 +10,7 @@ export default function YootRhino({
   scale=1
 }) {
   const { scene, materials } = useGLTF(
-    "models/yoot-rhino.glb"
+    "models/yoot-v2-backdo.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);
@@ -20,9 +20,10 @@ export default function YootRhino({
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cylinder007.geometry}
-        material={materials["Texture wrap.005"]}
-        scale={[1, 6.161, 1]}
+        geometry={nodes.yoot0.geometry}
+        material={materials['Material.006']}
+        position={[0,0,0]}
+        rotation={[Math.PI, 0, -1.539]}
       />
     </group>
   );

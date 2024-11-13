@@ -8,6 +8,7 @@ import { animationPlayingAtom, clientAtom, hasTurnAtom, pieceAnimationPlayingAto
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
+import YootMesh from './meshes/YootMesh';
 
 export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
   const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
@@ -23,7 +24,6 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const [hasTurn] = useAtom(hasTurnAtom)
   const [enabledLocal, setEnabledLocal] = useState(false);
   const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
-  // console.log('animationPlaying', animationPlaying, 'pieceAnimationPlaying', pieceAnimationPlaying, 'hasTurn', hasTurn, 'hasThrow', hasThrow)
 
   // for the throw count
   const [client] = useAtom(clientAtom);
@@ -31,8 +31,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]
-  const scaleYoot = 0.15
-  const scaleYootArray=[1 * scaleYoot, 6.161 * scaleYoot, 1 * scaleYoot]
+
+  const scaleYootArray=[0.2, 0.14, 0.14]
 
   useFrame((state, delta) => {
     if (enabled) {
@@ -115,50 +115,30 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
         <meshStandardMaterial color="#000B18"/>
       </mesh>
       <group position={[0.3, 0.1, 0]}>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={yootNodes.Cylinder007.geometry}
-          position={[0,0,-0.45]}
-          material={yootMaterials["Texture wrap.005"]}
+        <YootMesh
+          position={[-0.05,0.1,-0.535]}
           rotation={[0,0,-Math.PI/2]}
           scale={scaleYootArray}
-        >
-          { !enabled && <meshStandardMaterial color="grey"/>}
-        </mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={yootNodes.Cylinder007.geometry}
-          position={[0,0,-0.15]}
-          material={yootMaterials["Texture wrap.005"]}
+          active={enabled}
+        />
+        <YootMesh
+          position={[-0.05,0.1,-0.19]}
           rotation={[0,0,-Math.PI/2]}
           scale={scaleYootArray}
-          >
-          { !enabled && <meshStandardMaterial color="grey"/>}
-        </mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={yootNodes.Cylinder007.geometry}
-          position={[0,0,0.15]}
-          material={yootMaterials["Texture wrap.005"]}
+          active={enabled}
+        />
+        <YootMesh
+          position={[-0.05,0.1,0.15]}
           rotation={[0,0,-Math.PI/2]}
           scale={scaleYootArray}
-          >
-          { !enabled && <meshStandardMaterial color="grey"/>}
-        </mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={yootNodes.Cylinder007.geometry}
-          position={[0,0,0.45]}
-          material={yootMaterials["Texture wrap.005"]}
+          active={enabled}
+        />
+        <YootMesh
+          position={[-0.05,0.1,0.49]}
           rotation={[0,0,-Math.PI/2]}
           scale={scaleYootArray}
-          >
-          { !enabled && <meshStandardMaterial color="grey"/>}
-        </mesh>
+          active={enabled}
+        />
       </group>
       <Text3D 
         font="/fonts/Luckiest Guy_Regular.json" 

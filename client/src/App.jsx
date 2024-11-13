@@ -24,11 +24,6 @@ export default function App () {
       onCreated={ created }
     >
       {/* <Perf/> */}
-      {/* <directionalLight position={ [ 0, 10, 0 ] } intensity={ 4 } />
-      <ambientLight intensity={ 0.9 } /> */}
-      
-      {/* <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
-        <ambientLight intensity={ 1.5 } /> */}
       <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
       <ambientLight intensity={ 1.5 } />
       <ParticleSystem/>

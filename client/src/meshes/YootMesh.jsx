@@ -8,30 +8,43 @@ export default function YootMesh({
   position, 
   rotation=[0, 0, 0], 
   scale=1,
-  active=true
+  active=true,
 }) {
+
   const { scene, materials } = useGLTF(
-    "models/yoot.glb"
+    "models/yoot-v2-regular.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);
+
+  // can't assign two materials to one mesh.
+  // assign the other material to another mesh and export it
+  const modelDisabled = useGLTF('models/yoot-v2-regular-disabled.glb')
+  const sceneDisabled = modelDisabled.scene
+  const materialDisabled = modelDisabled.materials
+  const cloneDisabled = useMemo(() => SkeletonUtils.clone(sceneDisabled), [sceneDisabled]);
+  const graphDisabled = useGraph(cloneDisabled);
+  const nodesDisabled = graphDisabled.nodes
 
   return (
     <group position={position} rotation={rotation} scale={scale}>
       { active ? <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder007.geometry}
-          material={materials["Texture wrap.005"]}
-          scale={[1, 6.161, 1]}
+          geometry={nodes.yoot1.geometry}
+          material={materials['Material.005']}
+          position={[0,0,0]}
+          rotation={[Math.PI, 0, -1.539]}
         /> :
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder007.geometry}
-          scale={[1, 6.161, 1]}
+          geometry={nodesDisabled.yoot1.geometry}
+          material={materialDisabled['material-disabled']}
+          position={[0,0,0]}
+          rotation={[Math.PI, 0, -1.539]}
         >
-          <meshStandardMaterial color='grey'/>
+          {/* <meshStandardMaterial color='grey'/> */}
         </mesh>
       }
     </group>

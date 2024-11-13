@@ -144,16 +144,16 @@ export default function About(props) {
     }
 
     return <group {...props}>
-      <animated.group rotation={springs0.rotation} position={[0,0,0]}>
+      <animated.group rotation={springs0.rotation} position={[0,0,-3.5]}>
         <YootMesh scale={0.5}/>
       </animated.group>
-      <animated.group rotation={springs1.rotation} position={[0,0,-1]}>
+      <animated.group rotation={springs1.rotation} position={[0,0,-2.2]}>
         <YootMesh scale={0.5}/>
       </animated.group>
-      <animated.group rotation={springs2.rotation} position={[0,0,-2]}>
+      <animated.group rotation={springs2.rotation} position={[0,0,-0.9]}>
         <YootMesh scale={0.5}/>
       </animated.group>
-      <animated.group rotation={springs3.rotation} position={[0,0,-3]}>
+      <animated.group rotation={springs3.rotation} position={[0,0,0.4]}>
         <YootRhino rotation={[Math.PI, 0, 0]} scale={0.5}/>
       </animated.group>
       <mesh position={[0, 0, -1.5]} onPointerEnter={handlePointerEnter} onPointerLeave={handlePointerLeave}>
