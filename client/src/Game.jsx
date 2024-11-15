@@ -52,13 +52,13 @@ import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
-import { useSounds } from "./hooks/useSounds.jsx";
+import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 
 // There should be no state
 export default function Game() {
   
   useResponsiveSetting();
-  const [playSound] = useSounds();
+  const [playMusic] = useMusicPlayer();
   const [device] = useAtom(deviceAtom)
   const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
@@ -186,9 +186,7 @@ export default function Game() {
         e.stopPropagation();
         if (readyToStart) {
           socket.emit("startGame", { roomId: params.id })
-          const audio = new Audio('/sounds/music/magnetic-lofi.mp3');
-          audio.volume=0.3;
-          audio.play();
+          playMusic();
         }
         setPointerDown(false)
         pushApi.start({

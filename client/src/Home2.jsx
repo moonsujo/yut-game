@@ -19,12 +19,10 @@ import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 import useResponsiveSetting from './ResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
-import { useSounds } from './hooks/useSounds';
 
 export default function Home2() {
 
   useResponsiveSetting();
-  const [playSound] = useSounds();
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
   const [client] = useAtom(clientAtom)
@@ -222,7 +220,9 @@ export default function Home2() {
       socket.emit('createRoom', { hostId: client._id }, ({ roomId }) => {
         setLocation(`/${roomId}`)
       })
-      playSound('sounds/effects/boot-up.mp3')
+      const audio = new Audio('sounds/effects/boot-up.mp3');
+      audio.volume=0.3;
+      audio.play();
     }
 
     return <group position={position} rotation={rotation} scale={scale}>
