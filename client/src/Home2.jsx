@@ -219,8 +219,10 @@ export default function Home2() {
         setLocation(`/${roomId}`)
         
         const audio = new Audio('sounds/effects/boot-up.mp3')
+        audio.preload = 'auto';
+        audio.playsInline = true;
         audio.volume = 0.3;
-        audio.play();
+        audio.play().catch(error => console.log('Error playing audio:', error));
       })
     }
 

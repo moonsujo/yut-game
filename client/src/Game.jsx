@@ -186,9 +186,10 @@ export default function Game() {
           socket.emit("startGame", { roomId: params.id })
           
           const audio = new Audio('sounds/music/magnetic-lofi.mp3')
-          console.log(audio)
+          audio.preload = 'auto';
+          audio.playsInline = true;
           audio.volume = 0.3;
-          audio.play();
+          audio.play().catch(error => console.log('Error playing audio:', error));
         }
         setPointerDown(false)
         pushApi.start({
