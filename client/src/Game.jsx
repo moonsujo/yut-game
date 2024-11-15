@@ -58,7 +58,7 @@ import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 export default function Game() {
   
   useResponsiveSetting();
-  const [playMusic] = useMusicPlayer();
+  // const [playMusic] = useMusicPlayer();
   const [device] = useAtom(deviceAtom)
   const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
@@ -186,7 +186,6 @@ export default function Game() {
         e.stopPropagation();
         if (readyToStart) {
           socket.emit("startGame", { roomId: params.id })
-          playMusic();
         }
         setPointerDown(false)
         pushApi.start({
