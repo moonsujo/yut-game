@@ -20,6 +20,7 @@ import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
 import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
+import { useSounds } from "./hooks/useSounds.jsx";
 
 // const ENDPOINT = 'localhost:5000';
 
@@ -97,6 +98,8 @@ export const SocketManager = () => {
     useLoader(TextureLoader, 'textures/particles/3.png'),
     useLoader(TextureLoader, 'textures/particles/7.png'), // heart
   ] 
+
+  const [playSound] = useSounds();
 
   useEffect(() => {
 
@@ -266,6 +269,8 @@ export const SocketManager = () => {
       
       setHasTurn(clientHasTurn(socket.id, teams, turn))
       setGameLogs(gameLogs)
+      
+      playSound('sounds/music/magnetic-lofi.mp3')
     })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {    
