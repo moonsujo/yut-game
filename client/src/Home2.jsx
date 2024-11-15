@@ -218,10 +218,10 @@ export default function Home2() {
     }
 
     function handlePointerDown(e) {
+      playSound('sounds/effects/boot-up.mp3')
       e.stopPropagation();
       socket.emit('createRoom', { hostId: client._id }, ({ roomId }) => {
         setLocation(`/${roomId}`)
-        playSound('sounds/effects/boot-up.mp3')
       })
     }
 

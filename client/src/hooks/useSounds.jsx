@@ -16,7 +16,7 @@ export const useSounds = () => {
   function playSound(path) {
     audioLoader.load( path, function( buffer ) {
       sound.setBuffer( buffer );
-      sound.setLoop( true );
+      // sound.setLoop( true );
       sound.setVolume( 0.5 );
       sound.play();
     });
