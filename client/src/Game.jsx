@@ -186,6 +186,9 @@ export default function Game() {
         e.stopPropagation();
         if (readyToStart) {
           socket.emit("startGame", { roomId: params.id })
+          const audio = new Audio('/sounds/music/magnetic-lofi.mp3');
+          audio.volume=0.3;
+          audio.play();
         }
         setPointerDown(false)
         pushApi.start({

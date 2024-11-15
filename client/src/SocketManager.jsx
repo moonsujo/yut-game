@@ -270,7 +270,7 @@ export const SocketManager = () => {
       setHasTurn(clientHasTurn(socket.id, teams, turn))
       setGameLogs(gameLogs)
       
-      playSound('sounds/music/magnetic-lofi.mp3')
+      // playSound('sounds/music/magnetic-lofi.mp3')
     })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {    
