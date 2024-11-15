@@ -19,10 +19,12 @@ import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 import useResponsiveSetting from './ResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
+import { useSounds } from './hooks/useSounds';
 
 export default function Home2() {
 
   useResponsiveSetting();
+  const [playSound] = useSounds();
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
   const [client] = useAtom(clientAtom)
@@ -30,6 +32,8 @@ export default function Home2() {
   const { scene, materials } = useGLTF(
     "models/yoot.glb"
   );
+
+
 
   function Pieces() {
     return <group>
@@ -217,12 +221,7 @@ export default function Home2() {
       e.stopPropagation();
       socket.emit('createRoom', { hostId: client._id }, ({ roomId }) => {
         setLocation(`/${roomId}`)
-        
-        const audio = new Audio('sounds/effects/boot-up.mp3')
-        audio.preload = 'auto';
-        audio.playsInline = true;
-        audio.volume = 0.3;
-        audio.play().catch(error => console.log('Error playing audio:', error));
+        playSound('sounds/effects/boot-up.mp3')
       })
     }
 
