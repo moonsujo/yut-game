@@ -32,10 +32,11 @@ async function connectMongo() {
 const userSchema = new mongoose.Schema(
   {
     socketId: String,
-    roomId: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'rooms'
-    },
+    // roomId: {
+    //   type: mongoose.Schema.Types.ObjectId, 
+    //   ref: 'rooms'
+    // },
+    roomId: String,
     name: String,
     team: Number,
     connectedToRoom: Boolean
@@ -47,6 +48,7 @@ const userSchema = new mongoose.Schema(
 
 const roomSchema = new mongoose.Schema(
   {
+    shortId: String,
     createdTime: Date,
     spectators: [{
       type: mongoose.Schema.Types.ObjectId, 
@@ -182,7 +184,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     // Emit document to all clients in the room
     let users = data.fullDocument.spectators.concat(data.fullDocument.teams[0].players.concat(data.fullDocument.teams[1].players))
     // console.log(`[Room.watch] users`, users)
-    let roomPopulated = await Room.findById(data.documentKey._id)
+    let roomPopulated = await Room.findOne({ shortId: data.fullDocument.shortId })
     .populate('spectators')
     .populate('host')
     .populate('teams.players')
@@ -191,7 +193,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
       try {
         let userFound = await User.findById(user, 'socketId connectedToRoom roomId name').exec()
         // console.log(`[Room.watch] single user`, userFound)
-        if (userFound.roomId.valueOf() === data.documentKey._id.valueOf() && userFound.connectedToRoom) {
+        if (userFound.roomId === data.fullDocument.shortId && userFound.connectedToRoom) {
           let userSocketId = userFound.socketId
           const serverEvent = data.fullDocument.serverEvent
           if (serverEvent === "gameStart") {
@@ -286,6 +288,18 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
   }
 })
 
+async function createUniqueRoomId() {
+  let roomId;
+  let exists = true;
+  let idLength = 4;
+  while (exists) {
+    roomId = makeId(idLength);
+    exists = await Room.findOne({ shortId: roomId }).exec(); // Check for collisions
+  }
+  console.log('[createUniqueRoomId] roomId', roomId)
+  return roomId;
+}
+
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -298,7 +312,9 @@ io.on("connect", async (socket) => {
   // if addUser failed, disconnect and alert client
 
   socket.on("createRoom", async ({}, callback) => {
+    console.log('[createRoom]')
     let objectId = new mongoose.Types.ObjectId()
+    const shortRoomId = await createUniqueRoomId()
 
     // Get user by socket id
     let user;
@@ -312,6 +328,7 @@ io.on("connect", async (socket) => {
     try {
       const room = new Room({
         _id: objectId,
+        shortId: shortRoomId,
         createdTime: new Date(),
         spectators: [],
         teams: [
@@ -360,9 +377,9 @@ io.on("connect", async (socket) => {
         },
         serverEvent: ''
       })
+      console.log('[createRoom] shortRoomId', shortRoomId)
       await room.save();
-      // console.log('[createRoom] room', room)
-      return callback({ roomId: objectId })
+      return callback({ shortId: shortRoomId })
     } catch (err) {
       return callback({ error: err.message })
     }
@@ -416,7 +433,8 @@ io.on("connect", async (socket) => {
   socket.on("joinRoom", async ({ roomId }) => {
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
-      let room = await Room.findOne({ _id: roomId }).exec()
+      
+      let room = await Room.findOne({ shortId: roomId }).exec()
       let operation = {}
       
       if (user && user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
@@ -442,12 +460,12 @@ io.on("connect", async (socket) => {
         user.name = makeId(5);
         user.team = -1
       }
-      user.roomId = roomId
+      user.roomId = room.shortId
       user.save()
       if (room.host === null) {
         operation['host'] = user._id
       }
-      await Room.findOneAndUpdate( { _id: roomId }, operation )
+      await Room.findOneAndUpdate( { shortId: roomId }, operation )
     } catch (err) {
       console.log(`[joinRoom] error adding user to room`, err)
     }
@@ -455,7 +473,7 @@ io.on("connect", async (socket) => {
     // Add user as host if room is empty
     try {
       let user = await User.findOne({ 'socketId': socket.id })
-      let room = await Room.findById(roomId)
+      let room = await Room.findOne({ shortId: roomId })
       if (room.host === null) {
         room.host = user._id
         room.save()
@@ -483,7 +501,7 @@ io.on("connect", async (socket) => {
       
       // Add to the team's players array
       await Room.findOneAndUpdate(
-        { _id: player.roomId }, 
+        { shortId: player.roomId }, 
         operation
       ).exec()
     } catch (err) {
@@ -515,7 +533,7 @@ io.on("connect", async (socket) => {
     console.log(`[startGame]`)
     try {
 
-      const room = await Room.findOne({ _id: roomId }).populate('host')
+      const room = await Room.findOne({ shortId: roomId }).populate('host')
 
       let newTurn;
       if (room.results.length > 0) {
@@ -527,7 +545,7 @@ io.on("connect", async (socket) => {
         newTurn = getHostTurn(room)
       }
       
-      await Room.findOneAndUpdate({ _id: roomId }, {
+      await Room.findOneAndUpdate({ shortId: roomId }, {
         $set: {
           [`teams.${newTurn.team}.throws`]: 1,
           gamePhase: "pregame",
@@ -550,7 +568,7 @@ io.on("connect", async (socket) => {
 
   socket.on("sendMessage", async ({ message, roomId }, callback) => {
     try {
-      let room = await Room.findById(roomId).exec();
+      let room = await Room.findOne({ shortId: roomId });
       message = {
         name: room.users.get(socket.id).name,
         text: message
@@ -622,7 +640,7 @@ io.on("connect", async (socket) => {
     }
 
     try {
-      let room = await Room.findOne({ _id: roomId })
+      let room = await Room.findOne({ shortId: roomId })
 
       if (room.teams[user.team].throws > 0) {
 
@@ -646,7 +664,7 @@ io.on("connect", async (socket) => {
         const animation = pickAnimation(outcome)
         await Room.findOneAndUpdate( // consolidate into one call with the 'findOne' call from above
           { 
-            _id: roomId
+            shortId: roomId
           }, 
           { 
             $set: { 
@@ -668,7 +686,7 @@ io.on("connect", async (socket) => {
           operation['$inc'] = {}
           operation['$push'] = {}
           try {
-            let room = await Room.findOne({ _id: roomId })  
+            let room = await Room.findOne({ shortId: roomId })  
 
             // on yoot or mo, if gamePhase is 'game', add 'bonus: true' to 'content'.
             // else, add 'bonus: false'
@@ -775,7 +793,7 @@ io.on("connect", async (socket) => {
 
             await Room.findOneAndUpdate(
               { 
-                _id: roomId, 
+                shortId: roomId, 
               }, 
               operation
             )
@@ -852,7 +870,7 @@ io.on("connect", async (socket) => {
     try {
       await Room.findOneAndUpdate(
         { 
-          _id: roomId, 
+          shortId: roomId, 
         }, 
         { 
           $set: { 
@@ -872,7 +890,7 @@ io.on("connect", async (socket) => {
     try {
       await Room.findOneAndUpdate(
         { 
-          _id: roomId, 
+          shortId: roomId, 
         }, 
         { 
           $set: { 
@@ -887,7 +905,7 @@ io.on("connect", async (socket) => {
 
   socket.on("move", async ({ roomId, tile }) => {
     try {
-      const room = await Room.findById(roomId)
+      const room = await Room.findOne({ shortId: roomId })
       let user;
       try {
         user = await User.findOne({ socketId: socket.id })
@@ -1004,7 +1022,7 @@ io.on("connect", async (socket) => {
 
       await Room.findOneAndUpdate(
         { 
-          _id: roomId, 
+          shortId: roomId, 
         }, 
         operation
       )
@@ -1017,7 +1035,7 @@ io.on("connect", async (socket) => {
   socket.on("score", async ({ roomId, selectedMove }) => {
     // score
     try {
-      const room = await Room.findById(roomId)
+      const room = await Room.findOne({ shortId: roomId })
 
       let operation = {};
       operation['$set'] = {}
@@ -1096,7 +1114,7 @@ io.on("connect", async (socket) => {
           const newTurn = passTurn(room.turn, room.teams)
           await Room.findOneAndUpdate(
             { 
-              _id: roomId, 
+              shortId: roomId, 
             }, 
             { 
               $set: { 
@@ -1115,7 +1133,7 @@ io.on("connect", async (socket) => {
 
       await Room.findOneAndUpdate(
         { 
-          _id: roomId, 
+          shortId: roomId, 
         }, 
         operation
       )
@@ -1198,7 +1216,7 @@ io.on("connect", async (socket) => {
 
       await Room.findOneAndUpdate(
         { 
-          _id: roomId, 
+          shortId: roomId, 
         }, 
         operation
       )
@@ -1217,7 +1235,7 @@ io.on("connect", async (socket) => {
 
       await Room.updateOne(
         { 
-          _id: roomId
+          shortId: roomId
         }, 
         {
           $set: {
@@ -1240,7 +1258,7 @@ io.on("connect", async (socket) => {
 
       await Room.updateOne(
         { 
-          _id: user.roomId
+          shortId: user.roomId
         }, 
         {
           $set: {

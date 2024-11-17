@@ -31,8 +31,6 @@ export default function Home2() {
     "models/yoot.glb"
   );
 
-
-
   function Pieces() {
     return <group>
       {/* rocket on star 1 */}
@@ -217,8 +215,8 @@ export default function Home2() {
 
     function handlePointerDown(e) {
       e.stopPropagation();
-      socket.emit('createRoom', { hostId: client._id }, ({ roomId }) => {
-        setLocation(`/${roomId}`)
+      socket.emit('createRoom', { hostId: client._id }, ({ shortId }) => {
+        setLocation(`/${shortId}`)
       })
       const audio = new Audio('sounds/effects/boot-up.mp3');
       audio.volume=0.3;
