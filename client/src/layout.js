@@ -50,9 +50,19 @@ export default {
         scale: 2
       },
       howToPlay: {
+        position: [0, 0, 7.4],
+        rotation: [0,0,0],
+        scale: 2
+      },
+      joinGame: {
         position: [0, 0, 8.8],
         rotation: [0,0,0],
         scale: 2
+      },
+      joinGameModal: {
+        position: [-3.8, 0, -2.1],
+        rotation: [-Math.PI/2, 0, 0],
+        scale: [1.7, 1.7, 1.7]
       },
       letsPlay: {
         position: [0, 0, 10.2],
@@ -1549,12 +1559,22 @@ export default {
         scale: 2.2
       },
       howToPlay: {
-        position: [-10.87, 0, 2.3],
+        position: [-10.87, 0, 0.8],
         rotation: [0, 0, 0],
         scale: 2.2
       },      
+      joinGame: {
+        position: [-11.23, 0, 2.3],
+        rotation: [0,0,0],
+        scale: 2
+      },
+      joinGameModal: {
+        position: [-6, 0, -0.8],
+        rotation: [-Math.PI/2, 0, 0],
+        scale: [1.7, 1.7, 1.7]
+      },
       letsPlay: {
-        position: [-10.65, 0, 3.8],
+        position: [-10.77, 0, 3.79],
         rotation: [0, 0, 0],
         scale: 2.2
       },

@@ -430,6 +430,24 @@ io.on("connect", async (socket) => {
     ).exec()
   }
 
+  socket.on("checkRoomExists", async ({ roomId }, callback) => {
+    // enhancement: return a string
+    // if 'findOne' fails, display 'failed to call database' error
+    // this way, user knows to return after a certain time
+    let exists;
+    try {
+      let room = await Room.findOne({ shortId: roomId })
+      if (!room) {
+        exists = false
+      } else {
+        exists = true
+      }
+      callback({ exists })
+    } catch (err) {
+      console.log(`[checkRoomExists] error checking if room exists`, err)
+    }
+  })
+
   socket.on("joinRoom", async ({ roomId }) => {
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
