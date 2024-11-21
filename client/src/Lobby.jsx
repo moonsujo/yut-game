@@ -27,6 +27,10 @@ export default function Lobby() {
       scale={0.9}
       position={[4, 0, 0]}
     />
-    <Moon/>
+    {/* <mesh position={[-6, 0, 0]} rotation={[-Math.PI/2, 0, 0]}>
+      <planeGeometry args={[15, 15]}/>
+      <meshStandardMaterial color='black' transparent opacity={0.5}/>
+    </mesh> */}
+    <Moon position={[-7, -5, -2]} scale={2}/>
   </group>
 }
