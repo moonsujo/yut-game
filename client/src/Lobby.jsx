@@ -6,6 +6,9 @@ import layout from "./layout";
 import Board from "./Board.jsx";
 import HowToPlay from "./HowToPlay.jsx";
 import Moon from "./meshes/Moon.jsx";
+import BlueMoon from "./meshes/BlueMoon.jsx";
+import { Bloom } from "@react-three/postprocessing";
+import { KernelSize, Resolution } from "postprocessing";
 
 export default function Lobby() {
 
@@ -31,6 +34,6 @@ export default function Lobby() {
       <planeGeometry args={[15, 15]}/>
       <meshStandardMaterial color='black' transparent opacity={0.5}/>
     </mesh> */}
-    <Moon position={[-7, -5, -2]} scale={2}/>
+    <BlueMoon position={[-7, -5, -2]} scale={2}/>
   </group>
 }

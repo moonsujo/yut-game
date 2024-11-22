@@ -15,7 +15,7 @@ export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }
 
   const moon = useRef();
   useFrame((state) => {
-    moon.current.rotation.y = state.clock.elapsedTime * 0.5;
+    moon.current.rotation.y = state.clock.elapsedTime * 0.2;
   });
 
   return (
@@ -26,6 +26,10 @@ export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }
       scale={scale}
     >
       <group scale={3.4}>
+        <mesh>
+          <sphereGeometry args={[0.6, 64, 64]} />
+          <meshBasicMaterial map={moonTexture} color='#8ACAFF' transparent opacity={0.5}/>
+        </mesh>
         <mesh>
           <sphereGeometry args={[0.6, 64, 64]} />
           <shaderMaterial
@@ -39,20 +43,6 @@ export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }
             }}
           />
         </mesh>
-        {/* <mesh scale={1.5}>
-          <sphereGeometry args={[0.6, 32, 32]} />
-          <shaderMaterial 
-          side={THREE.BackSide} 
-          transparent 
-          vertexShader={AtmosphereVertexShader}
-          fragmentShader={AtmosphereFragmentShader}
-          uniforms={{
-            uSunDirection: new THREE.Uniform(new THREE.Vector3(0,0,0)),
-            uAtmosphereDayColor: new THREE.Uniform(new THREE.Color('#EFEFEF')),
-            uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color('#EFEFEF')),
-          }}
-          />
-        </mesh> */}
       </group>
     </animated.group>
   );
