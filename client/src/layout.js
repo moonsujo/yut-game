@@ -1564,7 +1564,7 @@ export default {
         scale: 2.2
       },      
       joinGame: {
-        position: [-11.23, 0, 2.3],
+        position: [-11.24, 0, 2.3],
         rotation: [0,0,0],
         scale: 2
       },
@@ -1574,7 +1574,7 @@ export default {
         scale: [1.7, 1.7, 1.7]
       },
       letsPlay: {
-        position: [-10.77, 0, 3.79],
+        position: [-10.8, 0, 3.79],
         rotation: [0, 0, 0],
         scale: 2.2
       },
@@ -1598,7 +1598,7 @@ export default {
         }
       },
       yoots: {
-        position: [-6.8,0,-3.3],
+        position: [-7.2,0,-3.3],
         rotation: [Math.PI/2,Math.PI/2,-Math.PI/2],
         scale: 0.37
       },

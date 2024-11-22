@@ -26,8 +26,9 @@ export default function Title({ position, rotation, scale, setDisplay }) {
       size={0.4}
       height={0.01}
       position={[0, -0.5, 0]}
+      letterSpacing={0.06}
     >
-      YOOT
+      YUT
       <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
     </Text3D>
     <Text3D
@@ -35,8 +36,9 @@ export default function Title({ position, rotation, scale, setDisplay }) {
       size={0.4}
       height={0.01}
       position={[0, -1, 0]}
+      letterSpacing={0.03}
     >
-      GAME
+      NORI
       <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />
     </Text3D>
     <mesh 

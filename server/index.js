@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema(
     roomId: String,
     name: String,
     team: Number,
-    connectedToRoom: Boolean
+    connectedToRoom: Boolean,
+    createdTime: Date
   },
   {
     versionKey: false,
@@ -132,6 +133,7 @@ const roomSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'users'
     },
+    // expiresAfter: Date
   },
   {
     versionKey: false,
@@ -151,7 +153,8 @@ async function addUser(socket, name) {
         name,
         team: -1,
         roomId: null,
-        connectedToRoom: false
+        connectedToRoom: false,
+        createdTime: new Date()
       })
       await user.save();
     } else {
@@ -166,7 +169,8 @@ async function addUser(socket, name) {
           name,
           team: -1,
           roomId: null,
-          connectedToRoom: false
+          connectedToRoom: false,
+          createdTime: new Date()
         })
         await user.save();
       }
@@ -375,7 +379,8 @@ io.on("connect", async (socket) => {
           num: -2,
           time: Date.now()
         },
-        serverEvent: ''
+        serverEvent: '',
+        // expiresAfter: Date.now() + 14 * 24 * 60 * 60 * 1000 // 2 weeks
       })
       console.log('[createRoom] shortRoomId', shortRoomId)
       await room.save();
