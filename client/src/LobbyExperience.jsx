@@ -3,6 +3,7 @@ import Lobby from "./Lobby";
 import Moon from "./meshes/Moon";
 import MilkyWay from "./shader/MilkyWay";
 import * as THREE from 'three';
+import StarsPatterns2Shader from "./shader/starsPatterns2/StarsPatterns2Shader";
 
 // just to separate shader from stopping when Lobby re-renders
 export default function LobbyExperience() {
@@ -18,5 +19,7 @@ export default function LobbyExperience() {
       colorTint2={new THREE.Vector4(0.0, 1.0, 1.0, 1.0)}
       colorTint3={new THREE.Vector4(0.0, 1.0, 1.0, 1.0)}
     />
+    <StarsPatterns2Shader count={7000} texturePath={'textures/particles/3.png'} size={4.0}/>
+    <StarsPatterns2Shader count={7000} texturePath={'textures/particles/6.png'} size={3.0}/>
   </group>
 }

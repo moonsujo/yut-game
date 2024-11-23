@@ -15,7 +15,7 @@ void main()
 
     // Moon
     vec3 moonColor = texture(uMoonTexture, vUv).rgb;
-    color = moonColor * 0.1;
+    color = moonColor * 0.05;
 
     // Sun orientation
     float sunOrientation = dot(uSunDirection, normal);
@@ -25,13 +25,13 @@ void main()
     fresnel = pow(fresnel, 1.0);
 
     // Atmosphere
-    float atmosphereDayMix = smoothstep(- 0.5, 1.0, sunOrientation);
+    float atmosphereDayMix = smoothstep(- 0.5, 0.5, sunOrientation);
     vec3 atmosphereColor = mix(uAtmosphereTwilightColor, uAtmosphereDayColor, atmosphereDayMix);
-    atmosphereColor *= 0.5;
+    atmosphereColor *= 0.1;
     color = mix(color, atmosphereColor, fresnel * atmosphereDayMix);
 
     // Final color
-    gl_FragColor = vec4(color, 3.0);
+    gl_FragColor = vec4(color, 0.1);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
 }

@@ -15,7 +15,7 @@ export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }
 
   const moon = useRef();
   useFrame((state) => {
-    moon.current.rotation.y = state.clock.elapsedTime * 0.2;
+    moon.current.rotation.y = state.clock.elapsedTime * 0.02;
   });
 
   return (
@@ -25,11 +25,13 @@ export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }
       rotation={rotation}
       scale={scale}
     >
-      <group scale={3.4}>
+      <group scale={4}>
         <mesh>
           <sphereGeometry args={[0.6, 64, 64]} />
-          <meshBasicMaterial map={moonTexture} color='#8ACAFF' transparent opacity={0.5}/>
+          <meshBasicMaterial map={moonTexture} color='#8ACAFF' transparent opacity={0.05}/>
         </mesh>
+        {/* reduce brightness of this material to make it less bright */}
+        {/* control light around moon to make it look like it's going through phases */}
         <mesh>
           <sphereGeometry args={[0.6, 64, 64]} />
           <shaderMaterial
