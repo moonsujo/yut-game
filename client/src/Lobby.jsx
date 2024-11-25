@@ -105,30 +105,31 @@ export default function Lobby() {
         <Image name='qr-code-sample' rotation={[Math.PI/2, 0, 0]} position={[5, 0, 1.8]} scale={[2.3, 2.3, 2.3]} url={'images/qr-code-sample.png'} side={THREE.DoubleSide}/>
         <group name='ufos-team-display'>
           <group name='join-ufos-button' position={[-4, 0, 3.7]}>
-            <mesh scale={[1.9, 0.11, 0.6]}>
+            <mesh scale={[1.9, 0.11, 0.9]}>
               <cylinderGeometry args={[1, 1, 0.1, 64]}/>
               <meshStandardMaterial color='black'/>
             </mesh>
-            <mesh scale={[1.95, 0.1, 0.65]}>
+            <mesh scale={[1.95, 0.1, 0.95]}>
               <cylinderGeometry args={[1, 1, 0.1, 64]}/>
-              <meshStandardMaterial color='yellow'/>
+              <meshStandardMaterial color='turquoise'/>
             </mesh>
             <Text3D
               font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.35,0,0.2]}
+              position={[-1.35,0,0]}
               rotation={[-Math.PI/2,0,0]}
               size={0.4}
               height={0.01}
+              lineHeight={0.7}
             >
-              {'Join Team'}
-              <meshStandardMaterial color={'yellow'}/>
+              {'play with\n      ufos'}
+              <meshStandardMaterial color={'turquoise'}/>
             </Text3D>
           </group>
           {/* animation: on player join, ufo blips out, and blips in*/}
           {/* animation: on idle, floats around*/}
-          <Ufo position={[-4.75, 0, 5.3]} scale={1.4}/>
-          <Ufo position={[-3.25, 0, 5.3]} scale={1.4}/>
-          <Ufo position={[-4.75, 0, 6.7]} scale={1.4}/>
+          <Ufo position={[-4.75, 0, 5.3]} scale={2.5}/>
+          <Ufo position={[-3.25, 0, 5.3]} scale={1}/>
+          <Ufo position={[-6, 0, 6.7]} scale={1.2}/>
           <Ufo position={[-3.25, 0, 6.7]} scale={1.4}/>
           {/* replace with real player list */}
           <Text3D
@@ -155,23 +156,24 @@ export default function Lobby() {
         </group>
         <group name='rockets-team-display'>
           <group name='join-ufos-button' position={[0.5, 0, 3.7]}>
-            <mesh scale={[1.9, 0.11, 0.6]}>
+            <mesh scale={[1.9, 0.11, 0.9]}>
               <cylinderGeometry args={[1, 1, 0.1, 64]}/>
               <meshStandardMaterial color='black'/>
             </mesh>
-            <mesh scale={[1.95, 0.1, 0.65]}>
+            <mesh scale={[1.95, 0.1, 0.95]}>
               <cylinderGeometry args={[1, 1, 0.1, 64]}/>
-              <meshStandardMaterial color='yellow'/>
+              <meshStandardMaterial color='red'/>
             </mesh>
             <Text3D
               font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.35,0,0.2]}
+              position={[-1.35,0,-0.03]}
               rotation={[-Math.PI/2,0,0]}
               size={0.4}
               height={0.01}
+              lineHeight={0.7}
             >
-              {'Join Team'}
-              <meshStandardMaterial color={'yellow'}/>
+              {'Play with\n  Rockets'}
+              <meshStandardMaterial color={'red'}/>
             </Text3D>
           </group>
           <Rocket position={[-0.3, 0, 5.2]} scale={1.4}/>
