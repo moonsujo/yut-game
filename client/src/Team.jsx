@@ -216,7 +216,6 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
     useFrame((state, delta) => {
       playerIdsRef.current.forEach(function (value, i) {
         playerIdsRef.current[i].forEach(function (value1, j) {
-          console.log(`[Team] playerIdsRef.current ${i}, ${j}, value`, playerIdsRef.current[i][j])
           if (turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere && (gamePhase === 'pregame' || gamePhase === 'game')) {
             yootIconRef.current.scale.x = 1
             yootIconRef.current.scale.y = 1

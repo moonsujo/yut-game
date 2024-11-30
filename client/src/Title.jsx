@@ -26,7 +26,7 @@ export default function Title({ position, rotation, scale, setDisplay }) {
       size={0.4}
       height={0.01}
       position={[0, -0.5, 0]}
-      letterSpacing={0.06}
+      letterSpacing={0.04}
     >
       YUT
       <meshStandardMaterial color={hover ? "green": [0.8, 0.8, 0]} />

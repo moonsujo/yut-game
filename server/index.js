@@ -611,11 +611,11 @@ io.on("connect", async (socket) => {
   function pickOutcome() {
     // return outcome
     // front end maps outcome to an animation
-    const doProb = 0.15
-    const backdoProb = 0.05
+    const doProb = 0.21
+    const backdoProb = 0.07
     const geProb = 0.3
-    const gulProb = 0.33
-    const yootProb = 0.12
+    const gulProb = 0.27
+    const yootProb = 0.1
     const moProb = 0.03
     const nakProb = 0.02
     const probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
