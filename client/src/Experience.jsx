@@ -11,8 +11,8 @@ export default function Experience() {
   console.log('[Experience] gamePhase', gamePhase)
 
   return <>
-    { gamePhase === 'lobby' && <LobbyExperience/> }
-    { (gamePhase === 'game' || gamePhase === 'finished') && <GameExperience/> }
+    {/* { gamePhase === 'lobby' && <LobbyExperience/> } */}
+    { (gamePhase === 'lobby' || gamePhase === 'pregame' || gamePhase === 'game' || gamePhase === 'finished') && <GameExperience/> }
     {/* win screen experience */}
   </>
 }

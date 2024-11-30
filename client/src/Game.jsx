@@ -926,7 +926,7 @@ export default function Game() {
 
     return <group position={layout[device].game.invite.position}>
       <animated.group scale={ pushSprings.scale } position={layout[device].game.invite.button.position}>
-        {/* <Text3D
+        <Text3D
           font="fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.invite.text.position}
           rotation={[-Math.PI/2, 0, 0]}
@@ -935,9 +935,9 @@ export default function Game() {
         >
           {layout[device].game.invite.text.content}
           <meshStandardMaterial color='limegreen'/>
-        </Text3D> */}
+        </Text3D>
         {/* have to prepend 'www' for safari to redirect to the website instead of searching it in google */}
-        <QRCode3D url={'www.yutnori.app/E70E'}/> 
+        {/* <QRCode3D url={'www.yutnori.app/E70E'}/>  */}
         <mesh
           castShadow
           receiveShadow
