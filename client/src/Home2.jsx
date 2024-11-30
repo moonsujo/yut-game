@@ -26,10 +26,6 @@ export default function Home2() {
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
   const [client] = useAtom(clientAtom)
-  
-  const { scene, materials } = useGLTF(
-    "models/yoot.glb"
-  );
 
   function Pieces() {
     return <group>
@@ -460,8 +456,8 @@ export default function Home2() {
   
   return <>
     <GameCamera 
-    position={layout[device].title.camera.position}
-    lookAt={layout[device].title.camera.lookAt}
+      position={layout[device].title.camera.position}
+      lookAt={layout[device].title.camera.lookAt}
     />
     <group>
       <Title 

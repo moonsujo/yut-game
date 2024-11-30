@@ -1,5 +1,4 @@
 import { Float, MeshDistortMaterial, Text3D, useGLTF } from '@react-three/drei';
-import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier';
 import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -16,24 +15,6 @@ import Pointer from './meshes/Pointer';
 import { useSpring, animated } from '@react-spring/three';
 import Cursor2 from './meshes/Cursor2';
 import Check from './meshes/Check';
-import System, {
-  Emitter,
-  Rate,
-  Span,
-  Position,
-  Mass,
-  Radius,
-  Life,
-  PointZone,
-  Vector3D,
-  Alpha,
-  Scale,
-  Color,
-  Body,
-  RadialVelocity,
-  SpriteRenderer,
-  ColorSpan,
-} from "three-nebula";
 import * as THREE from 'three';
 import Ufo from './meshes/Ufo';
 import BonusTurn from './meshes/BonusTurn';
@@ -1216,68 +1197,6 @@ export default function HowToPlay({
 
   function ScoringPage() {
     const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
-
-    // const letsGoMatRef = useRef();
-    // const letsGoRef = useRef();
-    const freqR = 0.4
-    const freqG = 0.6
-    const freqB = 0.8
-    useFrame((state, delta) => {
-      // text changing in rainbow colors
-      // letsGoMatRef.current.color.r = Math.cos(state.clock.elapsedTime*freqR * 4) + 0.3
-      // letsGoMatRef.current.color.g = Math.cos(state.clock.elapsedTime*freqG * 4) + 0.4
-      // letsGoMatRef.current.color.b = Math.cos(state.clock.elapsedTime*freqB * 4) + 0.5
-      // letsGoRef.current.scale.x = Math.cos(state.clock.elapsedTime * 4) * 0.1 + 1.1
-      // letsGoRef.current.scale.y = Math.cos(state.clock.elapsedTime * 4) * 0.1 + 1.1
-      // letsGoRef.current.scale.z = Math.cos(state.clock.elapsedTime * 4) * 0.1 + 1.1
-    })
-
-    function Fireworks({ position }) {
-
-      const [_particleSetting, setParticleSetting] = useAtom(particleSettingAtom)
-  
-      const zone = new PointZone(0, 0);
-      useEffect(() => {
-        const fireTimeoutId = setTimeout(() => {
-          setParticleSetting({
-            emitters: [
-              {
-                initialPosition: {
-                  x: (layout[device].howToPlay.scoringPage.fireworks.initialPosition.x + position[0]),
-                  y: (layout[device].howToPlay.scoringPage.fireworks.initialPosition.y + position[1]) * 1.5, // for blocker in Game to not overlap
-                  z: (layout[device].howToPlay.scoringPage.fireworks.initialPosition.z + position[2]),
-                },
-                positionRange: {
-                  x: layout[device].howToPlay.scoringPage.fireworks.positionRange.x,
-                  y: layout[device].howToPlay.scoringPage.fireworks.positionRange.y,
-                  z: layout[device].howToPlay.scoringPage.fireworks.positionRange.z,
-                },
-                randomizePosition: true,
-                rate: new Rate(20, 1),
-                initializers: [
-                  new Position(zone),
-                  new Mass(0.1),
-                  new Radius(1.5, 1.7),
-                  new Life(1.5, 2),
-                  new Body(createSprite('./textures/dot.png')),
-                  new RadialVelocity(3, new Vector3D(0, 5, 0), 180)
-                ],
-                behaviours: [
-                  new Alpha(0.7, 0),
-                  new Scale(0.5, 0.2),
-                  new Color(new THREE.Color("#00ff00"), new THREE.Color("#ff0000"))
-                ],
-                numEmit: 8
-              }
-            ]
-          })
-        }, 9000)
-        return () => {
-          setParticleSetting(null)
-          clearTimeout(fireTimeoutId)
-        }
-      }, [device])
-    }
 
     function WelcomeBackText({ position, scale }) {
       const borderMesh0Ref = useRef();
