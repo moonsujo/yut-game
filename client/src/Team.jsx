@@ -242,7 +242,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
           >
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h) ' : '')}
-            <meshStandardMaterial color={ value.roomId === params.id && value.connectedToRoom ? 'yellow' : 'gray' }/>
+            <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? 'yellow' : 'gray' }/>
           </Text3D>
         </group>
       ))}

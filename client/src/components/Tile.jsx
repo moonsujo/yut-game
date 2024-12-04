@@ -62,15 +62,15 @@ export default function Tile({
           let history = tiles[tile][0].history
           let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
           if (!(Object.keys(legalTiles).length === 0)) {
-            socket.emit("select", { roomId: params.id, selection: { tile, pieces }, legalTiles })
+            socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
           }
         }
       } else if (selection.tile !== tile && legalTileInfo) {
         // Server clears legalTiles and selection
         // When they're called separately, the order of operation is not kept
-        socket.emit("move", { roomId: params.id, tile });
+        socket.emit("move", { roomId: params.id.toUpperCase(), tile });
       } else {
-        socket.emit("select", { roomId: params.id, selection: null, legalTiles: {} });
+        socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
 
       }
     }

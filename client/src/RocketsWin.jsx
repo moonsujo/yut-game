@@ -83,7 +83,7 @@ export default function RocketsWin() {
   }
 
   function handlePointerDown() {
-    socket.emit('reset', { roomId: params.id })
+    socket.emit('reset', { roomId: params.id.toUpperCase() })
   }
 
   return <group>

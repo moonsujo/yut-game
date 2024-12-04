@@ -133,7 +133,7 @@ export default function UfosWin({}) {
   }
 
   function handlePointerDown() {
-    socket.emit('reset', { roomId: params.id })
+    socket.emit('reset', { roomId: params.id.toUpperCase() })
     // respawn yoots
     // set camera upright - move scene
   }

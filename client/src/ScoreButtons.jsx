@@ -53,7 +53,7 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, te
         onPointerLeave={scorePointerOut}
         onPointerDown={() => {
           if (enabled)
-            socket.emit("score", { roomId: params.id, selectedMove: moveInfo });
+            socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: moveInfo });
         }}
       >
         <cylinderGeometry args={[0.5, 0.5, 0.15]}/>

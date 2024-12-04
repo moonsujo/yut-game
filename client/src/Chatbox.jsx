@@ -14,7 +14,7 @@ export default function Chatbox({ position=[0,0,0], rotation=[0,0,0], scale=1, d
 
   function onMessageSubmit (e) {
     e.preventDefault();
-    socket.emit("sendMessage", { message, roomId: params.id }, ({ joinRoomId, error }) => {
+    socket.emit("sendMessage", { message, roomId: params.id.toUpperCase() }, ({ joinRoomId, error }) => {
       if (error) {
         console.log('[sendMessage] error sending message to room', joinRoomId)
       } else {

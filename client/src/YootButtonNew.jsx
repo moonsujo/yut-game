@@ -60,7 +60,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     if (enabled) {
       setEnabledLocal(false)
       setAnimationPlaying(true)
-      socket.emit('throwYoot', { roomId: params.id })
+      socket.emit('throwYoot', { roomId: params.id.toUpperCase() })
     }
   }
 

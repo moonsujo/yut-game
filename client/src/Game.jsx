@@ -78,10 +78,10 @@ export default function Game() {
   const params = useParams();
 
   useEffect(() => {
-    socket.emit('joinRoom', { roomId: params.id })
+    socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
     return (() => {
       // remove player from room (grey text)
-      socket.emit('disconnectFromRoom', { roomId: params.id });
+      socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
     })
   }, [])
 
@@ -183,7 +183,7 @@ export default function Game() {
       function handlePointerUp(e) {
         e.stopPropagation();
         if (readyToStart) {
-          socket.emit("startGame", { roomId: params.id })
+          socket.emit("startGame", { roomId: params.id.toUpperCase() })
         }
         setPointerDown(false)
         pushApi.start({
