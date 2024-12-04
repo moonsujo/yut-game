@@ -10,7 +10,6 @@ import { turnAtom } from "../GlobalState";
 import { useAtom } from "jotai";
 
 export default function AllClearAlert({ position, rotation }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
   const [turn] = useAtom(turnAtom)
 
   const initialScale = 1
@@ -220,17 +219,16 @@ export default function AllClearAlert({ position, rotation }) {
 
   function handleAlertClick(e) {
     e.stopPropagation();
-    setMainAlert({ type: '' })
+    // clear it
   }
 
   return <animated.group position={position} rotation={rotation} scale={springs.scale} onPointerDown={handleAlertClick}>
     <mesh
       castShadow
       receiveShadow
-      geometry={nodes.Cylinder.geometry}
-      material={nodes.Cylinder.material}
       scale={[2.4, 0.055, 2.9]}
     >
+      <cylinderGeometry args={[1, 1, 1, 64]}/>
       <meshStandardMaterial color='black' opacity={0.7} transparent/>
     </mesh>
     { turn.team === 0 ? <RocketCatchAllUfo/> : <UfoCatchAllRocket/> }
@@ -278,5 +276,4 @@ export default function AllClearAlert({ position, rotation }) {
   </animated.group>
 }
 
-useGLTF.preload('models/alert-background.glb')
 useGLTF.preload('models/bam-emoji.glb')

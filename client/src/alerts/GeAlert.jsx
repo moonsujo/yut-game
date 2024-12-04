@@ -2,26 +2,15 @@ import { Text3D, useGLTF } from "@react-three/drei";
 import { animated } from "@react-spring/three";
 
 export default function GeAlert({ position, rotation, scale }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
   return (
     <animated.group position={position} rotation={rotation} scale={scale}>
-      {/* <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
-        scale={[0.82, 0.055, 1.771]}
-      >
-        <meshStandardMaterial color='yellow'/>
-      </mesh> */}
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
         scale={[0.75, 0.065, 1.671]}
       >
-      <meshStandardMaterial color='black' opacity={0.9} transparent/>
+        <cylinderGeometry args={[1, 1, 1, 64]}/>
+        <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"

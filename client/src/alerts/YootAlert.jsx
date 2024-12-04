@@ -6,7 +6,6 @@ import Star from "../meshes/Star";
 import { animated, useSpring } from "@react-spring/three";
 
 export default function YootAlert({ position, rotation }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
 
   const initialScale = 1
   const springs = useSpring({
@@ -75,17 +74,15 @@ export default function YootAlert({ position, rotation }) {
 
   function handleAlertClick(e) {
     e.stopPropagation();
-    setMainAlert({ type: '' })
   }
 
   return <animated.group position={position} rotation={rotation} scale={springs.scale} onPointerDown={(e) => handleAlertClick(e)}>
     <mesh
       castShadow
       receiveShadow
-      geometry={nodes.Cylinder.geometry}
-      material={nodes.Cylinder.material}
       scale={[2.3, 0.055, 3]}
     >
+      <cylinderGeometry args={[1, 1, 1, 64]}/>
       <meshStandardMaterial color='black' opacity={0.8} transparent/>
     </mesh>
     <group name="text" position={[0, -0.15, -0.36]} scale={1.2}>

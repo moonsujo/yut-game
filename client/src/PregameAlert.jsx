@@ -42,8 +42,6 @@ export default function PregameAlert() {
   })
 
   function PregameTie({ position, rotation, scale }) {
-
-    const { nodes, materials } = useGLTF('models/alert-background.glb')
     
     const borderMesh0Ref = useRef();
     const borderMesh1Ref = useRef();
@@ -77,10 +75,9 @@ export default function PregameAlert() {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[0.75, 0.02, 1.671]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.9} transparent/>
         </mesh>
         <Text3D

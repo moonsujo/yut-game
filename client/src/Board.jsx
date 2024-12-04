@@ -8,19 +8,12 @@ import Saturn from './meshes/Saturn';
 import Neptune from './meshes/Neptune';
 import Moon from './meshes/Moon';
 import layout from './layout';
-import Pointer from './meshes/Pointer';
 import { Text3D } from '@react-three/drei';
 import { WolfConstellation } from './meshes/WolfConstellation';
 import { RhinoConstellation } from './meshes/RhinoConstellation';
-import { PegasusConstellation } from './meshes/PegasusConstellation';
 import { TaurusConstellation } from './meshes/TaurusConstellation';
-import CurvedArrow from './meshes/CurvedArrow';
-import TaurusConstellationShiny from './meshes/TaurusConstellationShiny';
-import * as THREE from 'three';
 import { AriesConstellation } from './meshes/AriesConstellation';
-import DottedTaurus from './shader/dottedTaurus.jsx/DottedTaurus';
-import { AriesConstellation2 } from './meshes/AriesConstellation2';
-import WolfConstellationBufferGeometry from './shader/wolf/BullConstellation';
+import CurvedArrow from './meshes/CurvedArrow';
 
 // Accept flag to enable click
 // Pass flag to Tile component

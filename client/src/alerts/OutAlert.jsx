@@ -3,16 +3,14 @@ import { animated } from "@react-spring/three";
 import OutToken from "../moveTokens/OutToken";
 
 export default function OutAlert({ position, rotation, scale }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
   return (
     <animated.group position={position} rotation={rotation} scale={scale}>
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
         scale={[1, 0.055, 3.3]}
       >
+        <cylinderGeometry args={[1, 1, 1, 64]}/>
         <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D

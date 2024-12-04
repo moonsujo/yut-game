@@ -6,11 +6,10 @@ import Ufo from "../meshes/Ufo";
 import { animated, useSpring } from "@react-spring/three";
 import Star from "../meshes/Star";
 import { useAtom } from "jotai";
-import { mainAlertAtom, teamsAtom, turnAtom } from "../GlobalState";
+import { teamsAtom, turnAtom } from "../GlobalState";
 import { formatName } from "../helpers/helpers";
 
 export default function TurnAlert({position, rotation}) {
-    const { nodes, materials } = useGLTF('models/alert-background.glb')
     
     const [turn] = useAtom(turnAtom)
     const [teams] = useAtom(teamsAtom)
@@ -81,10 +80,9 @@ export default function TurnAlert({position, rotation}) {
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
         scale={[2, 0.055, 2.6]}
       >
+        <cylinderGeometry args={[1, 1, 1, 64]}/>
         <meshStandardMaterial color='black' opacity={0.8} transparent/>
       </mesh>
       <group ref={nameContainerRef}>

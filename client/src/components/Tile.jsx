@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame } from "@react-three/fiber";
-import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, mainAlertAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
+import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
@@ -33,7 +33,6 @@ export default function Tile({
   const [client] = useAtom(clientAtom)
   const [turn] = useAtom(turnAtom)
   const [gamePhase] = useAtom(gamePhaseAtom)
-  const [_mainAlert, setMainAlert] = useAtom(mainAlertAtom)
   const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
 
@@ -58,7 +57,6 @@ export default function Tile({
     const team = client.team
     let pieces = tiles[tile]
     if (gamePhase === "game" && hasTurn && !animationPlaying) {
-      setMainAlert({ type: '' })
       if (selection === null) {
         if (pieces.length > 0 && pieces[0].team === team) {
           let history = tiles[tile][0].history

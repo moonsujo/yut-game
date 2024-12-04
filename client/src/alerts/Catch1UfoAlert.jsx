@@ -10,7 +10,6 @@ import { turnAtom } from "../GlobalState";
 import { useAtom } from "jotai";
 
 export default function Catch1UfoAlert({ position, rotation }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
   const [turn] = useAtom(turnAtom)
 
   const initialScale = 1
@@ -105,10 +104,9 @@ export default function Catch1UfoAlert({ position, rotation }) {
     <mesh
       castShadow
       receiveShadow
-      geometry={nodes.Cylinder.geometry}
-      material={nodes.Cylinder.material}
       scale={[2.2, 0.055, 2.9]}
     >
+      <cylinderGeometry args={[1, 1, 1, 64]}/>
       <meshStandardMaterial color='black' opacity={0.7} transparent/>
     </mesh>
     <group name='catch-picture'>
@@ -181,5 +179,4 @@ export default function Catch1UfoAlert({ position, rotation }) {
   </animated.group>
 }
 
-useGLTF.preload('models/alert-background.glb')
 useGLTF.preload('models/bam-emoji.glb')

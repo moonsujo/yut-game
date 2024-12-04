@@ -15,10 +15,10 @@ export default function Saturn({ position=[0,0,0], rotation=[0,0,0], scale=1 }) 
     TextureLoader,
     "textures/saturn-satellite-texture-map-2.jpg"
   );
-  const satelliteTexture3 = useLoader(
-    TextureLoader,
-    "textures/saturn-satellite-texture-map-3.jpg"
-  );
+  // const satelliteTexture3 = useLoader(
+  //   TextureLoader,
+  //   "textures/saturn-satellite-texture-map-3.jpg"
+  // );
   const satelliteTexture4 = useLoader(
     TextureLoader,
     "textures/saturn-satellite-texture-map-4.jpg"
@@ -106,7 +106,7 @@ export default function Saturn({ position=[0,0,0], rotation=[0,0,0], scale=1 }) 
               ]}
             >
               <sphereGeometry args={[0.03, 32, 32]} />
-              <meshStandardMaterial color={"#A9ABA8"} map={satelliteTexture3} />
+              <meshStandardMaterial color={"#A9ABA8"} map={satelliteTexture7} />
             </mesh>
             <mesh
               position={[

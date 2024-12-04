@@ -5,8 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import Star from "./meshes/Star";
 
 export default function RocketsGoFirst({ position, rotation, scale }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
-
+  
   const borderMesh0Ref = useRef();
   const borderMesh1Ref = useRef();
   const borderMesh2Ref = useRef();
@@ -38,10 +37,9 @@ export default function RocketsGoFirst({ position, rotation, scale }) {
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
         scale={[0.8, 0.03, 1.5]}
       >
+        <cylinderGeometry args={[1, 1, 1, 64]}/>
         <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D

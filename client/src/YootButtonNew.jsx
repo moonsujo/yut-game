@@ -12,10 +12,6 @@ import YootMesh from './meshes/YootMesh';
 
 export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
   const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
-  const { scene } = useGLTF("/models/yoot-for-button.glb");
-  const yootMaterials = useGLTF("/models/yoot-for-button.glb").materials
-  const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  const yootNodes = useGraph(clone).nodes
   let buttonRef = useRef();
   const params = useParams();
 

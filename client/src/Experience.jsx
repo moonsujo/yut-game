@@ -6,13 +6,16 @@ import LobbyExperience from "./LobbyExperience.jsx";
 
 export default function Experience() {
 
-  const gamePhase = useAtomValue(gamePhaseAtom)
+  // const gamePhase = useAtomValue(gamePhaseAtom)
 
-  console.log('[Experience] gamePhase', gamePhase)
+  // console.log('[Experience] gamePhase', gamePhase)
 
   return <>
+    {/* { gamePhase === 'lobby' && <GameExperience/> } */}
     {/* { gamePhase === 'lobby' && <LobbyExperience/> } */}
-    { (gamePhase === 'lobby' || gamePhase === 'pregame' || gamePhase === 'game' || gamePhase === 'finished') && <GameExperience/> }
+    {/* { (gamePhase === 'pregame' || gamePhase === 'game') && <GameExperience/> } */}
     {/* win screen experience */}
+    {/* { gamePhase === 'finished' && <GameExperience/> } */}
+    <GameExperience/>
   </>
 }

@@ -3278,6 +3278,3 @@ export default function HowToPlay({
     }/> }
   </group>
 }
-
-useGLTF.preload('models/yoot-highlight.glb')
-useGLTF.preload('models/yoot-rhino-highlight.glb')

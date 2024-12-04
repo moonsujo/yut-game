@@ -6,7 +6,7 @@ import { useFrame } from "@react-three/fiber";
 import { getLegalTiles } from "../helpers/legalTiles";
 import Rocket from "../meshes/Rocket.jsx";
 import Ufo from "../meshes/Ufo.jsx";
-import { teamsAtom, gamePhaseAtom, yootThrownAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, mainAlertAtom, animationPlayingAtom } from "../GlobalState.jsx";
+import { teamsAtom, gamePhaseAtom, yootThrownAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom } from "../GlobalState.jsx";
 import { useParams } from "wouter";
 import { pieceStatus } from "../helpers/helpers.js";
 import { animated } from "@react-spring/three";
@@ -31,7 +31,6 @@ export default function Piece ({
   const [tiles] = useAtom(tilesAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
   const [animationPlaying] = useAtom(animationPlayingAtom)
-  const [_mainAlert, setMainAlert] = useAtom(mainAlertAtom)
   const params = useParams()
 
   const group = useRef();
@@ -55,7 +54,6 @@ export default function Piece ({
   function handlePointerDown(event) {
     if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying) {
       event.stopPropagation();
-      setMainAlert({ type: '' })
       if (selection === null) {
         let pieces;
         let history;

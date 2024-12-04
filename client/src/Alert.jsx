@@ -32,7 +32,6 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import tilePositions from './tilePositions';
 
 export default function Alert({ position, rotation }) {
-    const { nodes, materials } = useGLTF('models/alert-background.glb')
     
     const [alerts] = useAtom(alertsAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
@@ -710,10 +709,9 @@ export default function Alert({ position, rotation }) {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[2, 0.055, 2.6]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.8} transparent/>
         </mesh>
         <group ref={nameContainerRef}>
@@ -842,10 +840,9 @@ export default function Alert({ position, rotation }) {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[2, 0.055, 2.6]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.8} transparent/>
         </mesh>
         <group>
@@ -930,10 +927,9 @@ export default function Alert({ position, rotation }) {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[2, 0.055, 2.6]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.8} transparent/>
         </mesh>
         <group>
@@ -1029,10 +1025,9 @@ export default function Alert({ position, rotation }) {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[2, 0.055, 2.6]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.8} transparent/>
         </mesh>
         <group>
@@ -1124,10 +1119,9 @@ export default function Alert({ position, rotation }) {
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.Cylinder.geometry}
-          material={nodes.Cylinder.material}
           scale={[2, 0.055, 2.6]}
         >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
           <meshStandardMaterial color='black' opacity={0.8} transparent/>
         </mesh>
         <group>

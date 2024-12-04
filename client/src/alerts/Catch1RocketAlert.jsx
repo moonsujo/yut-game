@@ -6,12 +6,8 @@ import Rocket from "../meshes/Rocket"
 import { useFrame } from "@react-three/fiber";
 import YootMesh from "../meshes/YootMesh";
 import { animated, useSpring } from "@react-spring/three";
-import { turnAtom } from "../GlobalState";
-import { useAtom } from "jotai";
 
 export default function Catch1RocketAlert({ position, rotation }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
-  const [turn] = useAtom(turnAtom)
 
   const initialScale = 1
   const springs = useSpring({
@@ -99,16 +95,16 @@ export default function Catch1RocketAlert({ position, rotation }) {
 
   function handleAlertClick(e) {
     e.stopPropagation();
+    // clear alert
   }
 
   return <animated.group position={position} rotation={rotation} scale={springs.scale} onPointerDown={(e) => handleAlertClick(e)}>
     <mesh
       castShadow
       receiveShadow
-      geometry={nodes.Cylinder.geometry}
-      material={nodes.Cylinder.material}
       scale={[2.2, 0.055, 2.9]}
     >
+      <cylinderGeometry args={[1, 1, 1, 64]}/>
       <meshStandardMaterial color='black' opacity={0.7} transparent/>
     </mesh>
     <group name='catch-picture'>
@@ -181,5 +177,4 @@ export default function Catch1RocketAlert({ position, rotation }) {
   </animated.group>
 }
 
-useGLTF.preload('models/alert-background.glb')
 useGLTF.preload('models/bam-emoji.glb')

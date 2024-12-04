@@ -2,7 +2,6 @@ import { Text3D, useGLTF } from '@react-three/drei';
 import { useFrame, useGraph } from '@react-three/fiber';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
-import HtmlElement from '../HtmlElement';
 import YootMesh from './YootMesh';
 
 export default function YootButtonModel({
@@ -90,7 +89,3 @@ export default function YootButtonModel({
     </Text3D>
   </group>
 }
-
-
-useGLTF.preload('/models/rounded-rectangle.glb')
-useGLTF.preload('/models/yoot-for-button.glb')

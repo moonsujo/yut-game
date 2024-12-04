@@ -11,7 +11,7 @@ export default function ArrowBlender({position, rotation, scale, color}) {
           geometry={nodes.Cube.geometry}
           scale={[1, 0.039, 0.363]}
         >
-            <meshStandardMaterial color={color}/>
+          <meshStandardMaterial color={color}/>
         </mesh>
       </group>
     );

@@ -28,5 +28,3 @@ export default function YootRhino({
     </group>
   );
 }
-
-useGLTF.preload("models/yoot-rhino.glb")

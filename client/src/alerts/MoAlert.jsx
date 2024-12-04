@@ -4,12 +4,8 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import Star from "../meshes/Star";
 import { animated, useSpring } from "@react-spring/three";
-import { useAtom } from "jotai";
-import { mainAlertAtom } from "../GlobalState";
 
 export default function MoAlert({ position, rotation }) {
-  const { nodes, materials } = useGLTF('models/alert-background.glb')
-  const [_mainAlert, setMainAlert] = useAtom(mainAlertAtom)
 
   const initialScale = 1
   const springs = useSpring({
@@ -59,7 +55,7 @@ export default function MoAlert({ position, rotation }) {
 
   const height = 2.3
   const width = 3
-  useFrame((state, delta) => {
+  useFrame((state) => {
     for (let i = 0; i < borderMeshRefs.length; i++) {      
       borderMeshRefs[i].current.position.x = Math.cos(state.clock.elapsedTime / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
       borderMeshRefs[i].current.position.y = 0.05
@@ -78,17 +74,15 @@ export default function MoAlert({ position, rotation }) {
 
   function handleAlertClick(e) {
     e.stopPropagation();
-    setMainAlert({ type: '' })
   }
 
   return <animated.group position={position} rotation={rotation} scale={springs.scale} onPointerDown={(e) => handleAlertClick(e)}>
     <mesh
       castShadow
       receiveShadow
-      geometry={nodes.Cylinder.geometry}
-      material={nodes.Cylinder.material}
       scale={[2.3, 0.055, 3]}
     >
+      <cylinderGeometry args={[1, 1, 1, 64]}/>
       <meshStandardMaterial color='black' opacity={0.8} transparent/>
     </mesh>
     <group name="text" position={[0, -0.15, -0.36]} scale={1.2}>
@@ -111,20 +105,7 @@ export default function MoAlert({ position, rotation }) {
         <meshStandardMaterial color="yellow"/>
       </Text3D>
     </group>
-    {/* <group name='move-token' position={[1.4, 0.09, 0]}>
-      <mesh scale={0.4}>
-        <cylinderGeometry args={[1, 1, 0.1, 5, ]}/>
-      </mesh>
-      <Star scale={0.2} color='yellow' position={[0.22,-0.01,-0.31]}/>
-      <Star scale={0.2} color='yellow' position={[-0.22,-0.01,-0.32]}/>
-      <Star scale={0.2} color='yellow' position={[-0.35,-0.01,0.13]}/>
-      <Star scale={0.2} color='yellow' position={[0, -0.01, 0.37]}/>
-      <Star scale={0.2} color='yellow' position={[0.36, -0.01, 0.13]}/>
-    </group> */}
     <group name='move-token' position={[1.4, 0.09, 0]}>
-      {/* <mesh scale={0.4}>
-        <cylinderGeometry args={[1, 1, 0.1, 5, ]}/>
-      </mesh> */}
       <Star scale={0.25} color='yellow' position={[-0.1,-0.01,-1]}/>
       <Star scale={0.25} color='yellow' position={[-0.1,-0.01,-0.5]}/>
       <Star scale={0.25} color='yellow' position={[-0.1,-0.01,0]}/>

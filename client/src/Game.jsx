@@ -53,14 +53,10 @@ import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 
-import QRCode from 'qrcode';
-import QRCode3D from "./QRCode3D.jsx";
-
 // There should be no state
 export default function Game() {
   
   useResponsiveSetting();
-  // const [playMusic] = useMusicPlayer();
   const [device] = useAtom(deviceAtom)
   const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
