@@ -582,16 +582,6 @@ export default function HowToPlay({
   }
   
   function ThrowingTheDicePage() {
-    
-    const nodes = useGLTF("models/yoot-highlight.glb").nodes;
-    const materials = useGLTF("models/yoot-highlight.glb").materials;
-    const nodesRhino = useGLTF("models/yoot-rhino-highlight.glb").nodes;
-    const materialsRhino = useGLTF("models/yoot-rhino-highlight.glb").materials;
-    
-    const nodes2 = useGLTF("models/yoot-v2-regular.glb").nodes;
-    const materials2 = useGLTF("models/yoot-v2-regular.glb").materials;
-    const nodesRhino2 = useGLTF("models/yoot-v2-backdo.glb").nodes;
-    const materialsRhino2 = useGLTF("models/yoot-v2-backdo.glb").materials;
 
     const [startTime, setStartTime] = useState(0)
     const yoot0 = useRef();
