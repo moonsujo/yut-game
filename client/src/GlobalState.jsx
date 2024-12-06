@@ -79,85 +79,64 @@ export const alertsAtom = atom([])
 export const currentPlayerNameAtom = atom('')
 export const catchPathAtom = atom(null)
 
-export const pieceTeam0Id0Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[0].pieces[0])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
+// array comparison helper
+function areEqualArrays(array0, array1) {
+  if (array0.length !== array1.length) {
+    return false;
+  }
+
+  for (let i = 0; i < array0.length; i++) {
+    if (array0[i] !== array1[i]) {
+      return false;
     }
   }
+
+  return true;
+}
+
+const deepPieceEquals = (prev, next) => {
+  let result;
+  if (prev.tile === next.tile) {
+  // if (prev.tile === next.tile && areEqualArrays(prev.lastPath, next.lastPath)) {
+    result = true
+  } else {
+    result = false
+  }
+  console.log('[deepPieceEquals] prev', prev, 'next', next, 'comparison result', result)
+  return result;
+}
+
+export const pieceTeam0Id0Atom = atomWithCompare(
+  JSON.parse(JSON.stringify(initialState.teams[0].pieces[0])),
+  deepPieceEquals
 )
 export const pieceTeam0Id1Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[0].pieces[1])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam0Id2Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[0].pieces[2])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam0Id3Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[0].pieces[3])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam1Id0Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[1].pieces[0])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam1Id1Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[1].pieces[1])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam1Id2Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[1].pieces[2])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 export const pieceTeam1Id3Atom = atomWithCompare(
   JSON.parse(JSON.stringify(initialState.teams[1].pieces[3])),
-  (prev, next) => {
-    if (prev.tile === next.tile) {
-      return true
-    } else {
-      return false
-    }
-  }
+  deepPieceEquals
 )
 
 // Set device

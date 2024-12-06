@@ -27,7 +27,6 @@ export default function Piece ({
   const [client] = useAtom(clientAtom)
   const [teams] = useAtom(teamsAtom);
   const [gamePhase] = useAtom(gamePhaseAtom)
-  const [yootThrown] = useAtom(yootThrownAtom)
   const [tiles] = useAtom(tilesAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
   const [animationPlaying] = useAtom(animationPlayingAtom)

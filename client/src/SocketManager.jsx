@@ -249,8 +249,6 @@ export const SocketManager = () => {
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
-      // setHasTurn(clientHasTurn(socket.id, teams, turn))
-      // setAnimationPlaying() is run in YootButtonNew onClick
       setThrowCount(teams[turn.team].throws)
     })
 
@@ -390,24 +388,24 @@ export const SocketManager = () => {
       setCurrentPlayerName(currentPlayerName)
       
       let alerts = []
-      let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
-      if (joined.result) {
-        alerts.push(`join${turnPrev.team}${joined.tile}`)
-      }
-
-      if (turnPrev.team !== turnUpdate.team) {
-        alerts.push('turn')
+      // 1. catch
+      const opposingTeam = turnUpdate.team === 0 ? 1 : 0;
+      const opposingTeamPiecesPrev = teamsPrev[opposingTeam].pieces;
+      const opposingTeamPiecesUpdate = teamsUpdate[opposingTeam].pieces
+      let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
+      if (numPiecesCaught > 0) {
+        alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
+        setCatchPath(gameLogs[gameLogs.length-1].content.path)
         setThrowCount(teamsUpdate[turnUpdate.team].throws)
-      } else {
-        const opposingTeam = turnUpdate.team === 0 ? 1 : 0;
-        const opposingTeamPiecesPrev = teamsPrev[opposingTeam].pieces;
-        const opposingTeamPiecesUpdate = teamsUpdate[opposingTeam].pieces
-        let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
-        if (numPiecesCaught > 0) {
-          alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
-          setCatchPath(gameLogs[gameLogs.length-1].content.path)
+      } else { // 2. join / pass turn
+        let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
+        if (joined.result) {
+          alerts.push(`join${turnPrev.team}${joined.tile}`)
         }
-        setThrowCount(teamsUpdate[turnUpdate.team].throws)
+        if (turnPrev.team !== turnUpdate.team) {
+          alerts.push('turn')
+          setThrowCount(teamsUpdate[turnUpdate.team].throws)
+        }
       }
 
       setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
