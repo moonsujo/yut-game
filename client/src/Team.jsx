@@ -38,10 +38,10 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         } else {
           if (client.team === -1) {
             colorMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
-            button.current.scale.x = Math.cos(time * 2) * 0.3 + 0.7;
+            // button.current.scale.x = Math.cos(time * 2) * 0.3 + 0.7;
           } else {
             colorMaterial.color.setHSL(1/6, 1, 0.5); // yellow
-            button.current.scale.x = 1;
+            // button.current.scale.x = 1;
           }
         }
       }
