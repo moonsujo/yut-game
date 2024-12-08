@@ -34,7 +34,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
           colorMaterial.color.b = 0.031896033067374104;
           colorMaterial.color.g = 0.6104955708001716;
           colorMaterial.color.r = 0.031896033067374104;
-          button.current.scale.x = 1;
+          // button.current.scale.x = 1;
         } else {
           if (client.team === -1) {
             colorMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
