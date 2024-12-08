@@ -15,14 +15,6 @@ export default function PiecesOnBoard() {
     const [pieceTeam1Id1] = useAtom(pieceTeam1Id1Atom)
     const [pieceTeam1Id2] = useAtom(pieceTeam1Id2Atom)
     const [pieceTeam1Id3] = useAtom(pieceTeam1Id3Atom)
-    console.log('[PiecesOnBoard] pieceTeam0Id0', JSON.stringify(pieceTeam0Id0, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam0Id1', JSON.stringify(pieceTeam0Id1, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam0Id2', JSON.stringify(pieceTeam0Id2, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam0Id3', JSON.stringify(pieceTeam0Id3, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam1Id0', JSON.stringify(pieceTeam1Id0, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam1Id1', JSON.stringify(pieceTeam1Id1, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam1Id2', JSON.stringify(pieceTeam1Id2, null, 4))
-    console.log('[PiecesOnBoard] pieceTeam1Id3', JSON.stringify(pieceTeam1Id3, null, 4))
     const [catchPath] = useAtom(catchPathAtom)
     
     const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
@@ -56,7 +48,6 @@ export default function PiecesOnBoard() {
     }
 
     function calculateCatchDelay(catchPath) {
-        console.log('catchPath', catchPath)
         if (catchPath[0] === 1 && catchPath[1] === 0) {
             return (catchPath.length-1) * 610
         } if (catchPath[0] === 0 && (catchPath[1] !== 19 && catchPath[1] !== 28)) {
@@ -233,6 +224,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[0][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[0][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -246,7 +238,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -317,7 +308,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id1.tile)) {
@@ -372,6 +362,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[1][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[1][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -381,6 +372,7 @@ export default function PiecesOnBoard() {
                 api0_1.start({
                     from: {
                         position: toAnimations[0].position,
+                        scale: responsiveScale, // match scale in toAnimations
                     },
                     to: toAnimations,
                     loop: false,
@@ -508,6 +500,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[2][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[2][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -517,10 +510,10 @@ export default function PiecesOnBoard() {
                 api0_2.start({
                     from: {
                         position: toAnimations[0].position,
+                        scale: responsiveScale,
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -532,7 +525,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -646,6 +638,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[3][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[3][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -786,6 +779,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[0][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[0][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -926,6 +920,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[1][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[1][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -1065,6 +1060,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[2][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[2][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -1078,7 +1074,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -1090,7 +1085,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -1204,6 +1198,7 @@ export default function PiecesOnBoard() {
                             roundNum(tilePositions[value][1] + heightOffset + idOffsets[3][1], 1) * responsiveScale,
                             roundNum(tilePositions[value][2] + idOffsets[3][2], 1) * responsiveScale,
                         ],
+                        scale: responsiveScale, // fix bug where piece disappears on refresh
                         config: {
                             tension: 170,
                             friction: 26
@@ -1217,7 +1212,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations13,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -1266,7 +1260,7 @@ export default function PiecesOnBoard() {
             tile={pieceTeam0Id1.tile} 
             position={springs0_1.position} 
             scale={springs0_1.scale} 
-            selectable={(hasTurn && hasValidMoveBoard(0))}
+            selectable={hasTurn && hasValidMoveBoard(0)}
             selected={pieceSelected(selection, 1, 0)}
             onBoard={true}
             animation='onBoard'
