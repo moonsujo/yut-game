@@ -1,51 +1,64 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { MeshStandardMaterial } from 'three';
 import { Text3D } from "@react-three/drei";
 import { socket } from "./SocketManager";
 import { useParams } from "wouter";
-import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber";
+import layout from "./layout.js";
 
-export default function ScoreButtons({ position, rotation, scale, legalTiles, buttonPos, textSingle, textMultiple, textSize, enabled, lineHeight, height }) {
+export default function ScoreButtons({ device, legalTiles, hasTurn }) {
   
   const params = useParams()
 
   function MoveToken({moveInfo, position}) {
 
-    const buttonMatInner = useRef();
+    const [hover, setHover] = useState(false);
+    const primaryMaterial = new MeshStandardMaterial({ color: 'limegreen' })
+    // console.log(primaryMaterial.color.r) // 0.03190
+    // console.log(primaryMaterial.color.g) // 0.6105
+
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (!hover) {
+        primaryMaterial.color.g = 0.3105 + Math.cos(time * 5) * 0.2 + 0.1
+      } else {
+        primaryMaterial.color.r = 0.7
+        primaryMaterial.color.g = 1
+        primaryMaterial.color.b = 1
+      }
+    })
 
     function scorePointerEnter(event) {
       event.stopPropagation();
-      if (enabled) {
+      if (hasTurn) {
         document.body.style.cursor = "pointer";
-        buttonMatInner.current.color = new THREE.Color('green')
+        setHover(true)
       }
     }
   
     function scorePointerOut(event) {
       event.stopPropagation();
-      if (enabled) {
+      if (hasTurn) {
         document.body.style.cursor = "default";
-        buttonMatInner.current.color = new THREE.Color('black')
+        setHover(false)
       }
     }
 
     return <group position={position}>
-      <mesh rotation={[-Math.PI/2, 0, 0]}>
+      <mesh rotation={[-Math.PI/2, 0, 0]} material={primaryMaterial}>
         <cylinderGeometry args={[0.5, 0.5, 0.1]}/>
-        <meshStandardMaterial color='yellow'/>
       </mesh>
       <mesh rotation={[-Math.PI/2, 0, 0]}>
         <cylinderGeometry args={[0.45, 0.45, 0.11]}/>
-        <meshStandardMaterial color='black' ref={buttonMatInner} />
+        <meshStandardMaterial color='black'/>
       </mesh>
       <Text3D 
       font="/fonts/Luckiest Guy_Regular.json" 
       height={0.01} 
       size={0.5} 
-      position={[-0.17, -0.22, 0.05]}>
+      position={[-0.17, -0.22, 0.05]}
+      material={primaryMaterial}>
         {`${moveInfo.move}`}
-        <meshStandardMaterial color='yellow'/>
       </Text3D>
       <mesh 
         name='wrapper' 
@@ -54,8 +67,10 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
         onPointerEnter={scorePointerEnter}
         onPointerLeave={scorePointerOut}
         onPointerDown={() => {
-          if (enabled)
+          if (hasTurn) {
             socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: moveInfo });
+            setHover(false)
+          }
         }}
       >
         <cylinderGeometry args={[0.5, 0.5, 0.15]}/>
@@ -89,17 +104,21 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
   }
 
   function MultipleMoveButtonSet () {
-    return <group>
+    return <group
+      position={layout[device].game.scoreButtons.multiple.position}
+      rotation={layout[device].game.scoreButtons.rotation}>
       <Text3D 
         font="/fonts/Luckiest Guy_Regular.json" 
-        height={0.01} 
-        size={textSize}
-        lineHeight={0.8}
+        height={layout[device].game.scoreButtons.height} 
+        size={layout[device].game.scoreButtons.multiple.size}
+        lineHeight={layout[device].game.scoreButtons.lineHeight}
       >
-        {textMultiple}
+        {layout[device].game.scoreButtons.multiple.text}
         <meshStandardMaterial color='limegreen'/>
       </Text3D>
-      <group position={buttonPos}>
+      <group 
+      position={layout[device].game.scoreButtons.multiple.buttons.position}
+      scale={layout[device].game.scoreButtons.multiple.buttons.scale}>
         {legalTiles[29].map( (value, index) => ( // must use parentheses instead of brackets
           <MoveToken 
             moveInfo={value} 
@@ -118,8 +137,7 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
   function OneMoveButton () {    
     const [hover, setHover] = useState(false);
     const primaryMaterial = new MeshStandardMaterial({ color: 'limegreen' })
-    console.log(primaryMaterial.color.r) // 0.03190
-    console.log(primaryMaterial.color.g) // 0.6105
+
 
     useFrame((state) => {
       const time = state.clock.elapsedTime;
@@ -150,17 +168,20 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
       socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
     }
 
-    return <group rotation={rotation}>
+    return <group
+    position={layout[device].game.scoreButtons.single.position}
+    rotation={[-Math.PI,0,0]}
+    >
       <mesh
         name='background-outer'
-        scale={[1.3, 0.01, 1.1]}
+        scale={[1.55, 0.01, 1.2]}
         material={primaryMaterial}
       >
         <cylinderGeometry args={[1, 1, 0.01, 32]}/>
       </mesh>
       <mesh
         name='background-inner'
-        scale={[1.25, 0.05, 1.05]}
+        scale={[1.5, 0.05, 1.15]}
       >
         <cylinderGeometry args={[1, 1, 0.01, 32]}/>
         <meshStandardMaterial color='#090f16'/>
@@ -177,23 +198,19 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
       </mesh>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
-        position={[-0.92, -0.05, 0.05]}
+        position={[-1, -0.05, 0.05]}
         rotation={[Math.PI/2, 0, 0]}
-        size={textSize}
-        lineHeight={lineHeight}
+        size={layout[device].game.scoreButtons.single.size}
+        lineHeight={layout[device].game.scoreButtons.lineHeight}
+        height={layout[device].game.scoreButtons.height}
         material={primaryMaterial}
-        height={height}
       >
-        {textSingle}
+        {layout[device].game.scoreButtons.single.text}
       </Text3D>
     </group>
   }
 
-  return <group 
-    position={position} 
-    rotation={rotation}
-    scale={scale}
-  >
+  return <group>
     { legalTiles[29].length > 1 ? <MultipleMoveButtonSet/> : <OneMoveButton/>}
   </group>
 }

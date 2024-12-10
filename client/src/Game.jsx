@@ -1089,17 +1089,8 @@ export default function Game() {
         /> }
         { (29 in legalTiles) && <ScoreButtons
           device={device}
-          position={layout[device].game.scoreButtons.position}
-          rotation={layout[device].game.scoreButtons.rotation}
-          buttonPos={layout[device].game.scoreButtons.buttons.position}
-          textSingle={layout[device].game.scoreButtons.textSingle}
-          textMultiple={layout[device].game.scoreButtons.textMultiple}
-          textSize={layout[device].game.scoreButtons.textSize}
-          lineHeight={layout[device].game.scoreButtons.lineHeight}
-          height={layout[device].game.scoreButtons.height}
-          scale={layout[device].game.scoreButtons.scale}
           legalTiles={legalTiles}
-          enabled={hasTurn}
+          hasTurn={hasTurn}
         /> }
         <PiecesOnBoard/>
         { (gamePhase === 'pregame' || gamePhase === 'game') && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
