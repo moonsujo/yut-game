@@ -150,17 +150,17 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
       socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
     }
 
-    return <group rotation={rotation} position={position}>
+    return <group rotation={rotation}>
       <mesh
         name='background-outer'
-        scale={[1.95, 0.01, 0.7]}
+        scale={[1.3, 0.01, 1.1]}
         material={primaryMaterial}
       >
         <cylinderGeometry args={[1, 1, 0.01, 32]}/>
       </mesh>
       <mesh
         name='background-inner'
-        scale={[1.9, 0.05, 0.65]}
+        scale={[1.25, 0.05, 1.05]}
       >
         <cylinderGeometry args={[1, 1, 0.01, 32]}/>
         <meshStandardMaterial color='#090f16'/>
@@ -177,7 +177,7 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, bu
       </mesh>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
-        position={[-1.6, -0.05, -0.2]}
+        position={[-0.92, -0.05, 0.05]}
         rotation={[Math.PI/2, 0, 0]}
         size={textSize}
         lineHeight={lineHeight}

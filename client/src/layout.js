@@ -1401,11 +1401,12 @@ export default {
       scoreButtons: {
         textSingle: 'touch\ndown',
         textMultiple: 'touch\ndown\nwith',
-        textSize: 0.6,
-        lineHeight: 0.8,
-        position: [-1.2, 0, 7.7],
+        textSize: 0.45,
+        lineHeight: 0.7,
+        height: 0.01,
+        position: [0, 0, 8],
         rotation: [-Math.PI/2, 0, 0],
-        scale: 0.8,
+        scale: 1.2,
         buttons: {
           position: [0, -1, 0]
         }
@@ -2909,12 +2910,12 @@ export default {
         orientation: 'downUp'
       },
       scoreButtons: {
-        textSingle: 'touchdown',
-        textMultiple: 'touchdown\nwith',
-        textSize: 0.4,
-        lineHeight: 1,
+        textSingle: 'touch\ndown',
+        textMultiple: 'touch\ndown\nwith',
+        textSize: 0.45,
+        lineHeight: 0.7,
         height: 0.01,
-        position: [2.9, -3.5, 0],
+        position: [5.9, 0, 4.5],
         rotation: [-Math.PI/2, 0, 0],
         scale: 1,
         buttons: {

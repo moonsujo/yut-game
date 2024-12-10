@@ -1097,11 +1097,12 @@ export default function Game() {
           textSize={layout[device].game.scoreButtons.textSize}
           lineHeight={layout[device].game.scoreButtons.lineHeight}
           height={layout[device].game.scoreButtons.height}
+          scale={layout[device].game.scoreButtons.scale}
           legalTiles={legalTiles}
           enabled={hasTurn}
         /> }
         <PiecesOnBoard/>
-        { (gamePhase === 'pregame' || gamePhase === 'game') && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles))) && <MoveList
+        { (gamePhase === 'pregame' || gamePhase === 'game') && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}
           tokenScale={layout[device].game.moveList.tokenScale}
