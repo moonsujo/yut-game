@@ -140,7 +140,7 @@ export default function Game() {
       useFrame((state) => {
         const time = state.clock.elapsedTime;
         letsPlayTextMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
-        letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
+        // letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
       })
   
       const backdropHeight = layout[device].game.letsPlayButton.activeButton.backdropHeight
@@ -1088,12 +1088,15 @@ export default function Game() {
         device={device}
         /> }
         { (29 in legalTiles) && <ScoreButtons
+          device={device}
           position={layout[device].game.scoreButtons.position}
           rotation={layout[device].game.scoreButtons.rotation}
           buttonPos={layout[device].game.scoreButtons.buttons.position}
-          text={layout[device].game.scoreButtons.text}
+          textSingle={layout[device].game.scoreButtons.textSingle}
+          textMultiple={layout[device].game.scoreButtons.textMultiple}
           textSize={layout[device].game.scoreButtons.textSize}
           lineHeight={layout[device].game.scoreButtons.lineHeight}
+          height={layout[device].game.scoreButtons.height}
           legalTiles={legalTiles}
           enabled={hasTurn}
         /> }

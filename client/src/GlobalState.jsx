@@ -80,29 +80,27 @@ export const currentPlayerNameAtom = atom('')
 export const catchPathAtom = atom(null)
 
 // array comparison helper
-function areEqualArrays(array0, array1) {
-  if (array0.length !== array1.length) {
-    return false;
-  }
+// function areEqualArrays(array0, array1) {
+//   if (array0.length !== array1.length) {
+//     return false;
+//   }
 
-  for (let i = 0; i < array0.length; i++) {
-    if (array0[i] !== array1[i]) {
-      return false;
-    }
-  }
+//   for (let i = 0; i < array0.length; i++) {
+//     if (array0[i] !== array1[i]) {
+//       return false;
+//     }
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
 const deepPieceEquals = (prev, next) => {
   let result;
   if (prev.tile === next.tile) {
-  // if (prev.tile === next.tile && areEqualArrays(prev.lastPath, next.lastPath)) {
     result = true
   } else {
     result = false
   }
-  console.log('[deepPieceEquals] prev', prev, 'next', next, 'comparison result', result)
   return result;
 }
 

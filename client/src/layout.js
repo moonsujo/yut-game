@@ -1399,7 +1399,8 @@ export default {
         orientation: 'leftRight'
       },
       scoreButtons: {
-        text: "touch\ndown",
+        textSingle: 'touch\ndown',
+        textMultiple: 'touch\ndown\nwith',
         textSize: 0.6,
         lineHeight: 0.8,
         position: [-1.2, 0, 7.7],
@@ -2908,10 +2909,12 @@ export default {
         orientation: 'downUp'
       },
       scoreButtons: {
-        text: 'touchdown',
+        textSingle: 'touchdown',
+        textMultiple: 'touchdown\nwith',
         textSize: 0.4,
         lineHeight: 1,
-        position: [4.5, 0, 4.5],
+        height: 0.01,
+        position: [2.9, -3.5, 0],
         rotation: [-Math.PI/2, 0, 0],
         scale: 1,
         buttons: {

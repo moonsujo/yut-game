@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import { MeshStandardMaterial } from 'three';
 import { Text3D } from "@react-three/drei";
 import { socket } from "./SocketManager";
 import { useParams } from "wouter";
 import * as THREE from 'three';
+import { useFrame } from "@react-three/fiber";
 
-export default function ScoreButtons({ position, rotation, scale, legalTiles, text, buttonPos, textSize, enabled }) {
+export default function ScoreButtons({ position, rotation, scale, legalTiles, buttonPos, textSingle, textMultiple, textSize, enabled, lineHeight, height }) {
   
   const params = useParams()
 
@@ -86,32 +88,112 @@ export default function ScoreButtons({ position, rotation, scale, legalTiles, te
     }
   }
 
+  function MultipleMoveButtonSet () {
+    return <group>
+      <Text3D 
+        font="/fonts/Luckiest Guy_Regular.json" 
+        height={0.01} 
+        size={textSize}
+        lineHeight={0.8}
+      >
+        {textMultiple}
+        <meshStandardMaterial color='limegreen'/>
+      </Text3D>
+      <group position={buttonPos}>
+        {legalTiles[29].map( (value, index) => ( // must use parentheses instead of brackets
+          <MoveToken 
+            moveInfo={value} 
+            position={[
+              0.4 + tokenPositionShift('x', index), 
+              -0.7 - tokenPositionShift('y', index), 
+              0
+            ]} 
+            key={index}
+          />
+        ))}
+      </group>
+    </group>
+  }
+
+  function OneMoveButton () {    
+    const [hover, setHover] = useState(false);
+    const primaryMaterial = new MeshStandardMaterial({ color: 'limegreen' })
+    console.log(primaryMaterial.color.r) // 0.03190
+    console.log(primaryMaterial.color.g) // 0.6105
+
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (!hover) {
+        primaryMaterial.color.g = 0.3105 + Math.cos(time * 5) * 0.2 + 0.1
+      } else {
+        primaryMaterial.color.r = 0.7
+        primaryMaterial.color.g = 1
+        primaryMaterial.color.b = 1
+      }
+    })
+
+    function handlePointerEnter(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "pointer";
+      setHover(true)
+    }
+
+    function handlePointerLeave(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "default";
+      setHover(false)
+    }
+
+    function handlePointerUp(e) {
+      e.stopPropagation();
+      setHover(false)
+      socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
+    }
+
+    return <group rotation={rotation} position={position}>
+      <mesh
+        name='background-outer'
+        scale={[1.95, 0.01, 0.7]}
+        material={primaryMaterial}
+      >
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+      </mesh>
+      <mesh
+        name='background-inner'
+        scale={[1.9, 0.05, 0.65]}
+      >
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+        <meshStandardMaterial color='#090f16'/>
+      </mesh>
+      <mesh 
+        name='wrapper' 
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerUp={e => handlePointerUp(e)}
+        scale={[1.95, 0.05, 0.7]}
+      >
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+        <meshStandardMaterial transparent opacity={0}/>
+      </mesh>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.6, -0.05, -0.2]}
+        rotation={[Math.PI/2, 0, 0]}
+        size={textSize}
+        lineHeight={lineHeight}
+        material={primaryMaterial}
+        height={height}
+      >
+        {textSingle}
+      </Text3D>
+    </group>
+  }
+
   return <group 
     position={position} 
     rotation={rotation}
     scale={scale}
   >
-    <Text3D 
-      font="/fonts/Luckiest Guy_Regular.json" 
-      height={0.01} 
-      size={textSize}
-      lineHeight={0.8}
-    >
-      {text}
-      <meshStandardMaterial color='limegreen'/>
-    </Text3D>
-    <group position={buttonPos}>
-      {legalTiles[29].map( (value, index) => ( // must use parentheses instead of brackets
-        <MoveToken 
-          moveInfo={value} 
-          position={[
-            0.4 + tokenPositionShift('x', index), 
-            -0.7 - tokenPositionShift('y', index), 
-            0
-          ]} 
-          key={index}
-        />
-      ))}
-    </group>
+    { legalTiles[29].length > 1 ? <MultipleMoveButtonSet/> : <OneMoveButton/>}
   </group>
 }
