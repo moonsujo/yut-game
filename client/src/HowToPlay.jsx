@@ -1,7 +1,7 @@
-import { Float, MeshDistortMaterial, Text3D, useGLTF } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import Cursor from './meshes/Cursor';
 import Earth from './meshes/Earth';
 import Mars from './meshes/Mars';
@@ -20,8 +20,6 @@ import Ufo from './meshes/Ufo';
 import BonusTurn from './meshes/BonusTurn';
 import ArrowBlender from './meshes/ArrowBlender';
 import YootSet from './meshes/YootSet';
-import { particleSettingAtom } from './GlobalState';
-import { useAtom } from 'jotai';
 import GulToken from './moveTokens/GulToken';
 import GeToken from './moveTokens/GeToken';
 import YootToken from './moveTokens/YootToken';
@@ -3160,45 +3158,47 @@ export default function HowToPlay({
       setPage(7)
     }
 
+    const space = layout[device].howToPlay.pagination.elementSpace
+    const startX = layout[device].howToPlay.pagination.startX
     return <group name='pagination' position={position} scale={scale}>
-      <mesh position={[-4, 0, 6]} rotation={[0, 0, Math.PI/2]} onPointerUp={handlePageLeft}>
-        <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, 0.6, 3]}/>
+      <mesh position={[startX, 0, 6]} rotation={[0, 0, Math.PI/2]} onPointerUp={handlePageLeft}>
+        <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, layout[device].howToPlay.pagination.arrowHeight, 3]}/>
         <meshStandardMaterial color="yellow"/>
       </mesh>
-      <mesh position={[-3, 0, 6]} onPointerUp={handlePage0}>
+      <mesh position={[startX + space*1, 0, 6]} onPointerUp={handlePage0}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 0 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[-2, 0, 6]} onPointerUp={handlePage1}>
+      <mesh position={[startX + space*2, 0, 6]} onPointerUp={handlePage1}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 1 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[-1, 0, 6]} onPointerUp={handlePage2}>
+      <mesh position={[startX + space*3, 0, 6]} onPointerUp={handlePage2}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 2 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[-0, 0, 6]} onPointerUp={handlePage3}>
+      <mesh position={[startX + space*4, 0, 6]} onPointerUp={handlePage3}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 3 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[1, 0, 6]} onPointerUp={handlePage4}>
+      <mesh position={[startX + space*5, 0, 6]} onPointerUp={handlePage4}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 4 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[2, 0, 6]} onPointerUp={handlePage5}>
+      <mesh position={[startX + space*6, 0, 6]} onPointerUp={handlePage5}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 5 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[3, 0, 6]} onPointerUp={handlePage6}>
+      <mesh position={[startX + space*7, 0, 6]} onPointerUp={handlePage6}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 6 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[4, 0, 6]} onPointerUp={handlePage7}>
+      <mesh position={[startX + space*8, 0, 6]} onPointerUp={handlePage7}>
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 7 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[5, 0, 6]} rotation={[0, 0, -Math.PI/2]} onPointerUp={handlePageRight}>
-        <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, 0.6, 3]}/>
+      <mesh position={[startX + space*9, 0, 6]} rotation={[0, 0, -Math.PI/2]} onPointerUp={handlePageRight}>
+        <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, layout[device].howToPlay.pagination.arrowHeight, 3]}/>
         <meshStandardMaterial color="yellow"/>
       </mesh>
     </group>

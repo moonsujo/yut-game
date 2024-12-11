@@ -521,7 +521,7 @@ export default {
       },
       movingPiecesPage: {
         text: {
-          position: [-5, 0, -4],
+          position: [-3.5, 0, -4],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.5
         },
@@ -1019,9 +1019,12 @@ export default {
         }
       },
       pagination: {
-        pageRadius: 0.3,
-        arrowRadius: 0.4,
-        position: [-0.5, 0, 0.5],
+        pageRadius: 0.5,
+        arrowRadius: 0.8,
+        arrowHeight: 1,
+        elementSpace: 1.5,
+        startX: -6,
+        position: [-0.5, 0, 1],
         scale: 0.8
       },
       tileRadius: {
