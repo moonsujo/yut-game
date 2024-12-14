@@ -52,6 +52,7 @@ import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
+import SettingsPlayer from "./SettingsPlayer.jsx";
 
 // There should be no state
 export default function Game() {
@@ -466,27 +467,32 @@ export default function Game() {
   }
 
   function SettingsButton({ position, scale }) {
-    const yellowMaterial = new MeshStandardMaterial({ color: new Color('yellow')});
+    const [open, setOpen] = useState(false)
+    const [hover, setHover] = useState(false)
 
     function handlePointerEnter(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('green')
+      setHover(true)
     }
 
     function handlePointerLeave(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('yellow')
+      setHover(false)
     }
 
     function handlePointerDown(e) {
       e.stopPropagation();
+      if (open) {
+        setOpen(false)
+      } else {
+        setOpen(true)
+      }
     }
 
     return <group position={position} scale={scale}>
-      <mesh
-        material={yellowMaterial}
-      >
+      <mesh>
         <boxGeometry args={[2.1, 0.03, 0.55]}/>
+        <meshStandardMaterial color={ (open || hover) ? 'green' : 'yellow' }/>
       </mesh>
       <mesh>
         <boxGeometry args={[2.05, 0.04, 0.5]}/>
@@ -507,10 +513,16 @@ export default function Game() {
         rotation={layout[device].game.settings.text.rotation}
         size={layout[device].game.settings.text.size}
         height={layout[device].game.settings.text.height}
-        material={yellowMaterial}
       >
         Settings
+        <meshStandardMaterial color={ (open || hover) ? 'green' : 'yellow' }/>
       </Text3D>
+      {/* display different panes based on user state (spectator/player) */}
+      { open && <SettingsPlayer
+        position={[-5,3,0]}
+        rotation={[0,0,0]}
+        scale={[1,1,1]}
+      /> }
     </group>
   }
 
@@ -649,174 +661,10 @@ export default function Game() {
 
   const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
 
-  function InviteInstructions() {
-    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
-
-    const [hover, setHover] = useState(false);
-    const [pointerDown, setPointerDown] = useState(false);
-    const [springs, api] = useSpring(() => ({        
-      from: {
-        opacity: 0, 
-      }
-    }))
-    const [pushSprings, pushApi] = useSpring(() => ({        
-      from: {
-        scale: 1, 
-      }
-    }))
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      document.body.style.cursor = "pointer";
-      setHover(true)
-    }
-
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      document.body.style.cursor = "default";
-      setHover(false);
-      if (pointerDown) {
-        setPointerDown(false);
-        pushApi.start({
-          from: {
-            scale: 1.2
-          },
-          to: {
-            scale: 1
-          }
-        })
-      }
-    }
-
-    function copyURLToClipboard() {
-      const url = window.location.href;
-    
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        // Modern browsers with Clipboard API support
-        navigator.clipboard.writeText(url)
-          .then(() => {
-          })
-          .catch(err => {
-            console.error("Failed to copy URL: ", err);
-          });
-      } else {
-        // Fallback for older browsers
-        const tempInput = document.createElement("input");
-        document.body.appendChild(tempInput);
-        tempInput.value = url;
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-      }
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();  
-      setPointerDown(true)
-      pushApi.start({
-        from: {
-          scale: 1,
-        },
-        to: {
-          scale: 1.2
-        }
-      })
-    }
-
-    function handlePointerUp(e) {
-      e.stopPropagation();
-      console.log(e)
-      setPointerDown(false)
-      copyURLToClipboard();
-      api.start({
-        from: {
-          opacity: 1
-        },
-        to: [
-          {
-            opacity: 1
-          },
-          { 
-            opacity: 0,
-            delay: 500,
-            config: {
-              tension: 170,
-              friction: 26
-            }
-          }
-        ]
-      })
-      pushApi.start({
-        from: {
-          scale: 1.2
-        },
-        to: {
-          scale: 1
-        }
-      })
-    }
-
-    return <group position={layout[device].game.invite.position}>
-      <animated.group scale={ pushSprings.scale } position={layout[device].game.invite.button.position}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.invite.text.position}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={layout[device].game.invite.text.size}
-          height={0.01}
-        >
-          {layout[device].game.invite.text.content}
-          <meshStandardMaterial color='limegreen'/>
-        </Text3D>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Cube.geometry}
-          position={layout[device].game.invite.border.position}
-          rotation={layout[device].game.invite.border.rotation}
-          scale={layout[device].game.invite.border.scaleInner}
-          onPointerEnter={e => handlePointerEnter(e)}
-          onPointerLeave={e => handlePointerLeave(e)}
-          onPointerDown={e => handlePointerDown(e)}
-          onPointerUp={e => handlePointerUp(e)}
-        >
-          <meshStandardMaterial color='black' transparent opacity={0.5}/>
-        </mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          geometry={nodes.Cube.geometry}
-          position={layout[device].game.invite.border.position}
-          rotation={layout[device].game.invite.border.rotation}
-          scale={layout[device].game.invite.border.scaleOuter}
-        >
-          <meshStandardMaterial color='limegreen' transparent opacity={1}/>
-        </mesh>
-      </animated.group>
-      <Text3D 
-        name='copied-tooltip'
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.invite.copiedText.position}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={layout[device].game.invite.copiedText.size}
-        height={layout[device].game.invite.copiedText.height}
-      >
-        copied!
-        <AnimatedMeshDistortMaterial
-          speed={5}
-          distort={0}
-          color='limegreen'
-          transparent
-          opacity={springs.opacity}
-        />
-      </Text3D>
-    </group>
-  }
 
   function InviteInstructions2() {
     const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
 
-    const [hover, setHover] = useState(false);
     const [pointerDown, setPointerDown] = useState(false);
     const [springs, api] = useSpring(() => ({        
       from: {
@@ -832,13 +680,11 @@ export default function Game() {
     function handlePointerEnter(e) {
       e.stopPropagation();
       document.body.style.cursor = "pointer";
-      setHover(true)
     }
 
     function handlePointerLeave(e) {
       e.stopPropagation();
       document.body.style.cursor = "default";
-      setHover(false);
       if (pointerDown) {
         setPointerDown(false);
         pushApi.start({
