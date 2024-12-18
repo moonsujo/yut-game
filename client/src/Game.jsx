@@ -52,7 +52,7 @@ import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
-import SettingsPlayer from "./SettingsPlayer.jsx";
+import SettingsHostHtml from "./SettingsHostHtml.jsx";
 
 // There should be no state
 export default function Game() {
@@ -518,8 +518,8 @@ export default function Game() {
         <meshStandardMaterial color={ (open || hover) ? 'green' : 'yellow' }/>
       </Text3D>
       {/* display different panes based on user state (spectator/player) */}
-      { open && <SettingsPlayer
-        position={[-5,3,0]}
+      { open && <SettingsHostHtml
+        position={[-3.5,3,3.5]}
         rotation={[0,0,0]}
         scale={[1,1,1]}
       /> }

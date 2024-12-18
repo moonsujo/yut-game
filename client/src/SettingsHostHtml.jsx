@@ -1,12 +1,14 @@
-import { Image, Text3D } from "@react-three/drei";
+import { Html, Image, Text3D } from "@react-three/drei";
 import Star from "./meshes/Star";
 import { useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import { clientAtom, hostAtom, spectatorsAtom, teamsAtom } from "./GlobalState";
 
-export default function SettingsPlayer(props) {
+export default function SettingsHostHtml(props) {
   // #region state setters and getters
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
-  const [editPlayersOpen, setEditPlayersOpen] = useState(false)
-  const [editPlayersHover, setEditPlayersHover] = useState(false)
+  const [editGuestsOpen, setEditGuestsOpen] = useState(false)
+  const [editGuestsHover, setEditGuestsHover] = useState(false)
   const [resetGameOpen, setResetGameOpen] = useState(false)
   const [resetGameHover, setResetGameHover] = useState(false)
   const [pauseGameOpen, setPauseGameOpen] = useState(false)
@@ -22,21 +24,21 @@ export default function SettingsPlayer(props) {
   // #endregion
 
   // #region pointer handlers
-  function handleEditPlayersPointerEnter(e) {
+  function handleEditGuestsPointerEnter(e) {
     e.stopPropagation();
-    setEditPlayersHover(true)
+    setEditGuestsHover(true)
   }
-  function handleEditPlayersPointerLeave(e) {
+  function handleEditGuestsPointerLeave(e) {
     e.stopPropagation();
-    setEditPlayersHover(false)
+    setEditGuestsHover(false)
   }
-  function handleEditPlayersPointerUp(e) {
+  function handleEditGuestsPointerUp(e) {
     e.stopPropagation();
-    if (editPlayersOpen) {
-      setEditPlayersOpen(false)
+    if (editGuestsOpen) {
+      setEditGuestsOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(true)
+      setEditGuestsOpen(true)
       setResetGameOpen(false)
       setPauseGameOpen(false)
       setSetGameRulesOpen(false)
@@ -59,7 +61,7 @@ export default function SettingsPlayer(props) {
       setResetGameOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(true)
       setPauseGameOpen(false)
       setSetGameRulesOpen(false)
@@ -82,7 +84,7 @@ export default function SettingsPlayer(props) {
       setPauseGameOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(false)
       setPauseGameOpen(true)
       setSetGameRulesOpen(false)
@@ -105,7 +107,7 @@ export default function SettingsPlayer(props) {
       setSetGameRulesOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(false)
       setPauseGameOpen(false)
       setSetGameRulesOpen(true)
@@ -128,7 +130,7 @@ export default function SettingsPlayer(props) {
       setAudioOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(false)
       setPauseGameOpen(false)
       setSetGameRulesOpen(false)
@@ -151,7 +153,7 @@ export default function SettingsPlayer(props) {
       setLanguageOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(false)
       setPauseGameOpen(false)
       setSetGameRulesOpen(false)
@@ -174,7 +176,7 @@ export default function SettingsPlayer(props) {
       setInviteFriendsOpen(false)
     } else {
       setMainMenuOpen(false)
-      setEditPlayersOpen(false)
+      setEditGuestsOpen(false)
       setResetGameOpen(false)
       setPauseGameOpen(false)
       setSetGameRulesOpen(false)
@@ -185,6 +187,132 @@ export default function SettingsPlayer(props) {
   }
   // #endregion
 
+  function BackButton() {
+    const [hover, setHover] = useState(false)
+
+    function handlePointerEnter () {
+      setHover(true)
+    }
+    function handlePointerLeave () {
+      setHover(false)
+    }
+
+    return <button 
+      id='join-team-submit-button'
+      style={{
+        fontFamily: 'Luckiest Guy',
+        fontSize: `15px`,
+        background: 'none',
+        border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+        margin: '5px',
+        padding: '3px',
+        color: `${hover ? 'white' : '#F1EE92'}`,
+        position: 'relative'}}
+      onMouseOver={handlePointerEnter}
+      onMouseOut={handlePointerLeave}
+      type="submit">
+      &lt;&lt; BACK
+    </button>
+  }
+  function CloseButton() {
+    const [hover, setHover] = useState(false)
+
+    function handlePointerEnter () {
+      setHover(true)
+    }
+    function handlePointerLeave () {
+      setHover(false)
+    }
+
+    return <button 
+      id='join-team-submit-button'
+      style={{
+        fontFamily: 'Luckiest Guy',
+        fontSize: `15px`,
+        background: 'none',
+        border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+        margin: '5px',
+        padding: '3px',
+        color: `${hover ? 'white' : '#F1EE92'}`,
+        position: 'relative'}}
+      onMouseOver={handlePointerEnter}
+      onMouseOut={handlePointerLeave}
+      type="submit">
+      X CLOSE
+    </button>
+  }
+
+  const teams = useAtomValue(teamsAtom)
+  const client = useAtomValue(clientAtom)
+  const host = useAtomValue(hostAtom)
+  const spectators = useAtomValue(spectatorsAtom)
+  function guestList() {
+    // you first, host, team rockets, team ufos, and spectators
+    const guests = [] // includes host (and you)
+
+    // -1 team: spectator
+    function formatGuest({ name, connectionState, isHost, isYou, team }) {
+      return { name, connectionState, isHost, isYou, team }
+    }
+    if (client.socketId === host.socketId) {
+      guests.push(formatGuest({ 
+        name: client.name,
+        connectionState: client.connectedToRoom,
+        isYou: true,
+        isHost: true,
+        team: client.team
+      })) // 'host, you'
+    } else {
+      guests.push(formatGuest({
+        name: client.name,
+        connectionState: client.connectedToRoom,
+        isYou: true,
+        isHost: false,
+        team: client.team
+      })) // 'you'
+      guests.push(formatGuest({
+        name: host.name,
+        connectionState: host.connectedToRoom,
+        isYou: false,
+        isHost: true,
+        team: host.team
+      })) // 'host'
+    }
+    for (let teamId = 0; teamId < 2; teamId++) {
+      for (const player of teams[teamId].players) {
+        if (player.socketId !== client.socketId && player.socketId !== host.socketId) {
+          guests.push(formatGuest({
+            name: player.name,
+            connectionState: player.connectedToRoom,
+            isYou: false,
+            isHost: false,
+            team: player.team
+          }))
+        }
+      }
+    }
+    for (const spectator of spectators) {
+      if (spectator.socketId !== client.socketId && spectator.socketId !== host.socketId) {
+        guests.push(formatGuest({
+          name: spectator.name,
+          connectionState: spectator.connectedToRoom,
+          isYou: false,
+          isHost: false,
+          team: spectator.team
+        }))
+      }
+    }
+    return guests
+  }
+  function mapTeamToColor(team) {
+    if (team === -1) {
+      return 'grey'
+    } else if (team === 0) {
+      return 'red'
+    } else if (team === 1) {
+      return 'turquoise'
+    }
+  }
   return <group {...props}>
     { mainMenuOpen && <group name='main-menu'>
       <group name='background'>
@@ -211,7 +339,7 @@ export default function SettingsPlayer(props) {
         scale={0.23}/>
       </group>
       <group name='buttons'> 
-        <group name='edit-player-button' position={[0, 0.1, -2.08]}>
+        <group name='edit-guests-button' position={[0, 0.1, -2.08]}>
           <mesh
             castShadow
             receiveShadow
@@ -219,7 +347,7 @@ export default function SettingsPlayer(props) {
             scale={[3.7,0.01,0.6]}
           >
             <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (editPlayersOpen || editPlayersHover) ? 'green' : 'yellow' }/>
+            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
           </mesh>
           <mesh
             castShadow
@@ -235,9 +363,9 @@ export default function SettingsPlayer(props) {
             receiveShadow
             rotation={[0, 0, 0]}
             scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleEditPlayersPointerEnter(e)}
-            onPointerLeave={e => handleEditPlayersPointerLeave(e)}
-            onPointerUp={e => handleEditPlayersPointerUp(e)}
+            onPointerEnter={e => handleEditGuestsPointerEnter(e)}
+            onPointerLeave={e => handleEditGuestsPointerLeave(e)}
+            onPointerUp={e => handleEditGuestsPointerUp(e)}
           >
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color='white' transparent opacity={0}/>
@@ -249,8 +377,8 @@ export default function SettingsPlayer(props) {
             size={0.3}
             height={0.01}
           >
-            EDIT PLAYERS
-            <meshStandardMaterial color={ (editPlayersOpen || editPlayersHover) ? 'green' : 'yellow' }/>
+            EDIT GUESTS
+            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
           </Text3D>
         </group>
         <group name='reset-game-button' position={[0, 0.1, -1.38]}>
@@ -507,11 +635,59 @@ export default function SettingsPlayer(props) {
         </group> 
       </group>
     </group> }
-    { editPlayersOpen && <group name='edit-players'>
+    { editGuestsOpen && <group name='edit-Guests' 
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
       {/* title */}
-      {/* navigation buttons */}
-      {/* for each player, map item*/}
-      
+      {/* back button - history array */}
+      {/* close button */}
+      {/* for each player, map */}
+      <Html transform>
+        <div style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          width: '350px',
+          backgroundColor: 'black',
+          border: '2px solid #F1EE92',
+          padding: '2px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              fontFamily: 'Luckiest Guy',
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '6px',
+              margin: '0px',
+              fontSize: '20px'
+            }}>
+              EDIT Guests
+            </p>
+            <div>
+              <BackButton/>
+              <CloseButton/>
+            </div>
+          </div>
+          { guestList().map((value, _index) => {
+            return <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: mapTeamToColor(value.team)
+            }}>
+              <p style={{
+                fontFamily: 'Luckiest Guy',
+                color: '#F1EE92',
+                padding: '5px'
+              }}>
+                {value.name}
+              </p>
+            </div>
+          })}
+        </div>
+      </Html>
     </group> }
   </group>
 }

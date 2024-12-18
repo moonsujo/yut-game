@@ -140,7 +140,7 @@ export default function JoinTeamModal({ position, rotation, scale, teams }) {
                 onMouseOver={handleSubmitMouseEnter}
                 onMouseOut={handleSubmitMouseLeave}
                 type="submit">
-              LEGGO!
+                LEGGO!
               </button>
               {/* highlight on hover */}
               <button 

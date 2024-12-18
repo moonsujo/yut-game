@@ -32,10 +32,6 @@ async function connectMongo() {
 const userSchema = new mongoose.Schema(
   {
     socketId: String,
-    // roomId: {
-    //   type: mongoose.Schema.Types.ObjectId, 
-    //   ref: 'rooms'
-    // },
     roomId: String,
     name: String,
     team: Number,
