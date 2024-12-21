@@ -7,8 +7,12 @@ import { clientAtom, hostAtom, spectatorsAtom, teamsAtom } from "./GlobalState";
 export default function SettingsHostHtml(props) {
   // #region state setters and getters
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
+  // edit players
   const [editGuestsOpen, setEditGuestsOpen] = useState(false)
   const [editGuestsHover, setEditGuestsHover] = useState(false)
+  const [guestBeingEditted, setGuestBeingEditted] = useState(null)
+  const [editAGuestOpen, setEditAGuestOpen] = useState(false)
+  // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
   const [resetGameHover, setResetGameHover] = useState(false)
   const [pauseGameOpen, setPauseGameOpen] = useState(false)
@@ -190,26 +194,36 @@ export default function SettingsHostHtml(props) {
   function BackButton() {
     const [hover, setHover] = useState(false)
 
-    function handlePointerEnter () {
+    function handleMouseOver () {
       setHover(true)
     }
-    function handlePointerLeave () {
+    function handleMouseOut () {
       setHover(false)
     }
-
+    function handleMouseUp() {
+      if (editGuestsOpen) {
+        setEditGuestsOpen(false)
+        setMainMenuOpen(true)
+      } else if (editAGuestOpen) {
+        setEditAGuestOpen(false)
+        setEditGuestsOpen(true)
+      }
+    }
     return <button 
-      id='join-team-submit-button'
+      className='menu-back-button'
       style={{
         fontFamily: 'Luckiest Guy',
         fontSize: `15px`,
-        background: 'none',
         border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
-        margin: '5px',
-        padding: '3px',
+        margin: '3px',
+        padding: '4px',
         color: `${hover ? 'white' : '#F1EE92'}`,
+        backgroundColor: '#090F16',
+        borderRadius: '5px',
         position: 'relative'}}
-      onMouseOver={handlePointerEnter}
-      onMouseOut={handlePointerLeave}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      onMouseUp={handleMouseUp}
       type="submit">
       &lt;&lt; BACK
     </button>
@@ -217,26 +231,38 @@ export default function SettingsHostHtml(props) {
   function CloseButton() {
     const [hover, setHover] = useState(false)
 
-    function handlePointerEnter () {
+    function handleMouseOver () {
       setHover(true)
     }
-    function handlePointerLeave () {
+    function handleMouseOut () {
       setHover(false)
     }
-
+    function handleMouseUp() {
+      setMainMenuOpen(false)
+      setEditGuestsOpen(false)
+      setEditAGuestOpen(false)
+      setResetGameOpen(false)
+      setPauseGameOpen(false)
+      setSetGameRulesOpen(false)
+      setAudioOpen(false)
+      setLanguageOpen(false)
+      setInviteFriendsOpen(false)
+    }
     return <button 
-      id='join-team-submit-button'
+      className='menu-close-button'
       style={{
         fontFamily: 'Luckiest Guy',
         fontSize: `15px`,
-        background: 'none',
         border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
-        margin: '5px',
-        padding: '3px',
+        margin: '3px',
+        padding: '4px',
         color: `${hover ? 'white' : '#F1EE92'}`,
+        backgroundColor: '#090F16',
+        borderRadius: '5px',
         position: 'relative'}}
-      onMouseOver={handlePointerEnter}
-      onMouseOut={handlePointerLeave}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      onMouseUp={handleMouseUp}
       type="submit">
       X CLOSE
     </button>
@@ -304,14 +330,395 @@ export default function SettingsHostHtml(props) {
     }
     return guests
   }
-  function mapTeamToColor(team) {
+  function mapTeamToBackgroundColor(team) {
     if (team === -1) {
-      return 'grey'
+      return '#313131'
     } else if (team === 0) {
-      return 'red'
+      return '#3A0404'
     } else if (team === 1) {
-      return 'turquoise'
+      return '#04363A'
     }
+  }
+  function mapTeamToPlayerColor(team) {
+    if (team === -1) {
+      return '#9F9F9F'
+    } else if (team === 0) {
+      return '#FF3A27'
+    } else if (team === 1) {
+      return '#A0E1DA'
+    }
+  }
+  function EditGuests() {
+    function ActionsButton({ guestInfo }) {
+      const [hover, setHover] = useState(false)
+  
+      function handleMouseOver () {
+        setHover(true)
+      }
+      function handleMouseOut () {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        setGuestBeingEditted(guestInfo)
+        setEditAGuestOpen(true)
+        
+        setMainMenuOpen(false)
+        setEditGuestsOpen(false)
+        setResetGameOpen(false)
+        setPauseGameOpen(false)
+        setSetGameRulesOpen(false)
+        setAudioOpen(false)
+        setLanguageOpen(false)
+        setInviteFriendsOpen(false)
+      }
+  
+      return <button 
+        className='edit-player-actions-button'
+        style={{
+          fontFamily: 'Luckiest Guy',
+          fontSize: `20px`,
+          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          borderRadius: '5px',
+          margin: '3px',
+          padding: '5px',
+          color: `${hover ? 'white' : '#F1EE92'}`,
+          backgroundColor: '#090F16',
+          position: 'relative'}}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        type="submit">
+        ACTIONS
+      </button>
+    }
+    return <group name='edit-guests' 
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      {/* title */}
+      {/* back button - history array */}
+      {/* close button */}
+      {/* for each player, map */}
+      <Html transform>
+        <div style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          width: '350px',
+          backgroundColor: '#090F16',
+          border: '2px solid #F1EE92',
+          borderRadius: '5px',
+          padding: '5px',
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              fontFamily: 'Luckiest Guy',
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '0px',
+              margin: '3px',
+              fontSize: '22px',
+            }}>
+              EDIT Guests
+            </p>
+            <div>
+              <BackButton/>
+              <CloseButton/>
+            </div>
+          </div>
+          { guestList().map((value, _index) => {
+            return <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: mapTeamToBackgroundColor(value.team),
+              margin: '3px',
+              borderRadius: '5px',
+              fontSize: '20px'
+            }}>
+              <p style={{
+                fontFamily: 'Luckiest Guy',
+                color: mapTeamToPlayerColor(value.team),
+                padding: '5px',
+                margin: '5px'
+              }}>
+                {value.name}
+              </p>
+              { value.isYou && !value.isHost && <p style={{
+                fontFamily: 'Luckiest Guy',
+                color: mapTeamToPlayerColor(-1), // grey
+                padding: '5px',
+                margin: '5px'
+              }}>
+                YOU
+              </p>}
+              { !value.isYou && value.isHost && <p style={{
+                fontFamily: 'Luckiest Guy',
+                color: mapTeamToPlayerColor(-1), // grey
+                padding: '5px',
+                margin: '5px'
+              }}>
+                HOST
+              </p>}
+              { value.isYou && value.isHost && <p style={{
+                fontFamily: 'Luckiest Guy',
+                color: mapTeamToPlayerColor(-1), // grey
+                padding: '5px',
+                margin: '5px'
+              }}>
+                HOST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; YOU
+              </p>}
+              { !value.isYou && !value.isHost && <ActionsButton guestInfo={value}/>}
+            </div>
+          })}
+        </div>
+      </Html>
+    </group>
+  }
+  function EditAGuest() {
+    function SetAwayButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        SET AWAY
+      </button>
+    }
+    function SetSpectatorButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player to spectator
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        SET SPECTATOR
+      </button>
+    }
+    function AssignHostButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // assign player to host
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        ASSIGN HOST
+      </button>
+    }
+    function KickButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // remove player from the room
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#FF0000'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#FF0000',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        KICK
+      </button>
+    }
+    function SetTeamToRocketsButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // remove player from the room
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#FF3A27'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#FF3A27',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        SET TEAM TO ROCKETS
+      </button>
+    }
+    function SetTeamToUfosButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // remove player from the room
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? 'white' : '#A0E1DA'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? 'white' : '#A0E1DA',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        SET TEAM TO UFOS
+      </button>
+    }
+
+    return <group name='edit-a-guest' 
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      {/* title */}
+      {/* back button - history array */}
+      {/* close button */}
+      {/* options */}
+      <Html transform>
+        <div style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          width: '350px',
+          backgroundColor: '#090F16',
+          border: '2px solid #F1EE92',
+          borderRadius: '5px',
+          padding: '5px',
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              fontFamily: 'Luckiest Guy',
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '0px',
+              margin: '3px',
+              fontSize: '22px',
+            }}>
+              EDIT <span style={{
+                color: mapTeamToPlayerColor(guestBeingEditted.team)
+              }}>
+                {guestBeingEditted.name}
+              </span>
+            </p>
+            <div>
+              <BackButton/>
+              <CloseButton/>
+            </div>
+          </div>
+          { guestBeingEditted.team === -1 ? <div className='spectator-buttons'>
+            <SetTeamToRocketsButton/>
+            <SetTeamToUfosButton/>
+            <AssignHostButton/>
+            <KickButton/>
+          </div> : <div className='player-buttons'>
+            <SetAwayButton/>
+            <SetSpectatorButton/>
+            <AssignHostButton/>
+            <KickButton/>
+          </div> }
+        </div>
+      </Html>
+    </group>
   }
   return <group {...props}>
     { mainMenuOpen && <group name='main-menu'>
@@ -635,60 +1042,8 @@ export default function SettingsHostHtml(props) {
         </group> 
       </group>
     </group> }
-    { editGuestsOpen && <group name='edit-Guests' 
-      position={[-7.5, 0, -2.5]}
-      rotation={[-Math.PI/2, 0, 0]}>
-      {/* title */}
-      {/* back button - history array */}
-      {/* close button */}
-      {/* for each player, map */}
-      <Html transform>
-        <div style={{
-          position: 'absolute',
-          top: '0px',
-          left: '0px',
-          width: '350px',
-          backgroundColor: 'black',
-          border: '2px solid #F1EE92',
-          padding: '2px'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
-            <p style={{
-              fontFamily: 'Luckiest Guy',
-              color: '#F1EE92',
-              textAlign: 'left',
-              padding: '6px',
-              margin: '0px',
-              fontSize: '20px'
-            }}>
-              EDIT Guests
-            </p>
-            <div>
-              <BackButton/>
-              <CloseButton/>
-            </div>
-          </div>
-          { guestList().map((value, _index) => {
-            return <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              backgroundColor: mapTeamToColor(value.team)
-            }}>
-              <p style={{
-                fontFamily: 'Luckiest Guy',
-                color: '#F1EE92',
-                padding: '5px'
-              }}>
-                {value.name}
-              </p>
-            </div>
-          })}
-        </div>
-      </Html>
-    </group> }
+    { editGuestsOpen && <EditGuests/> }
+    { editAGuestOpen && <EditAGuest/> }
   </group>
 }
 

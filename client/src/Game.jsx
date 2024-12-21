@@ -141,7 +141,7 @@ export default function Game() {
       useFrame((state) => {
         const time = state.clock.elapsedTime;
         letsPlayTextMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
-        // letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
+        letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
       })
   
       const backdropHeight = layout[device].game.letsPlayButton.activeButton.backdropHeight
@@ -467,17 +467,18 @@ export default function Game() {
   }
 
   function SettingsButton({ position, scale }) {
+    const yellowMaterial = new MeshStandardMaterial({ color: new Color('yellow')});
+
     const [open, setOpen] = useState(false)
     const [hover, setHover] = useState(false)
-
     function handlePointerEnter(e) {
       e.stopPropagation();
-      setHover(true)
+      yellowMaterial.color = new Color('green')
     }
 
     function handlePointerLeave(e) {
       e.stopPropagation();
-      setHover(false)
+      yellowMaterial.color = new Color('yellow')
     }
 
     function handlePointerDown(e) {
@@ -490,9 +491,10 @@ export default function Game() {
     }
 
     return <group position={position} scale={scale}>
-      <mesh>
+      <mesh
+        material={yellowMaterial}
+      >
         <boxGeometry args={[2.1, 0.03, 0.55]}/>
-        <meshStandardMaterial color={ (open || hover) ? 'green' : 'yellow' }/>
       </mesh>
       <mesh>
         <boxGeometry args={[2.05, 0.04, 0.5]}/>
@@ -513,9 +515,9 @@ export default function Game() {
         rotation={layout[device].game.settings.text.rotation}
         size={layout[device].game.settings.text.size}
         height={layout[device].game.settings.text.height}
+        material={yellowMaterial}
       >
         Settings
-        <meshStandardMaterial color={ (open || hover) ? 'green' : 'yellow' }/>
       </Text3D>
       {/* display different panes based on user state (spectator/player) */}
       { open && <SettingsHostHtml

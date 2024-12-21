@@ -2843,6 +2843,7 @@ export default {
       },
       settings: {
         position: [9, 0, -5.5],
+        scale: 1,
         text: {
           position: [-0.9, 0.025, 0.15],
           rotation: [-Math.PI/2, 0, 0],

@@ -667,7 +667,7 @@ io.on("connect", async (socket) => {
         // for testing
         // let outcome;
         // if (room.gamePhase === 'pregame') {
-        //   if (room.turn.team === 0) {
+        //   if (room.turn.team === 1) {
         //     outcome = 5
         //   } else {
         //     outcome = 4
@@ -675,9 +675,9 @@ io.on("connect", async (socket) => {
         // } else if (room.gamePhase === 'game') {
         //   // outcome = 4
         //   if (room.turn.team === 0) {
-        //     outcome = 1
+        //     outcome = Math.random() > 0.5 ? 5 : 4
         //   } else {
-        //     outcome = 4
+        //     outcome = 1
         //   }
         // }
         const animation = pickAnimation(outcome)
