@@ -138,7 +138,6 @@ export default function ScoreButtons({ device, legalTiles, hasTurn }) {
     const [hover, setHover] = useState(false);
     const primaryMaterial = new MeshStandardMaterial({ color: 'limegreen' })
 
-
     useFrame((state) => {
       const time = state.clock.elapsedTime;
       if (!hover) {
@@ -151,21 +150,27 @@ export default function ScoreButtons({ device, legalTiles, hasTurn }) {
     })
 
     function handlePointerEnter(e) {
-      e.stopPropagation();
-      document.body.style.cursor = "pointer";
-      setHover(true)
+      if (hasTurn) {
+        e.stopPropagation();
+        document.body.style.cursor = "pointer";
+        setHover(true)
+      }
     }
 
     function handlePointerLeave(e) {
-      e.stopPropagation();
-      document.body.style.cursor = "default";
-      setHover(false)
+      if (hasTurn) {
+        e.stopPropagation();
+        document.body.style.cursor = "default";
+        setHover(false)
+      }
     }
 
     function handlePointerUp(e) {
       e.stopPropagation();
       setHover(false)
-      socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
+      if (hasTurn) {
+        socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
+      }
     }
 
     return <group
