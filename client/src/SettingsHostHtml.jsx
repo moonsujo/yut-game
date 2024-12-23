@@ -1,7 +1,7 @@
 import { Html, Image, Text3D } from "@react-three/drei";
 import Star from "./meshes/Star";
 import { useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { clientAtom, hostAtom, spectatorsAtom, teamsAtom } from "./GlobalState";
 
 export default function SettingsHostHtml(props) {
@@ -15,7 +15,7 @@ export default function SettingsHostHtml(props) {
   // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
   const [resetGameHover, setResetGameHover] = useState(false)
-  const [pauseGameOpen, setPauseGameOpen] = useState(false)
+  const [pauseGame, setPauseGame] = useState(false)
   const [pauseGameHover, setPauseGameHover] = useState(false)
   const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
   const [setGameRulesHover, setSetGameRulesHover] = useState(false)
@@ -43,8 +43,8 @@ export default function SettingsHostHtml(props) {
     } else {
       setMainMenuOpen(false)
       setEditGuestsOpen(true)
+      setEditGuestsHover(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(false)
@@ -67,7 +67,7 @@ export default function SettingsHostHtml(props) {
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(true)
-      setPauseGameOpen(false)
+      setResetGameHover(false)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(false)
@@ -84,13 +84,12 @@ export default function SettingsHostHtml(props) {
   }
   function handlePauseGamePointerUp(e) {
     e.stopPropagation();
-    if (pauseGameOpen) {
-      setPauseGameOpen(false)
+    if (pauseGame) {
+      setPauseGame(false)
     } else {
-      setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(true)
+      setPauseGame(true)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(false)
@@ -113,8 +112,8 @@ export default function SettingsHostHtml(props) {
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(true)
+      setSetGameRulesHover(false)
       setAudioOpen(false)
       setLanguageOpen(false)
       setInviteFriendsOpen(false)
@@ -136,7 +135,6 @@ export default function SettingsHostHtml(props) {
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(false)
       setAudioOpen(true)
       setLanguageOpen(false)
@@ -159,7 +157,6 @@ export default function SettingsHostHtml(props) {
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(true)
@@ -182,7 +179,6 @@ export default function SettingsHostHtml(props) {
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(false)
@@ -207,6 +203,12 @@ export default function SettingsHostHtml(props) {
       } else if (editAGuestOpen) {
         setEditAGuestOpen(false)
         setEditGuestsOpen(true)
+      } else if (resetGameOpen) {
+        setResetGameOpen(false)
+        setMainMenuOpen(true)
+      } else if (setGameRulesOpen) {
+        setSetGameRulesOpen(false)
+        setMainMenuOpen(true)
       }
     }
     return <button 
@@ -242,7 +244,6 @@ export default function SettingsHostHtml(props) {
       setEditGuestsOpen(false)
       setEditAGuestOpen(false)
       setResetGameOpen(false)
-      setPauseGameOpen(false)
       setSetGameRulesOpen(false)
       setAudioOpen(false)
       setLanguageOpen(false)
@@ -365,7 +366,6 @@ export default function SettingsHostHtml(props) {
         setMainMenuOpen(false)
         setEditGuestsOpen(false)
         setResetGameOpen(false)
-        setPauseGameOpen(false)
         setSetGameRulesOpen(false)
         setAudioOpen(false)
         setLanguageOpen(false)
@@ -664,14 +664,130 @@ export default function SettingsHostHtml(props) {
       </button>
     }
 
-    return <group name='edit-a-guest' 
+    return <Html 
+      transform
       position={[-7.5, 0, -2.5]}
       rotation={[-Math.PI/2, 0, 0]}>
-      {/* title */}
-      {/* back button - history array */}
-      {/* close button */}
-      {/* options */}
-      <Html transform>
+      <div style={{
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '350px',
+        backgroundColor: '#090F16',
+        border: '2px solid #F1EE92',
+        borderRadius: '5px',
+        padding: '5px',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            fontFamily: 'Luckiest Guy',
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            EDIT <span style={{
+              color: mapTeamToPlayerColor(guestBeingEditted.team)
+            }}>
+              {guestBeingEditted.name}
+            </span>
+          </p>
+          <div>
+            <BackButton/>
+            <CloseButton/>
+          </div>
+        </div>
+        { guestBeingEditted.team === -1 ? <div className='spectator-buttons'>
+          <SetTeamToRocketsButton/>
+          <SetTeamToUfosButton/>
+          <AssignHostButton/>
+          <KickButton/>
+        </div> : <div className='player-buttons'>
+          <SetAwayButton/>
+          <SetSpectatorButton/>
+          <AssignHostButton/>
+          <KickButton/>
+        </div> }
+      </div>
+    </Html>
+  }
+  function ResetGame() {
+    function YesButton() {
+      const [hover, setHover] = useState(false)
+
+      function handleMouseOver () {
+        setHover(true)
+      }
+      function handleMouseOut () {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // reset game
+      }
+
+      return <button 
+        className='reset-game-yes-button'
+        style={{
+          fontFamily: 'Luckiest Guy',
+          fontSize: `20px`,
+          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          borderRadius: '5px',
+          margin: '3px',
+          padding: '5px',
+          color: `${hover ? 'white' : '#F1EE92'}`,
+          backgroundColor: '#090F16',
+          position: 'relative',
+          flexGrow: 1
+        }}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        type="submit">
+        YUP
+      </button>
+    }
+    function NoButton() {
+      const [hover, setHover] = useState(false)
+
+      function handleMouseOver () {
+        setHover(true)
+      }
+      function handleMouseOut () {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // reset game
+      }
+
+      return <button 
+        className='reset-game-no-button'
+        style={{
+          fontFamily: 'Luckiest Guy',
+          fontSize: `20px`,
+          border: `2px solid ${hover ? 'white' : '#FF0000'}`,
+          borderRadius: '5px',
+          margin: '3px',
+          padding: '5px',
+          color: `${hover ? 'white' : '#FF0000'}`,
+          backgroundColor: '#090F16',
+          position: 'relative',
+          flexGrow: 1
+        }}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        type="submit">
+        NOPE
+      </button>
+    }
+    return <Html 
+      transform
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
         <div style={{
           position: 'absolute',
           top: '0px',
@@ -680,6 +796,7 @@ export default function SettingsHostHtml(props) {
           backgroundColor: '#090F16',
           border: '2px solid #F1EE92',
           borderRadius: '5px',
+          fontFamily: 'Luckiest Guy',
           padding: '5px',
         }}>
           <div style={{
@@ -687,38 +804,129 @@ export default function SettingsHostHtml(props) {
             justifyContent: 'space-between'
           }}>
             <p style={{
-              fontFamily: 'Luckiest Guy',
               color: '#F1EE92',
               textAlign: 'left',
               padding: '0px',
               margin: '3px',
               fontSize: '22px',
             }}>
-              EDIT <span style={{
-                color: mapTeamToPlayerColor(guestBeingEditted.team)
-              }}>
-                {guestBeingEditted.name}
-              </span>
+              EDIT Guests
             </p>
             <div>
               <BackButton/>
               <CloseButton/>
             </div>
           </div>
-          { guestBeingEditted.team === -1 ? <div className='spectator-buttons'>
-            <SetTeamToRocketsButton/>
-            <SetTeamToUfosButton/>
-            <AssignHostButton/>
-            <KickButton/>
-          </div> : <div className='player-buttons'>
-            <SetAwayButton/>
-            <SetSpectatorButton/>
-            <AssignHostButton/>
-            <KickButton/>
-          </div> }
+          <div>
+            <p style={{
+              color: '#F1EE92',
+              padding: '0px',
+              margin: '3px',
+              fontSize: '22px',
+            }}>
+              ALL PROGRESS WILL BE ERASED. ARE YOU SURE?
+            </p>
+          </div>
+          <div style={{
+            display: 'flex',
+          }}>
+            <YesButton/>
+            <NoButton/>
+          </div>
         </div>
-      </Html>
-    </group>
+    </Html>
+  }
+  function SetGameRules() {
+    return <Html 
+      transform
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      <div style={{
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '350px',
+        backgroundColor: '#090F16',
+        border: '2px solid #F1EE92',
+        borderRadius: '5px',
+        fontFamily: 'Luckiest Guy',
+        padding: '5px',
+        color: '#F1EE92',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            SET GAME RULES
+          </p>
+          <div>
+            <BackButton/>
+            <CloseButton/>
+          </div>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>BACKDO LAUNCH</p>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>TOGGLE</p>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            IF A TEAM THROWS A BACKDO (-1) AND HAS NO PIECES ON THE BOARD, THEY CAN PUT A PIECE ON THE STAR BEHIND EARTH.
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>TIMER</p>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>TOGGLE</p>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            1 MINUTE AFTER EVERY THROW. ON EXPIRE, ONE OF THE AVAILABLE MOVES WILL BE CHOSEN RANDOMLY.
+          </p>
+        </div>
+      </div>
+    </Html>
   }
   return <group {...props}>
     { mainMenuOpen && <group name='main-menu'>
@@ -838,7 +1046,7 @@ export default function SettingsHostHtml(props) {
             scale={[3.7,0.01,0.6]}
           >
             <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (pauseGameOpen || pauseGameHover) ? 'green' : 'yellow' }/>
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
           </mesh>
           <mesh
             castShadow
@@ -861,7 +1069,7 @@ export default function SettingsHostHtml(props) {
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
-          <Text3D
+          { !pauseGame && <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
@@ -869,8 +1077,18 @@ export default function SettingsHostHtml(props) {
             height={0.01}
           >
             PAUSE GAME          ||
-            <meshStandardMaterial color={ (pauseGameOpen || pauseGameHover) ? 'green' : 'yellow' }/>
-          </Text3D>
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
+          </Text3D>}
+          { pauseGame && <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-1.7,0,0.15]}
+            rotation={[-Math.PI/4,0,0]}
+            size={0.3}
+            height={0.01}
+          >
+            UNPAUSE GAME
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
+          </Text3D>}
         </group>
         <group name='set-game-rules-button' position={[0, 0.1, 0.02]}>
           <mesh
@@ -1044,6 +1262,8 @@ export default function SettingsHostHtml(props) {
     </group> }
     { editGuestsOpen && <EditGuests/> }
     { editAGuestOpen && <EditAGuest/> }
+    { resetGameOpen && <ResetGame/> }
+    { setGameRulesOpen && <SetGameRules/> }
   </group>
 }
 
