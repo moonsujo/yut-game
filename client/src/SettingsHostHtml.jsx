@@ -28,166 +28,6 @@ export default function SettingsHostHtml(props) {
   const [inviteFriendsHover, setInviteFriendsHover] = useState(false)
   // #endregion
 
-  // #region pointer handlers
-  function handleEditGuestsPointerEnter(e) {
-    e.stopPropagation();
-    setEditGuestsHover(true)
-  }
-  function handleEditGuestsPointerLeave(e) {
-    e.stopPropagation();
-    setEditGuestsHover(false)
-  }
-  function handleEditGuestsPointerUp(e) {
-    e.stopPropagation();
-    if (editGuestsOpen) {
-      setEditGuestsOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(true)
-      setEditGuestsHover(false)
-      setResetGameOpen(false)
-      setSetGameRulesOpen(false)
-      setAudioOpen(false)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handleResetGamePointerEnter(e) {
-    e.stopPropagation();
-    setResetGameHover(true)
-  }
-  function handleResetGamePointerLeave(e) {
-    e.stopPropagation();
-    setResetGameHover(false)
-  }
-  function handleResetGamePointerUp(e) {
-    e.stopPropagation();
-    if (resetGameOpen) {
-      setResetGameOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(false)
-      setResetGameOpen(true)
-      setResetGameHover(false)
-      setSetGameRulesOpen(false)
-      setAudioOpen(false)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handlePauseGamePointerEnter(e) {
-    e.stopPropagation();
-    setPauseGameHover(true)
-  }
-  function handlePauseGamePointerLeave(e) {
-    e.stopPropagation();
-    setPauseGameHover(false)
-  }
-  function handlePauseGamePointerUp(e) {
-    e.stopPropagation();
-    if (pauseGame) {
-      setPauseGame(false)
-    } else {
-      setEditGuestsOpen(false)
-      setResetGameOpen(false)
-      setPauseGame(true)
-      setSetGameRulesOpen(false)
-      setAudioOpen(false)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handleSetGameRulesPointerEnter(e) {
-    e.stopPropagation();
-    setSetGameRulesHover(true)
-  }
-  function handleSetGameRulesPointerLeave(e) {
-    e.stopPropagation();
-    setSetGameRulesHover(false)
-  }
-  function handleSetGameRulesPointerUp(e) {
-    e.stopPropagation();
-    if (setGameRulesOpen) {
-      setSetGameRulesOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(false)
-      setResetGameOpen(false)
-      setSetGameRulesOpen(true)
-      setSetGameRulesHover(false)
-      setAudioOpen(false)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handleAudioPointerEnter(e) {
-    e.stopPropagation();
-    setAudioHover(true)
-  }
-  function handleAudioPointerLeave(e) {
-    e.stopPropagation();
-    setAudioHover(false)
-  }
-  function handleAudioPointerUp(e) {
-    e.stopPropagation();
-    if (audioOpen) {
-      setAudioOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(false)
-      setResetGameOpen(false)
-      setSetGameRulesOpen(false)
-      setAudioOpen(true)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handleLanguagePointerEnter(e) {
-    e.stopPropagation();
-    setLanguageHover(true)
-  }
-  function handleLanguagePointerLeave(e) {
-    e.stopPropagation();
-    setLanguageHover(false)
-  }
-  function handleLanguagePointerUp(e) {
-    e.stopPropagation();
-    if (languageOpen) {
-      setLanguageOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(false)
-      setResetGameOpen(false)
-      setSetGameRulesOpen(false)
-      setAudioOpen(false)
-      setLanguageOpen(true)
-      setInviteFriendsOpen(false)
-    }
-  }
-  function handleInviteFriendsPointerEnter(e) {
-    e.stopPropagation();
-    setInviteFriendsHover(true)
-  }
-  function handleInviteFriendsPointerLeave(e) {
-    e.stopPropagation();
-    setInviteFriendsHover(false)
-  }
-  function handleInviteFriendsPointerUp(e) {
-    e.stopPropagation();
-    if (inviteFriendsOpen) {
-      setInviteFriendsOpen(false)
-    } else {
-      setMainMenuOpen(false)
-      setEditGuestsOpen(false)
-      setResetGameOpen(false)
-      setSetGameRulesOpen(false)
-      setAudioOpen(false)
-      setLanguageOpen(false)
-      setInviteFriendsOpen(true)
-    }
-  }
-  // #endregion
-
   function BackButton() {
     const [hover, setHover] = useState(false)
 
@@ -212,6 +52,9 @@ export default function SettingsHostHtml(props) {
         setMainMenuOpen(true)
       } else if (audioOpen) {
         setAudioOpen(false)
+        setMainMenuOpen(true)
+      } else if (languageOpen) {
+        setLanguageOpen(false)
         setMainMenuOpen(true)
       }
     }
@@ -398,10 +241,6 @@ export default function SettingsHostHtml(props) {
     return <group name='edit-guests' 
       position={[-7.5, 0, -2.5]}
       rotation={[-Math.PI/2, 0, 0]}>
-      {/* title */}
-      {/* back button - history array */}
-      {/* close button */}
-      {/* for each player, map */}
       <Html transform>
         <div style={{
           position: 'absolute',
@@ -1079,26 +918,28 @@ export default function SettingsHostHtml(props) {
           }}>
             MUSIC
           </p>
-          <div style={{
-            backgroundColor: HtmlColors.starYellow,
-            width: '170px',
-            height: '10px',
-            position: 'relative',
-            borderRadius: '20px',
-            top: '21px',
-          }}>
+          <div>
+            <div style={{
+              backgroundColor: HtmlColors.starYellow,
+              width: '170px',
+              height: '10px',
+              position: 'relative',
+              borderRadius: '20px',
+              top: '21px',
+            }}>
+            </div>
             <img src='images/star.png' style={{
-              position: 'absolute',
-              width: '40px',
-              top: '-15px',
-              left: `${musicSliderPosition.x - 15}px`
-            }}
-            onPointerEnter={handleMusicSliderPointerEnter}
-            onPointerDown={e=>handleMusicSliderPointerDown(e)}
-            onPointerMove={e=>handleMusicSliderPointerMove(e)}
-            onPointerUp={handleMusicSliderPointerUp}
-            onPointerLeave={handleMusicSliderPointerLeave}
-            ref={musicSliderRef}
+                position: 'relative',
+                width: '40px',
+                top: '-5px',
+                left: `${musicSliderPosition.x}px`
+              }}
+              onPointerEnter={handleMusicSliderPointerEnter}
+              onPointerDown={e=>handleMusicSliderPointerDown(e)}
+              onPointerMove={e=>handleMusicSliderPointerMove(e)}
+              onPointerUp={handleMusicSliderPointerUp}
+              onPointerLeave={handleMusicSliderPointerLeave}
+              ref={musicSliderRef}
             />
           </div>
         </div>
@@ -1124,6 +965,318 @@ export default function SettingsHostHtml(props) {
           }}>
             BAR
           </p>
+        </div>
+      </div>
+    </Html>
+  }
+  function Audio2() {    
+    // sync the state with global state
+    const [musicOn, setMusicOn] = useState(false)
+    const [musicToggleHover, setMusicToggleHover] = useState(false)
+    const [effectsOn, setEffectsOn] = useState(false)
+    const [effectsToggleHover, setEffectsToggleHover] = useState(false)
+    function handleMusicTogglePointerEnter() {
+      setMusicToggleHover(true)
+    }
+    function handleMusicTogglePointerLeave() {
+      setMusicToggleHover(false)
+    }
+    function handleMusicTogglePointerUp() {
+      if (!musicOn)
+        setMusicOn(true)
+      // adjust volume on client
+      else
+        setMusicOn(false)
+        // adjust volume on client
+    }
+    function handleEffectsTogglePointerEnter() {
+      setEffectsToggleHover(true)
+    }
+    function handleEffectsTogglePointerLeave() {
+      setEffectsToggleHover(false)
+    }
+    function handleEffectsTogglePointerUp() {
+      if (!effectsOn)
+        setEffectsOn(true)
+        // adjust volume on client
+      else
+        setEffectsOn(false)
+        // adjust volume on client
+    }
+
+    return <Html 
+      transform
+      position={[-5.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      <div style={{
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '250px',
+        backgroundColor: '#090F16',
+        border: '2px solid #F1EE92',
+        borderRadius: '5px',
+        fontFamily: 'Luckiest Guy',
+        padding: '5px',
+        color: '#F1EE92',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            AUDIO
+          </p>
+          <div>
+            <BackButton/>
+            <CloseButton/>
+          </div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '20px',
+          }}>
+            MUSIC
+          </p>
+          <div id='musicToggle' style={{
+            width: '20px',
+            height: '20px',
+            backgroundColor: HtmlColors.spaceDark,
+            border: '2px solid #F1EE92',
+            borderRadius: '5px',
+            margin: '3px'
+          }}
+          onPointerEnter={handleMusicTogglePointerEnter}
+          onPointerLeave={handleMusicTogglePointerLeave}
+          onPointerUp={handleMusicTogglePointerUp}
+          >
+            <div id='musicToggleState' style={{
+              margin: '3px',
+              padding: '0px',
+              borderRadius: '5px',
+              backgroundColor: musicOn ? HtmlColors.starYellow : !musicToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+              width: 'calc(100% - 6px)',
+              height: 'calc(100% - 6px)'
+            }}>
+            </div>
+          </div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            EFFECTS
+          </p>
+          <div id='effectsToggle' style={{
+            width: '20px',
+            height: '20px',
+            backgroundColor: HtmlColors.spaceDark,
+            border: '2px solid #F1EE92',
+            borderRadius: '5px',
+            margin: '3px'
+          }}
+          onPointerEnter={handleEffectsTogglePointerEnter}
+          onPointerLeave={handleEffectsTogglePointerLeave}
+          onPointerUp={handleEffectsTogglePointerUp}
+          >
+            <div id='effectsToggleState' style={{
+              margin: '3px',
+              padding: '0px',
+              borderRadius: '5px',
+              backgroundColor: effectsOn ? HtmlColors.starYellow : !effectsToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+              width: 'calc(100% - 6px)',
+              height: 'calc(100% - 6px)'
+            }}>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Html>
+  }
+  function Language() {
+    function EnglishButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+          ENGLISH  <img src='images/us-flag.png' width='25px' style={{ position: 'relative', top: '3px', pointerEvents: 'none' }} />    
+        </button>
+    }
+    function KoreanButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+          KOREAN  <img src='images/south-korean-flag.png' width='25px' style={{ position: 'relative', top: '3px', pointerEvents: 'none' }} />    
+        </button>
+    }
+    function SpanishButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+          SPANISH  <img src='images/spanish-flag.png' width='25px' style={{ position: 'relative', top: '3px', pointerEvents: 'none' }} />    
+        </button>
+    }
+    function ChineseButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+          CHINESE  <img src='images/chinese-flag.png' width='25px' style={{ position: 'relative', top: '3px', pointerEvents: 'none' }} />    
+        </button>
+    }
+
+    return <Html 
+      transform
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      <div style={{
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '300px',
+        backgroundColor: '#090F16',
+        border: '2px solid #F1EE92',
+        borderRadius: '5px',
+        padding: '5px',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            fontFamily: 'Luckiest Guy',
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            SET LANGUAGE
+          </p>
+          <div>
+            <BackButton/>
+            <CloseButton/>
+          </div>
+        </div>
+        <div className='language-buttons'>
+          <EnglishButton/>
+          <KoreanButton/>
+          <SpanishButton/>
+          <ChineseButton/>
         </div>
       </div>
     </Html>
@@ -1306,7 +1459,8 @@ export default function SettingsHostHtml(props) {
         }
       }
       function handleMouseUp() {
-        // remove player from the room
+        setMainMenuOpen(false)
+        setLanguageOpen(true)
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -1416,7 +1570,8 @@ export default function SettingsHostHtml(props) {
     { editAGuestOpen && <EditAGuest/> }
     { resetGameOpen && <ResetGame/> }
     { setGameRulesOpen && <SetGameRules/> }
-    { audioOpen && <Audio/> }
+    { audioOpen && <Audio2/> }
+    { languageOpen && <Language/> }
   </group>
 }
 
