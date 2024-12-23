@@ -211,7 +211,7 @@ export default function SettingsPlayer(props) {
         scale={0.23}/>
       </group>
       <group name='buttons'> 
-        <group name='edit-player-button' position={[0, 0.1, -2.08]}>
+        <group name='edit-guests-button' position={[0, 0.1, -2.08]}>
           <mesh
             castShadow
             receiveShadow
@@ -219,7 +219,7 @@ export default function SettingsPlayer(props) {
             scale={[3.7,0.01,0.6]}
           >
             <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (editPlayersOpen || editPlayersHover) ? 'green' : 'yellow' }/>
+            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
           </mesh>
           <mesh
             castShadow
@@ -235,9 +235,9 @@ export default function SettingsPlayer(props) {
             receiveShadow
             rotation={[0, 0, 0]}
             scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleEditPlayersPointerEnter(e)}
-            onPointerLeave={e => handleEditPlayersPointerLeave(e)}
-            onPointerUp={e => handleEditPlayersPointerUp(e)}
+            onPointerEnter={e => handleEditGuestsPointerEnter(e)}
+            onPointerLeave={e => handleEditGuestsPointerLeave(e)}
+            onPointerUp={e => handleEditGuestsPointerUp(e)}
           >
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color='white' transparent opacity={0}/>
@@ -249,8 +249,8 @@ export default function SettingsPlayer(props) {
             size={0.3}
             height={0.01}
           >
-            EDIT PLAYERS
-            <meshStandardMaterial color={ (editPlayersOpen || editPlayersHover) ? 'green' : 'yellow' }/>
+            EDIT GUESTS
+            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
           </Text3D>
         </group>
         <group name='reset-game-button' position={[0, 0.1, -1.38]}>
@@ -303,7 +303,7 @@ export default function SettingsPlayer(props) {
             scale={[3.7,0.01,0.6]}
           >
             <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (pauseGameOpen || pauseGameHover) ? 'green' : 'yellow' }/>
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
           </mesh>
           <mesh
             castShadow
@@ -326,7 +326,7 @@ export default function SettingsPlayer(props) {
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
-          <Text3D
+          { !pauseGame && <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
@@ -334,8 +334,18 @@ export default function SettingsPlayer(props) {
             height={0.01}
           >
             PAUSE GAME          ||
-            <meshStandardMaterial color={ (pauseGameOpen || pauseGameHover) ? 'green' : 'yellow' }/>
-          </Text3D>
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
+          </Text3D>}
+          { pauseGame && <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-1.7,0,0.15]}
+            rotation={[-Math.PI/4,0,0]}
+            size={0.3}
+            height={0.01}
+          >
+            UNPAUSE GAME
+            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
+          </Text3D>}
         </group>
         <group name='set-game-rules-button' position={[0, 0.1, 0.02]}>
           <mesh

@@ -1,8 +1,9 @@
 import { Html, Image, Text3D } from "@react-three/drei";
 import Star from "./meshes/Star";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAtomValue } from "jotai";
 import { clientAtom, hostAtom, spectatorsAtom, teamsAtom } from "./GlobalState";
+import HtmlColors from "./HtmlColors";
 
 export default function SettingsHostHtml(props) {
   // #region state setters and getters
@@ -209,6 +210,9 @@ export default function SettingsHostHtml(props) {
       } else if (setGameRulesOpen) {
         setSetGameRulesOpen(false)
         setMainMenuOpen(true)
+      } else if (audioOpen) {
+        setAudioOpen(false)
+        setMainMenuOpen(true)
       }
     }
     return <button 
@@ -216,10 +220,10 @@ export default function SettingsHostHtml(props) {
       style={{
         fontFamily: 'Luckiest Guy',
         fontSize: `15px`,
-        border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+        border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
         margin: '3px',
         padding: '4px',
-        color: `${hover ? 'white' : '#F1EE92'}`,
+        color: `${hover ? '#009E14' : '#F1EE92'}`,
         backgroundColor: '#090F16',
         borderRadius: '5px',
         position: 'relative'}}
@@ -254,10 +258,10 @@ export default function SettingsHostHtml(props) {
       style={{
         fontFamily: 'Luckiest Guy',
         fontSize: `15px`,
-        border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+        border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
         margin: '3px',
         padding: '4px',
-        color: `${hover ? 'white' : '#F1EE92'}`,
+        color: `${hover ? '#009E14' : '#F1EE92'}`,
         backgroundColor: '#090F16',
         borderRadius: '5px',
         position: 'relative'}}
@@ -377,11 +381,11 @@ export default function SettingsHostHtml(props) {
         style={{
           fontFamily: 'Luckiest Guy',
           fontSize: `20px`,
-          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
           borderRadius: '5px',
           margin: '3px',
           padding: '5px',
-          color: `${hover ? 'white' : '#F1EE92'}`,
+          color: `${hover ? '#009E14' : '#F1EE92'}`,
           backgroundColor: '#090F16',
           position: 'relative'}}
         onMouseOver={handleMouseOver}
@@ -497,11 +501,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#F1EE92',
+          color: hover ? '#009E14' : '#F1EE92',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -528,11 +532,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#F1EE92',
+          color: hover ? '#009E14' : '#F1EE92',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -559,11 +563,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#F1EE92',
+          color: hover ? '#009E14' : '#F1EE92',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -590,11 +594,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#FF0000'}`,
+          border: `2px solid ${hover ? '#009E14' : '#FF0000'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#FF0000',
+          color: hover ? '#009E14' : '#FF0000',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -621,11 +625,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#FF3A27'}`,
+          border: `2px solid ${hover ? '#009E14' : '#FF3A27'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#FF3A27',
+          color: hover ? '#009E14' : '#FF3A27',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -652,11 +656,11 @@ export default function SettingsHostHtml(props) {
           justifyContent: 'space-between',
           backgroundColor: '#090F16',
           margin: '3px',
-          border: `2px solid ${hover ? 'white' : '#A0E1DA'}`,
+          border: `2px solid ${hover ? '#009E14' : '#A0E1DA'}`,
           borderRadius: '5px',
           width: 'calc(100% - 6px)', // margin 3px both sides
           padding: '5px',
-          color: hover ? 'white' : '#A0E1DA',
+          color: hover ? '#009E14' : '#A0E1DA',
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
@@ -734,11 +738,11 @@ export default function SettingsHostHtml(props) {
         style={{
           fontFamily: 'Luckiest Guy',
           fontSize: `20px`,
-          border: `2px solid ${hover ? 'white' : '#F1EE92'}`,
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
           borderRadius: '5px',
           margin: '3px',
           padding: '5px',
-          color: `${hover ? 'white' : '#F1EE92'}`,
+          color: `${hover ? '#009E14' : '#F1EE92'}`,
           backgroundColor: '#090F16',
           position: 'relative',
           flexGrow: 1
@@ -768,11 +772,11 @@ export default function SettingsHostHtml(props) {
         style={{
           fontFamily: 'Luckiest Guy',
           fontSize: `20px`,
-          border: `2px solid ${hover ? 'white' : '#FF0000'}`,
+          border: `2px solid ${hover ? '#009E14' : '#FF0000'}`,
           borderRadius: '5px',
           margin: '3px',
           padding: '5px',
-          color: `${hover ? 'white' : '#FF0000'}`,
+          color: `${hover ? '#009E14' : '#FF0000'}`,
           backgroundColor: '#090F16',
           position: 'relative',
           flexGrow: 1
@@ -822,9 +826,10 @@ export default function SettingsHostHtml(props) {
               color: '#F1EE92',
               padding: '0px',
               margin: '3px',
-              fontSize: '22px',
+              fontSize: '32px',
             }}>
-              ALL PROGRESS WILL BE ERASED. ARE YOU SURE?
+              ALL PROGRESS WILL BE ERASED. 
+              ARE YOU SURE?
             </p>
           </div>
           <div style={{
@@ -837,6 +842,35 @@ export default function SettingsHostHtml(props) {
     </Html>
   }
   function SetGameRules() {
+    const [backdoLaunchOn, setBackdoLaunchOn] = useState(false)
+    const [backdoLaunchToggleHover, setBackdoLaunchToggleHover] = useState(false)
+    const [timerOn, setTimerOn] = useState(false)
+    const [timerToggleHover, setTimerToggleHover] = useState(false)
+
+    function handleBackdoLaunchTogglePointerEnter() {
+      setBackdoLaunchToggleHover(true)
+    }
+    function handleBackdoLaunchTogglePointerLeave() {
+      setBackdoLaunchToggleHover(false)
+    }
+    function handleBackdoLaunchTogglePointerUp() {
+      if (!backdoLaunchOn) 
+        setBackdoLaunchOn(true)
+      else
+        setBackdoLaunchOn(false)
+    }
+    function handleTimerTogglePointerEnter() {
+      setTimerToggleHover(true)
+    }
+    function handleTimerTogglePointerLeave() {
+      setTimerToggleHover(false)
+    }
+    function handleTimerTogglePointerUp() {
+      if (!timerOn) 
+        setTimerOn(true)
+      else
+        setTimerOn(false)
+    }
     return <Html 
       transform
       position={[-7.5, 0, -2.5]}
@@ -885,11 +919,28 @@ export default function SettingsHostHtml(props) {
               margin: '3px',
               fontSize: '20px',
             }}>BACKDO LAUNCH</p>
-            <p style={{
-              padding: '0px',
-              margin: '3px',
-              fontSize: '20px',
-            }}>TOGGLE</p>
+            <div id='backdoLaunchToggle' style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: HtmlColors.spaceDark,
+              border: '2px solid #F1EE92',
+              borderRadius: '5px',
+              margin: '3px'
+            }}
+            onPointerEnter={handleBackdoLaunchTogglePointerEnter}
+            onPointerLeave={handleBackdoLaunchTogglePointerLeave}
+            onPointerUp={handleBackdoLaunchTogglePointerUp}
+            >
+              <div id='backdoLaunchToggleState' style={{
+                margin: '3px',
+                padding: '0px',
+                borderRadius: '5px',
+                backgroundColor: backdoLaunchOn ? HtmlColors.starYellow : !backdoLaunchToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                width: 'calc(100% - 6px)',
+                height: 'calc(100% - 6px)'
+              }}>
+              </div>
+            </div>
           </div>
           <p style={{
             padding: '3px',
@@ -912,11 +963,28 @@ export default function SettingsHostHtml(props) {
               margin: '3px',
               fontSize: '20px',
             }}>TIMER</p>
-            <p style={{
-              padding: '0px',
-              margin: '3px',
-              fontSize: '20px',
-            }}>TOGGLE</p>
+            <div id='timerToggle' style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: HtmlColors.spaceDark,
+              border: '2px solid #F1EE92',
+              borderRadius: '5px',
+              margin: '3px'
+            }}
+            onPointerEnter={handleTimerTogglePointerEnter}
+            onPointerLeave={handleTimerTogglePointerLeave}
+            onPointerUp={handleTimerTogglePointerUp}
+            >
+              <div id='timerToggleState' style={{
+                margin: '3px',
+                padding: '0px',
+                borderRadius: '5px',
+                backgroundColor: timerOn ? HtmlColors.starYellow : !timerToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                width: 'calc(100% - 6px)',
+                height: 'calc(100% - 6px)'
+              }}>
+              </div>
+            </div>
           </div>
           <p style={{
             padding: '3px',
@@ -928,342 +996,427 @@ export default function SettingsHostHtml(props) {
       </div>
     </Html>
   }
-  return <group {...props}>
-    { mainMenuOpen && <group name='main-menu'>
-      <group name='background'>
-        <mesh
-          position={[0,0,0]} // temporary
-          rotation={[0, 0, 0]}
-          scale={[4,0.01,5.1]}
-        >
-          <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh
-          castShadow
-          receiveShadow
-          position={[0,0,0]} // temporary
-          rotation={[0, 0, 0]}
-          scale={[3.95,0.02, 5.05]}
-        >
-          <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='#090f16'/>
-        </mesh>
-        <Star 
-        position={[-1.98, 0, -2.51]}
-        scale={0.23}/>
-      </group>
-      <group name='buttons'> 
-        <group name='edit-guests-button' position={[0, 0.1, -2.08]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleEditGuestsPointerEnter(e)}
-            onPointerLeave={e => handleEditGuestsPointerLeave(e)}
-            onPointerUp={e => handleEditGuestsPointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            EDIT GUESTS
-            <meshStandardMaterial color={ (editGuestsOpen || editGuestsHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-        <group name='reset-game-button' position={[0, 0.1, -1.38]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (resetGameOpen || resetGameHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleResetGamePointerEnter(e)}
-            onPointerLeave={e => handleResetGamePointerLeave(e)}
-            onPointerUp={e => handleResetGamePointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            RESET GAME
-            <meshStandardMaterial color={ (resetGameOpen || resetGameHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-        <group name='pause-game-button' position={[0, 0.1, -0.68]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handlePauseGamePointerEnter(e)}
-            onPointerLeave={e => handlePauseGamePointerLeave(e)}
-            onPointerUp={e => handlePauseGamePointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          { !pauseGame && <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            PAUSE GAME          ||
-            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
-          </Text3D>}
-          { pauseGame && <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            UNPAUSE GAME
-            <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
-          </Text3D>}
-        </group>
-        <group name='set-game-rules-button' position={[0, 0.1, 0.02]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (setGameRulesOpen || setGameRulesHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleSetGameRulesPointerEnter(e)}
-            onPointerLeave={e => handleSetGameRulesPointerLeave(e)}
-            onPointerUp={e => handleSetGameRulesPointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            SET GAME RULES
-            <meshStandardMaterial color={ (setGameRulesOpen || setGameRulesHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-        <group name='audio-button' position={[0, 0.1, 0.72]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (audioOpen || audioHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleAudioPointerEnter(e)}
-            onPointerLeave={e => handleAudioPointerLeave(e)}
-            onPointerUp={e => handleAudioPointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
+  function Audio() {
+    const [musicSliderPosition, setMusicSliderPosition] = useState({ x: 0 })
+    const [musicSliderDragging, setMusicSliderDragging] = useState(false)
+    const [musicSliderOffset, setMusicSliderOffset] = useState({ x: 0 })
+
+
+    const musicSliderRef = useRef(null);
+
+    function handleMusicSliderPointerEnter() {
+      document.body.style.cursor = "pointer"
+    }
+    function handleMusicSliderPointerDown(e) {
+      e.preventDefault() // prevent the crossed-out symbol from appearing when mouse leaves the image
+      setMusicSliderDragging(true)
+
+      const rect = musicSliderRef.current.getBoundingClientRect();
+      setMusicSliderOffset({
+        x: e.clientX
+      })
+    }
+    function handleMusicSliderPointerMove(e) {
+      if (!musicSliderDragging) return;
+
+      console.log('slider move', e.clientX, musicSliderOffset.x)
+      setMusicSliderPosition({
+        x: Math.max(0, e.clientX - musicSliderOffset.x)
+      })
+    }
+    function handleMusicSliderPointerUp() {
+      setMusicSliderDragging(false)
+    }
+    function handleMusicSliderPointerLeave() {
+      setMusicSliderDragging(false)
+      document.body.style.cursor = "default"
+    }
+
+    return <Html 
+      transform
+      position={[-7.5, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+      <div style={{
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        width: '325px',
+        backgroundColor: '#090F16',
+        border: '2px solid #F1EE92',
+        borderRadius: '5px',
+        fontFamily: 'Luckiest Guy',
+        padding: '5px',
+        color: '#F1EE92',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
             AUDIO
-            <meshStandardMaterial color={ (audioOpen || audioHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-        <group name='language-button' position={[0, 0.1, 1.42]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (languageOpen || languageHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleLanguagePointerEnter(e)}
-            onPointerLeave={e => handleLanguagePointerLeave(e)}
-            onPointerUp={e => handleLanguagePointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0.02,0.15]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            LANGUAGE      EN<Image url='images/us-flag.png' position={[3.25,0.15,0]} scale={0.35}/>
-            <meshStandardMaterial color={ (languageOpen || languageHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-        <group name='invite-friends-button' position={[0, 0.1, 2.12]}>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.01,0.6]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ (inviteFriendsOpen || inviteFriendsHover) ? 'green' : 'yellow' }/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.65,0.02,0.55]}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='#090f16'/>
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            rotation={[0, 0, 0]}
-            scale={[3.7,0.02,0.6]}
-            onPointerEnter={e => handleInviteFriendsPointerEnter(e)}
-            onPointerLeave={e => handleInviteFriendsPointerLeave(e)}
-            onPointerUp={e => handleInviteFriendsPointerUp(e)}
-          >
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color='white' transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.7,0,0.15]}
-            rotation={[-Math.PI/4,0,0]}
-            size={0.3}
-            height={0.01}
-          >
-            INVITE FRIENDS
-            <meshStandardMaterial color={ (inviteFriendsOpen || inviteFriendsHover) ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group> 
-      </group>
-    </group> }
+          </p>
+          <div>
+            <BackButton/>
+            <CloseButton/>
+          </div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '40px',
+          }}>
+            MUSIC
+          </p>
+          <div style={{
+            backgroundColor: HtmlColors.starYellow,
+            width: '170px',
+            height: '10px',
+            position: 'relative',
+            borderRadius: '20px',
+            top: '21px',
+          }}>
+            <img src='images/star.png' style={{
+              position: 'absolute',
+              width: '40px',
+              top: '-15px',
+              left: `${musicSliderPosition.x - 15}px`
+            }}
+            onPointerEnter={handleMusicSliderPointerEnter}
+            onPointerDown={e=>handleMusicSliderPointerDown(e)}
+            onPointerMove={e=>handleMusicSliderPointerMove(e)}
+            onPointerUp={handleMusicSliderPointerUp}
+            onPointerLeave={handleMusicSliderPointerLeave}
+            ref={musicSliderRef}
+            />
+          </div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            EFFECTS
+          </p>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'left',
+            padding: '0px',
+            margin: '3px',
+            fontSize: '22px',
+          }}>
+            BAR
+          </p>
+        </div>
+      </div>
+    </Html>
+  }
+  function MainMenuHtml() {
+    function EditGuestsButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        setEditGuestsOpen(true)
+        setMainMenuOpen(false)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        EDIT GUESTS
+      </button>
+    }
+    function ResetGameButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        setResetGameOpen(true)
+        setMainMenuOpen(false)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        RESET GAME
+      </button>
+    }
+    function PauseGameButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        if (!pauseGame)
+          setPauseGame(true)
+        else 
+          setPauseGame(false)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+        { !pauseGame && `PAUSE GAME              ||`}
+        { pauseGame && `UNPAUSE GAME       \u25BA`}
+      </button>
+    }
+    function SetGameRulesButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        setSetGameRulesOpen(true)
+        setMainMenuOpen(false)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        SET GAME RULES
+      </button>
+    }
+    function AudioButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        setMainMenuOpen(false)
+        setAudioOpen(true)
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        AUDIO
+      </button>
+    }
+    function LanguageButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        if (!hover) {
+          setHover(true)
+        }
+      }
+      function handleMouseOut() {
+        if (hover) {
+          setHover(false)
+        }
+      }
+      function handleMouseUp() {
+        // remove player from the room
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px',
+          whiteSpace: 'pre'
+        }}>
+        LANGUAGE         EN <img src='images/us-flag.png' width='25px' style={{ position: 'relative', top: '3px', pointerEvents: 'none' }} 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}/>
+      </button>
+    }
+    function InviteFriendsButton() {
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // remove player from the room
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        INVITE FRIENDS
+      </button>
+    }
+
+    return <group name='main-menu'>
+      <Html
+        transform
+        position={[-4.5, 3, -1.3]}
+        rotation={[-Math.PI/2, 0, 0]}>
+        <div style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          width: '200px',
+          backgroundColor: '#090F16',
+          border: '2px solid #F1EE92',
+          borderRadius: '5px',
+          padding: '5px',
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              fontFamily: 'Luckiest Guy',
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '0px',
+              margin: '3px',
+              fontSize: '22px',
+            }}>
+              MENU
+            </p>
+            <div>
+              <CloseButton/>
+            </div>
+          </div>
+          <div className='main-menu-buttons'>
+            <EditGuestsButton/>
+            <ResetGameButton/>
+            <PauseGameButton/>
+            <SetGameRulesButton/>
+            <AudioButton/>
+            <LanguageButton/>
+            <InviteFriendsButton/>
+          </div> 
+        </div>
+      </Html>
+    </group>
+  }
+  return <group {...props}>
+    { mainMenuOpen && <MainMenuHtml/> }
     { editGuestsOpen && <EditGuests/> }
     { editAGuestOpen && <EditAGuest/> }
     { resetGameOpen && <ResetGame/> }
     { setGameRulesOpen && <SetGameRules/> }
+    { audioOpen && <Audio/> }
   </group>
 }
 
