@@ -3,5 +3,7 @@ export default {
   starYellowHover: '#928F34',
   spaceDark: '#090F16',
   disabledGrey: '#9F9F9F',
-  disabledGreyBackground: '#313131'
+  disabledGreyBackground: '#313131',
+  infoGreen: '#87DA63',
+  selectedGreen: '#009E14'
 }

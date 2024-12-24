@@ -141,7 +141,7 @@ export default function Game() {
       useFrame((state) => {
         const time = state.clock.elapsedTime;
         letsPlayTextMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
-        letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
+        // letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
       })
   
       const backdropHeight = layout[device].game.letsPlayButton.activeButton.backdropHeight

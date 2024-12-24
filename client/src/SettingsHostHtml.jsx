@@ -6,6 +6,7 @@ import { clientAtom, hostAtom, spectatorsAtom, teamsAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 
 export default function SettingsHostHtml(props) {
+  console.log('settings')
   // #region state setters and getters
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
   // edit players
@@ -55,6 +56,9 @@ export default function SettingsHostHtml(props) {
         setMainMenuOpen(true)
       } else if (languageOpen) {
         setLanguageOpen(false)
+        setMainMenuOpen(true)
+      } else if (inviteFriendsOpen) {
+        setInviteFriendsOpen(false)
         setMainMenuOpen(true)
       }
     }
@@ -506,7 +510,6 @@ export default function SettingsHostHtml(props) {
         SET TEAM TO UFOS
       </button>
     }
-
     return <Html 
       transform
       position={[-7.5, 0, -2.5]}
@@ -1281,6 +1284,157 @@ export default function SettingsHostHtml(props) {
       </div>
     </Html>
   }
+  function InviteFriends() {
+    const [checkmarkVisible, setCheckmarkVisible] = useState(false)
+    const [checkmarkTimer, setCheckmarkTimer] = useState(null)
+    function CopyButton() {
+      const [copyButtonHover, setCopyButtonHover] = useState(false)
+  
+      function handleMouseOver () {
+        setCopyButtonHover(true)
+      }
+      function handleMouseOut () {
+        setCopyButtonHover(false)
+      }
+      
+      function copyURLToClipboard() {
+        const url = window.location.href;
+      
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          // Modern browsers with Clipboard API support
+          navigator.clipboard.writeText(url)
+            .then(() => {
+            })
+            .catch(err => {
+              console.error("Failed to copy URL: ", err);
+            });
+        } else {
+          // Fallback for older browsers
+          const tempInput = document.createElement("input");
+          document.body.appendChild(tempInput);
+          tempInput.value = url;
+          tempInput.select();
+          document.execCommand("copy");
+          document.body.removeChild(tempInput);
+        }
+      }
+
+      function handleMouseUp() {
+        copyURLToClipboard();
+        clearTimeout(checkmarkTimer)
+        setCheckmarkVisible(true);
+        setCheckmarkTimer(setTimeout(() => {
+          setCheckmarkVisible(false);
+        }, 2000))
+      }
+  
+      return <button 
+        className='edit-player-actions-button'
+        style={{
+          fontFamily: 'Luckiest Guy',
+          fontSize: `20px`,
+          border: `2px solid ${copyButtonHover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          margin: '3px',
+          padding: '1px 5px 1px 5px',
+          color: `${copyButtonHover ? '#009E14' : '#F1EE92'}`,
+          backgroundColor: '#090F16',
+          position: 'relative'}}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        type="submit">
+        COPY
+      </button>
+    }
+    return <Html 
+      transform
+      position={[-11, 0, -2.5]}
+      rotation={[-Math.PI/2, 0, 0]}>
+        <div style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0px',
+          width: '400px',
+          backgroundColor: '#090F16',
+          border: '2px solid #F1EE92',
+          borderRadius: '5px',
+          fontFamily: 'Luckiest Guy',
+          padding: '10px',
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '0px',
+              margin: '3px',
+              fontSize: '22px',
+            }}>
+              INVITE FRIENDS
+            </p>
+            <div>
+              <BackButton/>
+              <CloseButton/>
+            </div>
+          </div>
+          <p style={{
+            color: '#F1EE92',
+            textAlign: 'center',
+            padding: '0px',
+            margin: '10px',
+            fontSize: '30px',
+          }}>
+            JOIN THIS ROOM!
+          </p>
+          <div style={{
+            display:'flex',
+            justifyContent: 'center'
+          }}>
+            <p style={{
+              color: '#F1EE92',
+              textAlign: 'center',
+              padding: '0px',
+              margin: '2px',
+              fontSize: '30px',
+            }}>
+              YUTNORI.APP/<span style={{color:HtmlColors.infoGreen}}>ABCD</span>
+            </p>
+            <CopyButton/>
+            <div style={{
+              width: '0px', 
+              height: '0px',
+              position: 'absolute',
+              left: '378px',
+              top: '107px'}}>
+                {checkmarkVisible && <img src='images/green-checkmark.svg' width='30px'/>}
+            </div>
+          </div>
+          <div style={{display:'flex', padding: '20px'}}>
+            <img src="images/qr-code-sample.png" style={{
+              display: 'block',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: '10px',
+              marginBottom: '10px',
+              width: '200px'
+            }}/>
+            <p style={{
+              color: '#F1EE92',
+              textAlign: 'left',
+              padding: '0px',
+              margin: '10px',
+              fontSize: '30px',
+              width: '200px'
+            }}>
+              SCAN THE QR CODE, OR ENTER THE LINK INTO A BROWSER.
+            </p>
+          </div>
+        </div>
+    </Html>
+  }
   function MainMenuHtml() {
     function EditGuestsButton() {
       const [hover, setHover] = useState(false);
@@ -1495,7 +1649,9 @@ export default function SettingsHostHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // remove player from the room
+        console.log('button click')
+        setMainMenuOpen(false)
+        setInviteFriendsOpen(true)
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -1572,6 +1728,7 @@ export default function SettingsHostHtml(props) {
     { setGameRulesOpen && <SetGameRules/> }
     { audioOpen && <Audio2/> }
     { languageOpen && <Language/> }
+    { inviteFriendsOpen && <InviteFriends/> }
   </group>
 }
 
