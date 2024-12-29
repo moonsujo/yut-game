@@ -1323,13 +1323,48 @@ export default {
         }
       },
       settings: {
-        position: [4.6, 0, -5.5],
-        scale: 1.1,
-        text: {
-          position: [-0.9, 0.025, 0.15],
+        mainButton: {
+          position: [4.6, 0, -5.5],
+          scale: 1.1,
+          text: {
+            position: [-0.9, 0.025, 0.15],
+            rotation: [-Math.PI/2, 0, 0],
+            size: 0.3,
+            height: 0.01,
+          }
+        },
+        mainMenu: {
+          position: [-3.3, 3, -0.8],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        editGuests: {
+          position: [-5.0, 0, -1.0],
           rotation: [-Math.PI/2, 0, 0],
-          size: 0.3,
-          height: 0.01,
+          containerWidth: '300px'
+        },
+        editAGuest: {
+          position: [-5.5, 0, -1.0],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        resetGame: {
+          position: [-5.5, 0, -1.0],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        setGameRules: {
+          position: [-5.5, 0, -1.0],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        audio: {
+          position: [-4.0, 0, -1.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        language: {
+          position: [-5.0, 0, -1.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        inviteFriends: {
+          position: [-6, 0, -1],
+          rotation: [-Math.PI/2, 0, 0]
         }
       },
       rulebookButton: {
@@ -2842,13 +2877,48 @@ export default {
         }
       },
       settings: {
-        position: [9, 0, -5.5],
-        scale: 1,
-        text: {
-          position: [-0.9, 0.025, 0.15],
+        mainButton: {
+          position: [9, 0, -5.5],
+          scale: 1,
+          text: {
+            position: [-0.9, 0.025, 0.15],
+            rotation: [-Math.PI/2, 0, 0],
+            size: 0.3,
+            height: 0.01,
+          }
+        },
+        mainMenu: {
+          position: [-4.5, 3, -1.3],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        editGuests: {
+          position: [-7.5, 0, -2.5],
           rotation: [-Math.PI/2, 0, 0],
-          size: 0.3,
-          height: 0.01,
+          containerWidth: '350px'
+        },
+        editAGuest: {
+          position: [-7.5, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        resetGame: {
+          position: [-7.5, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        setGameRules: {
+          position: [-7.5, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        audio: {
+          position: [-5.5, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        language: {
+          position: [-7.5, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
+        },
+        inviteFriends: {
+          position: [-11, 0, -2.5],
+          rotation: [-Math.PI/2, 0, 0]
         }
       },
       rulebookButton: {

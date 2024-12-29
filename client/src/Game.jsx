@@ -52,7 +52,7 @@ import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
 import useResponsiveSetting from "./ResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
-import SettingsHostHtml from "./SettingsHostHtml.jsx";
+import SettingsHtml from "./SettingsHtml.jsx";
 
 // There should be no state
 export default function Game() {
@@ -511,16 +511,16 @@ export default function Game() {
       </mesh>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.settings.text.position}
-        rotation={layout[device].game.settings.text.rotation}
-        size={layout[device].game.settings.text.size}
-        height={layout[device].game.settings.text.height}
+        position={layout[device].game.settings.mainButton.text.position}
+        rotation={layout[device].game.settings.mainButton.text.rotation}
+        size={layout[device].game.settings.mainButton.text.size}
+        height={layout[device].game.settings.mainButton.text.height}
         material={yellowMaterial}
       >
         Settings
       </Text3D>
       {/* display different panes based on user state (spectator/player) */}
-      { open && <SettingsHostHtml
+      { open &&  <SettingsHtml
         position={[-3.5,3,3.5]}
         rotation={[0,0,0]}
         scale={[1,1,1]}
@@ -924,8 +924,8 @@ export default function Game() {
           device={device}
         /> }
         <SettingsButton 
-          position={layout[device].game.settings.position}
-          scale={layout[device].game.settings.scale}
+          position={layout[device].game.settings.mainButton.position}
+          scale={layout[device].game.settings.mainButton.scale}
         />
         <RulebookButton 
           position={layout[device].game.rulebookButton.position}
