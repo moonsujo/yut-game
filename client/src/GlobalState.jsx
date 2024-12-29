@@ -78,6 +78,8 @@ export const throwCountAtom = atom(0)
 export const alertsAtom = atom([])
 export const currentPlayerNameAtom = atom('')
 export const catchPathAtom = atom(null)
+export const backdoRuleOnAtom = atom(false)
+export const timerOnAtom = atom(true)
 
 // array comparison helper
 // function areEqualArrays(array0, array1) {

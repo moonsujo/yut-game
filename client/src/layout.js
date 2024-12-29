@@ -1176,7 +1176,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 12
+          maxLength: 8
         },
         join: {
           position: [3.2, 0, -0.1],
@@ -1216,7 +1216,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 12
+          maxLength: 8
         },
         join: {
           position: [3.2, 0, -0.1],
@@ -1351,7 +1351,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0]
         },
         setGameRules: {
-          position: [-5.5, 0, -1.0],
+          position: [-5, 0, -1.0],
           rotation: [-Math.PI/2, 0, 0]
         },
         audio: {
@@ -2731,7 +2731,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 12
+          maxLength: 8
         },
         join: {
           position: [3.3, 0, 0.45],
@@ -2771,7 +2771,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 12
+          maxLength: 8
         },
         join: {
           position: [3.45, 0, 0.5],

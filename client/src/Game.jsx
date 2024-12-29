@@ -520,7 +520,7 @@ export default function Game() {
         Settings
       </Text3D>
       {/* display different panes based on user state (spectator/player) */}
-      { open &&  <SettingsHtml
+      { open && <SettingsHtml
         position={[-3.5,3,3.5]}
         rotation={[0,0,0]}
         scale={[1,1,1]}
