@@ -17,7 +17,7 @@ import { Physics } from '@react-three/rapier';
 import GameCamera from './GameCamera';
 import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
-import useResponsiveSetting from './ResponsiveSetting';
+import useResponsiveSetting from './hooks/useResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 
 export default function Home2() {

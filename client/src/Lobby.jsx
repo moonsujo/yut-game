@@ -1,14 +1,10 @@
 import { useAtomValue } from "jotai";
 import GameCamera from "./GameCamera";
 import { deviceAtom } from "./GlobalState";
-import useResponsiveSetting from "./ResponsiveSetting.jsx";
+import useResponsiveSetting from "./hooks/useResponsiveSetting.jsx";
 import layout from "./layout";
-import Board from "./Board.jsx";
 import HowToPlay from "./HowToPlay.jsx";
-import Moon from "./meshes/Moon.jsx";
 import BlueMoon from "./meshes/BlueMoon.jsx";
-import { Bloom } from "@react-three/postprocessing";
-import { KernelSize, Resolution } from "postprocessing";
 import { Image, Text3D } from "@react-three/drei";
 import Star from "./meshes/Star.jsx";
 import * as THREE from 'three';

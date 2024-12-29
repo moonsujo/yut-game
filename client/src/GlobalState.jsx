@@ -41,7 +41,6 @@ export const tilesAtom = atom(JSON.parse(JSON.stringify(initialState.initialTile
 export const initialYootThrowAtom = atom(true)
 export const lastMoveAtom = atom(null)
 export const hasTurnAtom = atom(false)
-export const boomTextAtom = atom('')
 export const turnAlertActiveAtom = atom(false)
 export const yootAnimationAtom = atom(null)
 export const yootOutcomeAtom = atom(null)

@@ -1,5 +1,5 @@
 import { Image, Text3D } from "@react-three/drei";
-import Star from "./meshes/Star";
+import Star from "../meshes/Star";
 import { useState } from "react";
 
 export default function SettingsPlayer(props) {

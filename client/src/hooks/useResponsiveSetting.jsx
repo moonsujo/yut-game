@@ -1,7 +1,7 @@
 import { useSetAtom } from "jotai";
-import mediaValues from "./mediaValues";
+import mediaValues from "../mediaValues";
 import { useEffect } from "react";
-import { deviceAtom } from "./GlobalState";
+import { deviceAtom } from "../GlobalState";
 
 export default function useResponsiveSetting() {
     // Responsive UI

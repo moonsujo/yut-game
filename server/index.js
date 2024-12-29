@@ -4,7 +4,7 @@ import http from 'http';
 import router from './router.js'; // needs .js suffix
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { makeId } from './src/helpers.js';
+import { makeId } from './helpers.js';
 import initialState from './initialState.js';
 
 const app = express();

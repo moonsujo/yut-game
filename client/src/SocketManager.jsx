@@ -4,7 +4,6 @@ import { useAtom } from "jotai";
 import { io } from "socket.io-client";
 
 import { 
-  boomTextAtom, 
   pregameAlertAtom, 
   clientAtom, 
   disconnectAtom, displayMovesAtom, gamePhaseAtom, hasTurnAtom, helperTilesAtom, hostAtom, initialYootThrowAtom, legalTilesAtom, messagesAtom, particleSettingAtom, pieceTeam0Id0Atom, pieceTeam0Id1Atom, pieceTeam0Id2Atom, pieceTeam0Id3Atom, pieceTeam1Id0Atom, pieceTeam1Id1Atom, pieceTeam1Id2Atom, pieceTeam1Id3Atom, readyToStartAtom, roomAtom, selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
@@ -54,7 +53,6 @@ export const SocketManager = () => {
   const [_initialYootThrow] = useAtom(initialYootThrowAtom)
   const [_yootThrown] = useAtom(yootThrownAtom)
   const [_hasTurn, setHasTurn] = useAtom(hasTurnAtom)
-  const [_boomText] = useAtom(boomTextAtom)
   const [_turnAlertActive] = useAtom(turnAlertActiveAtom)
   const [_moveResult] = useAtom(moveResultAtom)
   const [_throwResult] = useAtom(throwResultAtom)

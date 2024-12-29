@@ -102,7 +102,6 @@ export default function PiecesSection({
               id={value.id}
               key={index}
               // on selection, no other piece should be in 'selectable' animation
-              // animation={(selection === null && hasValidMoveHome()) ? 'selectable' : null}
               selectable={(selection === null && hasValidMoveHome())}
               onBoard={false}
               selected={pieceSelected(selection, value.id, team)}

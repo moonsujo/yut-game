@@ -1,5 +1,4 @@
 import React from 'react';
-import HtmlElement from './HtmlElement';
 import { useAtom } from 'jotai';
 import { displayMovesAtom, turnAtom } from './GlobalState';
 import { Text3D } from '@react-three/drei';

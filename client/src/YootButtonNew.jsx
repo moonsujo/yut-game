@@ -11,7 +11,7 @@ import layout from './layout';
 import YootMesh from './meshes/YootMesh';
 
 export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
-  const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
+  const { nodes } = useGLTF("/models/rounded-rectangle.glb");
   let buttonRef = useRef();
   const params = useParams();
 
@@ -19,7 +19,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
   const [enabledLocal, setEnabledLocal] = useState(false);
-  const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow // add "hasThrow"
+  const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
 
   // for the throw count
   const [client] = useAtom(clientAtom);

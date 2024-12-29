@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 import { useRef } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 
-import { Float, PresentationControls, Text3D } from '@react-three/drei'
+import { Float, Text3D } from '@react-three/drei'
 import UfoAnimated from './meshes/UfoAnimated';
 
-import FragmentShader from './shader/fragmentDust.glsl'
-import VertexShader from './shader/vertexDust.glsl'
+import FragmentShader from './shader/ufoBeam/fragment.glsl'
+import VertexShader from './shader/ufoBeam/vertex.glsl'
 import Stars from './particles/Stars';
 
 import * as THREE from 'three';
 import { useAtom } from 'jotai';
-import { deviceAtom, particleSettingAtom } from './GlobalState';
+import { deviceAtom } from './GlobalState';
 import { useParams } from 'wouter';
 import { socket } from './SocketManager';
 import EarthModified from './meshes/EarthModified';
@@ -134,8 +134,6 @@ export default function UfosWin({}) {
 
   function handlePointerDown() {
     socket.emit('reset', { roomId: params.id.toUpperCase() })
-    // respawn yoots
-    // set camera upright - move scene
   }
 
   const textSize = 0.8

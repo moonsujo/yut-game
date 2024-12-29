@@ -1,10 +1,8 @@
 import fireworkVertexShader from './vertex.glsl';
 import fireworkFragmentShader from './fragment.glsl';
 import * as THREE from 'three';
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
-import { useLoader, useThree } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useEffect, useRef } from 'react';
 
 export function useFireworksShader() {
 

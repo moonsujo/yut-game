@@ -50,7 +50,7 @@ import HowToPlay from "./HowToPlay.jsx";
 import { MeshDistortMaterial } from '@react-three/drei'
 import YootNew from "./YootNew.jsx";
 import YootButtonNew from "./YootButtonNew.jsx";
-import useResponsiveSetting from "./ResponsiveSetting.jsx";
+import useResponsiveSetting from "./hooks/useResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 import SettingsHtml from "./SettingsHtml.jsx";
 
