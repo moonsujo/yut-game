@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema(
     name: String,
     team: Number,
     connectedToRoom: Boolean,
-    createdTime: Date
+    createdTime: Date,
+    status: String // playing, away
   },
   {
     versionKey: false,
@@ -129,7 +130,11 @@ const roomSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'users'
     },
-    // expiresAfter: Date
+    paused: Boolean,
+    rules: {
+      backdo: Boolean,
+      timer: Boolean
+    }
   },
   {
     versionKey: false,
@@ -150,15 +155,17 @@ async function addUser(socket, name) {
         team: -1,
         roomId: null,
         connectedToRoom: false,
-        createdTime: new Date()
+        createdTime: new Date(),
+        status: 'playing'
       })
-      await user.save();
+      await user.save()
     } else {
       const savedClient = JSON.parse(socket.handshake.query.client)
       // in mongodb, when client leaves, the roomId and name haven't changed
       // room refers to player by _id
       // room[team].players array has objectIds, and that object's team hasn't been updated, which is why the host.team is -1 and 'players' is null
       user = await User.findOneAndUpdate({ roomId: savedClient.roomId, name: savedClient.name }, { socketId: socket.id, connectedToRoom: false })
+      console.log('user after findOneAndUpdate', user)
       if (!user) {
         user = new User({
           socketId: socket.id,
@@ -166,11 +173,14 @@ async function addUser(socket, name) {
           team: -1,
           roomId: null,
           connectedToRoom: false,
-          createdTime: new Date()
+          createdTime: new Date(),
+          status: 'playing'
         })
-        await user.save();
+        console.log('user from scratch', user)
+        await user.save()
       }
     }
+    console.log('[addUser] user', user)
   } catch (err) {
     console.log('[addUser]', err)
     return null
@@ -376,7 +386,11 @@ io.on("connect", async (socket) => {
           time: Date.now()
         },
         serverEvent: '',
-        // expiresAfter: Date.now() + 14 * 24 * 60 * 60 * 1000 // 2 weeks
+        paused: false,
+        rules: {
+          backdo: false,
+          timer: false
+        }
       })
       console.log('[createRoom] shortRoomId', shortRoomId)
       await room.save();
@@ -450,10 +464,15 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("joinRoom", async ({ roomId }) => {
+    console.log('[joinRoom] roomId', roomId)
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
+      console.log('[joinRoom] user', user)
       
       let room = await Room.findOne({ shortId: roomId }).exec()
+      if (!room) {
+        throw new Error(`room with id ${roomId} not found`)
+      }
       let operation = {}
       
       if (user && user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
@@ -493,6 +512,9 @@ io.on("connect", async (socket) => {
     try {
       let user = await User.findOne({ 'socketId': socket.id })
       let room = await Room.findOne({ shortId: roomId })
+      if (!room) {
+        throw new Error(`room with id ${roomId} not found`)
+      }
       if (room.host === null) {
         room.host = user._id
         room.save()
@@ -1312,4 +1334,43 @@ io.on("connect", async (socket) => {
       console.log(`[disconnect] error deleting user`, err)
     }
   });
+
+  socket.on('setAway', async ({ roomId, hostId, userId }) => {
+    // if hostId was provided
+      // check if hostId matches the one from the room
+      // set away for given userId
+    // else
+      // set away for user matching socket id (not using hostId or userId)
+  })
+
+  // teamId: -1 for spectator, 0 for rockets, 1 for ufo
+  socket.on('setTeam', async ({ roomId, hostId, userId, teamId }) => {
+    // check client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // check user is a spectator
+    // set user's team to teamId
+  })
+
+  socket.on('assignHost', async ({ roomId, hostId, userId }) => {
+    // check client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // check user is not the host of the room
+    // set user as the host
+      // this removes client from the host
+  })
+
+  socket.on('kick', async ({ roomId, hostId, userId }) => {
+    // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // remove player from player list (team0, team1 or spectators)
+    // set 'connectedToRoom' to 'false' on player
+  })
+
+  socket.on('pauseGame', async ({ roomId, hostId }) => {
+    // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // pause game in room
+  })
+
+  // rules: 'backdo', 'timer'
+  socket.on('setGameRules', async ({ roomId, hostId, rule }) => {
+    // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // flip boolean switch by rule (key of rule dictionary)
+  })
 })

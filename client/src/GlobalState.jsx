@@ -79,6 +79,7 @@ export const currentPlayerNameAtom = atom('')
 export const catchPathAtom = atom(null)
 export const backdoRuleOnAtom = atom(false)
 export const timerOnAtom = atom(true)
+export const settingsOpenAtom = atom(false)
 
 // array comparison helper
 // function areEqualArrays(array0, array1) {

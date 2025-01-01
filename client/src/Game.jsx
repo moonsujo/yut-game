@@ -34,6 +34,7 @@ import {
   yootAnimationAtom,
   teamsAtom,
   hasTurnAtom,
+  settingsOpenAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -467,33 +468,42 @@ export default function Game() {
   }
 
   function SettingsButton({ position, scale }) {
-    const yellowMaterial = new MeshStandardMaterial({ color: new Color('yellow')});
-
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useAtom(settingsOpenAtom)
     const [hover, setHover] = useState(false)
     function handlePointerEnter(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('green')
+      if (!hover) {
+        setHover(true)
+      }
     }
-
+    function handlePointerMove(e) {
+      e.stopPropagation();
+      if (!hover) {
+        setHover(true)
+      }
+    }
     function handlePointerLeave(e) {
       e.stopPropagation();
-      yellowMaterial.color = new Color('yellow')
+      if (hover) {
+        setHover(false)
+      }
     }
 
     function handlePointerDown(e) {
       e.stopPropagation();
       if (open) {
         setOpen(false)
+        if (hover) {
+          setHover(false)
+        }
       } else {
         setOpen(true)
       }
     }
 
     return <group position={position} scale={scale}>
-      <mesh
-        material={yellowMaterial}
-      >
+      <mesh>
+        <meshStandardMaterial color={hover? 'green' : 'yellow'}/>
         <boxGeometry args={[2.1, 0.03, 0.55]}/>
       </mesh>
       <mesh>
@@ -505,6 +515,7 @@ export default function Game() {
         onPointerEnter={e => handlePointerEnter(e)}
         onPointerLeave={e => handlePointerLeave(e)}
         onPointerDown={e => handlePointerDown(e)}
+        onPointerMove={e => handlePointerMove(e)}
       >
         <boxGeometry args={[1.2, 0.1, 0.6]}/>
         <meshStandardMaterial transparent opacity={0}/>
@@ -515,8 +526,8 @@ export default function Game() {
         rotation={layout[device].game.settings.mainButton.text.rotation}
         size={layout[device].game.settings.mainButton.text.size}
         height={layout[device].game.settings.mainButton.text.height}
-        material={yellowMaterial}
       >
+        <meshStandardMaterial color={hover? 'green' : 'yellow'}/>
         Settings
       </Text3D>
       {/* display different panes based on user state (spectator/player) */}

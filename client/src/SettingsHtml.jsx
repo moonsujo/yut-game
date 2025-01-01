@@ -1,10 +1,13 @@
 import { Html } from "@react-three/drei";
 import { useRef, useState } from "react";
-import { useAtomValue } from "jotai";
-import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 import layout from './layout'
 
+// global state
+// audio
+// language
 export default function SettingsHtml(props) {
   // #region state setters and getters
   const device = useAtomValue(deviceAtom)
@@ -12,6 +15,7 @@ export default function SettingsHtml(props) {
   const host = useAtomValue(hostAtom)
 
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
+  const setSettingsOpen = useSetAtom(settingsOpenAtom)
   // edit players
   const [editGuestsOpen, setEditGuestsOpen] = useState(false)
   const [guestBeingEditted, setGuestBeingEditted] = useState(null)
@@ -104,6 +108,7 @@ export default function SettingsHtml(props) {
       setHover(false)
     }
     function handleMouseUp() {
+      setSettingsOpen(false)
       setMainMenuOpen(false)
       setEditGuestsOpen(false)
       setEditAGuestOpen(false)

@@ -102,7 +102,10 @@ export const SocketManager = () => {
 
     socket.connect();
 
-    socket.on('connect', () => {})
+    socket.on('connect', () => {
+      // joinRoom sent first
+      console.log('[SocketManager] connect') // runs on complete
+    })
     
     socket.on('connect_error', err => { 
       setDisconnect(true) 
