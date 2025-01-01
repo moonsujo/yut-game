@@ -4,6 +4,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 import layout from './layout'
+import { socket } from "./SocketManager";
+import { useParams } from "wouter";
 
 // global state
 // audio
@@ -13,6 +15,7 @@ export default function SettingsHtml(props) {
   const device = useAtomValue(deviceAtom)
   const client = useAtomValue(clientAtom)
   const host = useAtomValue(hostAtom)
+  const params = useParams()
 
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
   const setSettingsOpen = useSetAtom(settingsOpenAtom)
@@ -352,6 +355,7 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         // set player as away (skip to next player when he's chosen)
+        socket.emit('setAwayHost', { roomId: params.id.toUpperCase(), hostId: client._id });
       }
       return <button 
         onMouseEnter={handleMouseEnter}

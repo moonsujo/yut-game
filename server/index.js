@@ -32,7 +32,7 @@ async function connectMongo() {
 const userSchema = new mongoose.Schema(
   {
     socketId: String,
-    roomId: String,
+    roomId: String, // shortId
     name: String,
     team: Number,
     connectedToRoom: Boolean,
@@ -125,7 +125,10 @@ const roomSchema = new mongoose.Schema(
       ]
     ],
     results: [Number],
-    serverEvent: String,
+    serverEvent: {
+      name: String,
+      content: Object
+    },
     lastJoinedUser: {
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'users'
@@ -181,6 +184,7 @@ async function addUser(socket, name) {
       }
     }
     console.log('[addUser] user', user)
+    socket.user = user;
   } catch (err) {
     console.log('[addUser]', err)
     return null
@@ -194,6 +198,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     // Emit document to all clients in the room
     let users = data.fullDocument.spectators.concat(data.fullDocument.teams[0].players.concat(data.fullDocument.teams[1].players))
     // console.log(`[Room.watch] users`, users)
+    // bottleneck. how can i grab documents from within the room?
     let roomPopulated = await Room.findOne({ shortId: data.fullDocument.shortId })
     .populate('spectators')
     .populate('host')
@@ -287,6 +292,10 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gamePhase: roomPopulated.gamePhase,
               host: roomPopulated.host
             })
+          } else if (serverEvent.name === 'setAway') {
+            io.to(userSocketId).emit("setAway", { 
+              player: serverEvent.content
+            })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -313,13 +322,15 @@ async function createUniqueRoomId() {
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
+  socket.user = null;
+  socket.room = {};
 
-  // Create user
-  let name = makeId(5)
-  addUser(socket, name)
-  console.log(`[connect] added user with socket ${socket.id}`)
-  // save user into a variable
-  // if addUser failed, disconnect and alert client
+  socket.on("addUser", async ({}, callback) => {
+    console.log('[addUser]')
+    let name = makeId(5)
+    addUser(socket, name)
+    return callback()
+  })
 
   socket.on("createRoom", async ({}, callback) => {
     console.log('[createRoom]')
@@ -361,7 +372,7 @@ io.on("connect", async (socket) => {
         ],
         messages: [],
         gameLogs: [],
-        host: user._id,
+        host: null,
         gamePhase: 'lobby',
         turn: {
           team: -1,
@@ -466,15 +477,10 @@ io.on("connect", async (socket) => {
   socket.on("joinRoom", async ({ roomId }) => {
     console.log('[joinRoom] roomId', roomId)
     try {
-      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { connectedToRoom: true })
+      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { roomId, connectedToRoom: true })
       console.log('[joinRoom] user', user)
-      
-      let room = await Room.findOne({ shortId: roomId }).exec()
-      if (!room) {
-        throw new Error(`room with id ${roomId} not found`)
-      }
+
       let operation = {}
-      
       if (user && user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
         if (user.team === -1) { // if spectator
           operation['$addToSet'] = { "spectators": user._id }
@@ -497,11 +503,7 @@ io.on("connect", async (socket) => {
         }
         user.name = makeId(5);
         user.team = -1
-      }
-      user.roomId = room.shortId
-      user.save()
-      if (room.host === null) {
-        operation['host'] = user._id
+        user.save();
       }
       await Room.findOneAndUpdate( { shortId: roomId }, operation )
     } catch (err) {
@@ -515,10 +517,19 @@ io.on("connect", async (socket) => {
       if (!room) {
         throw new Error(`room with id ${roomId} not found`)
       }
+      if (!user) {
+        throw new Error(`user with socket id ${socket.id} not found`)
+      }
       if (room.host === null) {
         room.host = user._id
         room.save()
       }
+      socket.user = user;
+      socket.room.host = room.host;
+      socket.room.players = []
+      socket.room.players.push(JSON.parse(JSON.stringify(room.teams[0].players)))
+      socket.room.players.push(JSON.parse(JSON.stringify(room.teams[1].players)))
+      socket.room.spectators = JSON.parse(JSON.stringify(room.spectators))
     } catch (err) {
       console.log(`[joinRoom] error adding user as host`, err)
     }
@@ -1286,6 +1297,7 @@ io.on("connect", async (socket) => {
       )
 
       console.log(`[disconnectFromRoom] user to disconnect from room`, user)
+      socket.room = null;
     } catch (err) {
       console.log(`[disconnectFromRoom] error disconnecting user from room`, err)
     }
@@ -1297,6 +1309,9 @@ io.on("connect", async (socket) => {
 
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
 
+      if (!user) {
+        throw new Error(`user with socket id ${socket.id} not found`)
+      }
       await Room.updateOne(
         { 
           shortId: user.roomId
@@ -1309,38 +1324,52 @@ io.on("connect", async (socket) => {
       )
 
       console.log(`[disconnect] user to disconnect from room`, user)
-      // if (user && user.roomId) {
-      //   console.log(`[disconnect] room not null`, user.roomId)
-        // let roomId = user.roomId
-        // await removeUser(user)
-
-        // Remove host if it was the user
-        // Assign another user in the room
-        // let updatedRoom = await Room.findById(roomId).exec()
-        // let hostId = updatedRoom.host
-        // console.log(`[disconnect] hostId`, hostId)
-        // let userCount = updatedRoom.spectators.length + updatedRoom.teams[0].players.length + updatedRoom.teams[1].players.length
-        // if (hostId) {
-        //   if (user._id.valueOf() === hostId.valueOf() && userCount > 0) {
-        //     updatedRoom.host = await User.findOne({ 'roomId': roomId })
-        //     updatedRoom.save();
-        //   } else if (userCount === 0) { // Remove host
-        //     updatedRoom.host = null
-        //     updatedRoom.save();
-        //   }
-        // }
-      // }
     } catch (err) {
       console.log(`[disconnect] error deleting user`, err)
     }
   });
 
-  socket.on('setAway', async ({ roomId, hostId, userId }) => {
-    // if hostId was provided
-      // check if hostId matches the one from the room
-      // set away for given userId
-    // else
-      // set away for user matching socket id (not using hostId or userId)
+  // doubles as 'returned' toggle
+  socket.on('setAwayHost', async ({ roomId, hostId, userId }) => {
+    // check if hostId matches the one from the room
+    // set away for given userId
+    console.log('[setAwayHost]')
+    console.log(`[setAwayHost] hostId from event ${hostId}, hostId from socket ${socket.room.host._id}`)
+    try {
+      if (hostId !== socket.room.host._id.valueOf()) {
+        throw new Error('host id from event does not match the host id from the room')
+      }
+
+      User.findOneAndUpdate({ _id: userId, roomId: roomId }, {
+        status: 'away'
+      })
+      // set event in room
+      // emit player that changed in change stream
+
+      await Room.updateOne(
+        { 
+          shortId: roomId
+        }, 
+        {
+          $set: {
+            'serverEvent': {
+              'name': 'setAway',
+              'content': {
+                'team': 0, // 0 or 1, can only be a player
+                'playerIndex': 0,
+                'status': '' // playing, or away
+              }
+            }
+          } 
+        }
+      )
+    } catch (err) {
+      console.log(`[setAwayHost] error setting away for player from host`, err)
+    }
+  })
+
+  socket.on('setAway', async ({ roomId, userId }) => {
+    // set away for user matching socket id (not using hostId or userId)
   })
 
   // teamId: -1 for spectator, 0 for rockets, 1 for ufo
@@ -1359,7 +1388,9 @@ io.on("connect", async (socket) => {
 
   socket.on('kick', async ({ roomId, hostId, userId }) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
+    // check if user is connected to the room
     // remove player from player list (team0, team1 or spectators)
+    // set player's room to null
     // set 'connectedToRoom' to 'false' on player
   })
 

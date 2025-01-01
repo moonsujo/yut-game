@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { io } from "socket.io-client";
 
@@ -12,7 +12,8 @@ import {
   alertsAtom,
   catchOutcomeAtom,
   pieceAnimationPlayingAtom,
-  catchPathAtom} from "./GlobalState.jsx";
+  catchPathAtom,
+  connectedToServerAtom} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -20,6 +21,7 @@ import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
+import { useParams } from "wouter";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -97,6 +99,7 @@ export const SocketManager = () => {
   ] 
 
   const [playMusic] = useMusicPlayer();
+  const setConnectedToServer = useSetAtom(connectedToServerAtom)
 
   useEffect(() => {
 
@@ -105,6 +108,7 @@ export const SocketManager = () => {
     socket.on('connect', () => {
       // joinRoom sent first
       console.log('[SocketManager] connect') // runs on complete
+      setConnectedToServer(true)
     })
     
     socket.on('connect_error', err => { 
@@ -574,12 +578,17 @@ export const SocketManager = () => {
       setParticleSetting(null)
     })
 
+    socket.on("setAway", ({ player }) => {
+      // player.team, player.index, player.status
+      console.log('[setAway] player', player)
+    })
+
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       setSpectators(spectators)
       setTeams(teams);
       setHost(host);
       
-      findAndStoreClient(spectators, teams)
+      // findAndStoreClient(spectators, teams)
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
@@ -592,11 +601,13 @@ export const SocketManager = () => {
     })
 
     socket.on('disconnect', () => {
+      console.log('[SocketManager][disconnect]') // runs on component unmount
       setDisconnect(true);
     })
 
     return () => {
       socket.disconnect()
+      console.log('[SocketManager][useEffect][disconnected]')
 
       socket.off();
     }

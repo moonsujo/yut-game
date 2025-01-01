@@ -209,13 +209,15 @@ export default function Home2() {
       setHover(false)
     }
 
-    function handlePointerDown(e) {
+    function handlePointerUp(e) {
       e.stopPropagation();
+      console.log('[Home2] calling createRoom')
       socket.emit('createRoom', { hostId: client._id }, ({ shortId }) => {
         setLocation(`/${shortId}`)
       })
+
       const audio = new Audio('sounds/effects/boot-up.mp3');
-      audio.volume=0.3;
+      audio.volume = 0.3;
       audio.play();
     }
 
@@ -232,7 +234,7 @@ export default function Home2() {
         name='wrapper' 
         onPointerEnter={e => handlePointerEnter(e)}
         onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
+        onPointerUp={e => handlePointerUp(e)}
       >
         <boxGeometry args={[2.85, 0.1, 0.55]}/>
         <meshStandardMaterial transparent opacity={0}/>

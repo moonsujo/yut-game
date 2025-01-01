@@ -1,6 +1,6 @@
 // js
 import React, { useEffect, useRef, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import layout from "./layout.js";
 import { useSpring, animated } from '@react-spring/three';
 
@@ -35,6 +35,7 @@ import {
   teamsAtom,
   hasTurnAtom,
   settingsOpenAtom,
+  connectedToServerAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -78,14 +79,25 @@ export default function Game() {
   const [yootAnimation] = useAtom(yootAnimationAtom);
   
   const params = useParams();
+  const connectedToServer = useAtomValue(connectedToServerAtom)
 
   useEffect(() => {
-    socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
+    // socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
     return (() => {
       // remove player from room (grey text)
       socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
     })
   }, [])
+
+  useEffect(() => {
+    if (connectedToServer) {
+      console.log('[Game] calling addUser')
+      socket.emit('addUser', {}, () => {
+        console.log('add user callback, roomId:', params.id)
+        socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
+      })
+    }
+  }, [connectedToServer])
 
   function LetsPlayButton({ position }) {
 
