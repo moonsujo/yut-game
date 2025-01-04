@@ -1338,9 +1338,9 @@ export default {
           rotation: [-Math.PI/2, 0, 0]
         },
         editGuests: {
-          position: [-5.0, 0, -1.0],
+          position: [-5.5, 0, -1.0],
           rotation: [-Math.PI/2, 0, 0],
-          containerWidth: '300px'
+          containerWidth: '350px'
         },
         editAGuest: {
           position: [-5.5, 0, -1.0],

@@ -193,6 +193,7 @@ async function addUser(socket, name) {
 
 // Room stream listener
 Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
+  console.log(`[Room.watch]`)
   // console.log(`[Room.watch] data`, data)
   if (data.operationType === 'insert' || data.operationType === 'update') {
     // Emit document to all clients in the room
@@ -1330,19 +1331,21 @@ io.on("connect", async (socket) => {
   });
 
   // doubles as 'returned' toggle
-  socket.on('setAwayHost', async ({ roomId, hostId, userId }) => {
+  // status: string
+  socket.on('setAwayHost', async ({ roomId, hostId, name: username, team, status }) => {
     // check if hostId matches the one from the room
     // set away for given userId
-    console.log('[setAwayHost]')
+    console.log('[setAwayHost] status', status)
     console.log(`[setAwayHost] hostId from event ${hostId}, hostId from socket ${socket.room.host._id}`)
     try {
       if (hostId !== socket.room.host._id.valueOf()) {
         throw new Error('host id from event does not match the host id from the room')
       }
+      else if (team !== 0 || team !== 1) {
+        throw new Error('cannot set away for spectator')
+      }
 
-      User.findOneAndUpdate({ _id: userId, roomId: roomId }, {
-        status: 'away'
-      })
+      User.findOneAndUpdate({ name: username, roomId: roomId }, { status })
       // set event in room
       // emit player that changed in change stream
 
@@ -1355,9 +1358,9 @@ io.on("connect", async (socket) => {
             'serverEvent': {
               'name': 'setAway',
               'content': {
-                'team': 0, // 0 or 1, can only be a player
-                'playerIndex': 0,
-                'status': '' // playing, or away
+                'team': team, // 0 or 1, can only be a player
+                'name': username,
+                'status': status // playing, or away
               }
             }
           } 

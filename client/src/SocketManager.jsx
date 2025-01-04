@@ -131,7 +131,6 @@ export const SocketManager = () => {
     }
 
     socket.on('room', (room) => {
-
       setMessages(room.messages)
       setTeams(room.teams)
       setSpectators(room.spectators)
@@ -579,8 +578,19 @@ export const SocketManager = () => {
     })
 
     socket.on("setAway", ({ player }) => {
-      // player.team, player.index, player.status
-      console.log('[setAway] player', player)
+      setTeams((teams) => {
+        console.log('[setAway] teams', teams) // prints mutated value, the same one as 'newTeams'
+        const newTeams = [...teams] // make shallow copy
+        const newPlayers = [...newTeams[player.team].players]; // make shallow copy of nested array
+        const awayPlayerIndex = newPlayers.findIndex((currentPlayer) => currentPlayer.name === player.name)
+        newPlayers[awayPlayerIndex].status = player.status
+        newTeams[player.team] = {
+          ...newTeams[player.team],
+          players: newPlayers
+        }
+        console.log('[setAway] newTeams', newTeams)
+        return newTeams;
+      })
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {

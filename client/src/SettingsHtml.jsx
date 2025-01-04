@@ -150,8 +150,8 @@ export default function SettingsHtml(props) {
     const guests = [] // includes host (and you)
 
     // -1 team: spectator
-    function formatGuest({ name, connectionState, isHost, isYou, team }) {
-      return { name, connectionState, isHost, isYou, team }
+    function formatGuest({ name, connectionState, isHost, isYou, team, status }) {
+      return { name, connectionState, isHost, isYou, team, status }
     }
     if (client.socketId === host.socketId) {
       guests.push(formatGuest({ 
@@ -159,7 +159,8 @@ export default function SettingsHtml(props) {
         connectionState: client.connectedToRoom,
         isYou: true,
         isHost: true,
-        team: client.team
+        team: client.team,
+        status: client.status
       })) // 'host, you'
     } else {
       guests.push(formatGuest({
@@ -167,14 +168,16 @@ export default function SettingsHtml(props) {
         connectionState: client.connectedToRoom,
         isYou: true,
         isHost: false,
-        team: client.team
+        team: client.team,
+        status: client.status
       })) // 'you'
       guests.push(formatGuest({
         name: host.name,
         connectionState: host.connectedToRoom,
         isYou: false,
         isHost: true,
-        team: host.team
+        team: host.team,
+        status: host.status
       })) // 'host'
     }
     for (let teamId = 0; teamId < 2; teamId++) {
@@ -185,7 +188,8 @@ export default function SettingsHtml(props) {
             connectionState: player.connectedToRoom,
             isYou: false,
             isHost: false,
-            team: player.team
+            team: player.team,
+            status: player.status
           }))
         }
       }
@@ -197,7 +201,8 @@ export default function SettingsHtml(props) {
           connectionState: spectator.connectedToRoom,
           isYou: false,
           isHost: false,
-          team: spectator.team
+          team: spectator.team,
+          status: spectator.status
         }))
       }
     }
@@ -312,6 +317,7 @@ export default function SettingsHtml(props) {
                 margin: '5px'
               }}>
                 {formatName(value.name)}
+                {value.status === 'away' && ' (AWAY)'}
               </p>
               { value.isYou && !value.isHost && <p style={{
                 fontFamily: 'Luckiest Guy',
@@ -355,7 +361,13 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         // set player as away (skip to next player when he's chosen)
-        socket.emit('setAwayHost', { roomId: params.id.toUpperCase(), hostId: client._id });
+        socket.emit('setAwayHost', { 
+          roomId: params.id.toUpperCase(), 
+          hostId: client._id, 
+          name: guestBeingEditted.name, 
+          team: guestBeingEditted.team, 
+          status: guestBeingEditted.status === 'away' ? 'playing' : 'away' 
+        });
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -910,6 +922,7 @@ export default function SettingsHtml(props) {
                 margin: '5px'
               }}>
                 {formatName(value.name)}
+                {value.status === 'away' && ' (AWAY)'}
               </p>
               { value.isYou && !value.isHost && <p style={{
                 fontFamily: 'Luckiest Guy',
