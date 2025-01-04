@@ -606,7 +606,9 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // reset game
+        socket.emit('reset', { roomId: params.id.toUpperCase() })
+        setSettingsOpen(false)
+        setMainMenuOpen(false)
       }
 
       return <button 

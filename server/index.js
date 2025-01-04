@@ -280,12 +280,13 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turn: roomPopulated.turn // to set the throw count for the current team
             })
           } else if (serverEvent === "reset") {
-            io.to(userSocketId).emit("reset", {
-              gamePhase: roomPopulated.gamePhase,
-              tiles: roomPopulated.tiles,
-              turn: roomPopulated.turn,
-              teams: roomPopulated.teams,
-            })
+            // io.to(userSocketId).emit("reset", {
+            //   gamePhase: roomPopulated.gamePhase,
+            //   tiles: roomPopulated.tiles,
+            //   turn: roomPopulated.turn,
+            //   teams: roomPopulated.teams,
+            // })
+            io.to(userSocketId).emit("reset");
           } else if (serverEvent === 'userDisconnect') {
             io.to(userSocketId).emit("userDisconnect", { 
               spectators: roomPopulated.spectators,

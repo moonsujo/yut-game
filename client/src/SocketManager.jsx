@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
+import { useAtom, useSetAtom } from "jotai";
 
 import { io } from "socket.io-client";
 
@@ -21,7 +21,7 @@ import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
-import { useParams } from "wouter";
+import initialState from "../initialState.js";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -41,7 +41,7 @@ export const socket = io(
 // doesn't work when another app is running on the same port
 export const SocketManager = () => {
   const [_client, setClient] = useAtom(clientAtom);
-  const [_teams, setTeams] = useAtom(teamsAtom)
+  const [teams, setTeams] = useAtom(teamsAtom)
   const [_turn, setTurn] = useAtom(turnAtom);
   const [_room] = useAtom(roomAtom);
   const [_messages, setMessages] = useAtom(messagesAtom);
@@ -552,29 +552,45 @@ export const SocketManager = () => {
         }
     })
 
-    socket.on("reset", ({ gamePhase, tiles, turn, teams }) => {
-      setGamePhase(gamePhase);
-      setTiles(tiles);
-      setTurn(turn);
-      setTeams(teams);
-      setPieceTeam0Id0(teams[0].pieces[0])
-      setPieceTeam0Id1(teams[0].pieces[1])
-      setPieceTeam0Id2(teams[0].pieces[2])
-      setPieceTeam0Id3(teams[0].pieces[3])
-      setPieceTeam1Id0(teams[1].pieces[0])
-      setPieceTeam1Id1(teams[1].pieces[1])
-      setPieceTeam1Id2(teams[1].pieces[2])
-      setPieceTeam1Id3(teams[1].pieces[3])
-      
-      if (teams[0].players.length > 0 && 
-        teams[1].players.length > 0 &&
-        allPlayersConnected(teams)) {
-          setReadyToStart(true)
-        } else {
-          setReadyToStart(false)
-        }
+    socket.on("reset", () => {
+      setGamePhase('lobby');
+      setTiles(initialState.initialTiles);
+      setTurn(initialState.initialTurn);
+      setLegalTiles({})
+      setSelection(null)
 
-      setParticleSetting(null)
+      console.log('[reset] teams[0].players', teams[0].players)
+      setTeams((teams) => {
+        console.log('[reset][setTeams] teams', teams)
+        const newTeams = [...teams] // make shallow copy
+        newTeams[0].pieces = JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces))
+        newTeams[0].throws = 0
+        newTeams[0].moves = JSON.parse(JSON.stringify(initialState.initialTeams[0].moves)),
+        newTeams[0].pregameRoll = null
+        newTeams[1].pieces = JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces))
+        newTeams[1].throws = 0
+        newTeams[1].moves = JSON.parse(JSON.stringify(initialState.initialTeams[1].moves)),
+        newTeams[1].pregameRoll = null
+        
+        if (teams[0].players.length > 0 && 
+          teams[1].players.length > 0 &&
+          allPlayersConnected(teams)) {
+            setReadyToStart(true)
+          } else {
+            setReadyToStart(false)
+          }
+
+        return newTeams;
+      })
+
+      setPieceTeam0Id0(JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[0])))
+      setPieceTeam0Id1(JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[1])))
+      setPieceTeam0Id2(JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[2])))
+      setPieceTeam0Id3(JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[3])))
+      setPieceTeam1Id0(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[0])))
+      setPieceTeam1Id1(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[1])))
+      setPieceTeam1Id2(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[2])))
+      setPieceTeam1Id3(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[3])))
     })
 
     socket.on("setAway", ({ player }) => {

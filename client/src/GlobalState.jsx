@@ -19,11 +19,11 @@ export const disconnectAtom = atom(false)
 export const gamePhaseAtom = atom('lobby'); // lobby, pregame, game, winner
 export const readyToStartAtom = atom(false);
 export const currentPlayerAtom = atom(false)
-export const turnAtom = atom(JSON.parse(JSON.stringify(initialState.turn)));
+export const turnAtom = atom(JSON.parse(JSON.stringify(initialState.initialTurn)));
 export const yootActiveAtom = atom(false);
 export const spectatorsAtom = atom([])
 export const clientAtom = atom({})
-export const teamsAtom = atom(JSON.parse(JSON.stringify(initialState.teams)))
+export const teamsAtom = atom(JSON.parse(JSON.stringify(initialState.initialTeams)))
 export const messagesAtom = atom([]);
 export const gameLogsAtom = atom([]);
 export const roomAtom = atom({})
@@ -82,21 +82,6 @@ export const timerOnAtom = atom(true)
 export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
 
-// array comparison helper
-// function areEqualArrays(array0, array1) {
-//   if (array0.length !== array1.length) {
-//     return false;
-//   }
-
-//   for (let i = 0; i < array0.length; i++) {
-//     if (array0[i] !== array1[i]) {
-//       return false;
-//     }
-//   }
-
-//   return true;
-// }
-
 const deepPieceEquals = (prev, next) => {
   let result;
   if (prev.tile === next.tile) {
@@ -108,35 +93,35 @@ const deepPieceEquals = (prev, next) => {
 }
 
 export const pieceTeam0Id0Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[0].pieces[0])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[0])),
   deepPieceEquals
 )
 export const pieceTeam0Id1Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[0].pieces[1])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[1])),
   deepPieceEquals
 )
 export const pieceTeam0Id2Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[0].pieces[2])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[2])),
   deepPieceEquals
 )
 export const pieceTeam0Id3Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[0].pieces[3])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces[3])),
   deepPieceEquals
 )
 export const pieceTeam1Id0Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[1].pieces[0])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[0])),
   deepPieceEquals
 )
 export const pieceTeam1Id1Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[1].pieces[1])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[1])),
   deepPieceEquals
 )
 export const pieceTeam1Id2Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[1].pieces[2])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[2])),
   deepPieceEquals
 )
 export const pieceTeam1Id3Atom = atomWithCompare(
-  JSON.parse(JSON.stringify(initialState.teams[1].pieces[3])),
+  JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[3])),
   deepPieceEquals
 )
 
