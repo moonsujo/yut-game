@@ -150,6 +150,7 @@ const User = mongoose.model('users', userSchema)
 const Room = mongoose.model('rooms', roomSchema)
 
 async function addUser(socket, name) {
+  console.log('[addUser] name', name)
   try {
     let user;
     if (socket.handshake.query.client === "null") { // Use saved client
@@ -338,6 +339,18 @@ async function createUniqueRoomId() {
   return roomId;
 }
 
+async function createUniqueUsername() {
+  let name;
+  let exists = true;
+  let idLength = 5;
+  while (exists) {
+    name = makeId(idLength)
+    exists = await User.findOne({ name }).exec(); // Check for collisions
+  }
+  console.log('[createUniqueUsername] name', name)
+  return name;
+}
+
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -347,7 +360,7 @@ io.on("connect", async (socket) => {
 
   socket.on("addUser", async ({}, callback) => {
     console.log('[addUser]')
-    let name = makeId(5)
+    let name = await createUniqueUsername()
     addUser(socket, name)
     return callback()
   })
@@ -1475,7 +1488,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on("kick", async ({ roomId, clientId, userId, team, name }) => {
+  socket.on("kick", async ({ roomId, clientId, team, name }) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
     // check if user is connected to the room
     // remove player from player list (team0, team1 or spectators)
@@ -1494,8 +1507,8 @@ io.on("connect", async (socket) => {
       // Remove the user from the room
       let operation = {}
       operation['$pullAll'] = { 
-        [`spectators`]: [{ _id: userId }],
-        [`teams.${team}.players`]: [{ _id: userId }],
+        [`spectators`]: [{ _id: user._id }],
+        [`teams.${team}.players`]: [{ _id: user._id }],
       }
       
       operation['$set'] = { 

@@ -482,7 +482,6 @@ export default function SettingsHtml(props) {
         socket.emit('kick', { 
           roomId: params.id,
           clientId: client._id,
-          userId: guestBeingEditted._id,
           team: guestBeingEditted.team,
           name: guestBeingEditted.name,
         })
