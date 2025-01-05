@@ -13,7 +13,8 @@ import {
   catchOutcomeAtom,
   pieceAnimationPlayingAtom,
   catchPathAtom,
-  connectedToServerAtom} from "./GlobalState.jsx";
+  connectedToServerAtom,
+  settingsOpenAtom} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -100,6 +101,7 @@ export const SocketManager = () => {
 
   const [playMusic] = useMusicPlayer();
   const setConnectedToServer = useSetAtom(connectedToServerAtom)
+  const setSettingsOpen = useSetAtom(settingsOpenAtom);
 
   useEffect(() => {
 
@@ -609,6 +611,41 @@ export const SocketManager = () => {
       })
     })
 
+    socket.on("setTeam", ({ user, prevTeam }) => {
+      console.log('[setTeam] user', user)
+      setSpectators((spectators) => {
+        const newSpectators = [...spectators]
+        if (prevTeam === -1) {
+          const changingSpectatorIndex = newSpectators.findIndex((spectator) => spectator.name === user.name)
+          newSpectators.splice(changingSpectatorIndex, 1);
+        } else if (prevTeam === 0 || prevTeam === 1) {
+          newSpectators.push(user);
+        }
+        return newSpectators
+      })
+      setTeams((teams) => {
+        const newTeams = [...teams]
+        if (prevTeam === -1) { // add to a team
+          const newPlayers = [...newTeams[user.team].players];
+          newPlayers.push(user)
+          newTeams[user.team] = {
+            ...newTeams[user.team],
+            players: newPlayers
+          }
+        } else if (prevTeam === 0 || prevTeam === 1) { // remove from a team
+          const newPlayers = [...newTeams[prevTeam].players];
+          const changingPlayerIndex = newPlayers.findIndex((player) => player.name === user.name)
+          newPlayers.splice(changingPlayerIndex, 1);
+
+          newTeams[prevTeam] = {
+            ...newTeams[prevTeam],
+            players: newPlayers
+          }
+        }
+        return newTeams
+      })
+    })
+
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       setSpectators(spectators)
       setTeams(teams);
@@ -628,6 +665,7 @@ export const SocketManager = () => {
 
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount
+      setSettingsOpen(false)
       setDisconnect(true);
     })
 

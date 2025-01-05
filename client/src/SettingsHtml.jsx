@@ -399,6 +399,13 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         // set player to spectator
+        socket.emit('setTeam', ({
+          roomId: params.id.toUpperCase(),
+          hostId: host._id,
+          name: guestBeingEditted.name,
+          currTeamId: guestBeingEditted.team,
+          newTeamId: -1
+        }))
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -491,7 +498,13 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // remove player from the room
+        socket.emit('setTeam', ({
+          roomId: params.id.toUpperCase(),
+          hostId: host._id,
+          name: guestBeingEditted.name,
+          currTeamId: guestBeingEditted.team,
+          newTeamId: 0
+        }))
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -522,7 +535,13 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // remove player from the room
+        socket.emit('setTeam', ({
+          roomId: params.id.toUpperCase(),
+          hostId: host._id,
+          name: guestBeingEditted.name,
+          currTeamId: guestBeingEditted.team,
+          newTeamId: 1
+        }))
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -642,7 +661,8 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // reset game
+        setResetGameOpen(false)
+        setMainMenuOpen(true)
       }
 
       return <button 

@@ -287,16 +287,22 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             //   teams: roomPopulated.teams,
             // })
             io.to(userSocketId).emit("reset");
-          } else if (serverEvent === 'userDisconnect') {
+          } else if (serverEvent === "userDisconnect") {
             io.to(userSocketId).emit("userDisconnect", { 
               spectators: roomPopulated.spectators,
               teams: roomPopulated.teams,
               gamePhase: roomPopulated.gamePhase,
               host: roomPopulated.host
             })
-          } else if (serverEvent.name === 'setAway') {
+          } else if (serverEvent.name === "setAway") {
             io.to(userSocketId).emit("setAway", { 
               player: serverEvent.content
+            })
+          } else if (serverEvent.name === "setTeam") {
+            console.log('[change stream][setTeam]')
+            io.to(userSocketId).emit("setTeam", { 
+              user: serverEvent.content.user,
+              prevTeam: serverEvent.content.prevTeam
             })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
@@ -1346,7 +1352,7 @@ io.on("connect", async (socket) => {
         throw new Error('cannot set away for spectator')
       }
 
-      User.findOneAndUpdate({ name: username, roomId: roomId }, { status })
+      await User.findOneAndUpdate({ name: username, roomId: roomId }, { status })
       // set event in room
       // emit player that changed in change stream
 
@@ -1377,10 +1383,61 @@ io.on("connect", async (socket) => {
   })
 
   // teamId: -1 for spectator, 0 for rockets, 1 for ufo
-  socket.on('setTeam', async ({ roomId, hostId, userId, teamId }) => {
-    // check client is the host of the room // findOneAndUpdate (roomId, newValues)
-    // check user is a spectator
-    // set user's team to teamId
+  socket.on('setTeam', async ({ roomId, hostId, name, currTeamId, newTeamId }) => {
+    console.log('[setTeam]')
+    try {
+      if (hostId !== socket.room.host._id.valueOf()) {
+        throw new Error('host id from event does not match the host id from the room')
+      }
+      else if (newTeamId !== -1 && newTeamId !== 0 && newTeamId !== 1) {
+        throw new Error('unexpected teamId')
+      } else if (newTeamId === -1) {
+        console.log('[setTeam] player to spectator, roomId', roomId, 'hostId', hostId, 'name', name, 'currTeamId', currTeamId, 'newTeamId', newTeamId)
+        // switching into spectator
+        const user = await User.findOneAndUpdate({ name, roomId }, { team: newTeamId }, { new: true })
+        console.log('[setTeam] user assigned on update', user)
+
+        let operation = {}
+        operation['$pullAll'] = { 
+          [`teams.${currTeamId}.players`]: [{ _id: user._id }] 
+        }
+        operation['$addToSet'] = { [`spectators`]: user._id }
+        operation['$set'] = { 
+          'serverEvent': {
+            'name': 'setTeam',
+            'content': {
+              user,
+              prevTeam: currTeamId
+            }
+          }
+        }
+        
+        await Room.findOneAndUpdate({ shortId: roomId }, operation )
+      } else if (newTeamId === 0 || newTeamId === 1) {
+        console.log('[setTeam] spectator to player')
+        // switching to a team
+        const user = await User.findOneAndUpdate({ name, roomId }, { team: newTeamId }, { new: true })
+  
+        let operation = {}
+        operation['$pullAll'] = { 
+          [`spectators`]: [{ _id: user._id }] 
+        }
+        operation['$addToSet'] = { [`teams.${newTeamId}.players`]: user._id }
+        operation['$set'] = { 
+          'serverEvent': {
+            'name': 'setTeam',
+            'content': {
+              user,
+              prevTeam: currTeamId
+            }
+          }
+        }
+        
+        await Room.findOneAndUpdate({ shortId: roomId }, operation )
+      }
+    } catch (err) {
+      console.log(`[setTeam] error setting away for player from host`, err)
+    }
   })
 
   socket.on('assignHost', async ({ roomId, hostId, userId }) => {
