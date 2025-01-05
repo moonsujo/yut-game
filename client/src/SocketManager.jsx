@@ -23,6 +23,7 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import initialState from "../initialState.js";
+import { useLocation } from "wouter";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -102,6 +103,7 @@ export const SocketManager = () => {
   const [playMusic] = useMusicPlayer();
   const setConnectedToServer = useSetAtom(connectedToServerAtom)
   const setSettingsOpen = useSetAtom(settingsOpenAtom);
+  const [_location, setLocation] = useLocation();
 
   useEffect(() => {
 
@@ -675,6 +677,32 @@ export const SocketManager = () => {
       }
     })
 
+    socket.on("kick", ({ team, name }) => {
+      console.log('[kick]')
+      if (team === -1) {
+        // use the setter to access the latest state.
+        // if I use the one from the outside, players arrays are empty
+        setSpectators((spectators) => {
+          const newSpectators = [...spectators]
+          const changingSpectatorIndex = newSpectators.findIndex((spectator) => spectator.name === name)
+          newSpectators.splice(changingSpectatorIndex, 1);
+          return newSpectators
+        })
+      } else if (team === 0 || team === 1) {
+        setTeams((teams) => {
+          const newTeams = [...teams]
+          const newPlayers = [...newTeams[team].players];
+          const changingPlayerIndex = newPlayers.findIndex((player) => player.name === name)
+          newPlayers.splice(changingPlayerIndex, 1);
+          newTeams[team] = {
+            ...newTeams[team],
+            players: newPlayers
+          }
+          return newTeams
+        })
+      }
+    })
+
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       setSpectators(spectators)
       setTeams(teams);
@@ -690,6 +718,14 @@ export const SocketManager = () => {
         } else {
           setReadyToStart(false)
         }
+    })
+
+    
+    socket.on('kicked', () => {
+      setSettingsOpen(false)
+      setDisconnect(true);
+
+      localStorage.removeItem('yootGame')
     })
 
     socket.on('disconnect', () => {

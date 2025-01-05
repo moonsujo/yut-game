@@ -197,6 +197,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
   // console.log(`[Room.watch] data`, data)
   if (data.operationType === 'insert' || data.operationType === 'update') {
     // Emit document to all clients in the room
+    // instead of concatting everything, do it separately
+    // building array takes time
     let users = data.fullDocument.spectators.concat(data.fullDocument.teams[0].players.concat(data.fullDocument.teams[1].players))
     // console.log(`[Room.watch] users`, users)
     // bottleneck. how can i grab documents from within the room?
@@ -280,12 +282,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turn: roomPopulated.turn // to set the throw count for the current team
             })
           } else if (serverEvent === "reset") {
-            // io.to(userSocketId).emit("reset", {
-            //   gamePhase: roomPopulated.gamePhase,
-            //   tiles: roomPopulated.tiles,
-            //   turn: roomPopulated.turn,
-            //   teams: roomPopulated.teams,
-            // })
             io.to(userSocketId).emit("reset");
           } else if (serverEvent === "userDisconnect") {
             io.to(userSocketId).emit("userDisconnect", { 
@@ -309,6 +305,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             io.to(userSocketId).emit("assignHost", { 
               newHost: serverEvent.content
             })
+          } else if (serverEvent.name === "kick") {
+            io.to(userSocketId).emit("kick", { 
+              team: serverEvent.content.team,
+              name: serverEvent.content.name,
+            })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -316,6 +317,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
       } catch (err) {
         console.log(`[Room.watch] error getting user's socket id`, err)
       }
+    }
+    const serverEvent = data.fullDocument.serverEvent
+    if (serverEvent && serverEvent.name === 'kick') {
+      console.log('[change stream][kick] sending disconnect')
+      io.to(serverEvent.content.socketId).emit("kicked");
     }
   }
 })
@@ -1341,7 +1347,7 @@ io.on("connect", async (socket) => {
   // pass in client id from the client
   // check if it matches the hostId in the room
   // don't store objectId in the client
-  socket.on('setAwayHost', async ({ roomId, clientId, name: username, team, status }) => {
+  socket.on("setAwayHost", async ({ roomId, clientId, name: username, team, status }) => {
     // check if hostId matches the one from the room
     // set away for given userId
     console.log('[setAwayHost] status', status)
@@ -1379,12 +1385,12 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on('setAway', async ({ roomId, userId }) => {
+  socket.on("setAway", async ({ roomId, userId }) => {
     // set away for user matching socket id (not using hostId or userId)
   })
 
   // teamId: -1 for spectator, 0 for rockets, 1 for ufo
-  socket.on('setTeam', async ({ roomId, clientId, name, currTeamId, newTeamId }) => {
+  socket.on("setTeam", async ({ roomId, clientId, name, currTeamId, newTeamId }) => {
     console.log('[setTeam]')
     try {
       // additional call; will have to do this when I do authentication anyway
@@ -1445,7 +1451,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on('assignHost', async ({ roomId, clientId, userId, team, name }) => {
+  socket.on("assignHost", async ({ roomId, clientId, userId, team, name }) => {
     // check client is the host of the room // findOneAndUpdate (roomId, newValues)
     // check user is not the host of the room
     // set user as the host
@@ -1469,7 +1475,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on('kick', async ({ roomId, hostId, userId }) => {
+  socket.on("kick", async ({ roomId, clientId, userId, team, name }) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
     // check if user is connected to the room
     // remove player from player list (team0, team1 or spectators)
@@ -1477,11 +1483,35 @@ io.on("connect", async (socket) => {
     // set 'connectedToRoom' to 'false' on player
     console.log('[kick]')
     try {
-      if (!Room.findOne({ shortId: roomId, host: hostId })) {
+      // Check if client is the host of the room
+      if (!Room.findOne({ shortId: roomId, host: clientId })) {
         throw new Error('room with shortId', roomId, 'and hostId', hostId, 'not found')
       }
-    } catch (err) {
 
+      // Change user's 'connectedToRoom' state
+      const user = await User.findOneAndDelete({ name, roomId })
+  
+      // Remove the user from the room
+      let operation = {}
+      operation['$pullAll'] = { 
+        [`spectators`]: [{ _id: userId }],
+        [`teams.${team}.players`]: [{ _id: userId }],
+      }
+      
+      operation['$set'] = { 
+        'serverEvent': {
+          'name': 'kick',
+          'content': {
+            team,
+            name,
+            socketId: user.socketId
+          }
+        }
+      }
+      
+      await Room.findOneAndUpdate({ shortId: roomId }, operation )
+    } catch (err) {
+      console.log('[kick]', err)
     }
   })
 

@@ -479,7 +479,15 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // remove player from the room
+        socket.emit('kick', { 
+          roomId: params.id,
+          clientId: client._id,
+          userId: guestBeingEditted._id,
+          team: guestBeingEditted.team,
+          name: guestBeingEditted.name,
+        })
+        setEditAGuestOpen(false)
+        setEditGuestsOpen(true)
       }
       return <button 
         onMouseEnter={handleMouseEnter}
