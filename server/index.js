@@ -1360,21 +1360,30 @@ io.on("connect", async (socket) => {
   // pass in client id from the client
   // check if it matches the hostId in the room
   // don't store objectId in the client
-  socket.on("setAwayHost", async ({ roomId, clientId, name: username, team, status }) => {
-    // check if hostId matches the one from the room
-    // set away for given userId
-    console.log('[setAwayHost] status', status)
+  socket.on("setAway", async ({ roomId, clientId, name, team, status }) => {
+    
+    console.log('[setAway] status', status)
     try {
-      if (!Room.findOne({ shortId: roomId, host: clientId })) {
-        throw new Error('room with shortId', roomId, 'and hostId', clientId, 'not found')
-      }
-      else if (team !== 0 && team !== 1) {
+      const room = await Room.findOne({ shortId: roomId })
+      if (!room) {
+        throw new Error('room with shortId', roomId, 'not found')
+      } else if (team !== 0 && team !== 1) {
         throw new Error('cannot set away for spectator')
       }
 
-      await User.findOneAndUpdate({ name: username, roomId: roomId }, { status })
-      // set event in room
-      // emit player that changed in change stream
+
+      if (room.host._id.valueOf() !== clientId) {
+        const result = await User.findOneAndUpdate({ _id: clientId, roomId }, { status })
+        if (!result) {
+          throw new Error('failed update to user', clientId, 'in room', roomId)
+        }
+      } else {
+        // host edit
+        const result = await User.findOneAndUpdate({ name, roomId }, { status })
+        if (!result) {
+          throw new Error('failed update by host to user', name, 'in room', roomId)
+        }
+      }
 
       await Room.updateOne(
         { 
@@ -1386,15 +1395,16 @@ io.on("connect", async (socket) => {
               'name': 'setAway',
               'content': {
                 'team': team, // 0 or 1, can only be a player
-                'name': username,
+                'name': name,
                 'status': status // playing, or away
               }
             }
           } 
         }
       )
+      
     } catch (err) {
-      console.log(`[setAwayHost] error setting away for player from host`, err)
+      console.log(`[setAway] error setting away for player from host`, err)
     }
   })
 

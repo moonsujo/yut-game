@@ -611,6 +611,17 @@ export const SocketManager = () => {
         console.log('[setAway] newTeams', newTeams)
         return newTeams;
       })
+
+      setClient((client) => {
+        if (player.name === client.name && player.team === client.team) {
+          const newClient = {
+            ...client,
+            status: player.status
+          }
+          return newClient
+        }
+        return client
+      })
     })
 
     socket.on("setTeam", ({ user, prevTeam }) => {

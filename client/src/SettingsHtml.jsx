@@ -356,7 +356,7 @@ export default function SettingsHtml(props) {
     </group>
   }
   function EditAGuest() {
-    function SetAwayButton() {
+    function SetAwayHostButton() {
       const [hover, setHover] = useState(false);
       function handleMouseEnter() {
         setHover(true)
@@ -366,7 +366,7 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         // set player as away (skip to next player when he's chosen)
-        socket.emit('setAwayHost', { 
+        socket.emit('setAway', { 
           roomId: params.id.toUpperCase(), 
           clientId: client._id, 
           name: guestBeingEditted.name, 
@@ -391,7 +391,7 @@ export default function SettingsHtml(props) {
           fontFamily: 'Luckiest Guy',
           fontSize: '20px'
         }}>
-        SET AWAY
+        { guestBeingEditted.status === 'away' ? 'SET RETURNED' : 'SET AWAY' }
       </button>
     }
     function SetSpectatorButton() {
@@ -625,7 +625,7 @@ export default function SettingsHtml(props) {
           <AssignHostButton/>
           <KickButton/>
         </div> : <div className='player-buttons'>
-          <SetAwayButton/>
+          <SetAwayHostButton/>
           <SetSpectatorButton/>
           <AssignHostButton/>
           <KickButton/>
@@ -1822,6 +1822,7 @@ export default function SettingsHtml(props) {
         SET GAME RULES
       </button>
     }
+
     // for guest
     function ViewGuestsButton() {
       const [hover, setHover] = useState(false);
@@ -1994,6 +1995,45 @@ export default function SettingsHtml(props) {
         INVITE FRIENDS
       </button>
     }
+    function SetAwayButton() {
+      console.log('[SetAwayButton] client', client)
+      const [hover, setHover] = useState(false);
+      function handleMouseEnter() {
+        setHover(true)
+      }
+      function handleMouseOut() {
+        setHover(false)
+      }
+      function handleMouseUp() {
+        // set player as away (skip to next player when he's chosen)
+        socket.emit('setAway', { 
+          roomId: params.id.toUpperCase(), 
+          clientId: client._id, 
+          name: client.name,
+          team: client.team,
+          status: client.status !== 'away' ? 'away' : 'playing' 
+        });
+      }
+      return <button 
+        onMouseEnter={handleMouseEnter}
+        onMouseOut={handleMouseOut}
+        onMouseUp={handleMouseUp}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          backgroundColor: '#090F16',
+          margin: '3px',
+          border: `2px solid ${hover ? '#009E14' : '#F1EE92'}`,
+          borderRadius: '5px',
+          width: 'calc(100% - 6px)', // margin 3px both sides
+          padding: '5px',
+          color: hover ? '#009E14' : '#F1EE92',
+          fontFamily: 'Luckiest Guy',
+          fontSize: '20px'
+        }}>
+        { client.status !== 'away' ? 'SET AWAY' : 'SET RETURNED' }
+      </button>
+    }
 
     return <group name='main-menu'>
       <Html
@@ -2035,6 +2075,7 @@ export default function SettingsHtml(props) {
             { client.socketId === host.socketId && <SetGameRulesButton/> }
             { client.socketId !== host.socketId && <ViewGuestsButton/> }
             { client.socketId !== host.socketId && <ViewGameRulesButton/> }
+            { client.team !== -1 && <SetAwayButton/> }
             <AudioButton/>
             <LanguageButton/>
             <InviteFriendsButton/>
