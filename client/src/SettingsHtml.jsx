@@ -150,8 +150,8 @@ export default function SettingsHtml(props) {
     const guests = [] // includes host (and you)
 
     // -1 team: spectator
-    function formatGuest({ name, connectionState, isHost, isYou, team, status }) {
-      return { name, connectionState, isHost, isYou, team, status }
+    function formatGuest({ name, connectionState, isHost, isYou, team, status, _id }) {
+      return { name, connectionState, isHost, isYou, team, status, _id }
     }
     if (client.socketId === host.socketId) {
       guests.push(formatGuest({ 
@@ -160,7 +160,8 @@ export default function SettingsHtml(props) {
         isYou: true,
         isHost: true,
         team: client.team,
-        status: client.status
+        status: client.status,
+        _id: client._id
       })) // 'host, you'
     } else {
       guests.push(formatGuest({
@@ -169,7 +170,8 @@ export default function SettingsHtml(props) {
         isYou: true,
         isHost: false,
         team: client.team,
-        status: client.status
+        status: client.status,
+        _id: client._id
       })) // 'you'
       guests.push(formatGuest({
         name: host.name,
@@ -177,7 +179,8 @@ export default function SettingsHtml(props) {
         isYou: false,
         isHost: true,
         team: host.team,
-        status: host.status
+        status: host.status,
+        _id: host._id
       })) // 'host'
     }
     for (let teamId = 0; teamId < 2; teamId++) {
@@ -189,7 +192,8 @@ export default function SettingsHtml(props) {
             isYou: false,
             isHost: false,
             team: player.team,
-            status: player.status
+            status: player.status,
+            _id: player._id
           }))
         }
       }
@@ -202,7 +206,8 @@ export default function SettingsHtml(props) {
           isYou: false,
           isHost: false,
           team: spectator.team,
-          status: spectator.status
+          status: spectator.status,
+          _id: spectator._id
         }))
       }
     }
@@ -363,7 +368,7 @@ export default function SettingsHtml(props) {
         // set player as away (skip to next player when he's chosen)
         socket.emit('setAwayHost', { 
           roomId: params.id.toUpperCase(), 
-          hostId: client._id, 
+          clientId: client._id, 
           name: guestBeingEditted.name, 
           team: guestBeingEditted.team, 
           status: guestBeingEditted.status === 'away' ? 'playing' : 'away' 
@@ -401,7 +406,8 @@ export default function SettingsHtml(props) {
         // set player to spectator
         socket.emit('setTeam', ({
           roomId: params.id.toUpperCase(),
-          hostId: host._id,
+          clientId: client._id,
+          userId: guestBeingEditted._id,
           name: guestBeingEditted.name,
           currTeamId: guestBeingEditted.team,
           newTeamId: -1
@@ -436,7 +442,13 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        // assign player to host
+        socket.emit('assignHost', { 
+          roomId: params.id,
+          clientId: client._id,
+          userId: guestBeingEditted._id,
+          team: guestBeingEditted.team,
+          name: guestBeingEditted.name
+        })
       }
       return <button 
         onMouseEnter={handleMouseEnter}
@@ -500,7 +512,7 @@ export default function SettingsHtml(props) {
       function handleMouseUp() {
         socket.emit('setTeam', ({
           roomId: params.id.toUpperCase(),
-          hostId: host._id,
+          clientId: client._id,
           name: guestBeingEditted.name,
           currTeamId: guestBeingEditted.team,
           newTeamId: 0
@@ -537,7 +549,7 @@ export default function SettingsHtml(props) {
       function handleMouseUp() {
         socket.emit('setTeam', ({
           roomId: params.id.toUpperCase(),
-          hostId: host._id,
+          clientId: client._id,
           name: guestBeingEditted.name,
           currTeamId: guestBeingEditted.team,
           newTeamId: 1

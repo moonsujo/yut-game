@@ -148,7 +148,7 @@ export const SocketManager = () => {
 
       // Set host name for display
       if (room.host !== null) {
-          setHost(room.host)
+        setHost(room.host)
       }
 
       findAndStoreClient(room.spectators, room.teams);
@@ -612,6 +612,7 @@ export const SocketManager = () => {
     })
 
     socket.on("setTeam", ({ user, prevTeam }) => {
+      // set with new info from server; setState works weirdly in useEffect
       console.log('[setTeam] user', user)
       setSpectators((spectators) => {
         const newSpectators = [...spectators]
@@ -644,6 +645,34 @@ export const SocketManager = () => {
         }
         return newTeams
       })
+      if (user.socketId === socket.id) {
+        setClient(user)
+      }
+      setHost((host) => {
+        if (user.socketId === host.socketId) {
+          return user
+        }
+        return host
+      })
+    })
+
+    socket.on("assignHost", ({ newHost }) => {
+      console.log('[assignHost]')
+      if (newHost.team !== -1) {
+        // use the setter to access the latest state.
+        // if I use the one from the outside, players arrays are empty
+        setTeams((teams) => { 
+          const newHostIndex = teams[newHost.team].players.findIndex((player) => player.name === newHost.name)
+          setHost(JSON.parse(JSON.stringify(teams[newHost.team].players[newHostIndex])))
+          return teams
+        })
+      } else {
+        setSpectators((spectators) => { 
+          const newHostIndex = spectators.findIndex((spectator) => spectator.name === newHost.name)
+          setHost(JSON.parse(JSON.stringify(spectators[newHostIndex])))
+          return spectators
+        })
+      }
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
