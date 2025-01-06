@@ -1351,7 +1351,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0]
         },
         setGameRules: {
-          position: [-5, 0, -1.0],
+          position: [-5.8, 0, -1.0],
           rotation: [-Math.PI/2, 0, 0]
         },
         audio: {
@@ -2905,7 +2905,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0]
         },
         setGameRules: {
-          position: [-7.5, 0, -2.5],
+          position: [-8.6, 0, -2.5],
           rotation: [-Math.PI/2, 0, 0]
         },
         audio: {

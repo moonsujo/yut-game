@@ -6,7 +6,27 @@ import { io } from "socket.io-client";
 import { 
   pregameAlertAtom, 
   clientAtom, 
-  disconnectAtom, displayMovesAtom, gamePhaseAtom, hasTurnAtom, helperTilesAtom, hostAtom, initialYootThrowAtom, legalTilesAtom, messagesAtom, particleSettingAtom, pieceTeam0Id0Atom, pieceTeam0Id1Atom, pieceTeam0Id2Atom, pieceTeam0Id3Atom, pieceTeam1Id0Atom, pieceTeam1Id1Atom, pieceTeam1Id2Atom, pieceTeam1Id3Atom, readyToStartAtom, roomAtom, selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
+  disconnectAtom, 
+  displayMovesAtom, 
+  gamePhaseAtom, 
+  hasTurnAtom, 
+  helperTilesAtom, 
+  hostAtom, 
+  initialYootThrowAtom, 
+  legalTilesAtom, 
+  messagesAtom, 
+  particleSettingAtom, 
+  pieceTeam0Id0Atom, 
+  pieceTeam0Id1Atom, 
+  pieceTeam0Id2Atom, 
+  pieceTeam0Id3Atom, 
+  pieceTeam1Id0Atom, 
+  pieceTeam1Id1Atom, 
+  pieceTeam1Id2Atom, 
+  pieceTeam1Id3Atom, 
+  readyToStartAtom, 
+  roomAtom, 
+  selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
   yootOutcomeAtom,
   currentPlayerNameAtom,
   alertsAtom,
@@ -15,7 +35,12 @@ import {
   catchPathAtom,
   connectedToServerAtom,
   settingsOpenAtom,
-  pauseGameAtom} from "./GlobalState.jsx";
+  pauseGameAtom,
+  backdoLaunchAtom,
+  timerAtom,
+  nakAtom,
+  yutMoCatchAtom
+} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -24,7 +49,6 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import initialState from "../initialState.js";
-import { useLocation } from "wouter";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -105,6 +129,10 @@ export const SocketManager = () => {
   const setConnectedToServer = useSetAtom(connectedToServerAtom)
   const setSettingsOpen = useSetAtom(settingsOpenAtom);
   const setPauseGame = useSetAtom(pauseGameAtom);
+  const setBackdoLaunch = useSetAtom(backdoLaunchAtom);
+  const setTimer = useSetAtom(timerAtom)
+  const setNak = useSetAtom(nakAtom)
+  const setYutMoCatch = useSetAtom(yutMoCatchAtom)
 
   useEffect(() => {
 
@@ -743,6 +771,18 @@ export const SocketManager = () => {
       setDisconnect(true);
 
       localStorage.removeItem('yootGame')
+    })
+
+    socket.on('setGameRule', ({ rule, flag }) => {
+      if (rule === 'backdoLaunch') {
+        setBackdoLaunch(flag)
+      } else if (rule === 'timer') {
+        setTimer(flag)
+      } else if (rule === 'nak') {
+        setNak(flag)
+      } else if (rule === 'yutMoCatch') {
+        setYutMoCatch(flag)
+      }
     })
 
     socket.on('disconnect', () => {

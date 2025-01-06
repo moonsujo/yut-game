@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
+import { backdoLaunchAtom, clientAtom, deviceAtom, hostAtom, nakAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerAtom, yutMoCatchAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 import layout from './layout'
 import { socket } from "./SocketManager";
@@ -443,7 +443,7 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         socket.emit('assignHost', { 
-          roomId: params.id,
+          roomId: params.id.toUpperCase(),
           clientId: client._id,
           userId: guestBeingEditted._id,
           team: guestBeingEditted.team,
@@ -480,7 +480,7 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         socket.emit('kick', { 
-          roomId: params.id,
+          roomId: params.id.toUpperCase(),
           clientId: client._id,
           team: guestBeingEditted.team,
           name: guestBeingEditted.name,
@@ -644,7 +644,7 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        socket.emit('reset', { roomId: params.id.toUpperCase() })
+        socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
         setSettingsOpen(false)
         setMainMenuOpen(false)
       }
@@ -759,10 +759,14 @@ export default function SettingsHtml(props) {
     </Html>
   }
   function SetGameRules() {
-    const [backdoLaunchOn, setBackdoLaunchOn] = useState(false)
+    const backdoLaunch = useAtomValue(backdoLaunchAtom)
+    const timer = useAtomValue(timerAtom)
+    const nak = useAtomValue(nakAtom)
+    const yutMoCatch = useAtomValue(yutMoCatchAtom)
     const [backdoLaunchToggleHover, setBackdoLaunchToggleHover] = useState(false)
-    const [timerOn, setTimerOn] = useState(false)
     const [timerToggleHover, setTimerToggleHover] = useState(false)
+    const [nakThrowToggleHover, setNakThrowToggleHover] = useState(false)
+    const [bonusThrowCatchToggleHover, setBonusThrowCatchToggleHover] = useState(false)
 
     function handleBackdoLaunchTogglePointerEnter() {
       setBackdoLaunchToggleHover(true)
@@ -771,10 +775,10 @@ export default function SettingsHtml(props) {
       setBackdoLaunchToggleHover(false)
     }
     function handleBackdoLaunchTogglePointerUp() {
-      if (!backdoLaunchOn) 
-        setBackdoLaunchOn(true)
+      if (!backdoLaunch) 
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'backdoLaunch', flag: true }))
       else
-        setBackdoLaunchOn(false)
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'backdoLaunch', flag: false }))
     }
     function handleTimerTogglePointerEnter() {
       setTimerToggleHover(true)
@@ -783,10 +787,34 @@ export default function SettingsHtml(props) {
       setTimerToggleHover(false)
     }
     function handleTimerTogglePointerUp() {
-      if (!timerOn) 
-        setTimerOn(true)
+      if (!timer) 
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: true }))
       else
-        setTimerOn(false)
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: false }))
+    }
+    function handleNakThrowTogglePointerEnter() {
+      setNakThrowToggleHover(true)
+    }
+    function handleNakThrowTogglePointerLeave() {
+      setNakThrowToggleHover(false)
+    }
+    function handleNakThrowTogglePointerUp() {
+      if (!nak) 
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'nak', flag: true }))
+      else
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'nak', flag: false }))
+    }
+    function handleBonusThrowCatchTogglePointerEnter() {
+      setBonusThrowCatchToggleHover(true)
+    }
+    function handleBonusThrowCatchTogglePointerLeave() {
+      setBonusThrowCatchToggleHover(false)
+    }
+    function handleBonusThrowCatchTogglePointerUp() {
+      if (!yutMoCatch) 
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'yutMoCatch', flag: true }))
+      else
+        socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'yutMoCatch', flag: false }))
     }
     return <Html 
       transform
@@ -796,7 +824,7 @@ export default function SettingsHtml(props) {
         position: 'absolute',
         top: '0px',
         left: '0px',
-        width: '350px',
+        width: '400px',
         backgroundColor: '#090F16',
         border: '2px solid #F1EE92',
         borderRadius: '5px',
@@ -852,7 +880,7 @@ export default function SettingsHtml(props) {
                 margin: '3px',
                 padding: '0px',
                 borderRadius: '5px',
-                backgroundColor: backdoLaunchOn ? HtmlColors.starYellow : !backdoLaunchToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                backgroundColor: backdoLaunch ? HtmlColors.starYellow : !backdoLaunchToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
                 width: 'calc(100% - 6px)',
                 height: 'calc(100% - 6px)'
               }}>
@@ -896,7 +924,7 @@ export default function SettingsHtml(props) {
                 margin: '3px',
                 padding: '0px',
                 borderRadius: '5px',
-                backgroundColor: timerOn ? HtmlColors.starYellow : !timerToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                backgroundColor: timer ? HtmlColors.starYellow : !timerToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
                 width: 'calc(100% - 6px)',
                 height: 'calc(100% - 6px)'
               }}>
@@ -908,6 +936,94 @@ export default function SettingsHtml(props) {
             margin: '3px',
           }}>
             1 MINUTE AFTER EVERY THROW. ON EXPIRE, ONE OF THE AVAILABLE MOVES WILL BE CHOSEN RANDOMLY.
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>NAK THROW (OUT OF BOUNDS)</p>
+            <div id='nakToggle' style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: HtmlColors.spaceDark,
+              border: '2px solid #F1EE92',
+              borderRadius: '5px',
+              margin: '3px'
+            }}
+            onPointerEnter={handleNakThrowTogglePointerEnter}
+            onPointerLeave={handleNakThrowTogglePointerLeave}
+            onPointerUp={handleNakThrowTogglePointerUp}
+            >
+              <div id='nakToggleState' style={{
+                margin: '3px',
+                padding: '0px',
+                borderRadius: '5px',
+                backgroundColor: nak ? HtmlColors.starYellow : !nakThrowToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                width: 'calc(100% - 6px)',
+                height: 'calc(100% - 6px)'
+              }}>
+              </div>
+            </div>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            PLAYER MIGHT THROW THE YUT OUT OF BOUNDS. IT EARNS 0 SPACES FORWARD. 
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '3px',
+              fontSize: '20px',
+            }}>BONUS THROW ON YUT OR MO CATCH</p>
+            <div id='yutMoCatchToggle' style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: HtmlColors.spaceDark,
+              border: '2px solid #F1EE92',
+              borderRadius: '5px',
+              margin: '3px'
+            }}
+            onPointerEnter={handleBonusThrowCatchTogglePointerEnter}
+            onPointerLeave={handleBonusThrowCatchTogglePointerLeave}
+            onPointerUp={handleBonusThrowCatchTogglePointerUp}
+            >
+              <div id='yutMoCatchToggleState' style={{
+                margin: '3px',
+                padding: '0px',
+                borderRadius: '5px',
+                backgroundColor: yutMoCatch ? HtmlColors.starYellow : !bonusThrowCatchToggleHover ? HtmlColors.spaceDark : HtmlColors.starYellowHover,
+                width: 'calc(100% - 6px)',
+                height: 'calc(100% - 6px)'
+              }}>
+              </div>
+            </div>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            GET A BONUS THROW WHEN YOU CATCH WITH A YUT (4) OR A MO (5).
           </p>
         </div>
       </div>
@@ -996,8 +1112,10 @@ export default function SettingsHtml(props) {
     </group>
   }
   function ViewGameRules() {
-    const backdoRuleOn = useAtomValue(backdoRuleOnAtom)
-    const timerOn = useAtomValue(timerOnAtom)
+    const backdoLaunch = useAtomValue(backdoLaunchAtom)
+    const timer = useAtomValue(timerAtom)
+    const nak = useAtomValue(nakAtom)
+    const yutMoCatch = useAtomValue(yutMoCatchAtom)
     return <Html 
       transform
       position={layout[device].game.settings.setGameRules.position}
@@ -1050,8 +1168,8 @@ export default function SettingsHtml(props) {
               padding: '0px',
               margin: '5px',
               fontSize: '20px',
-              color: backdoRuleOn ? HtmlColors.starYellow : HtmlColors.disabledGrey
-            }}>{ backdoRuleOn ? "ON" : "OFF"}</p>
+              color: backdoLaunch ? HtmlColors.starYellow : HtmlColors.disabledGrey
+            }}>{ backdoLaunch ? "ON" : "OFF"}</p>
           </div>
           <p style={{
             padding: '3px',
@@ -1078,14 +1196,70 @@ export default function SettingsHtml(props) {
               padding: '0px',
               margin: '5px',
               fontSize: '20px',
-              color: timerOn ? HtmlColors.starYellow : HtmlColors.disabledGrey
-            }}>{ timerOn ? "ON" : "OFF"}</p>
+              color: timer ? HtmlColors.starYellow : HtmlColors.disabledGrey
+            }}>{ timer ? "ON" : "OFF"}</p>
           </div>
           <p style={{
             padding: '3px',
             margin: '3px',
           }}>
             1 MINUTE AFTER EVERY THROW. ON EXPIRE, ONE OF THE AVAILABLE MOVES WILL BE CHOSEN RANDOMLY.
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '5px',
+              fontSize: '20px',
+            }}>NAK THROW (OUT OF BOUNDS)</p>
+            <p style={{
+              padding: '0px',
+              margin: '5px',
+              fontSize: '20px',
+              color: nak ? HtmlColors.starYellow : HtmlColors.disabledGrey
+            }}>{ nak ? "ON" : "OFF"}</p>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            PLAYER MIGHT THROW THE YUT OUT OF BOUNDS. IT EARNS 0 SPACES FORWARD. 
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#313131',
+          borderRadius: '5px',
+          margin: '5px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <p style={{
+              padding: '0px',
+              margin: '5px',
+              fontSize: '20px',
+            }}>BONUS THROW ON YUT OR MO CATCH</p>
+            <p style={{
+              padding: '0px',
+              margin: '5px',
+              fontSize: '20px',
+              color: yutMoCatch ? HtmlColors.starYellow : HtmlColors.disabledGrey
+            }}>{ yutMoCatch ? "ON" : "OFF"}</p>
+          </div>
+          <p style={{
+            padding: '3px',
+            margin: '3px',
+          }}>
+            GET A BONUS THROW WHEN YOU CATCH WITH A YUT (4) OR A MO (5).
           </p>
         </div>
       </div>
@@ -1764,9 +1938,9 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         if (!pauseGame)
-          socket.emit('pauseGame', { flag: true, clientId: client._id, roomId: params.id });
+          socket.emit('pauseGame', { roomId: params.id.toUpperCase(), clientId: client._id, flag: true  });
         else 
-          socket.emit('pauseGame', { flag: false, clientId: client._id, roomId: params.id });
+          socket.emit('pauseGame', { roomId: params.id.toUpperCase(), clientId: client._id, flag: false });
       }
       return <button 
         onMouseEnter={handleMouseEnter}

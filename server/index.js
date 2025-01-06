@@ -136,8 +136,10 @@ const roomSchema = new mongoose.Schema(
     },
     paused: Boolean,
     rules: {
-      backdo: Boolean,
-      timer: Boolean
+      backdoLaunch: Boolean,
+      timer: Boolean,
+      nak: Boolean,
+      yutMoCatch: Boolean
     }
   },
   {
@@ -317,6 +319,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             io.to(userSocketId).emit("pause", { 
               flag: serverEvent.content.flag
             })
+          } else if (serverEvent.name === "setGameRule") {
+            io.to(userSocketId).emit("setGameRule", { 
+              rule: serverEvent.content.rule,
+              flag: serverEvent.content.flag
+            })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -438,8 +445,10 @@ io.on("connect", async (socket) => {
         serverEvent: '',
         paused: false,
         rules: {
-          backdo: false,
-          timer: false
+          backdoLaunch: true,
+          timer: true,
+          nak: true,
+          yutMoCatch: true
         }
       })
       console.log('[createRoom] shortRoomId', shortRoomId)
@@ -1227,7 +1236,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on("reset", async ({ roomId }) => {
+  socket.on("reset", async ({ roomId, clientId }) => {
     // moves in each team
     // tiles
     try {
@@ -1301,7 +1310,8 @@ io.on("connect", async (socket) => {
 
       await Room.findOneAndUpdate(
         { 
-          shortId: roomId, 
+          shortId: roomId,
+          host: clientId 
         }, 
         operation
       )
@@ -1575,8 +1585,34 @@ io.on("connect", async (socket) => {
   })
 
   // rules: 'backdo', 'timer'
-  socket.on('setGameRules', async ({ roomId, hostId, rule }) => {
-    // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
-    // flip boolean switch by rule (key of rule dictionary)
+  socket.on('setGameRule', async ({ roomId, clientId, rule, flag }) => {
+    console.log('[setGameRule]')
+    try {
+      let room = await Room.findOneAndUpdate(
+        { 
+          shortId: roomId, 
+          host: clientId 
+        }, 
+        {
+          '$set': {
+            'rules': {
+              rule: flag
+            },
+            'serverEvent': {
+              name: 'setGameRule',
+              content: {
+                rule,
+                flag
+              }
+            }
+          }
+        }
+      )
+      if (!room) {
+        console.log('[setGameRule] room with shortId', roomId, 'and host', clientId, 'not found')
+      }
+    } catch (err) {
+      console.log('[setGameRule]', err)
+    }
   })
 })
