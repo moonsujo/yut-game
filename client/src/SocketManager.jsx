@@ -14,7 +14,8 @@ import {
   pieceAnimationPlayingAtom,
   catchPathAtom,
   connectedToServerAtom,
-  settingsOpenAtom} from "./GlobalState.jsx";
+  settingsOpenAtom,
+  pauseGameAtom} from "./GlobalState.jsx";
 import { clientHasTurn } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -103,7 +104,7 @@ export const SocketManager = () => {
   const [playMusic] = useMusicPlayer();
   const setConnectedToServer = useSetAtom(connectedToServerAtom)
   const setSettingsOpen = useSetAtom(settingsOpenAtom);
-  const [_location, setLocation] = useLocation();
+  const setPauseGame = useSetAtom(pauseGameAtom);
 
   useEffect(() => {
 
@@ -251,7 +252,7 @@ export const SocketManager = () => {
 
       setGameLogs(room.gameLogs)
 
-
+      setPauseGame(room.paused)
     })
 
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
@@ -712,6 +713,11 @@ export const SocketManager = () => {
           return newTeams
         })
       }
+    })
+
+    socket.on("pause", ({ flag }) => {
+      setPauseGame(flag)
+      setAlerts([])
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {

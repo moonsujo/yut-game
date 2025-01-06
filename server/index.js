@@ -153,7 +153,8 @@ async function addUser(socket, name) {
   console.log('[addUser] name', name)
   try {
     let user;
-    if (socket.handshake.query.client === "null") { // Use saved client
+    if (socket.handshake.query.client === "null") {
+      console.log('[addUser] client did not pass a user info from local storage')
       user = new User({
         socketId: socket.id,
         name,
@@ -165,6 +166,7 @@ async function addUser(socket, name) {
       })
       await user.save()
     } else {
+      console.log('[addUser] client passed a user info from local storage')
       const savedClient = JSON.parse(socket.handshake.query.client)
       // in mongodb, when client leaves, the roomId and name haven't changed
       // room refers to player by _id
@@ -311,6 +313,10 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               team: serverEvent.content.team,
               name: serverEvent.content.name,
             })
+          } else if (serverEvent.name === "pause") {
+            io.to(userSocketId).emit("pause", { 
+              flag: serverEvent.content.flag
+            })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -361,7 +367,7 @@ io.on("connect", async (socket) => {
   socket.on("addUser", async ({}, callback) => {
     console.log('[addUser]')
     let name = await createUniqueUsername()
-    addUser(socket, name)
+    await addUser(socket, name)
     return callback()
   })
 
@@ -1538,40 +1544,31 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on('pauseGame', async ({ roomId, hostId, flag }) => {
+  socket.on('pauseGame', async ({ roomId, clientId, flag }) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
     // pause game in room
     console.log('[pauseGame]')
     try {
-            // Remove the user from the room
-            let operation = {}
-            operation['$pullAll'] = { 
-              [`spectators`]: [{ _id: user._id }],
-              [`teams.${team}.players`]: [{ _id: user._id }],
-            }
-            
-            operation['$set'] = { 
-              'serverEvent': {
-                'name': 'kick',
-                'content': {
-                  team,
-                  name,
-                  socketId: user.socketId
-                }
+      let room = await Room.findOneAndUpdate(
+        { 
+          shortId: roomId, 
+          host: clientId 
+        }, 
+        { 
+          '$set': {
+            'paused': flag,
+            'serverEvent': {
+              'name': 'pause',
+              'content': {
+                flag
               }
             }
-
-      await Room.findOneAndUpdate(
-        { 
-          shortId: roomId,
-          host: hostId
-        }, 
-        {
-          '$set': {
-            'paused': pause
           }
         }
       )
+      if (!room) {
+        console.log('[pauseGame] room', roomId, 'not updated')
+      }
     } catch (err) {
       console.log('[pauseGame]', err)
     }

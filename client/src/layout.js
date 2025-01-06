@@ -1286,7 +1286,7 @@ export default {
         height: 0.01
       },
       disconnectModal: {
-        position: [0, 3, 1],
+        position: [0, 7, 2.7],
         rotation: [0,0,0],
       },
       board: {
@@ -2840,7 +2840,7 @@ export default {
         height: 0.01
       },
       disconnectModal: {
-        position: [0, 3, 1],
+        position: [0, 7, 2.7],
         rotation: [0,0,0],
       },
       board: {

@@ -25,7 +25,7 @@ export default function SettingsHtml(props) {
   const [editAGuestOpen, setEditAGuestOpen] = useState(false)
   // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
-  const [pauseGame, setPauseGame] = useAtom(pauseGameAtom)
+  const pauseGame = useAtomValue(pauseGameAtom)
   const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
   const [viewGuestsOpen, setViewGuestsOpen] = useState(false)
   const [viewGameRulesOpen, setViewGameRulesOpen] = useState(false)
@@ -1764,13 +1764,9 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         if (!pauseGame)
-          socket.emit('pauseGame', true);
-          // setPauseGame(true)
-          // socket.emit('pause')
-          // make sure game is not paused in server
-          // set global state
+          socket.emit('pauseGame', { flag: true, clientId: client._id, roomId: params.id });
         else 
-          socket.emit('pauseGame', false);
+          socket.emit('pauseGame', { flag: false, clientId: client._id, roomId: params.id });
       }
       return <button 
         onMouseEnter={handleMouseEnter}
