@@ -81,6 +81,7 @@ export const backdoRuleOnAtom = atom(false)
 export const timerOnAtom = atom(true)
 export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
+export const pauseGameAtom = atom(false)
 
 const deepPieceEquals = (prev, next) => {
   let result;

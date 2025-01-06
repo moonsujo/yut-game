@@ -1538,9 +1538,43 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on('pauseGame', async ({ roomId, hostId }) => {
+  socket.on('pauseGame', async ({ roomId, hostId, flag }) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
     // pause game in room
+    console.log('[pauseGame]')
+    try {
+            // Remove the user from the room
+            let operation = {}
+            operation['$pullAll'] = { 
+              [`spectators`]: [{ _id: user._id }],
+              [`teams.${team}.players`]: [{ _id: user._id }],
+            }
+            
+            operation['$set'] = { 
+              'serverEvent': {
+                'name': 'kick',
+                'content': {
+                  team,
+                  name,
+                  socketId: user.socketId
+                }
+              }
+            }
+
+      await Room.findOneAndUpdate(
+        { 
+          shortId: roomId,
+          host: hostId
+        }, 
+        {
+          '$set': {
+            'paused': pause
+          }
+        }
+      )
+    } catch (err) {
+      console.log('[pauseGame]', err)
+    }
   })
 
   // rules: 'backdo', 'timer'

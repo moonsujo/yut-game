@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
+import { backdoRuleOnAtom, clientAtom, deviceAtom, hostAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerOnAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 import layout from './layout'
 import { socket } from "./SocketManager";
@@ -25,7 +25,7 @@ export default function SettingsHtml(props) {
   const [editAGuestOpen, setEditAGuestOpen] = useState(false)
   // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
-  const [pauseGame, setPauseGame] = useState(false)
+  const [pauseGame, setPauseGame] = useAtom(pauseGameAtom)
   const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
   const [viewGuestsOpen, setViewGuestsOpen] = useState(false)
   const [viewGameRulesOpen, setViewGameRulesOpen] = useState(false)
@@ -1764,9 +1764,13 @@ export default function SettingsHtml(props) {
       }
       function handleMouseUp() {
         if (!pauseGame)
-          setPauseGame(true)
+          socket.emit('pauseGame', true);
+          // setPauseGame(true)
+          // socket.emit('pause')
+          // make sure game is not paused in server
+          // set global state
         else 
-          setPauseGame(false)
+          socket.emit('pauseGame', false);
       }
       return <button 
         onMouseEnter={handleMouseEnter}
