@@ -211,7 +211,6 @@ export default function Home2() {
 
     function handlePointerUp(e) {
       e.stopPropagation();
-      console.log('[Home2] calling createRoom')
       socket.emit('createRoom', { hostId: client._id }, ({ shortId }) => {
         setLocation(`/${shortId}`)
       })

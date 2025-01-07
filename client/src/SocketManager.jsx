@@ -287,6 +287,9 @@ export const SocketManager = () => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
       setThrowCount(teams[turn.team].throws)
+      const audio = new Audio('sounds/effects/throw.mp3');
+      audio.volume=0.3;
+      audio.play();
     })
 
     socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs }) => {
@@ -359,6 +362,11 @@ export const SocketManager = () => {
         if (yootOutcome === 0 && teams[turnPrev.team].throws === 0) {
           setAlerts([yootOutcomeAlertName, 'turn'])
         } else {
+          if (yootOutcome === 4) {
+            const audio = new Audio('sounds/effects/yut.wav');
+            audio.volume=0.3;
+            audio.play();
+          }
           setAlerts([yootOutcomeAlertName])
         }
         setThrowCount(teams[turnUpdate.team].throws)

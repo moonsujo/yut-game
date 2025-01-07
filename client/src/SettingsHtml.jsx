@@ -6,6 +6,7 @@ import HtmlColors from "./HtmlColors";
 import layout from './layout'
 import { socket } from "./SocketManager";
 import { useParams } from "wouter";
+import { useFrame } from "@react-three/fiber";
 
 // global state
 // audio
@@ -1712,10 +1713,18 @@ export default function SettingsHtml(props) {
     </Html>
   }
   function InviteFriends() {
-    const [checkmarkVisible, setCheckmarkVisible] = useState(false)
+    const [checkmarkOpacity, setCheckmarkOpacity] = useState(0)
     const [checkmarkTimer, setCheckmarkTimer] = useState(null)
+    const [copyButtonHover, setCopyButtonHover] = useState(false)
+
+    useFrame(() => {
+      if (checkmarkOpacity > 0) {
+        setCheckmarkOpacity((opacity) => opacity-0.01)
+        setCopyButtonHover(false)
+      }
+    })
+
     function CopyButton() {
-      const [copyButtonHover, setCopyButtonHover] = useState(false)
   
       function handleMouseOver () {
         setCopyButtonHover(true)
@@ -1749,10 +1758,7 @@ export default function SettingsHtml(props) {
       function handleMouseUp() {
         copyURLToClipboard();
         clearTimeout(checkmarkTimer)
-        setCheckmarkVisible(true);
-        setCheckmarkTimer(setTimeout(() => {
-          setCheckmarkVisible(false);
-        }, 2000))
+        setCheckmarkOpacity(1.5)
       }
   
       return <button 
@@ -1774,6 +1780,7 @@ export default function SettingsHtml(props) {
         COPY
       </button>
     }
+
     return <Html 
       transform
       position={layout[device].game.settings.inviteFriends.position}
@@ -1836,7 +1843,11 @@ export default function SettingsHtml(props) {
               position: 'absolute',
               left: '378px',
               top: '107px'}}>
-                {checkmarkVisible && <img src='images/green-checkmark.svg' width='30px'/>}
+              <img 
+                src='images/green-checkmark.svg' 
+                width='30px' 
+                style={{ opacity: checkmarkOpacity }}
+              />
             </div>
           </div>
           <div style={{display:'flex', padding: '20px'}}>
