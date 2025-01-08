@@ -51,6 +51,32 @@ export default function Piece ({
 
   // Piece selected: bulge
   // rocket shaking on selected
+  // function handlePointerDown(event) {
+  //   if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
+  //     event.stopPropagation();
+  //     if (selection === null) {
+  //       let pieces;
+  //       let history;
+  //       if (pieceStatus(tile) === 'home') {
+  //         history = []
+  //         pieces = [{tile, team, id, history}]
+  //       } else {
+  //         history = tiles[tile][0].history // go back the way you came from of the first token
+  //         pieces = tiles[tile];
+  //       }
+  //       let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
+  //       if (!(Object.keys(legalTiles).length == 0)) {
+  //         socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
+  //       }
+  //     } else {
+  //       if (selection.tile != tile && tile in legalTiles) {
+  //         socket.emit("move", { roomId: params.id.toUpperCase(), tile });
+  //       } else {
+  //         socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
+  //       }
+  //     }
+  //   }
+  // }
   function handlePointerDown(event) {
     if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
       event.stopPropagation();
@@ -61,7 +87,7 @@ export default function Piece ({
           history = []
           pieces = [{tile, team, id, history}]
         } else {
-          history = tiles[tile][0].history
+          history = tiles[tile][0].history // go back the way you came from of the first token
           pieces = tiles[tile];
         }
         let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)

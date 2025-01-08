@@ -962,10 +962,23 @@ io.on("connect", async (socket) => {
   }
 
   // Client only emits this event if it has the turn
-  socket.on("select", async ({ roomId, selection, legalTiles }) => {
-    // emit server event "select"
-    // disable yoot button
+  // never trust client data!
+  // client sends what was clicked. server calculates the new state
+  // and sends it to the client
+  socket.on("select", async ({ roomId, selection, tile, team }) => {
     try {
+      // check that team has the turn
+      // that there is a token with team that's passed in on the tile
+      let room = Room.findOne(
+        {
+          shortId: roomId, 
+          paused: false,
+          
+        }
+      )
+      if (room) {
+        // calculate legalTiles 
+      }
       await Room.findOneAndUpdate(
         { 
           shortId: roomId, 
@@ -984,7 +997,35 @@ io.on("connect", async (socket) => {
     }
   });
 
+  // socket.on("select", async ({ roomId, selection, tile, team, history }) => {
+  //   try {
+  //     let room = Room.findOne(
+  //       {
+  //         shortId: roomId, 
+  //         paused: false,
+          
+  //       }
+  //     )
+  //     await Room.findOneAndUpdate(
+  //       { 
+  //         shortId: roomId, 
+  //         paused: false
+  //       }, 
+  //       { 
+  //         $set: { 
+  //           'selection': selection === 'null' ? null : selection,
+  //           'legalTiles': legalTiles,
+  //           'serverEvent': 'select'
+  //         }
+  //       }
+  //     )
+  //   } catch (err) {
+  //     console.log(`[select] error making selection`, err)
+  //   }
+  // });
+
   // Client only emits this event if it has the turn
+  
   socket.on("legalTiles", async ({ roomId, legalTiles }) => {
     try {
       await Room.findOneAndUpdate(
