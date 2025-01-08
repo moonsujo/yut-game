@@ -1,12 +1,12 @@
 
 import { socket } from "../SocketManager";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { getLegalTiles } from "../helpers/legalTiles";
 import Rocket from "../meshes/Rocket.jsx";
 import Ufo from "../meshes/Ufo.jsx";
-import { teamsAtom, gamePhaseAtom, yootThrownAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom } from "../GlobalState.jsx";
+import { teamsAtom, gamePhaseAtom, yootThrownAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom } from "../GlobalState.jsx";
 import { useParams } from "wouter";
 import { pieceStatus } from "../helpers/helpers.js";
 import { animated } from "@react-spring/three";
@@ -31,6 +31,7 @@ export default function Piece ({
   const [hasTurn] = useAtom(hasTurnAtom)
   const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
+  const paused = useAtomValue(pauseGameAtom)
 
   const group = useRef();
   const wrapperMat = useRef();
@@ -51,7 +52,7 @@ export default function Piece ({
   // Piece selected: bulge
   // rocket shaking on selected
   function handlePointerDown(event) {
-    if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying) {
+    if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
       event.stopPropagation();
       if (selection === null) {
         let pieces;

@@ -1,7 +1,7 @@
 import { Html } from "@react-three/drei";
 import { useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { backdoLaunchAtom, clientAtom, deviceAtom, hostAtom, nakAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerAtom, yutMoCatchAtom } from "./GlobalState";
+import { backdoLaunchAtom, clientAtom, deviceAtom, gamePhaseAtom, hostAtom, nakAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom, timerAtom, yutMoCatchAtom } from "./GlobalState";
 import HtmlColors from "./HtmlColors";
 import layout from './layout'
 import { socket } from "./SocketManager";
@@ -26,6 +26,7 @@ export default function SettingsHtml(props) {
   const [editAGuestOpen, setEditAGuestOpen] = useState(false)
   // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
+  const gamePhase = useAtomValue(gamePhaseAtom)
   const pauseGame = useAtomValue(pauseGameAtom)
   const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
   const [viewGuestsOpen, setViewGuestsOpen] = useState(false)
@@ -2256,7 +2257,7 @@ export default function SettingsHtml(props) {
           <div className='main-menu-buttons'>
             { client.socketId === host.socketId && <EditGuestsButton/> }
             { client.socketId === host.socketId && <ResetGameButton/> }
-            { client.socketId === host.socketId && <PauseGameButton/> }
+            { client.socketId === host.socketId && (gamePhase === 'pregame' || gamePhase === 'game') && <PauseGameButton/> }
             { client.socketId === host.socketId && <SetGameRulesButton/> }
             { client.socketId !== host.socketId && <ViewGuestsButton/> }
             { client.socketId !== host.socketId && <ViewGameRulesButton/> }

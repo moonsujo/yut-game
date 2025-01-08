@@ -4,7 +4,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
-import { animationPlayingAtom, clientAtom, hasTurnAtom, pieceAnimationPlayingAtom, throwCountAtom, turnAtom } from './GlobalState';
+import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, throwCountAtom, turnAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
@@ -20,6 +20,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const [hasTurn] = useAtom(hasTurnAtom)
   const [enabledLocal, setEnabledLocal] = useState(false);
   const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
+  const paused = useAtomValue(pauseGameAtom)
 
   // for the throw count
   const [client] = useAtom(clientAtom);
@@ -57,7 +58,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   function handleClick(e) {
     e.stopPropagation();
 
-    if (enabled) {
+    if (enabled && !paused) {
       setEnabledLocal(false)
       setAnimationPlaying(true)
       socket.emit('throwYoot', { roomId: params.id.toUpperCase() })

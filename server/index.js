@@ -734,9 +734,11 @@ io.on("connect", async (socket) => {
     }
 
     try {
-      let room = await Room.findOne({ shortId: roomId })
+      let room = await Room.findOne({ shortId: roomId, paused: false })
 
-      if (room.teams[user.team].throws > 0) {
+      if (!room) {
+        throw new Error('[throwYoot] room with shortId', roomId, 'not found, or game is paused')
+      } else if (room.teams[user.team].throws > 0) { // reduce number of calls to the database
 
         // const outcome = pickOutcome()
         // for testing
@@ -895,6 +897,8 @@ io.on("connect", async (socket) => {
             console.log(`[throwYoot] error recording throw`, err)
           }
         }, 5000)
+      } else {
+        throw new Error("[throwYoot] the player's team has no throws")
       }
     } catch (err) {
       console.log(`[throwYoot] error on throw yoot`, err)
@@ -965,6 +969,7 @@ io.on("connect", async (socket) => {
       await Room.findOneAndUpdate(
         { 
           shortId: roomId, 
+          paused: false
         }, 
         { 
           $set: { 
@@ -1117,6 +1122,7 @@ io.on("connect", async (socket) => {
       await Room.findOneAndUpdate(
         { 
           shortId: roomId, 
+          paused: false
         }, 
         operation
       )

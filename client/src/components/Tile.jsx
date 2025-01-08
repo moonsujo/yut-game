@@ -1,9 +1,9 @@
 import { useRef } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame } from "@react-three/fiber";
-import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
+import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
@@ -35,6 +35,7 @@ export default function Tile({
   const [gamePhase] = useAtom(gamePhaseAtom)
   const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
+  const paused = useAtomValue(pauseGameAtom)
 
   const group = useRef()
   const wrapperMat = useRef();
@@ -56,7 +57,7 @@ export default function Tile({
     event.stopPropagation();
     const team = client.team
     let pieces = tiles[tile]
-    if (gamePhase === "game" && hasTurn && !animationPlaying) {
+    if (gamePhase === "game" && hasTurn && !animationPlaying && !paused) {
       if (selection === null) {
         if (pieces.length > 0 && pieces[0].team === team) {
           let history = tiles[tile][0].history
