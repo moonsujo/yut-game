@@ -41,7 +41,7 @@ import {
   nakAtom,
   yutMoCatchAtom
 } from "./GlobalState.jsx";
-import { clientHasTurn } from "./helpers/helpers.js";
+import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
 import * as THREE from 'three';
@@ -359,8 +359,10 @@ export const SocketManager = () => {
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
-        if (yootOutcome === 0 && teams[turnPrev.team].throws === 0) {
-          setAlerts([yootOutcomeAlertName, 'turn'])
+        if (yootOutcome === 0 && teams[turnPrev.team].throws === 0 && movesIsEmpty(teams[turnPrev.team].moves)) {
+          setAlerts([yootOutcomeAlertName, 'turn']) // add 'no available moves' alert
+        } else if (yootOutcome === -1 && teams[turnPrev.team].throws === 0 && isBackdoMovesWithoutPieces(teams[turnPrev.team].moves, teams[turnPrev.team].pieces)) {
+          setAlerts([yootOutcomeAlertName, 'turn']) // add 'no available moves' alert
         } else {
           if (yootOutcome === 4) {
             const audio = new Audio('sounds/effects/yut.wav');

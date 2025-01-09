@@ -128,3 +128,23 @@ export function pieceSelected(selection, pieceId, team) {
     return false
   }
 }
+
+export function isBackdoMovesWithoutPieces(moves, pieces) {
+  if (moves['-1'] === 0) {
+    return false;
+  }
+
+  for (let i = 0; i < 4; i++) {
+    if (tileType(pieces[i].tile) === 'onBoard') {
+      return false
+    }
+  }
+
+  for (const move in moves) {
+    if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
+      return false;
+    }
+  }
+  
+  return true
+}

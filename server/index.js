@@ -229,12 +229,14 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             })
           } else if (serverEvent.name === "recordThrow") {
             io.to(userSocketId).emit("recordThrow", {
-              teams: roomPopulated.teams,
+              teams: roomPopulated.teams, // only the moves and throws
+              // if 0 or -1 was recorded, clear moves depending on isEmptyMoves or isBackdo...Moves
+              // if a yut or mo was thrown, update throws for the team
               gamePhaseUpdate: data.fullDocument.gamePhase,
               turnUpdate: data.fullDocument.turn,
               pregameOutcome: data.fullDocument.pregameOutcome,
               yootOutcome: data.fullDocument.yootOutcome,
-              gameLogs: data.fullDocument.gameLogs
+              gameLogs: data.fullDocument.gameLogs // only the new logs that were added
             })
           } else if (serverEvent === "move") {
             io.to(userSocketId).emit("move", {
@@ -754,23 +756,23 @@ io.on("connect", async (socket) => {
         throw new Error('[throwYoot] room with shortId', roomId, 'not found, or game is paused')
       } else if (room.teams[user.team].throws > 0) { // reduce number of calls to the database
 
-        // const outcome = pickOutcome()
+        const outcome = pickOutcome()
         // for testing
-        let outcome;
-        if (room.gamePhase === 'pregame') {
-          if (room.turn.team === 1) {
-            outcome = 5
-          } else {
-            outcome = 4
-          }
-        } else if (room.gamePhase === 'game') {
-          outcome = 4
-          // if (room.turn.team === 0) {
-          //   outcome = Math.random() > 0.5 ? 5 : 4
-          // } else {
-          //   outcome = 1
-          // }
-        }
+        // let outcome;
+        // if (room.gamePhase === 'pregame') {
+        //   if (room.turn.team === 1) {
+        //     outcome = 5
+        //   } else {
+        //     outcome = 4
+        //   }
+        // } else if (room.gamePhase === 'game') {
+        //   outcome = 4
+        //   if (room.turn.team === 0) {
+        //     outcome = Math.random() > 0.5 ? 5 : 4
+        //   } else {
+        //     outcome = 1
+        //   }
+        // }
         const animation = pickAnimation(outcome)
         await Room.findOneAndUpdate( // consolidate into one call with the 'findOne' call from above
           { 
@@ -819,6 +821,7 @@ io.on("connect", async (socket) => {
                 }
               )
               
+              // backdo is greater than nak
               const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
               if (outcomePregame === "pass") {
                 const newTurn = passTurn(room.turn, room.teams)
@@ -857,12 +860,10 @@ io.on("connect", async (socket) => {
                 )
               }
             } else if (room.gamePhase === "game") {
-              room.teams[user.team].moves[outcome]++;
 
               // Add bonus throw on Yoot and Mo
               if (room.yootOutcome === 4 || room.yootOutcome === 5) {
                 operation['$inc'][`teams.${user.team}.throws`] = 1
-                room.teams[user.team].throws++;
                 
                 gameLogs.push({
                   logType: 'throw',
@@ -886,8 +887,10 @@ io.on("connect", async (socket) => {
               }
 
               // Call .toObject() on moves to leave out the mongoose methods
+              console.log('[throwYoot] room.rules.backdoLaunch', room.rules.backdoLaunch)
               if (room.teams[user.team].throws === 0 && 
-              isEmptyMoves(room.teams[user.team].moves.toObject())) {
+              (isEmptyMoves(room.teams[user.team].moves.toObject()) || 
+              (!room.rules.backdoLaunch && isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))) ) {
                 const newTurn = passTurn(room.turn, room.teams)
                 operation['$set']['turn'] = newTurn
                 operation['$set'][`teams.${user.team}.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
@@ -978,8 +981,27 @@ io.on("connect", async (socket) => {
     return true;
   }
 
+  function isBackdoMovesWithoutPieces(moves, pieces) {
+    if (moves['-1'] === 0) {
+      return false;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      if (tileType(pieces[i].tile) === 'onBoard') {
+        return false
+      }
+    }
+
+    for (const move in moves) {
+      if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
+        return false;
+      }
+    }
+    
+    return true
+  }
+
   // Client only emits this event if it has the turn
-  // never trust client data!
   // client sends what was clicked. server calculates the new state
   // and sends it to the client
   // socket.on("select", async ({ roomId, tile, team, tokenId }) => {
