@@ -6,7 +6,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { makeId } from './helpers.js';
 import initialState from './initialState.js';
-import { ObjectId } from 'mongodb';
+import { getLegalTiles } from './rules/legalTiles.js'
+import { tileType } from './rules/rulesHelpers.js'
 
 const app = express();
 const server = http.createServer(app);
@@ -226,7 +227,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turn: data.fullDocument.turn,
               gameLogs: data.fullDocument.gameLogs
             })
-          } else if (serverEvent === "recordThrow") {
+          } else if (serverEvent.name === "recordThrow") {
             io.to(userSocketId).emit("recordThrow", {
               teams: roomPopulated.teams,
               gamePhaseUpdate: data.fullDocument.gamePhase,
@@ -244,7 +245,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gameLogs: data.fullDocument.gameLogs,
               selection: data.fullDocument.selection
             })
-          } else if (serverEvent === "select") {
+          } else if (serverEvent.name === "select") {
+            console.log('select')
             io.to(userSocketId).emit("select", {
               selection: data.fullDocument.selection,
               legalTiles: data.fullDocument.legalTiles
@@ -267,7 +269,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               results: data.fullDocument.results,
               gamePhase: data.fullDocument.gamePhase
             })
-          } else if (serverEvent === "joinRoom") {
+          } else if (serverEvent.name === "joinRoom") {
             if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
               io.to(userSocketId).emit('room', roomPopulated)
             } else {
@@ -442,7 +444,10 @@ io.on("connect", async (socket) => {
           num: -2,
           time: Date.now()
         },
-        serverEvent: '',
+        serverEvent: {
+          name: '',
+          content: {}
+        },
         paused: false,
         rules: {
           backdoLaunch: true,
@@ -533,20 +538,29 @@ io.on("connect", async (socket) => {
         if (user.team === -1) { // if spectator
           operation['$addToSet'] = { "spectators": user._id }
           operation['$set'] = { 
-            "serverEvent": 'joinRoom',
+            "serverEvent": {
+              name: 'joinRoom',
+              content: {}
+            },
             "lastJoinedUser": user._id
           }
         } else {
           operation['$addToSet'] = { [`teams.${user.team}.players`]: user._id }
           operation['$set'] = { 
-            "serverEvent": 'joinRoom',
+            "serverEvent": {
+              name: 'joinRoom',
+              content: {}
+            },
             "lastJoinedUser": user._id
           }
         }
       } else { // Use default values (add as spectator)
         operation['$addToSet'] = { "spectators": user._id }
         operation['$set'] = { 
-          "serverEvent": 'joinRoom',
+          "serverEvent": {
+            name: 'joinRoom',
+            content: {}
+          },
           "lastJoinedUser": user._id
         }
         user.name = makeId(5);
@@ -885,7 +899,10 @@ io.on("connect", async (socket) => {
 
             operation['$push']['gameLogs'] = { '$each': gameLogs }
             
-            operation['$set']['serverEvent'] = 'recordThrow'
+            operation['$set']['serverEvent'] = {
+              name: 'recordThrow',
+              content: {}
+            }
 
             await Room.findOneAndUpdate(
               { 
@@ -965,20 +982,58 @@ io.on("connect", async (socket) => {
   // never trust client data!
   // client sends what was clicked. server calculates the new state
   // and sends it to the client
-  socket.on("select", async ({ roomId, selection, tile, team }) => {
+  // socket.on("select", async ({ roomId, tile, team, tokenId }) => {
+  //   console.log('[select] tile', tile, 'team', team, 'tokenId', tokenId)
+  //   try {
+  //     // check that team has the turn
+  //     // that there is a token with team that's passed in on the tile
+  //     let room = await Room.findOne(
+  //       {
+  //         shortId: roomId, 
+  //         paused: false,
+  //       }
+  //     )
+  //     if (!room) {
+  //       throw new Error('room with shortId', roomId, 'and not paused not found')
+  //     } else if (room.turn.team === team) {
+  //       console.log("[select] player's team has turn")
+  //       console.log("[select] room.selection", room.selection)
+  //       if (!room.selection) {
+  //         console.log("[select] room has no selection")
+  //         // calculate legalTiles 
+  //         let pieces;
+  //         let history;
+  //         if (tileType(tile) === 'home') {
+  //           history = []
+  //           pieces = [{tile, team, tokenId, history}]
+  //         } else if (room.tiles[tile][0].team === team) {
+  //           history = room.tiles[tile][0].history // go back the way you came from of the first token
+  //           pieces = room.tiles[tile];
+  //         }
+  //         let legalTiles = getLegalTiles(tile, room.teams[team].moves, room.teams[team].pieces, history)
+  //         if (!(Object.keys(legalTiles).length === 0)) {
+  //           room.selection = { tile, pieces };
+  //           console.log("[select] selection", room.selection)
+  //           room.legalTiles = legalTiles;
+  //           console.log("[select] legalTiles", room.legalTiles)
+  //         }
+  //       } else {
+  //         room.selection = undefined;
+  //         console.log("[select] selection", room.selection)
+  //         room.legalTiles = {};
+  //         console.log("[select] legalTiles", room.legalTiles)
+  //       }
+  //       room.serverEvent.name = 'select'
+  //       room.serverEvent.content = {}
+  //       await room.save();
+  //     }
+  //   } catch (err) {
+  //     console.log(`[select] error making selection`, err)
+  //   }
+  // });
+
+  socket.on("select", async ({ roomId, selection, legalTiles }) => {
     try {
-      // check that team has the turn
-      // that there is a token with team that's passed in on the tile
-      let room = Room.findOne(
-        {
-          shortId: roomId, 
-          paused: false,
-          
-        }
-      )
-      if (room) {
-        // calculate legalTiles 
-      }
       await Room.findOneAndUpdate(
         { 
           shortId: roomId, 
@@ -988,7 +1043,10 @@ io.on("connect", async (socket) => {
           $set: { 
             'selection': selection === 'null' ? null : selection,
             'legalTiles': legalTiles,
-            'serverEvent': 'select'
+            'serverEvent': {
+              name: 'select',
+              content: {}
+            }
           }
         }
       )
@@ -996,33 +1054,6 @@ io.on("connect", async (socket) => {
       console.log(`[select] error making selection`, err)
     }
   });
-
-  // socket.on("select", async ({ roomId, selection, tile, team, history }) => {
-  //   try {
-  //     let room = Room.findOne(
-  //       {
-  //         shortId: roomId, 
-  //         paused: false,
-          
-  //       }
-  //     )
-  //     await Room.findOneAndUpdate(
-  //       { 
-  //         shortId: roomId, 
-  //         paused: false
-  //       }, 
-  //       { 
-  //         $set: { 
-  //           'selection': selection === 'null' ? null : selection,
-  //           'legalTiles': legalTiles,
-  //           'serverEvent': 'select'
-  //         }
-  //       }
-  //     )
-  //   } catch (err) {
-  //     console.log(`[select] error making selection`, err)
-  //   }
-  // });
 
   // Client only emits this event if it has the turn
   

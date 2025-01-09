@@ -537,6 +537,7 @@ export const SocketManager = () => {
     })
 
     socket.on("select", ({ selection, legalTiles }) => { //receive
+      console.log('[select]')
       // handle
       setSelection(selection)
       setLegalTiles(legalTiles)

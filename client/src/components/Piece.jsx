@@ -2,11 +2,10 @@
 import { socket } from "../SocketManager";
 import { useAtom, useAtomValue } from "jotai";
 import React, { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
 import { getLegalTiles } from "../helpers/legalTiles";
 import Rocket from "../meshes/Rocket.jsx";
 import Ufo from "../meshes/Ufo.jsx";
-import { teamsAtom, gamePhaseAtom, yootThrownAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom } from "../GlobalState.jsx";
+import { teamsAtom, gamePhaseAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom } from "../GlobalState.jsx";
 import { useParams } from "wouter";
 import { pieceStatus } from "../helpers/helpers.js";
 import { animated } from "@react-spring/three";
@@ -51,32 +50,6 @@ export default function Piece ({
 
   // Piece selected: bulge
   // rocket shaking on selected
-  // function handlePointerDown(event) {
-  //   if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
-  //     event.stopPropagation();
-  //     if (selection === null) {
-  //       let pieces;
-  //       let history;
-  //       if (pieceStatus(tile) === 'home') {
-  //         history = []
-  //         pieces = [{tile, team, id, history}]
-  //       } else {
-  //         history = tiles[tile][0].history // go back the way you came from of the first token
-  //         pieces = tiles[tile];
-  //       }
-  //       let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
-  //       if (!(Object.keys(legalTiles).length == 0)) {
-  //         socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
-  //       }
-  //     } else {
-  //       if (selection.tile != tile && tile in legalTiles) {
-  //         socket.emit("move", { roomId: params.id.toUpperCase(), tile });
-  //       } else {
-  //         socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
-  //       }
-  //     }
-  //   }
-  // }
   function handlePointerDown(event) {
     if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
       event.stopPropagation();
@@ -103,6 +76,32 @@ export default function Piece ({
       }
     }
   }
+
+  // refactor
+  // function handlePointerDown(event) {
+  //   if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
+  //     event.stopPropagation();
+  //     if (selection === null) {
+  //       let pieces;
+  //       let history;
+  //       if (pieceStatus(tile) === 'home') {
+  //         history = []
+  //         pieces = [{tile, team, id, history}]
+  //       } else {
+  //         history = tiles[tile][0].history // go back the way you came from of the first token
+  //         pieces = tiles[tile];
+  //       }
+  //       let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
+  //       if (!(Object.keys(legalTiles).length == 0)) {
+  //         socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
+  //       }
+  //     } else if (selection.tile != tile && tile in legalTiles) {
+  //       socket.emit("move", { roomId: params.id.toUpperCase(), tile });
+  //     } else {
+  //       socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
+  //     }
+  //   }
+  // }
 
   return (
     <animated.group
