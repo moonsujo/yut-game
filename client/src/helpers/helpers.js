@@ -49,13 +49,41 @@ export function isMyTurn (turn, teams, socketId) {
   }
 }
 
-export function pieceStatus(tile) {
+export function tileType(tile) {
   if (tile === -1) {
     return 'home'
   } else if (tile === 29) {
     return 'scored'
   } else {
     return 'onBoard'
+  }
+}
+
+export function hasValidMoveHome(pieces, moves, backdoLaunch) {
+  // 0 is not a valid move
+  let pieceOnBoard = false
+  for (const piece of pieces) {
+    if (tileType(piece.tile) === 'onBoard') {
+      pieceOnBoard = true
+    }
+  }
+
+  if (!pieceOnBoard) {
+    if (backdoLaunch) {
+      for (const move in moves) {
+        if (parseInt(move) !== 0 && moves[move] > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  } else {
+    for (const move in moves) {
+      if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

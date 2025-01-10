@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAtom } from 'jotai';
-import { clientAtom, selectionAtom, teamsAtom } from './GlobalState';
+import { useAtom, useAtomValue } from 'jotai';
+import { backdoLaunchAtom, clientAtom, selectionAtom, teamsAtom } from './GlobalState';
 import layout from './layout';
 import Piece from './components/Piece';
-import { pieceSelected, pieceStatus } from './helpers/helpers';
+import { hasValidMoveHome, pieceSelected, tileType } from './helpers/helpers';
 
 export default function PiecesSection({ 
   position=[0,0,0], 
@@ -14,6 +14,7 @@ export default function PiecesSection({
   const [client] = useAtom(clientAtom)
   const [teams] = useAtom(teamsAtom)
   const [selection] = useAtom(selectionAtom)
+  const backdoLaunch = useAtomValue(backdoLaunchAtom)
 
   function UnassignedPieces() {
     const emptyPieces = [0, 0, 0, 0]
@@ -51,46 +52,15 @@ export default function PiecesSection({
       </mesh>
     }
 
-    function hasValidMoveHome() {
-      // if no pieces are on the board
-      // -1 is a valid move
-      // else
-      // only 1-5 are valid moves
-      // 0 is not a valid move
-      let pieceOnBoard = false
-      for (const piece of teams[team].pieces) {
-        if (pieceStatus(piece.tile) === 'onBoard') {
-          pieceOnBoard = true
-        }
-      }
-
-      const moves = teams[team].moves
-      if (!pieceOnBoard) {
-        for (const move in moves) {
-          if (parseInt(move) !== 0 && moves[move] > 0) {
-            return true;
-          }
-        }
-        return false;
-      } else {
-        for (const move in moves) {
-          if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
-            return true;
-          }
-        }
-        return false;
-      }
-    }
-
     return (
       <group>
         {
           teams[team].pieces.map((value, index) =>
-            pieceStatus(value.tile) === "onBoard" ? <EmptyPiece 
+            tileType(value.tile) === "onBoard" ? <EmptyPiece 
               position={layout[device].game.piecesSection.pieces.positions[index]}
               key={index}
             /> : 
-            pieceStatus(value.tile) === "scored" ? <ScoredPiece
+            tileType(value.tile) === "scored" ? <ScoredPiece
               position={layout[device].game.piecesSection.pieces.positions[index]}
               key={index}
             /> : <Piece
@@ -102,7 +72,7 @@ export default function PiecesSection({
               id={value.id}
               key={index}
               // on selection, no other piece should be in 'selectable' animation
-              selectable={(selection === null && hasValidMoveHome())}
+              selectable={(selection === null && hasValidMoveHome(teams[team].pieces, teams[team].moves, backdoLaunch))}
               onBoard={false}
               selected={pieceSelected(selection, value.id, team)}
             />

@@ -5,9 +5,9 @@ import React, { useRef } from "react";
 import { getLegalTiles } from "../helpers/legalTiles";
 import Rocket from "../meshes/Rocket.jsx";
 import Ufo from "../meshes/Ufo.jsx";
-import { teamsAtom, gamePhaseAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom } from "../GlobalState.jsx";
+import { teamsAtom, gamePhaseAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom, backdoLaunchAtom } from "../GlobalState.jsx";
 import { useParams } from "wouter";
-import { pieceStatus } from "../helpers/helpers.js";
+import { tileType } from "../helpers/helpers.js";
 import { animated } from "@react-spring/three";
 
 export default function Piece ({
@@ -31,6 +31,7 @@ export default function Piece ({
   const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
   const paused = useAtomValue(pauseGameAtom)
+  const backdoLaunch = useAtomValue(backdoLaunchAtom)
 
   const group = useRef();
   const wrapperMat = useRef();
@@ -56,14 +57,14 @@ export default function Piece ({
       if (selection === null) {
         let pieces;
         let history;
-        if (pieceStatus(tile) === 'home') {
+        if (tileType(tile) === 'home') {
           history = []
           pieces = [{tile, team, id, history}]
         } else {
           history = tiles[tile][0].history // go back the way you came from of the first token
           pieces = tiles[tile];
         }
-        let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
+        let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history, backdoLaunch)
         if (!(Object.keys(legalTiles).length == 0)) {
           socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
         }

@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom } from './GlobalState';
 import { Html, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import Piece from './components/Piece';
-import { formatName, pieceStatus } from './helpers/helpers';
+import { formatName, tileType } from './helpers/helpers';
 import { MeshStandardMaterial } from 'three';
 import YootMesh from './meshes/YootMesh';
 import { useFrame } from '@react-three/fiber';
@@ -131,7 +131,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       <group position={position} scale={scale}>
         {
           teams[team].pieces.map((value, index) =>
-            pieceStatus(value.tile) === "onBoard" ? <EmptyPiece 
+            tileType(value.tile) === "onBoard" ? <EmptyPiece 
               position={[
                 positionStartX + index * space,
                 positionStartY,
@@ -139,7 +139,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
               ]}
               key={index}
             /> : 
-            pieceStatus(value.tile) === "scored" ? <ScoredPiece
+            tileType(value.tile) === "scored" ? <ScoredPiece
               position={[
                 positionStartX + index * space,
                 positionStartY,

@@ -1,5 +1,5 @@
 import edgeList from "./edgeList.js";
-import { pieceStatus } from "./helpers.js";
+import { tileType } from "./helpers.js";
 
 // schema
 // legalTiles: {
@@ -9,7 +9,7 @@ import { pieceStatus } from "./helpers.js";
 //     { destination: 29, "move": 2, "path": [28, 29]}
 //   ]
 // }
-export function getLegalTiles(tile, moves, pieces, history) {
+export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
   let legalTiles = {}
 
   for (let move in moves) {
@@ -18,7 +18,7 @@ export function getLegalTiles(tile, moves, pieces, history) {
     } else if (moves[move] > 0) {
 
       // Special Rule: If you don't have a piece on the board, you can place one on Earth immediately
-      if (parseInt(move) < 0 && checkBackdoRule(moves, pieces)) {
+      if (parseInt(move) < 0 && (backdoLaunch && checkBackdoRule(moves, pieces))) {
 
         legalTiles[0] = { tile: 0, move: "-1", history: [], path: [1, 0] }
 
@@ -37,7 +37,7 @@ export function getLegalTiles(tile, moves, pieces, history) {
         for (let i = 0; i < forks.length; i++) {
           
           // Initialize path
-          let path = pieceStatus(tile) === 'home' ? [0] : [tile]
+          let path = tileType(tile) === 'home' ? [0] : [tile]
           let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path)
           
           let forkHistory = makeNewHistory(

@@ -3,7 +3,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame } from "@react-three/fiber";
-import { animationPlayingAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
+import { animationPlayingAtom, backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom, yootThrownAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
@@ -36,6 +36,7 @@ export default function Tile({
   const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
   const paused = useAtomValue(pauseGameAtom)
+  const backdoLaunch = useAtomValue(backdoLaunchAtom)
 
   const group = useRef()
   const wrapperMat = useRef();
@@ -61,7 +62,7 @@ export default function Tile({
       if (selection === null) {
         if (pieces.length > 0 && pieces[0].team === team) {
           let history = tiles[tile][0].history
-          let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history)
+          let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history, backdoLaunch)
           if (!(Object.keys(legalTiles).length === 0)) {
             socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
           }

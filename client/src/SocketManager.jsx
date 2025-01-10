@@ -281,6 +281,11 @@ export const SocketManager = () => {
       setGameLogs(room.gameLogs)
 
       setPauseGame(room.paused)
+
+      setBackdoLaunch(room.rules.backdoLaunch)
+      setTimer(room.rules.timer)
+      setNak(room.rules.nak)
+      setYutMoCatch(room.rules.yutMoCatch)
     })
 
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
@@ -329,6 +334,8 @@ export const SocketManager = () => {
 
       setYootOutcome(yootOutcome)
       
+      console.log('[recordThrow] yootOutcome', yootOutcome, 'teams[turnPrev.team].throws', teams[turnPrev.team].throws, 'teams[turnPrev.team].moves', teams[turnPrev.team].moves, 'teams[turnPrev.team].pieces', teams[turnPrev.team].pieces)
+      console.log('[recordThrow] isBackdoMovesWithoutPieces', isBackdoMovesWithoutPieces(teams[turnPrev.team].moves, teams[turnPrev.team].pieces))
       if (gamePhaseUpdate === 'pregame') {
         let yootOutcomeAlertName;
         if (yootOutcome === 4 || yootOutcome === 5) {
@@ -359,10 +366,9 @@ export const SocketManager = () => {
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
-        if (yootOutcome === 0 && teams[turnPrev.team].throws === 0 && movesIsEmpty(teams[turnPrev.team].moves)) {
+        if ((yootOutcome === 0 || yootOutcome === -1) && teams[turnPrev.team].throws === 0 && movesIsEmpty(teams[turnPrev.team].moves)) {
           setAlerts([yootOutcomeAlertName, 'turn']) // add 'no available moves' alert
-        } else if (yootOutcome === -1 && teams[turnPrev.team].throws === 0 && isBackdoMovesWithoutPieces(teams[turnPrev.team].moves, teams[turnPrev.team].pieces)) {
-          setAlerts([yootOutcomeAlertName, 'turn']) // add 'no available moves' alert
+          // server determines if turn was skipped
         } else {
           if (yootOutcome === 4) {
             const audio = new Audio('sounds/effects/yut.wav');

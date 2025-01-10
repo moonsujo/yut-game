@@ -6,6 +6,7 @@ import { useParams } from "wouter";
 import { useFrame } from "@react-three/fiber";
 import layout from "./layout.js";
 import { pauseGameAtom } from "./GlobalState.jsx";
+import { useAtomValue } from "jotai";
 
 export default function ScoreButtons({ device, legalTiles, hasTurn }) {
   
