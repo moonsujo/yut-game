@@ -334,8 +334,6 @@ export const SocketManager = () => {
 
       setYootOutcome(yootOutcome)
       
-      console.log('[recordThrow] yootOutcome', yootOutcome, 'teams[turnPrev.team].throws', teams[turnPrev.team].throws, 'teams[turnPrev.team].moves', teams[turnPrev.team].moves, 'teams[turnPrev.team].pieces', teams[turnPrev.team].pieces)
-      console.log('[recordThrow] isBackdoMovesWithoutPieces', isBackdoMovesWithoutPieces(teams[turnPrev.team].moves, teams[turnPrev.team].pieces))
       if (gamePhaseUpdate === 'pregame') {
         let yootOutcomeAlertName;
         if (yootOutcome === 4 || yootOutcome === 5) {
@@ -545,7 +543,6 @@ export const SocketManager = () => {
     })
 
     socket.on("select", ({ selection, legalTiles }) => { //receive
-      console.log('[select]')
       // handle
       setSelection(selection)
       setLegalTiles(legalTiles)
@@ -609,9 +606,7 @@ export const SocketManager = () => {
       setLegalTiles({})
       setSelection(null)
 
-      console.log('[reset] teams[0].players', teams[0].players)
       setTeams((teams) => {
-        console.log('[reset][setTeams] teams', teams)
         const newTeams = [...teams] // make shallow copy
         newTeams[0].pieces = JSON.parse(JSON.stringify(initialState.initialTeams[0].pieces))
         newTeams[0].throws = 0

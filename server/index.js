@@ -454,8 +454,7 @@ io.on("connect", async (socket) => {
         },
         paused: false,
         rules: {
-          backdoLaunch: false,
-          // backdoLaunch: true,
+          backdoLaunch: true,
           timer: true,
           nak: true,
           yutMoCatch: true
@@ -650,24 +649,24 @@ io.on("connect", async (socket) => {
 
       let newTurn;
       // test
-      newTurn = {
-        team: 1,
-        players: [0,0]
-      }
-      // if (room.results.length > 0) {
-      //   newTurn = {
-      //     team: room.results[room.results.length-1],
-      //     players: [0, 0]
-      //   }
-      // } else {
-      //   newTurn = getHostTurn(room)
+      // newTurn = {
+      //   team: 1,
+      //   players: [0,0]
       // }
+      if (room.results.length > 0) {
+        newTurn = {
+          team: room.results[room.results.length-1],
+          players: [0, 0]
+        }
+      } else {
+        newTurn = getHostTurn(room)
+      }
       
       await Room.findOneAndUpdate({ shortId: roomId }, {
         $set: {
           [`teams.${newTurn.team}.throws`]: 0,
-          gamePhase: "game",
-          // gamePhase: "pregame",
+          // gamePhase: "game",
+          gamePhase: "pregame",
           turn: newTurn,
           serverEvent: "gameStart"
         },
@@ -899,11 +898,6 @@ io.on("connect", async (socket) => {
               }
 
               // Call .toObject() on moves to leave out the mongoose methods
-              console.log('[throwYoot] room.rules.backdoLaunch', room.rules.backdoLaunch)
-              console.log('[throwYoot] isEmptyMoves(room.teams[user.team].moves.toObject())', isEmptyMoves(room.teams[user.team].moves.toObject()))
-              console.log('[throwYoot] room.teams[user.team].moves.toObject()', room.teams[user.team].moves.toObject())
-              console.log('[throwYoot] room.teams[user.team].pieces)', room.teams[user.team].pieces)
-              console.log('[throwYoot] isBackdoMovesWithoutPieces', isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))
               if (room.teams[user.team].throws === 0 && 
               (isEmptyMoves(room.teams[user.team].moves.toObject()) || 
               (!room.rules.backdoLaunch && isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))) ) {
@@ -998,7 +992,6 @@ io.on("connect", async (socket) => {
   }
 
   function isBackdoMovesWithoutPieces(moves, pieces) {
-    console.log('[isBackdoMovesWithoutPieces] moves', moves, 'pieces', pieces)
     if (moves['-1'] === 0) {
       return false;
     }
@@ -1324,7 +1317,7 @@ io.on("connect", async (socket) => {
         // pass check
         let throws = room.teams[movingTeam].throws;
         moves[selectedMove.move]--;
-        if (throws === 0 && isEmptyMoves(moves.toObject())) { // check backdoLaunch rule
+        if (throws === 0 && (isEmptyMoves(moves.toObject()) || isBackdoMovesWithoutPieces(moves.toObject(), room.teams[movingTeam].pieces))) { // check backdoLaunch rule
           const newTurn = passTurn(room.turn, room.teams)
           await Room.findOneAndUpdate(
             { 

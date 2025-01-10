@@ -6,7 +6,7 @@ export default {
     { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
   ],
   initialPiecesTeam1: [
-    { tile: 0, team: 1, id: 0, history: [], lastPath: [] },
+    { tile: -1, team: 1, id: 0, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
@@ -16,14 +16,12 @@ export default {
     '1': 0,
     '2': 0,
     '3': 0,
-    '4': 1,
+    '4': 0,
     '5': 0,
-    '-1': 1
+    '-1': 0
   },
   initialTiles: [
-    [
-      { tile: 0, team: 1, id: 0, history: [], lastPath: [] },
-    ], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
+    [], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
     [],
     [],
     [],
