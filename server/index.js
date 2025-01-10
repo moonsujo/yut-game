@@ -238,14 +238,15 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               yootOutcome: data.fullDocument.yootOutcome,
               gameLogs: data.fullDocument.gameLogs // only the new logs that were added
             })
-          } else if (serverEvent === "move") {
+          } else if (serverEvent.name === "move") {
             io.to(userSocketId).emit("move", {
               teamsUpdate: roomPopulated.teams,
               turnUpdate: data.fullDocument.turn,
               legalTiles: data.fullDocument.legalTiles,
               tiles: data.fullDocument.tiles, // should emit indices of elements that changed, and their contents
               gameLogs: data.fullDocument.gameLogs,
-              selection: data.fullDocument.selection
+              selection: data.fullDocument.selection,
+              moveUsed: serverEvent.content.moveUsed
             })
           } else if (serverEvent.name === "select") {
             console.log('select')
@@ -703,17 +704,29 @@ io.on("connect", async (socket) => {
     return array.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
   }
 
-  function pickOutcome() {
+  function pickOutcome({ nakEnabled }) {
     // return outcome
     // front end maps outcome to an animation
-    const doProb = 0.21
-    const backdoProb = 0.07
-    const geProb = 0.3
-    const gulProb = 0.27
-    const yootProb = 0.1
-    const moProb = 0.03
-    const nakProb = 0.02
-    const probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
+    let probs;
+    if (nakEnabled) {
+      const doProb = 0.21
+      const backdoProb = 0.07
+      const geProb = 0.3
+      const gulProb = 0.27
+      const yootProb = 0.1
+      const moProb = 0.03
+      const nakProb = 0.02
+      probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
+    } else {
+      const doProb = 0.214
+      const backdoProb = 0.071
+      const geProb = 0.306
+      const gulProb = 0.276
+      const yootProb = 0.102
+      const moProb = 0.031
+      const nakProb = 0
+      probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
+    }
     const randomNum = Math.random()
     if (randomNum < sumArray(probs.slice(0, 1))) {
       return 1
@@ -764,23 +777,23 @@ io.on("connect", async (socket) => {
         throw new Error('[throwYoot] room with shortId', roomId, 'not found, or game is paused')
       } else if (room.teams[user.team].throws > 0) { // reduce number of calls to the database
 
-        // const outcome = pickOutcome()
+        const outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        let outcome;
-        if (room.gamePhase === 'pregame') {
-          if (room.turn.team === 1) {
-            outcome = 5
-          } else {
-            outcome = 4
-          }
-        } else if (room.gamePhase === 'game') {
-          outcome = -1
-          // if (room.turn.team === 0) {
-          //   outcome = Math.random() > 0.5 ? 5 : 4
-          // } else {
-          //   outcome = 1
-          // }
-        }
+        // let outcome;
+        // if (room.gamePhase === 'pregame') {
+        //   if (room.turn.team === 1) {
+        //     outcome = 5
+        //   } else {
+        //     outcome = 4
+        //   }
+        // } else if (room.gamePhase === 'game') {
+        //   outcome = -1
+        //   if (room.turn.team === 0) {
+        //     outcome = Math.random() > 0.5 ? 5 : 4
+        //   } else {
+        //     outcome = 1
+        //   }
+        // }
         const animation = pickAnimation(outcome)
         await Room.findOneAndUpdate( // consolidate into one call with the 'findOne' call from above
           { 
@@ -1179,7 +1192,8 @@ io.on("connect", async (socket) => {
           }
           
           operation['$set'][`tiles.${to}`] = pieces
-          throws++;
+          if (room.rules.yutMoCatch)
+            throws++;
 
           gameLogs.push({
             logType: "catch",
@@ -1224,7 +1238,12 @@ io.on("connect", async (socket) => {
       }
       
       operation['$push']['gameLogs'] = { '$each': gameLogs }
-      operation['$set']['serverEvent'] = 'move'
+      operation['$set']['serverEvent'] = {
+        name: 'move',
+        content: {
+          moveUsed 
+        }
+      }
 
       await Room.findOneAndUpdate(
         { 

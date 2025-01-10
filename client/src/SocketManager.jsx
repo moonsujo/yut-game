@@ -132,7 +132,7 @@ export const SocketManager = () => {
   const setBackdoLaunch = useSetAtom(backdoLaunchAtom);
   const setTimer = useSetAtom(timerAtom)
   const setNak = useSetAtom(nakAtom)
-  const setYutMoCatch = useSetAtom(yutMoCatchAtom)
+  const [yutMoCatch, setYutMoCatch] = useAtom(yutMoCatchAtom)
 
   useEffect(() => {
 
@@ -423,7 +423,7 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection }) => {
+    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -446,8 +446,10 @@ export const SocketManager = () => {
       let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
       if (numPiecesCaught > 0) {
         alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
-        setCatchPath(gameLogs[gameLogs.length-1].content.path)
-        setThrowCount(teamsUpdate[turnUpdate.team].throws)
+        if (yutMoCatch || (moveUsed !== 4 && moveUsed !== 5)) {
+          setCatchPath(gameLogs[gameLogs.length-1].content.path)
+          setThrowCount(teamsUpdate[turnUpdate.team].throws)
+        }
       } else { // 2. join / pass turn
         let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
         if (joined.result) {
