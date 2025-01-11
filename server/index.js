@@ -665,9 +665,9 @@ io.on("connect", async (socket) => {
       
       await Room.findOneAndUpdate({ shortId: roomId }, {
         $set: {
-          [`teams.${newTurn.team}.throws`]: 0,
-          // gamePhase: "game",
-          gamePhase: "pregame",
+          [`teams.${newTurn.team}.throws`]: 1,
+          // gamePhase: "game", // test
+          gamePhase: "pregame", 
           turn: newTurn,
           serverEvent: "gameStart"
         },
@@ -787,7 +787,7 @@ io.on("connect", async (socket) => {
         //     outcome = 4
         //   }
         // } else if (room.gamePhase === 'game') {
-        //   outcome = -1
+        //   outcome = 3
         //   if (room.turn.team === 0) {
         //     outcome = Math.random() > 0.5 ? 5 : 4
         //   } else {
@@ -870,8 +870,7 @@ io.on("connect", async (socket) => {
                 operation['$set']['turn'] = newTurn
                 operation['$set']['pregameOutcome'] = outcomePregame.toString()
                 operation['$set']['gamePhase'] = 'game'
-                operation['$inc'][`teams.${outcomePregame}.throws`] = 2
-                // operation['$inc'][`teams.${outcomePregame}.throws`] = 1
+                operation['$inc'][`teams.${outcomePregame}.throws`] = 1
                 gameLogs.push(
                   {
                     logType: 'pregameResult',
@@ -1192,8 +1191,9 @@ io.on("connect", async (socket) => {
           }
           
           operation['$set'][`tiles.${to}`] = pieces
-          if (room.rules.yutMoCatch)
+          if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
             throws++;
+          }
 
           gameLogs.push({
             logType: "catch",

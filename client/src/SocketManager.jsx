@@ -446,8 +446,8 @@ export const SocketManager = () => {
       let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
       if (numPiecesCaught > 0) {
         alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
+        setCatchPath(gameLogs[gameLogs.length-1].content.path)
         if (yutMoCatch || (moveUsed !== 4 && moveUsed !== 5)) {
-          setCatchPath(gameLogs[gameLogs.length-1].content.path)
           setThrowCount(teamsUpdate[turnUpdate.team].throws)
         }
       } else { // 2. join / pass turn
