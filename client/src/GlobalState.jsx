@@ -88,6 +88,7 @@ export const yutMoCatchAtom = atom(true)
 export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
 export const pauseGameAtom = atom(false)
+export const languageAtom = atom('english')
 
 const deepPieceEquals = (prev, next) => {
   let result;

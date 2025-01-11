@@ -14,3 +14,13 @@ body,
 {
     touch-action: none;
 }
+
+@font-face {
+    font-family: 'MaplestoryBold';
+    src: local('MaplestoryBold'), url(/fonts/MaplestoryBold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'BoboheiBold';
+    src: local('BoboheiBold'), url(/fonts/BoboheiBold.ttf) format('truetype');
+}
