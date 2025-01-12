@@ -1432,9 +1432,15 @@ export default {
         rotation: [0, Math.PI/2, 0],
         scale: 1.4
       },
+      timer: {
+        position: [3.73,0,7],
+        scaleX: 1.3
+      },
       throwCount: {
-        position: [1.7, 0, -0.8],
-        orientation: 'leftRight'
+        position: [-1.3, 0, 1.25],
+        // position: [1.7, 0, -0.8],
+        orientation: 'downUp'
+        // orientation: 'leftRight'
       },
       scoreButtons: {
         single: {
@@ -2984,6 +2990,10 @@ export default {
         position: [9, 0, 4.2],
         rotation: [0, Math.PI/2, 0],
         scale: 1
+      },
+      timer: {
+        position: [9,0,2.4],
+        scaleX: 1
       },
       throwCount: {
         position: [-1, 0, -1.3],

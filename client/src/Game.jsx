@@ -57,6 +57,7 @@ import useResponsiveSetting from "./hooks/useResponsiveSetting.jsx";
 import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 import SettingsHtml from "./SettingsHtml.jsx";
 import PauseGame from "./PauseGame.jsx";
+import Timer from "./Timer.jsx";
 
 // There should be no state
 export default function Game() {
@@ -1002,6 +1003,7 @@ export default function Game() {
       {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
       {/* host */}
       { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
+      { (gamePhase === 'pregame' || gamePhase === 'game') && <Timer position={layout[device].game.timer.position} scale={[layout[device].game.timer.scaleX, 1, 1]}/> }
       <MeteorsRealShader/>
     </>
   );

@@ -33,9 +33,9 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
 
   useFrame((state, delta) => {
     if (enabled) {
-      buttonRef.current.scale.x = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
-      buttonRef.current.scale.y = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
-      buttonRef.current.scale.z = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
+      // buttonRef.current.scale.x = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
+      // buttonRef.current.scale.y = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
+      // buttonRef.current.scale.z = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
     } else {
       buttonRef.current.scale.x = scale
       buttonRef.current.scale.y = scale

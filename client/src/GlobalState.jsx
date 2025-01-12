@@ -89,6 +89,9 @@ export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
 export const pauseGameAtom = atom(false)
 export const languageAtom = atom('english')
+export const timeLeftAtom = atom(60); // seconds
+export const timerOnAtom = atom(false);
+export const turnExpireTimeAtom = atom(null);
 
 const deepPieceEquals = (prev, next) => {
   let result;

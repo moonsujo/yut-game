@@ -39,7 +39,8 @@ import {
   backdoLaunchAtom,
   timerAtom,
   nakAtom,
-  yutMoCatchAtom
+  yutMoCatchAtom,
+  turnExpireTimeAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
@@ -133,6 +134,7 @@ export const SocketManager = () => {
   const setTimer = useSetAtom(timerAtom)
   const setNak = useSetAtom(nakAtom)
   const [yutMoCatch, setYutMoCatch] = useAtom(yutMoCatchAtom)
+  const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
 
   useEffect(() => {
 
@@ -286,6 +288,8 @@ export const SocketManager = () => {
       setTimer(room.rules.timer)
       setNak(room.rules.nak)
       setYutMoCatch(room.rules.yutMoCatch)
+      console.log('[room] room.turnExpireTime', room.turnExpireTime)
+      setTurnExpireTime(room.turnExpireTime)
     })
 
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
@@ -297,7 +301,7 @@ export const SocketManager = () => {
       audio.play();
     })
 
-    socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs }) => {
+    socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs, turnExpireTime }) => {
       setTeams(teams) // only update the throw count of the current team
       setGamePhase(gamePhase)
       setTurn(turn)
@@ -310,6 +314,7 @@ export const SocketManager = () => {
       
       setHasTurn(clientHasTurn(socket.id, teams, turn))
       setGameLogs(gameLogs)
+      setTurnExpireTime(turnExpireTime)
       
       playMusic();
     })
