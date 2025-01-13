@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { io } from "socket.io-client";
 
@@ -68,9 +68,9 @@ export const socket = io(
 // export const socket = io("http://192.168.86.158:3000"); // http://192.168.1.181:3000 //http://192.168.86.158:3000
 // doesn't work when another app is running on the same port
 export const SocketManager = () => {
-  const [_client, setClient] = useAtom(clientAtom);
+  const [client, setClient] = useAtom(clientAtom);
   const [teams, setTeams] = useAtom(teamsAtom)
-  const [_turn, setTurn] = useAtom(turnAtom);
+  const [turn, setTurn] = useAtom(turnAtom);
   const [_room] = useAtom(roomAtom);
   const [_messages, setMessages] = useAtom(messagesAtom);
   const [_gameLogs, setGameLogs] = useAtom(gameLogsAtom);
@@ -301,23 +301,43 @@ export const SocketManager = () => {
       audio.play();
     })
 
-    socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs, turnExpireTime }) => {
-      setTeams(teams) // only update the throw count of the current team
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount }) => {
+      console.log('[gameStart] newTeam', newTeam, 'newPlayer', newPlayer)
       setGamePhase(gamePhase)
-      setTurn(turn)
-      setThrowCount(teams[turn.team].throws)
-      
-      const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
-      setCurrentPlayerName(currentPlayerName)
+      setTurn(turn => {
+        turn.team = newTeam;
+        turn.players[turn.team] = newPlayer
+        console.log('[turnSwitch] new turn', turn)
+        return { ...turn } // must spread the object
+      })
+      setTeams(teams => {
+        const newTeamObj = { ...teams[newTeam] }
+        newTeamObj.throws = throwCount
+        teams[newTeam] = newTeamObj
+        return [...teams];
+      })
       setAlerts(['gameStart', 'turn'])
-      setAnimationPlaying(true)
-      
-      setHasTurn(clientHasTurn(socket.id, teams, turn))
-      setGameLogs(gameLogs)
-      setTurnExpireTime(turnExpireTime)
-      
-      playMusic();
+      setAnimationPlaying(true);
     })
+
+    // socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs, turnExpireTime }) => {
+    //   setTeams(teams) // only update the throw count of the current team
+    //   setGamePhase(gamePhase)
+    //   setTurn(turn)
+    //   setThrowCount(teams[turn.team].throws)
+      
+    //   const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
+    //   setCurrentPlayerName(currentPlayerName)
+    //   setAlerts(['gameStart', 'turn'])
+    //   setAnimationPlaying(true)
+      
+    //   setHasTurn(clientHasTurn(socket.id, teams, turn))
+    //   setGameLogs(gameLogs)
+    //   console.log('[gameStart] turnExpireTime', turnExpireTime)
+    //   setTurnExpireTime(turnExpireTime)
+      
+    //   playMusic();
+    // })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {    
       setTeams(teams) // only update the throw count of the current team
@@ -757,6 +777,8 @@ export const SocketManager = () => {
             ...newTeams[team],
             players: newPlayers
           }
+          // check if you have the turn
+          // setHasTurn(clientHasTurn(socket.id, teams, turn))
           return newTeams
         })
       }
@@ -784,7 +806,6 @@ export const SocketManager = () => {
         }
     })
 
-    
     socket.on('kicked', () => {
       setSettingsOpen(false)
       setDisconnect(true);
@@ -804,6 +825,22 @@ export const SocketManager = () => {
       }
     })
 
+    socket.on("timeExpired", ({ teamIndex, playerIndex }) => {
+      console.log('[timeExpired] teamIndex', teamIndex, 'playerIndex', playerIndex)
+      setTurn(turn => {
+        turn.team = teamIndex;
+        turn.players[teamIndex] = playerIndex
+        return turn;
+      })
+      setTeams(teams => {
+        const prevTeamIndex = teamIndex === 0 ? 1 : 0
+        teams[prevTeamIndex].moves = initialState.initialMoves
+        teams[prevTeamIndex].throws = 0
+      })
+      setSelection(null)
+      setLegalTiles({})
+    })
+
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount
       setSettingsOpen(false)
@@ -818,6 +855,24 @@ export const SocketManager = () => {
     }
   }, [])
 
+  useEffect(() => {
+    console.log('[turn useEffect] turn', turn)
+    if (turn.team !== -1) {
+      const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
+      setCurrentPlayerName(currentPlayerName)
+    }
+  }, [turn])
+
+  // use this to watch for updates from no-dependency useEffect
+  // yut button didn't activate on gameStart
+  // start timer
+  useEffect(() => {
+    if (turn && client) {
+      if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
+        setHasTurn(true)
+      }
+    }
+  }, [turn, client])
 };
 
 /**

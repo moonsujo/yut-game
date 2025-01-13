@@ -4,7 +4,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
-import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, throwCountAtom, turnAtom } from './GlobalState';
+import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, teamsAtom, throwCountAtom, turnAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
@@ -24,7 +24,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
 
   // for the throw count
   const [client] = useAtom(clientAtom);
-  const [turn] = useAtom(turnAtom);
+  const turn = useAtomValue(turnAtom);
+  const teams = useAtomValue(teamsAtom)
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]
@@ -66,7 +67,9 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   }
 
   function ThrowCount({position, orientation}) {
-    const [throwCount] = useAtom(throwCountAtom)
+    // const [throwCount] = useAtom(throwCountAtom)
+    const throwCount = teams[turn.team].throws;
+    console.log('[ThrowCount] throwCount', throwCount)
 
     function positionByOrientation(index, orientation) {
       if (orientation === 'downUp') {

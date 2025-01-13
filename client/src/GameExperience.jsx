@@ -3,7 +3,6 @@ import StarsPatterns2Shader from "./shader/starsPatterns2/StarsPatterns2Shader"
 import MilkyWay from "./shader/MilkyWay"
 import Alert from "./Alert"
 import * as THREE from 'three';
-import Timer from "./Timer";
 
 export default function GameExperience() {
   return <>
