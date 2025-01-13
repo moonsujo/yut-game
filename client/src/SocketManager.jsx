@@ -40,7 +40,8 @@ import {
   timerAtom,
   nakAtom,
   yutMoCatchAtom,
-  turnExpireTimeAtom
+  turnExpireTimeAtom,
+  resultsAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
@@ -135,6 +136,7 @@ export const SocketManager = () => {
   const setNak = useSetAtom(nakAtom)
   const [yutMoCatch, setYutMoCatch] = useAtom(yutMoCatchAtom)
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
+  const [results, setResults] = useAtom(resultsAtom);
 
   useEffect(() => {
 
@@ -290,6 +292,7 @@ export const SocketManager = () => {
       setYutMoCatch(room.rules.yutMoCatch)
       console.log('[room] room.turnExpireTime', room.turnExpireTime)
       setTurnExpireTime(room.turnExpireTime)
+      setResults(room.results);
     })
 
     socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
@@ -301,13 +304,13 @@ export const SocketManager = () => {
       audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount }) => {
-      console.log('[gameStart] newTeam', newTeam, 'newPlayer', newPlayer)
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnExpireTime }) => {
+      console.log('[gameStart] throwCount', throwCount)
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
-        console.log('[turnSwitch] new turn', turn)
+        console.log('[gameStart] new turn', turn)
         return { ...turn } // must spread the object
       })
       setTeams(teams => {
@@ -318,6 +321,38 @@ export const SocketManager = () => {
       })
       setAlerts(['gameStart', 'turn'])
       setAnimationPlaying(true);
+      console.log('[gameStart] turnExpireTime', turnExpireTime)
+      setTurnExpireTime(turnExpireTime)
+      setGameLogs(prevGameLogs => {
+        return [
+          ...prevGameLogs, 
+          {
+            logType: 'gameStart',
+            content: {
+              text: `Match ${results.length+1} started`
+            }
+          }
+        ]
+      })
+    })
+
+    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnExpireTime }) => {
+      console.log('[passTurn]')
+      setTurn(turn => {
+        turn.team = newTeam;
+        turn.players[turn.team] = newPlayer
+        console.log('[passTurn] new turn', turn)
+        return { ...turn } // must spread the object
+      })
+      setTeams(teams => {
+        const newTeamObj = { ...teams[newTeam] }
+        newTeamObj.throws = throwCount
+        teams[newTeam] = newTeamObj
+        return [...teams];
+      })
+      setAlerts(['turn'])
+      setAnimationPlaying(true);
+      setTurnExpireTime(turnExpireTime)
     })
 
     // socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs, turnExpireTime }) => {
@@ -860,6 +895,19 @@ export const SocketManager = () => {
     if (turn.team !== -1) {
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
+
+      setGameLogs(prevGameLogs => {
+        return [
+          ...prevGameLogs, 
+          {
+            logType: 'passTurn',
+            content: {
+              team: turn.team,
+              playerName: teams[turn.team].players[turn.players[turn.team]].name
+            }
+          }
+        ]
+      })
     }
   }, [turn])
 
@@ -867,7 +915,7 @@ export const SocketManager = () => {
   // yut button didn't activate on gameStart
   // start timer
   useEffect(() => {
-    if (turn && client) {
+    if (turn && turn.team !== -1 && client) {
       if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
         setHasTurn(true)
       }

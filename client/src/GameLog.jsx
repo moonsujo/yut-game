@@ -209,6 +209,12 @@ export default function GameLog({ position, rotation, scale }) {
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.winningTeam === 0 ? 'Rockets' : 'UFOs'}</span> won match {log.content.matchNum}!
       </p>
+    } else if (log.logType === 'passTurn') {
+      // content: team, playerName
+      return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+        <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
+        {log.content.playerName}</span>'s turn
+      </p>
     }
   }
 

@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { socket } from "./SocketManager";
 
 export default function Timer(props) {
+  // console.log('[Timer]')
   const [turnExpireTime, setTurnExpireTime] = useAtom(turnExpireTimeAtom)
   const [currentTime, setCurrentTime] = useState(Date.now())
   const [startTime, setStartTime] = useState(null)
@@ -23,6 +24,15 @@ export default function Timer(props) {
       }
     }
   })
+
+  useEffect(() => {
+    if (turnExpireTime) {
+      console.log('[Timer] turnExpireTime', turnExpireTime)
+    }
+    return () => {
+      // call socket.off() to not listen for timer event 
+    }
+  }, [turnExpireTime])
 
   return turnExpireTime && <group {...props}>
     <mesh name='background-outer'>
