@@ -279,8 +279,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             io.to(userSocketId).emit('throwYoot', { 
               yootOutcome: data.fullDocument.yootOutcome, 
               yootAnimation: data.fullDocument.yootAnimation, 
-              teams: roomPopulated.teams, 
-              turn: data.fullDocument.turn
+              throwCount: room.teams[room.turn.team].throws,
+              turnExpireTime: null
             })
           } else if (serverEvent === "score") {
             io.to(userSocketId).emit('score', { 
@@ -681,7 +681,7 @@ io.on("connect", async (socket) => {
     }, turnExpireTime - Date.now())
     console.log('[startTimer] room', room)
     console.log('[startTimer] timer', timer)
-    room.timerId = timer._idleTimeout
+    room.timerId = timer
     // await room.save() // done in "startGame'"
     // return timer._idleTimeout
   }
@@ -876,6 +876,8 @@ io.on("connect", async (socket) => {
         throw new Error('[throwYoot] room with shortId', roomId, 'not found, or game is paused')
       } else if (room.teams[user.team].throws > 0) { // reduce number of calls to the database
 
+        clearTimeout(room.timerId)
+        room.turnExpireTime = null
         const outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
         // let outcome;

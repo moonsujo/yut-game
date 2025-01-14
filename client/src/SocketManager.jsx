@@ -295,10 +295,11 @@ export const SocketManager = () => {
       setResults(room.results);
     })
 
-    socket.on('throwYoot', ({ yootOutcome, yootAnimation, teams, turn }) => {
+    socket.on('throwYoot', ({ yootOutcome, yootAnimation, throwCount, turnExpireTime }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
-      setThrowCount(teams[turn.team].throws)
+      setThrowCount(throwCount)
+      setTurnExpireTime(turnExpireTime)
       const audio = new Audio('sounds/effects/throw.mp3');
       audio.volume=0.3;
       audio.play();
@@ -895,6 +896,7 @@ export const SocketManager = () => {
     if (turn.team !== -1) {
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
+      setHasTurn(client.team === turn.team)
 
       setGameLogs(prevGameLogs => {
         return [
