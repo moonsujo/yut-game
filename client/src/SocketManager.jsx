@@ -305,7 +305,7 @@ export const SocketManager = () => {
       audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnExpireTime }) => {
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnExpireTime, gameLogs }) => {
       console.log('[gameStart] throwCount', throwCount)
       setGamePhase(gamePhase)
       setTurn(turn => {
@@ -324,58 +324,63 @@ export const SocketManager = () => {
       setAnimationPlaying(true);
       console.log('[gameStart] turnExpireTime', turnExpireTime)
       setTurnExpireTime(turnExpireTime)
-      setGameLogs(prevGameLogs => {
-        return [
-          ...prevGameLogs, 
-          {
-            logType: 'gameStart',
-            content: {
-              text: `Match ${results.length+1} started`
-            }
-          }
-        ]
-      })
+      // setGameLogs(prevGameLogs => {
+      //   return [
+      //     ...prevGameLogs, 
+      //     {
+      //       logType: 'gameStart',
+      //       content: {
+      //         text: `Match ${results.length+1} started`
+      //       }
+      //     }
+      //   ]
+      // })
+      setGameLogs(gameLogs)
     })
 
-    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnExpireTime }) => {
+    // if pregame, could end in a pass, tie or win
+    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnExpireTime, content, gameLogs, gamePhase }) => {
       console.log('[passTurn]')
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
-        console.log('[passTurn] new turn', turn)
         return { ...turn } // must spread the object
       })
       setTeams(teams => {
         const newTeamObj = { ...teams[newTeam] }
         newTeamObj.throws = throwCount
+        const prevTeam = content.prevTeam
+        if (timeExpired) {
+          let prevTeamObj = { ...teams[prevTeam] }
+          if (content.pregameOutcome) {
+            if (content.pregameOutcome === 'tie') {
+              prevTeamObj.pregameRoll = null
+              newTeamObj.pregameRoll = null
+            } else if (content.pregameOutcome === 'pass') { // pass or winner decided
+              prevTeamObj.pregameRoll = 0
+            } else {
+              prevTeamObj.pregameRoll = 0
+            }
+          }
+          teams[prevTeam] = prevTeamObj
+        }
         teams[newTeam] = newTeamObj
         return [...teams];
       })
-      setAlerts(['turn'])
+
+      setGamePhase(gamePhase)
+      let alerts = []
+      if (timeExpired) {
+        alerts.push('timeExpired')
+      }
+      alerts.push('turn')
+      setAlerts(alerts)
       setAnimationPlaying(true);
       setTurnExpireTime(turnExpireTime)
+      setGameLogs(gameLogs)
     })
 
-    // socket.on('gameStart', ({ teams, gamePhase, turn, gameLogs, turnExpireTime }) => {
-    //   setTeams(teams) // only update the throw count of the current team
-    //   setGamePhase(gamePhase)
-    //   setTurn(turn)
-    //   setThrowCount(teams[turn.team].throws)
-      
-    //   const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
-    //   setCurrentPlayerName(currentPlayerName)
-    //   setAlerts(['gameStart', 'turn'])
-    //   setAnimationPlaying(true)
-      
-    //   setHasTurn(clientHasTurn(socket.id, teams, turn))
-    //   setGameLogs(gameLogs)
-    //   console.log('[gameStart] turnExpireTime', turnExpireTime)
-    //   setTurnExpireTime(turnExpireTime)
-      
-    //   playMusic();
-    // })
-
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs }) => {    
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs, turnExpireTime }) => {    
       setTeams(teams) // only update the throw count of the current team
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
@@ -465,6 +470,7 @@ export const SocketManager = () => {
         }
       }
 
+      setTurnExpireTime(turnExpireTime)
       setAnimationPlaying(true)
       setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
@@ -898,18 +904,18 @@ export const SocketManager = () => {
       setCurrentPlayerName(currentPlayerName)
       setHasTurn(client.team === turn.team)
 
-      setGameLogs(prevGameLogs => {
-        return [
-          ...prevGameLogs, 
-          {
-            logType: 'passTurn',
-            content: {
-              team: turn.team,
-              playerName: teams[turn.team].players[turn.players[turn.team]].name
-            }
-          }
-        ]
-      })
+      // setGameLogs(prevGameLogs => {
+      //   return [
+      //     ...prevGameLogs, 
+      //     {
+      //       logType: 'passTurn',
+      //       content: {
+      //         team: turn.team,
+      //         playerName: teams[turn.team].players[turn.players[turn.team]].name
+      //       }
+      //     }
+      //   ]
+      // })
     }
   }, [turn])
 

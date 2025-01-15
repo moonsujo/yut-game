@@ -201,7 +201,6 @@ async function addUser(socket, name) {
 }
 
 // Room stream listener
-const ALERT_TIMEOUT = 3000
 Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
   console.log(`[Room.watch]`)
   // console.log(`[Room.watch] data`, data)
@@ -239,6 +238,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newPlayer: room.turn.players[room.turn.team],
               throwCount: room.teams[room.turn.team].throws,
               turnExpireTime: serverEvent.content.turnExpireTime,
+              gameLogs: room.gameLogs
             })
             // separating it into two events lags the client
           } else if (serverEvent.name === "passTurn") {
@@ -246,7 +246,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newTeam: room.turn.team,
               newPlayer: room.turn.players[room.turn.team],
               throwCount: room.teams[room.turn.team].throws,
+              timeExpired: serverEvent.content.timeExpired,
               turnExpireTime: serverEvent.content.turnExpireTime,
+              gamePhase: room.gamePhase,
+              content: serverEvent.content,
+              gameLogs: data.fullDocument.gameLogs
             })
           } else if (serverEvent.name === "recordThrow") {
             io.to(userSocketId).emit("recordThrow", {
@@ -257,7 +261,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turnUpdate: data.fullDocument.turn,
               pregameOutcome: data.fullDocument.pregameOutcome,
               yootOutcome: data.fullDocument.yootOutcome,
-              gameLogs: data.fullDocument.gameLogs // only the new logs that were added
+              gameLogs: data.fullDocument.gameLogs, // only the new logs that were added
+              turnExpireTime: serverEvent.content.turnExpireTime
             })
           } else if (serverEvent.name === "move") {
             io.to(userSocketId).emit("move", {
@@ -397,7 +402,9 @@ async function createUniqueUsername() {
   return name;
 }
 
-const TURN_EXPIRE_TIME = 15000
+const BASE_TURN_EXPIRE_TIME = 10000 // add time for expired alert
+const ALERT_TIME = 1500
+const JUMP_TIME = 1000
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -673,36 +680,93 @@ io.on("connect", async (socket) => {
   }
 
 
-  async function startTimer(room, turnExpireTime) {
+  function startTimer(room, turnExpireTime) {
     // const room = await Room.findOne({ shortId: roomId })
     const timer = setTimeout(async () => {
       console.log('[startTimer] time expired. switching turns')
       await switchTurnByTimeExpired(room.shortId);
     }, turnExpireTime - Date.now())
-    console.log('[startTimer] room', room)
-    console.log('[startTimer] timer', timer)
     room.timerId = timer
-    // await room.save() // done in "startGame'"
-    // return timer._idleTimeout
+    // await room.save() // done in "startGame"
   }
 
   async function switchTurnByTimeExpired(roomId) {
     const room = await Room.findOne({ shortId: roomId })
-    const turnExpireTime = Date.now() + TURN_EXPIRE_TIME
-    room.serverEvent = { 
+
+    const prevTeam = room.turn.team
+    let turnExpireTime
+    let serverEvent = {
       name: 'passTurn',
       content: {
-        turnExpireTime
+        timeExpired: true,
       }
     }
+    room.gameLogs.push({
+      logType: 'timesUp',
+      content: {
+        team: prevTeam
+      }
+    })
     room.teams[room.turn.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
     room.teams[room.turn.team].throws = 0
     room.selection = null
     room.legalTiles = {}
-    room.turn = passTurn(room.turn, room.teams) // add throw here
-    room.teams[room.turn.team].throws = 1 // new team
+    if (room.gamePhase === 'pregame') {
+      room.teams[prevTeam].pregameRoll = 0
+      const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
+      console.log('[switchTurnByTimeExpired] outcomePregame', outcomePregame)
+      if (outcomePregame === "pass") {
+        room.pregameOutcome = outcomePregame
+        room.turn = passTurn(room.turn, room.teams) // add throw here
+        room.teams[room.turn.team].throws = 1 // new team
+        // outcome, turn
+        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+        serverEvent.content.pregameOutcome = outcomePregame
+      } else if (outcomePregame === "tie") {
+        room.pregameOutcome = outcomePregame
+        room.teams[0].pregameRoll = null
+        room.teams[1].pregameRoll = null
+        room.turn = passTurn(room.turn, room.teams) // add throw here
+        room.teams[room.turn.team].throws = 1 // new team
+        room.gameLogs.push(
+          {
+            logType: 'pregameResult',
+            content: {
+              team: -1
+            }
+          }
+        )
+        // outcome, tie, turn
+        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+        serverEvent.content.pregameOutcome = outcomePregame
+      } else {
+        // 'outcomePregame' is the winning team index
+        room.turn = setTurn(room.turn, outcomePregame)
+        room.pregameOutcome = outcomePregame.toString()
+        room.gamePhase = 'game'
+        room.teams[outcomePregame].throws = 1
+        room.gameLogs.push(
+          {
+            logType: 'pregameResult',
+            content: {
+              team: outcomePregame
+            }
+          }
+        )
+        // outcome, result, turn
+        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+        serverEvent.content.pregameOutcome = outcomePregame
+      }
+    } else {
+      room.turn = passTurn(room.turn, room.teams)
+      room.teams[room.turn.team].throws = 1 // new team
+      // outcome, turn
+      turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+    }
+    serverEvent.content.turnExpireTime = turnExpireTime
+    room.serverEvent = serverEvent
+    room.serverEvent.content.prevTeam = prevTeam
     startTimer(room, turnExpireTime)
-    // room.timerId = startTimer(room, turnExpireTime)
     await room.save();
   }
 
@@ -722,18 +786,25 @@ io.on("connect", async (socket) => {
         newTurn = getHostTurn(room)
       }
 
-      const turnExpireTime = Date.now() + TURN_EXPIRE_TIME
+      const turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
       startTimer(room, turnExpireTime);
       
       room.teams[newTurn.team].throws = 1
       room.gamePhase = "pregame"
       room.turn = newTurn
+      room.gameLogs.push({
+        logType: 'gameStart',
+        content: {
+          text: `Match ${room.results.length+1} started`
+        }
+      })
       room.serverEvent = {
         name: "gameStart",
         content: {
           turnExpireTime
         }
       }
+      
       await room.save()
 
       // let newTurn;
@@ -874,7 +945,11 @@ io.on("connect", async (socket) => {
 
       if (!room) {
         throw new Error('[throwYoot] room with shortId', roomId, 'not found, or game is paused')
-      } else if (room.teams[user.team].throws > 0) { // reduce number of calls to the database
+      } else if (room.teams[user.team].throws < 0) {
+        throw new Error("player's team has no throws")
+      } else if (room.turn.team !== user.team) {
+        throw new Error("player's team doesn't have the turn'")
+      } else {
 
         clearTimeout(room.timerId)
         room.turnExpireTime = null
@@ -922,6 +997,11 @@ io.on("connect", async (socket) => {
           operation['$push'] = {}
           try {
             let room = await Room.findOne({ shortId: roomId })  
+            let turnExpireTime
+            let serverEvent = {
+              name: 'recordThrow',
+              content: {}
+            }
 
             // on yoot or mo, if gamePhase is 'game', add 'bonus: true' to 'content'.
             // else, add 'bonus: false'
@@ -929,8 +1009,8 @@ io.on("connect", async (socket) => {
 
             // Add move to team
             if (room.gamePhase === "pregame") {
-              room.teams[user.team].pregameRoll = outcome // to pass into 'comparePregameRolls'
-              operation['$set'][`teams.${user.team}.pregameRoll`] = outcome
+              room.teams[room.turn.team].pregameRoll = outcome // to pass into 'comparePregameRolls'
+              operation['$set'][`teams.${room.turn.team}.pregameRoll`] = outcome
 
               gameLogs.push(
                 {
@@ -947,10 +1027,13 @@ io.on("connect", async (socket) => {
               // backdo is greater than nak
               const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
               if (outcomePregame === "pass") {
+                serverEvent.content.prevTeam = room.turn.team
                 const newTurn = passTurn(room.turn, room.teams)
                 operation['$set']['turn'] = newTurn
                 operation['$set']['pregameOutcome'] = outcomePregame
                 operation['$inc'][`teams.${newTurn.team}.throws`] = 1
+                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+                // serverEvent.content.gamePhase = 'pregame'
               } else if (outcomePregame === "tie") {
                 const newTurn = passTurn(room.turn, room.teams)
                 operation['$set']['turn'] = newTurn
@@ -966,6 +1049,8 @@ io.on("connect", async (socket) => {
                     }
                   }
                 )
+                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+                // serverEvent.content.gamePhase = 'pregame'
               } else {
                 // 'outcomePregame' is the winning team index
                 const newTurn = setTurn(room.turn, outcomePregame)
@@ -981,6 +1066,8 @@ io.on("connect", async (socket) => {
                     }
                   }
                 )
+                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+                // serverEvent.content.gamePhase = 'pregame'
               }
             } else if (room.gamePhase === "game") {
               room.teams[user.team].moves[outcome]++; // need it to calculate if moves is empty
@@ -1026,11 +1113,40 @@ io.on("connect", async (socket) => {
 
             operation['$push']['gameLogs'] = { '$each': gameLogs }
             
-            operation['$set']['serverEvent'] = {
-              name: 'recordThrow',
-              content: {}
-            }
+            /**
+             * 
+             * 
+             * // post MVP: vary time by action that can be taken (move: longer, throw: shorter)
+              // expire time depends on what will happen next
+              base expire time + 5000 * numAlerts
+              // in pregame
+                // tie: alerts (outcome, tie, turn), throw
+                // pass: alerts (outcome, turn), throw
+                // win: alerts (outcome, winner, turn), throw
+              // in game
+                // if empty moves: alerts (outcome, turn), throw
+                // else: alerts (outcome), throw
+              
+              // on move - depends on the length of the jump animation
+              base expire time + 5000 * numAlerts + 1000 * spacesMoved
+                // catch: jump, alerts (catch), throw
+                // piggyback, no moves: jump, alerts (piggyback, turn)
+                // piggyback, moves: jump, alerts (piggyback)
+                // regular, no moves: jump, alerts (turn), throw
+                // regular, moves: jump, move
 
+              // on score
+              base expire time + 5000 * numAlerts + 1000 * spacesMoved
+                // if no moves: alerts (score, turn), throw
+                  // if win: no alerts, don't set expire time
+                // if moves: alerts (score), throw
+              
+              // on pause, save time remaining. on unpause, set turnExpireTime to the remaining time
+             */
+            
+            startTimer(room, turnExpireTime)
+            serverEvent.content.turnExpireTime = turnExpireTime
+            operation['$set']['serverEvent'] = serverEvent
             await Room.findOneAndUpdate(
               { 
                 shortId: roomId, 
@@ -1041,8 +1157,6 @@ io.on("connect", async (socket) => {
             console.log(`[throwYoot] error recording throw`, err)
           }
         }, 5000)
-      } else {
-        throw new Error("[throwYoot] the player's team has no throws")
       }
     } catch (err) {
       console.log(`[throwYoot] error on throw yoot`, err)

@@ -349,6 +349,22 @@ export default function Alert({ position, rotation }) {
             },
             delay: 1000
           })
+        } else if (alerts[i] === 'timeExpired') {
+          animations.push({
+            timesUpAlertScale: 1,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+          })
+          animations.push({
+            timesUpAlertScale: 0,
+            config: {
+                tension: 170,
+                friction: 26
+            },
+            delay: 1000
+          })
         }
       }
       return animations
@@ -651,10 +667,10 @@ export default function Alert({ position, rotation }) {
             catchAlertScale: 0,
             scoreAlertScale: 0,
             joinAlertScale: 0,
+            timesUpAlertScale: 0
           },
           to: toAnimations,
           loop: false,
-          // onStart: () => setAnimationPlaying(true),
           onRest: () => setAnimationPlaying(false),
         })
         
@@ -1404,6 +1420,32 @@ export default function Alert({ position, rotation }) {
       </animated.group>
     }
 
+    function TimesUpAlert() {
+      return <animated.group scale={springs.timesUpAlertScale} rotation={[0, Math.PI/2, 0]}>
+        <mesh
+          castShadow
+          receiveShadow
+          scale={[2, 0.055, 2.6]}
+        >
+          <cylinderGeometry args={[1, 1, 1, 64]}/>
+          <meshStandardMaterial color='black' opacity={0.8} transparent/>
+        </mesh>
+        <group>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[Math.PI/2, Math.PI, Math.PI/2]}
+            position={[0,0,-1.4]}
+            size={0.7}
+            height={0.1}
+            lineHeight={0.8}
+          >
+            {`TIME'S\n    UP!`}
+            <meshStandardMaterial color='red'/>
+          </Text3D>
+        </group>
+      </animated.group>
+    }
+
     return (gamePhase === 'pregame' || gamePhase === 'game') && <group position={position} rotation={rotation}>
       <TurnAlert/>
       <GameStartAlert/>
@@ -1422,5 +1464,6 @@ export default function Alert({ position, rotation }) {
       <CatchAlert/>
       <ScoreAlert/>
       <JoinAlert/>
+      <TimesUpAlert/>
     </group>
   }
