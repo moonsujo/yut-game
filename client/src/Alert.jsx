@@ -349,7 +349,7 @@ export default function Alert({ position, rotation }) {
             },
             delay: 1000
           })
-        } else if (alerts[i] === 'timeExpired') {
+        } else if (alerts[i] === 'timesUp') {
           animations.push({
             timesUpAlertScale: 1,
             config: {

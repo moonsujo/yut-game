@@ -272,7 +272,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               tiles: data.fullDocument.tiles, // should emit indices of elements that changed, and their contents
               gameLogs: data.fullDocument.gameLogs,
               selection: data.fullDocument.selection,
-              moveUsed: serverEvent.content.moveUsed
+              moveUsed: serverEvent.content.moveUsed,
+              turnExpireTime: serverEvent.content.turnExpireTime
             })
           } else if (serverEvent.name === "select") {
             console.log('select')
@@ -280,12 +281,12 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               selection: data.fullDocument.selection,
               legalTiles: data.fullDocument.legalTiles // should emit an array of tile indices
             })
-          } else if (serverEvent === "throwYoot") {
+          } else if (serverEvent.name === "throwYoot") {
             io.to(userSocketId).emit('throwYoot', { 
               yootOutcome: data.fullDocument.yootOutcome, 
               yootAnimation: data.fullDocument.yootAnimation, 
               throwCount: room.teams[room.turn.team].throws,
-              turnExpireTime: null
+              turnExpireTime: serverEvent.content.turnExpireTime
             })
           } else if (serverEvent === "score") {
             io.to(userSocketId).emit('score', { 
@@ -402,8 +403,8 @@ async function createUniqueUsername() {
   return name;
 }
 
-const BASE_TURN_EXPIRE_TIME = 10000 // add time for expired alert
-const ALERT_TIME = 1500
+const BASE_TURN_EXPIRE_TIME = 20000 // add time for expired alert
+const ALERT_TIME = 2000
 const JUMP_TIME = 1000
 io.on("connect", async (socket) => {
 
@@ -679,7 +680,7 @@ io.on("connect", async (socket) => {
     return turn
   }
 
-
+  // turnExpireTime: with Date.now()
   function startTimer(room, turnExpireTime) {
     // const room = await Room.findOne({ shortId: roomId })
     const timer = setTimeout(async () => {
@@ -790,7 +791,8 @@ io.on("connect", async (socket) => {
       startTimer(room, turnExpireTime);
       
       room.teams[newTurn.team].throws = 1
-      room.gamePhase = "pregame"
+      room.gamePhase = "game"
+      // room.gamePhase = "pregame"
       room.turn = newTurn
       room.gameLogs.push({
         logType: 'gameStart',
@@ -952,7 +954,12 @@ io.on("connect", async (socket) => {
       } else {
 
         clearTimeout(room.timerId)
-        room.turnExpireTime = null
+        let serverEvent = {
+          name: 'throwYoot',
+          content: {
+            turnExpireTime: null
+          }
+        }
         const outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
         // let outcome;
@@ -971,30 +978,15 @@ io.on("connect", async (socket) => {
         //   }
         // }
         const animation = pickAnimation(outcome)
-        await Room.findOneAndUpdate( // consolidate into one call with the 'findOne' call from above
-          { 
-            shortId: roomId
-          }, 
-          { 
-            $set: { 
-              yootOutcome: outcome,
-              yootAnimation: animation,
-              serverEvent: 'throwYoot',
-              // turnExpireTime: Date.now() + 1000000
-            },
-            $inc: {
-              [`teams.${user.team}.throws`]: -1
-            }
-          }
-        )
+        room.yootOutcome = outcome;
+        room.yootAnimation = animation
+        room.serverEvent = serverEvent
+        room.teams[user.team].throws--
+        await room.save();
 
         // record throw
         setTimeout(async () => {
 
-          let operation = {}
-          operation['$set'] = {}
-          operation['$inc'] = {}
-          operation['$push'] = {}
           try {
             let room = await Room.findOne({ shortId: roomId })  
             let turnExpireTime
@@ -1005,14 +997,12 @@ io.on("connect", async (socket) => {
 
             // on yoot or mo, if gamePhase is 'game', add 'bonus: true' to 'content'.
             // else, add 'bonus: false'
-            let gameLogs = [] 
+            // let gameLogs = [] 
 
             // Add move to team
             if (room.gamePhase === "pregame") {
               room.teams[room.turn.team].pregameRoll = outcome // to pass into 'comparePregameRolls'
-              operation['$set'][`teams.${room.turn.team}.pregameRoll`] = outcome
-
-              gameLogs.push(
+              room.gameLogs.push(
                 {
                   logType: 'throw',
                   content: {
@@ -1029,19 +1019,19 @@ io.on("connect", async (socket) => {
               if (outcomePregame === "pass") {
                 serverEvent.content.prevTeam = room.turn.team
                 const newTurn = passTurn(room.turn, room.teams)
-                operation['$set']['turn'] = newTurn
-                operation['$set']['pregameOutcome'] = outcomePregame
-                operation['$inc'][`teams.${newTurn.team}.throws`] = 1
+                room.turn = newTurn
+                room.pregameOutcome = outcomePregame
+                room.teams[newTurn.team].throws++
                 turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
-                // serverEvent.content.gamePhase = 'pregame'
               } else if (outcomePregame === "tie") {
                 const newTurn = passTurn(room.turn, room.teams)
-                operation['$set']['turn'] = newTurn
-                operation['$set']['pregameOutcome'] = outcomePregame
-                operation['$set']['teams.0.pregameRoll'] = null
-                operation['$set']['teams.1.pregameRoll'] = null
+                room.turn = newTurn
+                room.pregameOutcome = outcomePregame
+                room.teams[0].pregameRoll = null
+                room.teams[1].pregameRoll = null
                 operation['$inc'][`teams.${newTurn.team}.throws`] = 1
-                gameLogs.push(
+                room.teams[newTurn.team].throws++
+                room.gameLogs.push(
                   {
                     logType: 'pregameResult',
                     content: {
@@ -1050,15 +1040,14 @@ io.on("connect", async (socket) => {
                   }
                 )
                 turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
-                // serverEvent.content.gamePhase = 'pregame'
               } else {
                 // 'outcomePregame' is the winning team index
                 const newTurn = setTurn(room.turn, outcomePregame)
-                operation['$set']['turn'] = newTurn
-                operation['$set']['pregameOutcome'] = outcomePregame.toString()
-                operation['$set']['gamePhase'] = 'game'
-                operation['$inc'][`teams.${outcomePregame}.throws`] = 1
-                gameLogs.push(
+                room.turn = newTurn
+                room.pregameOutcome = outcomePregame.toString()
+                room.gamePhase = 'game'
+                room.teams[outcomePregame].throws++
+                room.gameLogs.push(
                   {
                     logType: 'pregameResult',
                     content: {
@@ -1067,17 +1056,14 @@ io.on("connect", async (socket) => {
                   }
                 )
                 turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
-                // serverEvent.content.gamePhase = 'pregame'
               }
             } else if (room.gamePhase === "game") {
               room.teams[user.team].moves[outcome]++; // need it to calculate if moves is empty
 
               // Add bonus throw on Yoot and Mo
               if (room.yootOutcome === 4 || room.yootOutcome === 5) {
-                operation['$inc'][`teams.${user.team}.throws`] = 1
                 room.teams[user.team].throws++; // need it to calculate if team has no more throws
-                
-                gameLogs.push({
+                room.gameLogs.push({
                   logType: 'throw',
                   content: {
                     playerName: user.name,
@@ -1087,7 +1073,7 @@ io.on("connect", async (socket) => {
                   }
                 })
               } else {
-                gameLogs.push({
+                room.gameLogs.push({
                   logType: 'throw',
                   content: {
                     playerName: user.name,
@@ -1103,15 +1089,15 @@ io.on("connect", async (socket) => {
               (isEmptyMoves(room.teams[user.team].moves.toObject()) || 
               (!room.rules.backdoLaunch && isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))) ) {
                 const newTurn = passTurn(room.turn, room.teams)
-                operation['$set']['turn'] = newTurn
-                operation['$set'][`teams.${user.team}.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
-                operation['$inc'][`teams.${newTurn.team}.throws`] = 1
+                room.turn = newTurn
+                room.teams[user.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+                room.teams[newTurn.team].throws++
+                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
               } else {
-                operation['$inc'][`teams.${user.team}.moves.${outcome}`] = 1
+                room.teams[user.team].moves[outcome] = 1
+                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 1 * ALERT_TIME
               }
             }
-
-            operation['$push']['gameLogs'] = { '$each': gameLogs }
             
             /**
              * 
@@ -1127,13 +1113,6 @@ io.on("connect", async (socket) => {
                 // if empty moves: alerts (outcome, turn), throw
                 // else: alerts (outcome), throw
               
-              // on move - depends on the length of the jump animation
-              base expire time + 5000 * numAlerts + 1000 * spacesMoved
-                // catch: jump, alerts (catch), throw
-                // piggyback, no moves: jump, alerts (piggyback, turn)
-                // piggyback, moves: jump, alerts (piggyback)
-                // regular, no moves: jump, alerts (turn), throw
-                // regular, moves: jump, move
 
               // on score
               base expire time + 5000 * numAlerts + 1000 * spacesMoved
@@ -1146,13 +1125,8 @@ io.on("connect", async (socket) => {
             
             startTimer(room, turnExpireTime)
             serverEvent.content.turnExpireTime = turnExpireTime
-            operation['$set']['serverEvent'] = serverEvent
-            await Room.findOneAndUpdate(
-              { 
-                shortId: roomId, 
-              }, 
-              operation
-            )
+            room.serverEvent = serverEvent
+            await room.save()
           } catch (err) {
             console.log(`[throwYoot] error recording throw`, err)
           }
@@ -1365,7 +1339,10 @@ io.on("connect", async (socket) => {
   // call save on it
   socket.on("move", async ({ roomId, tile }) => {
     try {
-      const room = await Room.findOne({ shortId: roomId })
+      const room = await Room.findOne({ shortId: roomId, paused: false })
+      if (!room) {
+        throw new Error('room with shortId', roomId, 'not found or it is not paused')
+      }
       let user;
       try {
         user = await User.findOne({ socketId: socket.id })
@@ -1383,17 +1360,13 @@ io.on("connect", async (socket) => {
       let pieces = room.selection.pieces
       let starting = pieces[0].tile === -1
       let movingTeam = pieces[0].team;
+      clearTimeout(room.timerId)
+      let turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME
 
       let moves = room.teams[movingTeam].moves;
       let throws = room.teams[movingTeam].throws;
 
-      let operation = {};
-      operation['$set'] = {}
-      operation['$inc'] = {}
-      operation['$push'] = {}
-
-      let gameLogs = [];
-      gameLogs.push({
+      room.gameLogs.push({
         logType: "move",
         content: {
           playerName: user.name,
@@ -1405,14 +1378,16 @@ io.on("connect", async (socket) => {
       })
 
       for (const piece of pieces) {
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.tile`] = to
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.history`] = history
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.lastPath`] = path
+        room.teams[movingTeam].pieces[piece.id].tile = to
+        room.teams[movingTeam].pieces[piece.id].history = history
+        room.teams[movingTeam].pieces[piece.id].lastPath = path
       }
 
       // Clear pieces from the 'from' tile if they were on the board
       if (!starting) {
-        operation['$set'][`tiles.${from}`] = []
+        room.tiles[from] = []
+      } else {
+        turnExpireTime += JUMP_TIME
       }
 
       pieces.forEach(function(_item, index, array) {
@@ -1420,6 +1395,15 @@ io.on("connect", async (socket) => {
         array[index].history = history
         array[index].lastPath = path
       })
+
+      
+      // on move - depends on the length of the jump animation
+      // base expire time + alert_time * numAlerts + jump_time * spacesMoved
+        // catch: jump, alerts (catch), throw
+        // piggyback, no moves: jump, alerts (piggyback, turn)
+        // piggyback, moves: jump, alerts (piggyback)
+        // regular, no moves: jump, alerts (turn), throw
+        // regular, moves: jump, move
 
       if (tiles[to].length > 0) {
         let occupyingTeam = tiles[to][0].team
@@ -1429,15 +1413,15 @@ io.on("connect", async (socket) => {
           for (let piece of tiles[to]) {
             piece.tile = -1
             piece.history = []
-            operation['$set'][`teams.${occupyingTeam}.pieces.${piece.id}`] = piece
+            room.teams[occupyingTeam].pieces[piece.id] = piece
           }
           
-          operation['$set'][`tiles.${to}`] = pieces
+          room.tiles[to] = pieces
           if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
             throws++;
           }
 
-          gameLogs.push({
+          room.gameLogs.push({
             logType: "catch",
             content: {
               playerName: user.name,
@@ -1447,10 +1431,14 @@ io.on("connect", async (socket) => {
               path
             }
           })
+
+          turnExpireTime += (1 * ALERT_TIME)
         } else { // Join pieces
-          operation['$push'][`tiles.${to}`] = { '$each': pieces }
+          for (const piece of pieces) {
+            room.tiles[to].push(piece)
+          }
           
-          gameLogs.push({
+          room.gameLogs.push({
             logType: "join",
             content: {
               playerName: user.name,
@@ -1458,43 +1446,43 @@ io.on("connect", async (socket) => {
               numPiecesCombined: pieces.length + tiles[to].length,
             }
           })
+          turnExpireTime += (1 * ALERT_TIME)
         }
       } else {
-        operation['$push'][`tiles.${to}`] = { '$each': pieces }
+        for (const piece of pieces) {
+          room.tiles[to].push(piece)
+        }
       }
 
       // Clear legal tiles and selection
-      operation['$set']['legalTiles'] = {}
-      operation['$set']['selection'] = null
+      room.legalTiles = {}
+      room.selection = null
 
       moves[moveUsed]--;
+      turnExpireTime += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
         const newTurn = passTurn(room.turn, room.teams)
-        operation['$set']['turn'] = newTurn
-        operation['$set'][`teams.${movingTeam}.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
-        operation['$inc'][`teams.${newTurn.team}.throws`] = 1
+        room.turn = newTurn
+        room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+        room.teams[newTurn.team].throws = 1
+        turnExpireTime += (1 * ALERT_TIME)
       } else {
-        operation['$set'][`teams.${movingTeam}.throws`] = throws
-        operation['$set'][`teams.${movingTeam}.moves`] = moves
+        room.teams[movingTeam].moves = moves
+        room.teams[movingTeam].throws = throws
       }
       
-      operation['$push']['gameLogs'] = { '$each': gameLogs }
-      operation['$set']['serverEvent'] = {
+      room.serverEvent = {
         name: 'move',
         content: {
-          moveUsed 
+          moveUsed,
+          turnExpireTime
         }
       }
 
-      await Room.findOneAndUpdate(
-        { 
-          shortId: roomId, 
-          paused: false
-        }, 
-        operation
-      )
-      
+      console.log('[move] turnExpireTime', turnExpireTime)
+      startTimer(room, turnExpireTime)
+      await room.save()
     } catch (err) {
       console.log(`[move] error making move`, err)
     }

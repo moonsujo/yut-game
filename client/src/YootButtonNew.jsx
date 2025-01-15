@@ -84,7 +84,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
       {tempArray.map((_value, index) => {
         return <mesh key={index} position={positionByOrientation(index, orientation)}>
           <sphereGeometry args={[0.1, 32, 16]}/>
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial color={ enabled ? 'yellow' : 'grey' }/>
         </mesh>
       })}
     </group>

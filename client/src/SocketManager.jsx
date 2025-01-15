@@ -300,9 +300,9 @@ export const SocketManager = () => {
       setYootAnimation(yootAnimation)
       setThrowCount(throwCount)
       setTurnExpireTime(turnExpireTime)
-      const audio = new Audio('sounds/effects/throw.mp3');
-      audio.volume=0.3;
-      audio.play();
+      // const audio = new Audio('sounds/effects/throw.mp3');
+      // audio.volume=0.3;
+      // audio.play();
     })
 
     socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnExpireTime, gameLogs }) => {
@@ -361,6 +361,9 @@ export const SocketManager = () => {
             } else {
               prevTeamObj.pregameRoll = 0
             }
+          } else {
+            prevTeamObj.moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+            prevTeamObj.throws = 0
           }
           teams[prevTeam] = prevTeamObj
         }
@@ -371,13 +374,16 @@ export const SocketManager = () => {
       setGamePhase(gamePhase)
       let alerts = []
       if (timeExpired) {
-        alerts.push('timeExpired')
+        alerts.push('timesUp')
       }
       alerts.push('turn')
       setAlerts(alerts)
       setAnimationPlaying(true);
       setTurnExpireTime(turnExpireTime)
       setGameLogs(gameLogs)
+      setSelection(null)
+      setLegalTiles({})
+      setHelperTiles({})
     })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs, turnExpireTime }) => {    
@@ -490,7 +496,7 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed }) => {
+    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -547,6 +553,7 @@ export const SocketManager = () => {
       setPieceTeam1Id3(teamsUpdate[1].pieces[3])
       setSelection(selection)
       setGameLogs(gameLogs)
+      setTurnExpireTime(turnExpireTime)
     })
 
     function calculateNumPiecesScored(piecesPrev, piecesUpdate) {
@@ -867,21 +874,21 @@ export const SocketManager = () => {
       }
     })
 
-    socket.on("timeExpired", ({ teamIndex, playerIndex }) => {
-      console.log('[timeExpired] teamIndex', teamIndex, 'playerIndex', playerIndex)
-      setTurn(turn => {
-        turn.team = teamIndex;
-        turn.players[teamIndex] = playerIndex
-        return turn;
-      })
-      setTeams(teams => {
-        const prevTeamIndex = teamIndex === 0 ? 1 : 0
-        teams[prevTeamIndex].moves = initialState.initialMoves
-        teams[prevTeamIndex].throws = 0
-      })
-      setSelection(null)
-      setLegalTiles({})
-    })
+    // socket.on("timeExpired", ({ teamIndex, playerIndex }) => {
+    //   console.log('[timeExpired] teamIndex', teamIndex, 'playerIndex', playerIndex)
+    //   setTurn(turn => {
+    //     turn.team = teamIndex;
+    //     turn.players[teamIndex] = playerIndex
+    //     return turn;
+    //   })
+    //   setTeams(teams => {
+    //     const prevTeamIndex = teamIndex === 0 ? 1 : 0
+    //     teams[prevTeamIndex].moves = initialState.initialMoves
+    //     teams[prevTeamIndex].throws = 0
+    //   })
+    //   setSelection(null)
+    //   setLegalTiles({})
+    // })
 
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount

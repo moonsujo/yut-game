@@ -25,15 +25,6 @@ export default function Timer(props) {
     }
   })
 
-  useEffect(() => {
-    if (turnExpireTime) {
-      console.log('[Timer] turnExpireTime', turnExpireTime)
-    }
-    return () => {
-      // call socket.off() to not listen for timer event 
-    }
-  }, [turnExpireTime])
-
   return turnExpireTime && <group {...props}>
     <mesh name='background-outer'>
       <boxGeometry args={[2, 0.01, 0.5]}/>
