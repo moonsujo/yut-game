@@ -288,7 +288,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               throwCount: room.teams[room.turn.team].throws,
               turnExpireTime: serverEvent.content.turnExpireTime
             })
-          } else if (serverEvent === "score") {
+          } else if (serverEvent.name === "score") {
             io.to(userSocketId).emit('score', { 
               teamsUpdate: roomPopulated.teams, 
               turnUpdate: data.fullDocument.turn,
@@ -297,7 +297,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gameLogs: data.fullDocument.gameLogs,
               selection: data.fullDocument.selection,
               results: data.fullDocument.results,
-              gamePhase: data.fullDocument.gamePhase
+              gamePhase: data.fullDocument.gamePhase,
+              turnExpireTime: serverEvent.content.turnExpireTime
             })
           } else if (serverEvent.name === "joinRoom") {
             if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
@@ -403,7 +404,7 @@ async function createUniqueUsername() {
   return name;
 }
 
-const BASE_TURN_EXPIRE_TIME = 20000 // add time for expired alert
+const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert
 const ALERT_TIME = 2000
 const JUMP_TIME = 1000
 io.on("connect", async (socket) => {
@@ -791,8 +792,8 @@ io.on("connect", async (socket) => {
       startTimer(room, turnExpireTime);
       
       room.teams[newTurn.team].throws = 1
-      room.gamePhase = "game"
-      // room.gamePhase = "pregame"
+      // room.gamePhase = "game"
+      room.gamePhase = "pregame"
       room.turn = newTurn
       room.gameLogs.push({
         logType: 'gameStart',
@@ -1113,12 +1114,6 @@ io.on("connect", async (socket) => {
                 // if empty moves: alerts (outcome, turn), throw
                 // else: alerts (outcome), throw
               
-
-              // on score
-              base expire time + 5000 * numAlerts + 1000 * spacesMoved
-                // if no moves: alerts (score, turn), throw
-                  // if win: no alerts, don't set expire time
-                // if moves: alerts (score), throw
               
               // on pause, save time remaining. on unpause, set turnExpireTime to the remaining time
              */
@@ -1492,13 +1487,15 @@ io.on("connect", async (socket) => {
     // score
     try {
       const room = await Room.findOne({ shortId: roomId })
+      clearTimeout(room.timerId)
+      let turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME
+      room.serverEvent = {
+        name: 'score',
+        content: {
+          turnExpireTime: 0
+        }
+      }
 
-      let operation = {};
-      operation['$set'] = {}
-      operation['$inc'] = {}
-      operation['$push'] = {}
-
-      let gameLogs = [];
       
       // update pieces
       const pieces = room.selection.pieces
@@ -1506,13 +1503,11 @@ io.on("connect", async (socket) => {
       const history = selectedMove.history
       const path = selectedMove.path
       for (const piece of room.selection.pieces) {
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.tile`] = 29
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.history`] = history
-        operation['$set'][`teams.${movingTeam}.pieces.${piece.id}.lastPath`] = path
-
-        // set state within the scope of this function for win check
         room.teams[movingTeam].pieces[piece.id].tile = 29
+        room.teams[movingTeam].pieces[piece.id].history = history
+        room.teams[movingTeam].pieces[piece.id].lastPath = path
       }
+      turnExpireTime += (path.length * JUMP_TIME)
 
       let user;
       try {
@@ -1521,7 +1516,8 @@ io.on("connect", async (socket) => {
         console.log(`[score] error getting user with socket id ${socket.id}`, err)
       }
 
-      gameLogs.push({
+      turnExpireTime += (1 * ALERT_TIME)
+      room.gameLogs.push({
         logType: 'score',
         content: {
           playerName: user.name,
@@ -1531,16 +1527,15 @@ io.on("connect", async (socket) => {
       })
 
       // update tiles
-      const from = room.selection.tile
-      operation['$set'][`tiles.${from}`] = []
+      room.tiles[room.selection.tile] = []
       
-      // update moves
+      // update moves to see if it's empty
       let moves = room.teams[movingTeam].moves;
-      operation['$set'][`teams.${movingTeam}.moves`] = moves
+      moves[selectedMove.move]--;
 
       // update selection and legal tiles
-      operation['$set']['legalTiles'] = {}
-      operation['$set']['selection'] = null
+      room.legalTiles = {}
+      room.selection = null
 
       function winCheck(team) {
         for (const piece of team.pieces) {
@@ -1552,60 +1547,55 @@ io.on("connect", async (socket) => {
       }
 
       if (winCheck(room.teams[movingTeam])) {
-        operation['$push'][`results`] = movingTeam
-        operation['$set']['gamePhase'] = 'finished'
+        room.results.push(movingTeam)
+        room.gamePhase = 'finished'
 
-        gameLogs.push({
+        room.gameLogs.push({
           logType: 'finish',
           content: {
             winningTeam: movingTeam,
             matchNum: room.results.length+1
           }
         })
+        room.teams[movingTeam].moves = moves
+        turnExpireTime = null
       } else {
         // pass check
         let throws = room.teams[movingTeam].throws;
-        moves[selectedMove.move]--;
         if (throws === 0 && (isEmptyMoves(moves.toObject()) || isBackdoMovesWithoutPieces(moves.toObject(), room.teams[movingTeam].pieces))) { // check backdoLaunch rule
           const newTurn = passTurn(room.turn, room.teams)
-          await Room.findOneAndUpdate(
-            { 
-              shortId: roomId, 
-            }, 
-            { 
-              $set: { 
-                turn: newTurn,
-                // Empty the team's moves
-                [`teams.${movingTeam}.moves`]: JSON.parse(JSON.stringify(initialState.initialMoves)),
-              },
-              $inc: { [`teams.${newTurn.team}.throws`]: 1 } 
-            }
-          )
+          room.turn = newTurn
+          room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+          room.teams[newTurn.team].throws++
+          turnExpireTime += (1 * ALERT_TIME)
+        } else {
+          room.teams[movingTeam].moves = moves
         }
+        startTimer(room, turnExpireTime)
       }
-
-      operation['$push']['gameLogs'] = { '$each' : gameLogs }
-      operation['$set']['serverEvent'] = 'score'
-
-      await Room.findOneAndUpdate(
-        { 
-          shortId: roomId, 
-        }, 
-        operation
-      )
+      
+      room.serverEvent.content.turnExpireTime = turnExpireTime
+      await room.save()
     } catch (err) {
       console.log(`[move] error scoring piece`, err)
     }
   })
 
   socket.on("reset", async ({ roomId, clientId }) => {
-    // moves in each team
-    // tiles
     try {
-      let operation = {};
-      operation['$set'] = {}
-      operation['$set']['gamePhase'] = 'lobby'
-      operation['$set']['tiles'] = [
+      let room = await Room.findOne({ shortId: roomId })
+      if (!room) {
+        throw new Error('room with short id', roomId, 'not found')
+      } else if (room.gamePhase !== 'finished' && room.host !== clientId) {
+        throw new Error('only host can reset the game')
+      } else if (room.gamePhase === 'finished') {
+        // let player reset the game
+      } else if (room.gamePhase === 'pregame' || room.gamePhase === 'game' && room.host === clientId) {
+        // let host reset the game
+      }
+
+      room.gamePhase = 'lobby'
+      room.tiles = [
         [], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
         [],
         [],
@@ -1636,48 +1626,32 @@ io.on("connect", async (socket) => {
         [],
         [],
       ]
-      operation['$set']['legalTiles'] = {}
-      operation['$set']['selection'] = null
-      operation['$set']['pregameOutcome'] = null
-      operation['$set']['turn'] = {
+      room.legalTiles = {}
+      room.selection = null
+      room.pregameOutcome = null
+      room.turn = {
         team: -1,
         players: [0, 0]
       }
-      operation['$set'][`teams.0.pieces`] = JSON.parse(JSON.stringify(
-        // initialState.initialPiecesTeam0
-        [
-          { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
-          { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
-          { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
-          { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
-        ]
-      ))
-      operation['$set'][`teams.0.throws`] = 0
-      operation['$set'][`teams.0.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
-      operation['$set'][`teams.0.pregameRoll`] = null
-      operation['$set'][`teams.1.pieces`] = JSON.parse(JSON.stringify(
-        // initialState.initialPiecesTeam1
-        [
-          { tile: -1, team: 1, id: 0, history: [], lastPath: [] },
-          { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
-          { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
-          { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
-        ]
-      ))
-      operation['$set'][`teams.1.throws`] = 0
-      operation['$set'][`teams.1.moves`] = JSON.parse(JSON.stringify(initialState.initialMoves))
-      operation['$set'][`teams.1.pregameRoll`] = null
+      // clear team 0
+      room.teams[0].pieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam0))
+      room.teams[0].throws = 0
+      room.teams[0].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+      room.teams[0].pregameRoll = null
+      // clear team 1
+      room.teams[1].pieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam1))
+      room.teams[1].throws = 0
+      room.teams[1].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+      room.teams[1].pregameRoll = null
 
-      operation['$set']['serverEvent'] = 'reset'
+      room.serverEvent = {
+        name: 'reset',
+        content: {
+          turnExpireTime: null
+        }
+      }
 
-      await Room.findOneAndUpdate(
-        { 
-          shortId: roomId,
-          host: clientId 
-        }, 
-        operation
-      )
-
+      await room.save()
       console.log(`[reset] success`)
     } catch (err) {
       console.log(`[reset] error resetting game`, err)

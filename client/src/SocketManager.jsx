@@ -569,7 +569,7 @@ export const SocketManager = () => {
       return numPiecesScored;
     }
 
-    socket.on("score", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, gamePhase, results }) => {
+    socket.on("score", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, gamePhase, results, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -619,6 +619,9 @@ export const SocketManager = () => {
       setGameLogs(gameLogs)
       setGamePhase(gamePhase)
       setWinner(results[results.length-1])
+      setThrowCount(teamsUpdate[turnUpdate.team].throws)
+      console.log('[score] turnExpireTime', turnExpireTime)
+      setTurnExpireTime(turnExpireTime)
     })
 
     socket.on("select", ({ selection, legalTiles }) => { //receive
@@ -679,6 +682,7 @@ export const SocketManager = () => {
     })
 
     socket.on("reset", () => {
+      console.log('[reset]')
       setGamePhase('lobby');
       setTiles(initialState.initialTiles);
       setTurn(initialState.initialTurn);
@@ -715,6 +719,8 @@ export const SocketManager = () => {
       setPieceTeam1Id1(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[1])))
       setPieceTeam1Id2(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[2])))
       setPieceTeam1Id3(JSON.parse(JSON.stringify(initialState.initialTeams[1].pieces[3])))
+
+      setTurnExpireTime(null)
     })
 
     socket.on("setAway", ({ player }) => {

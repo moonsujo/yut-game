@@ -1,9 +1,8 @@
 import { Text3D, useGLTF } from '@react-three/drei';
-import { useFrame, useGraph } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
-import React, { useMemo, useRef } from 'react';
-import { SkeletonUtils } from 'three-stdlib';
+import React, { useRef } from 'react';
 import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, teamsAtom, throwCountAtom, turnAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
