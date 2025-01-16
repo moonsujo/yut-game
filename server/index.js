@@ -143,8 +143,10 @@ const roomSchema = new mongoose.Schema(
       nak: Boolean,
       yutMoCatch: Boolean
     },
-    // turnExpireTime: Number,
-    timerId: Number
+    turnStartTime: Number,
+    turnExpireTime: Number,
+    timerId: Number,
+    turnsSkipped: Number
   },
   {
     versionKey: false,
@@ -237,7 +239,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newTeam: room.turn.team,
               newPlayer: room.turn.players[room.turn.team],
               throwCount: room.teams[room.turn.team].throws,
-              turnExpireTime: serverEvent.content.turnExpireTime,
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime,
               gameLogs: room.gameLogs
             })
             // separating it into two events lags the client
@@ -247,10 +250,12 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newPlayer: room.turn.players[room.turn.team],
               throwCount: room.teams[room.turn.team].throws,
               timeExpired: serverEvent.content.timeExpired,
-              turnExpireTime: serverEvent.content.turnExpireTime,
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime,
               gamePhase: room.gamePhase,
               content: serverEvent.content,
-              gameLogs: data.fullDocument.gameLogs
+              gameLogs: room.gameLogs,
+              paused: room.paused
             })
           } else if (serverEvent.name === "recordThrow") {
             io.to(userSocketId).emit("recordThrow", {
@@ -262,7 +267,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               pregameOutcome: data.fullDocument.pregameOutcome,
               yootOutcome: data.fullDocument.yootOutcome,
               gameLogs: data.fullDocument.gameLogs, // only the new logs that were added
-              turnExpireTime: serverEvent.content.turnExpireTime
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime
             })
           } else if (serverEvent.name === "move") {
             io.to(userSocketId).emit("move", {
@@ -273,7 +279,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gameLogs: data.fullDocument.gameLogs,
               selection: data.fullDocument.selection,
               moveUsed: serverEvent.content.moveUsed,
-              turnExpireTime: serverEvent.content.turnExpireTime
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime
             })
           } else if (serverEvent.name === "select") {
             console.log('select')
@@ -286,7 +293,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               yootOutcome: data.fullDocument.yootOutcome, 
               yootAnimation: data.fullDocument.yootAnimation, 
               throwCount: room.teams[room.turn.team].throws,
-              turnExpireTime: serverEvent.content.turnExpireTime
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime
             })
           } else if (serverEvent.name === "score") {
             io.to(userSocketId).emit('score', { 
@@ -298,7 +306,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               selection: data.fullDocument.selection,
               results: data.fullDocument.results,
               gamePhase: data.fullDocument.gamePhase,
-              turnExpireTime: serverEvent.content.turnExpireTime
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime
             })
           } else if (serverEvent.name === "joinRoom") {
             if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
@@ -359,11 +368,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               rule: serverEvent.content.rule,
               flag: serverEvent.content.flag
             })
-          } else if (serverEvent.name === "timeExpired") {
-            io.to(userSocketId).emit("timeExpired", { 
-              teamIndex: room.turn.team,
-              playerIndex: room.turn.players[room.turn.team]
-            })
+          // } else if (serverEvent.name === "timeExpired") {
+          //   io.to(userSocketId).emit("timeExpired", { 
+          //     teamIndex: room.turn.team,
+          //     playerIndex: room.turn.players[room.turn.team]
+          //   })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -405,8 +414,9 @@ async function createUniqueUsername() {
 }
 
 const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert
-const ALERT_TIME = 2000
+const ALERT_TIME = 2500
 const JUMP_TIME = 1000
+const NUM_TURNS_SKIPPED_TO_PAUSE = 5
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -427,11 +437,13 @@ io.on("connect", async (socket) => {
     const shortRoomId = await createUniqueRoomId()
 
     // Get user by socket id
-    let user;
     try {
-      user = await User.findOne({ socketId: socket.id }).exec()
+      let user = await User.findOne({ socketId: socket.id })
+      if (!user) {
+        console.log(`user with socket id ${socket.id} not found`)
+      }
     } catch (err) {
-      console.log(`[createRoom] user with socket id ${socket.id} not found`)
+      console.log(`[createRoom] error getting user`, err)
     }
 
     // Create room with socket id owner as host
@@ -497,8 +509,10 @@ io.on("connect", async (socket) => {
           nak: true,
           yutMoCatch: true
         },
-        // turnExpireTime: null,
-        timerId: null
+        turnStartTime: null,
+        turnExpireTime: null,
+        timerId: null,
+        turnsSkipped: 0
       })
       console.log('[createRoom] shortRoomId', shortRoomId)
       await room.save();
@@ -681,22 +695,22 @@ io.on("connect", async (socket) => {
     return turn
   }
 
-  // turnExpireTime: with Date.now()
-  function startTimer(room, turnExpireTime) {
-    // const room = await Room.findOne({ shortId: roomId })
+  function startTimer(room) {
     const timer = setTimeout(async () => {
       console.log('[startTimer] time expired. switching turns')
       await switchTurnByTimeExpired(room.shortId);
-    }, turnExpireTime - Date.now())
+    }, room.turnExpireTime - Date.now())
     room.timerId = timer
     // await room.save() // done in "startGame"
   }
 
   async function switchTurnByTimeExpired(roomId) {
     const room = await Room.findOne({ shortId: roomId })
+    room.turnsSkipped++
+
 
     const prevTeam = room.turn.team
-    let turnExpireTime
+    let newTurnStartTime = 0
     let serverEvent = {
       name: 'passTurn',
       content: {
@@ -722,7 +736,7 @@ io.on("connect", async (socket) => {
         room.turn = passTurn(room.turn, room.teams) // add throw here
         room.teams[room.turn.team].throws = 1 // new team
         // outcome, turn
-        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+        newTurnStartTime += 2 * ALERT_TIME
         serverEvent.content.pregameOutcome = outcomePregame
       } else if (outcomePregame === "tie") {
         room.pregameOutcome = outcomePregame
@@ -739,7 +753,7 @@ io.on("connect", async (socket) => {
           }
         )
         // outcome, tie, turn
-        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+        newTurnStartTime += 3 * ALERT_TIME
         serverEvent.content.pregameOutcome = outcomePregame
       } else {
         // 'outcomePregame' is the winning team index
@@ -756,19 +770,25 @@ io.on("connect", async (socket) => {
           }
         )
         // outcome, result, turn
-        turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+        newTurnStartTime += 3 * ALERT_TIME
         serverEvent.content.pregameOutcome = outcomePregame
       }
     } else {
       room.turn = passTurn(room.turn, room.teams)
       room.teams[room.turn.team].throws = 1 // new team
       // outcome, turn
-      turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+      newTurnStartTime += 2 * ALERT_TIME
     }
-    serverEvent.content.turnExpireTime = turnExpireTime
+    if (room.turnsSkipped === NUM_TURNS_SKIPPED_TO_PAUSE) {
+      room.paused = true
+      room.turnExpireTime = null
+    } else {
+      room.turnStartTime = Date.now() + newTurnStartTime
+      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+      startTimer(room)
+    }
     room.serverEvent = serverEvent
     room.serverEvent.content.prevTeam = prevTeam
-    startTimer(room, turnExpireTime)
     await room.save();
   }
 
@@ -787,9 +807,6 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = getHostTurn(room)
       }
-
-      const turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
-      startTimer(room, turnExpireTime);
       
       room.teams[newTurn.team].throws = 1
       // room.gamePhase = "game"
@@ -803,56 +820,15 @@ io.on("connect", async (socket) => {
       })
       room.serverEvent = {
         name: "gameStart",
-        content: {
-          turnExpireTime
-        }
+        content: {}
       }
+
+      room.turnsSkipped = 0
+      room.turnStartTime = Date.now() + 2 * ALERT_TIME
+      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+      startTimer(room);
       
       await room.save()
-
-      // let newTurn;
-      // // test
-      // // newTurn = {
-      // //   team: 1,
-      // //   players: [0,0]
-      // // }
-      // if (room.results.length > 0) {
-      //   newTurn = {
-      //     team: room.results[room.results.length-1],
-      //     players: [0, 0]
-      //   }
-      // } else {
-      //   newTurn = getHostTurn(room)
-      // }
-      
-      // const turnExpireTime = Date.now() + TURN_EXPIRE_TIME
-      // // const turnExpireTime = Date.now() + 60000 // 1 minute
-      // console.log('[startGame] turnExpireTime', turnExpireTime)
-      // await Room.findOneAndUpdate({ shortId: roomId }, {
-      //   $set: {
-      //     [`teams.${newTurn.team}.throws`]: 1,
-      //     // gamePhase: "game", // test
-      //     gamePhase: "pregame", 
-      //     turn: newTurn,
-      //     serverEvent: {
-      //       name: "gameStart",
-      //       content: {
-      //         turnExpireTime
-      //       }
-      //     },
-      //     turnExpireTime
-      //   },
-      //   $push: {
-      //     gameLogs: {
-      //       logType: 'gameStart',
-      //       content: {
-      //         text: `Match ${room.results.length+1} started`
-      //       }
-      //     }
-      //   }
-      // })
-
-      // startTimer(roomId)
     } catch (err) {
       console.log(`[startGame] error starting game`, err)
     }
@@ -957,10 +933,9 @@ io.on("connect", async (socket) => {
         clearTimeout(room.timerId)
         let serverEvent = {
           name: 'throwYoot',
-          content: {
-            turnExpireTime: null
-          }
+          content: {}
         }
+        room.turnExpireTime = null
         const outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
         // let outcome;
@@ -990,7 +965,7 @@ io.on("connect", async (socket) => {
 
           try {
             let room = await Room.findOne({ shortId: roomId })  
-            let turnExpireTime
+            let newTurnStartTime = 0
             let serverEvent = {
               name: 'recordThrow',
               content: {}
@@ -1023,14 +998,14 @@ io.on("connect", async (socket) => {
                 room.turn = newTurn
                 room.pregameOutcome = outcomePregame
                 room.teams[newTurn.team].throws++
-                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+                newTurnStartTime += 2 * ALERT_TIME
+                // newTurnExpireTime =  + BASE_TURN_EXPIRE_TIME 
               } else if (outcomePregame === "tie") {
                 const newTurn = passTurn(room.turn, room.teams)
                 room.turn = newTurn
                 room.pregameOutcome = outcomePregame
                 room.teams[0].pregameRoll = null
                 room.teams[1].pregameRoll = null
-                operation['$inc'][`teams.${newTurn.team}.throws`] = 1
                 room.teams[newTurn.team].throws++
                 room.gameLogs.push(
                   {
@@ -1040,7 +1015,7 @@ io.on("connect", async (socket) => {
                     }
                   }
                 )
-                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+                newTurnStartTime += 3 * ALERT_TIME
               } else {
                 // 'outcomePregame' is the winning team index
                 const newTurn = setTurn(room.turn, outcomePregame)
@@ -1056,7 +1031,7 @@ io.on("connect", async (socket) => {
                     }
                   }
                 )
-                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 3 * ALERT_TIME
+                newTurnStartTime += 3 * ALERT_TIME
               }
             } else if (room.gamePhase === "game") {
               room.teams[user.team].moves[outcome]++; // need it to calculate if moves is empty
@@ -1093,10 +1068,10 @@ io.on("connect", async (socket) => {
                 room.turn = newTurn
                 room.teams[user.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
                 room.teams[newTurn.team].throws++
-                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 2 * ALERT_TIME
+                newTurnStartTime += 2 * ALERT_TIME
               } else {
                 room.teams[user.team].moves[outcome] = 1
-                turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME + 1 * ALERT_TIME
+                newTurnStartTime += 1 * ALERT_TIME
               }
             }
             
@@ -1118,8 +1093,10 @@ io.on("connect", async (socket) => {
               // on pause, save time remaining. on unpause, set turnExpireTime to the remaining time
              */
             
-            startTimer(room, turnExpireTime)
-            serverEvent.content.turnExpireTime = turnExpireTime
+            room.turnsSkipped = 0
+            room.turnStartTime = Date.now() + newTurnStartTime
+            room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+            startTimer(room)
             room.serverEvent = serverEvent
             await room.save()
           } catch (err) {
@@ -1356,7 +1333,7 @@ io.on("connect", async (socket) => {
       let starting = pieces[0].tile === -1
       let movingTeam = pieces[0].team;
       clearTimeout(room.timerId)
-      let turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME
+      let newTurnStartTime = 0
 
       let moves = room.teams[movingTeam].moves;
       let throws = room.teams[movingTeam].throws;
@@ -1382,7 +1359,7 @@ io.on("connect", async (socket) => {
       if (!starting) {
         room.tiles[from] = []
       } else {
-        turnExpireTime += JUMP_TIME
+        newTurnStartTime += JUMP_TIME
       }
 
       pieces.forEach(function(_item, index, array) {
@@ -1427,7 +1404,7 @@ io.on("connect", async (socket) => {
             }
           })
 
-          turnExpireTime += (1 * ALERT_TIME)
+          newTurnStartTime += (1 * ALERT_TIME)
         } else { // Join pieces
           for (const piece of pieces) {
             room.tiles[to].push(piece)
@@ -1441,7 +1418,7 @@ io.on("connect", async (socket) => {
               numPiecesCombined: pieces.length + tiles[to].length,
             }
           })
-          turnExpireTime += (1 * ALERT_TIME)
+          newTurnStartTime += (1 * ALERT_TIME)
         }
       } else {
         for (const piece of pieces) {
@@ -1454,14 +1431,14 @@ io.on("connect", async (socket) => {
       room.selection = null
 
       moves[moveUsed]--;
-      turnExpireTime += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
+      newTurnStartTime += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
         const newTurn = passTurn(room.turn, room.teams)
         room.turn = newTurn
         room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
         room.teams[newTurn.team].throws = 1
-        turnExpireTime += (1 * ALERT_TIME)
+        newTurnStartTime += (1 * ALERT_TIME)
       } else {
         room.teams[movingTeam].moves = moves
         room.teams[movingTeam].throws = throws
@@ -1470,13 +1447,14 @@ io.on("connect", async (socket) => {
       room.serverEvent = {
         name: 'move',
         content: {
-          moveUsed,
-          turnExpireTime
+          moveUsed
         }
       }
 
-      console.log('[move] turnExpireTime', turnExpireTime)
-      startTimer(room, turnExpireTime)
+      room.turnsSkipped = 0
+      room.turnStartTime = Date.now() + newTurnStartTime
+      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+      startTimer(room)
       await room.save()
     } catch (err) {
       console.log(`[move] error making move`, err)
@@ -1488,14 +1466,11 @@ io.on("connect", async (socket) => {
     try {
       const room = await Room.findOne({ shortId: roomId })
       clearTimeout(room.timerId)
-      let turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME
+      let newTurnStartTime = 0
       room.serverEvent = {
         name: 'score',
-        content: {
-          turnExpireTime: 0
-        }
+        content: {}
       }
-
       
       // update pieces
       const pieces = room.selection.pieces
@@ -1507,7 +1482,7 @@ io.on("connect", async (socket) => {
         room.teams[movingTeam].pieces[piece.id].history = history
         room.teams[movingTeam].pieces[piece.id].lastPath = path
       }
-      turnExpireTime += (path.length * JUMP_TIME)
+      newTurnStartTime += (path.length * JUMP_TIME)
 
       let user;
       try {
@@ -1516,7 +1491,7 @@ io.on("connect", async (socket) => {
         console.log(`[score] error getting user with socket id ${socket.id}`, err)
       }
 
-      turnExpireTime += (1 * ALERT_TIME)
+      newTurnStartTime += (1 * ALERT_TIME)
       room.gameLogs.push({
         logType: 'score',
         content: {
@@ -1558,7 +1533,7 @@ io.on("connect", async (socket) => {
           }
         })
         room.teams[movingTeam].moves = moves
-        turnExpireTime = null
+        room.turnExpireTime = null
       } else {
         // pass check
         let throws = room.teams[movingTeam].throws;
@@ -1567,14 +1542,16 @@ io.on("connect", async (socket) => {
           room.turn = newTurn
           room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
           room.teams[newTurn.team].throws++
-          turnExpireTime += (1 * ALERT_TIME)
+          newTurnStartTime += (1 * ALERT_TIME)
         } else {
           room.teams[movingTeam].moves = moves
         }
-        startTimer(room, turnExpireTime)
+        room.turnsSkipped = 0
+        room.turnStartTime = Date.now() + newTurnStartTime
+        room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+        startTimer(room)
       }
       
-      room.serverEvent.content.turnExpireTime = turnExpireTime
       await room.save()
     } catch (err) {
       console.log(`[move] error scoring piece`, err)
@@ -1646,11 +1623,10 @@ io.on("connect", async (socket) => {
 
       room.serverEvent = {
         name: 'reset',
-        content: {
-          turnExpireTime: null
-        }
+        content: {}
       }
 
+      room.turnExpireTime = null
       await room.save()
       console.log(`[reset] success`)
     } catch (err) {
@@ -1895,26 +1871,19 @@ io.on("connect", async (socket) => {
     // pause game in room
     console.log('[pauseGame]')
     try {
-      let room = await Room.findOneAndUpdate(
-        { 
-          shortId: roomId, 
-          host: clientId 
-        }, 
-        { 
-          '$set': {
-            'paused': flag,
-            'serverEvent': {
-              'name': 'pause',
-              'content': {
-                flag
-              }
-            }
-          }
-        }
-      )
+      let room = await Room.findOne({ shortId: roomId, host: clientId })
       if (!room) {
         console.log('[pauseGame] room', roomId, 'not updated')
       }
+
+      room.paused = flag
+      room.serverEvent = {
+        'name': 'pause',
+        'content': {
+          flag
+        }
+      }
+      await room.save()
     } catch (err) {
       console.log('[pauseGame]', err)
     }

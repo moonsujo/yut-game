@@ -91,6 +91,7 @@ export const pauseGameAtom = atom(false)
 export const languageAtom = atom('english')
 export const timeLeftAtom = atom(60); // seconds
 export const timerOnAtom = atom(false);
+export const turnStartTimeAtom = atom(null);
 export const turnExpireTimeAtom = atom(null);
 export const resultsAtom = atom([])
 

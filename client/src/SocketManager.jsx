@@ -41,7 +41,8 @@ import {
   nakAtom,
   yutMoCatchAtom,
   turnExpireTimeAtom,
-  resultsAtom
+  resultsAtom,
+  turnStartTimeAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
@@ -135,6 +136,7 @@ export const SocketManager = () => {
   const setTimer = useSetAtom(timerAtom)
   const setNak = useSetAtom(nakAtom)
   const [yutMoCatch, setYutMoCatch] = useAtom(yutMoCatchAtom)
+  const setTurnStartTime = useSetAtom(turnStartTimeAtom)
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
   const [results, setResults] = useAtom(resultsAtom);
 
@@ -291,21 +293,25 @@ export const SocketManager = () => {
       setNak(room.rules.nak)
       setYutMoCatch(room.rules.yutMoCatch)
       console.log('[room] room.turnExpireTime', room.turnExpireTime)
+      setTurnStartTime(room.turnStartTime)
       setTurnExpireTime(room.turnExpireTime)
       setResults(room.results);
+      // don't set pieceAnimation or animation (alerts) playing so that
+      // user can throw while timer is running
     })
 
-    socket.on('throwYoot', ({ yootOutcome, yootAnimation, throwCount, turnExpireTime }) => {
+    socket.on('throwYoot', ({ yootOutcome, yootAnimation, throwCount, turnStartTime, turnExpireTime }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
       setThrowCount(throwCount)
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       // const audio = new Audio('sounds/effects/throw.mp3');
       // audio.volume=0.3;
       // audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnExpireTime, gameLogs }) => {
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, gameLogs }) => {
       console.log('[gameStart] throwCount', throwCount)
       setGamePhase(gamePhase)
       setTurn(turn => {
@@ -323,6 +329,7 @@ export const SocketManager = () => {
       setAlerts(['gameStart', 'turn'])
       setAnimationPlaying(true);
       console.log('[gameStart] turnExpireTime', turnExpireTime)
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       // setGameLogs(prevGameLogs => {
       //   return [
@@ -339,8 +346,7 @@ export const SocketManager = () => {
     })
 
     // if pregame, could end in a pass, tie or win
-    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnExpireTime, content, gameLogs, gamePhase }) => {
-      console.log('[passTurn]')
+    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnStartTime, turnExpireTime, content, gameLogs, gamePhase, paused }) => {
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
@@ -382,14 +388,16 @@ export const SocketManager = () => {
       alerts.push('turn')
       setAlerts(alerts)
       setAnimationPlaying(true);
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setGameLogs(gameLogs)
       setSelection(null)
       setLegalTiles({})
       setHelperTiles({})
+      setPauseGame(paused)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs, turnExpireTime }) => {    
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs, turnStartTime, turnExpireTime }) => {    
       setTeams(teams) // only update the throw count of the current team
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
@@ -479,6 +487,7 @@ export const SocketManager = () => {
         }
       }
 
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setAnimationPlaying(true)
       setYootAnimation(null)
@@ -499,7 +508,7 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed, turnExpireTime }) => {
+    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed, turnStartTime, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -556,6 +565,7 @@ export const SocketManager = () => {
       setPieceTeam1Id3(teamsUpdate[1].pieces[3])
       setSelection(selection)
       setGameLogs(gameLogs)
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
     })
 
@@ -569,7 +579,7 @@ export const SocketManager = () => {
       return numPiecesScored;
     }
 
-    socket.on("score", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, gamePhase, results, turnExpireTime }) => {
+    socket.on("score", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, gamePhase, results, turnStartTime, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -620,7 +630,7 @@ export const SocketManager = () => {
       setGamePhase(gamePhase)
       setWinner(results[results.length-1])
       setThrowCount(teamsUpdate[turnUpdate.team].throws)
-      console.log('[score] turnExpireTime', turnExpireTime)
+      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
     })
 
