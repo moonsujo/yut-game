@@ -67,8 +67,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   }
 
   function ThrowCount({position, orientation}) {
-    // const [throwCount] = useAtom(throwCountAtom)
-    const throwCount = teams[turn.team].throws;
+    const throwCount = useAtomValue(throwCountAtom)
+    // const throwCount = teams[turn.team].throws;
     console.log('[ThrowCount] throwCount', throwCount)
 
     function positionByOrientation(index, orientation) {

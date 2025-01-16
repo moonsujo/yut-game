@@ -370,6 +370,9 @@ export const SocketManager = () => {
         teams[newTeam] = newTeamObj
         return [...teams];
       })
+      if (gamePhase === 'game') {
+        setDisplayMoves(JSON.parse(JSON.stringify(initialState.initialMoves)))
+      }
 
       setGamePhase(gamePhase)
       let alerts = []
