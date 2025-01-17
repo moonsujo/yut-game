@@ -146,7 +146,8 @@ const roomSchema = new mongoose.Schema(
     turnStartTime: Number,
     turnExpireTime: Number,
     timerId: Number,
-    turnsSkipped: Number
+    turnsSkipped: Number,
+    pauseTime: Number,
   },
   {
     versionKey: false,
@@ -255,7 +256,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gamePhase: room.gamePhase,
               content: serverEvent.content,
               gameLogs: room.gameLogs,
-              paused: room.paused
+              paused: room.paused,
             })
           } else if (serverEvent.name === "recordThrow") {
             io.to(userSocketId).emit("recordThrow", {
@@ -361,7 +362,9 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             })
           } else if (serverEvent.name === "pause") {
             io.to(userSocketId).emit("pause", { 
-              flag: serverEvent.content.flag
+              flag: serverEvent.content.flag,
+              turnStartTime: room.turnStartTime,
+              turnExpireTime: room.turnExpireTime,
             })
           } else if (serverEvent.name === "setGameRule") {
             io.to(userSocketId).emit("setGameRule", { 
@@ -413,10 +416,10 @@ async function createUniqueUsername() {
   return name;
 }
 
-const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert
+const BASE_TURN_EXPIRE_TIME = 10000 // add time for expired alert // 60000
 const ALERT_TIME = 2500
 const JUMP_TIME = 1000
-const NUM_TURNS_SKIPPED_TO_PAUSE = 5
+const NUM_TURNS_SKIPPED_TO_PAUSE = 2 // 5
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -512,7 +515,8 @@ io.on("connect", async (socket) => {
         turnStartTime: null,
         turnExpireTime: null,
         timerId: null,
-        turnsSkipped: 0
+        turnsSkipped: 0,
+        pauseTime: null,
       })
       console.log('[createRoom] shortRoomId', shortRoomId)
       await room.save();
@@ -708,7 +712,6 @@ io.on("connect", async (socket) => {
     const room = await Room.findOne({ shortId: roomId })
     room.turnsSkipped++
 
-
     const prevTeam = room.turn.team
     let newTurnStartTime = 0
     let serverEvent = {
@@ -781,7 +784,11 @@ io.on("connect", async (socket) => {
     }
     if (room.turnsSkipped === NUM_TURNS_SKIPPED_TO_PAUSE) {
       room.paused = true
-      room.turnExpireTime = null
+      // record time
+      room.pauseTime = Date.now()
+      room.turnStartTime = Date.now()
+      room.turnExpireTime = Date.now() + BASE_TURN_EXPIRE_TIME
+      clearTimeout(room.timerId)
     } else {
       room.turnStartTime = Date.now() + newTurnStartTime
       room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
@@ -936,6 +943,7 @@ io.on("connect", async (socket) => {
           content: {}
         }
         room.turnExpireTime = null
+        room.turnsSkipped = 0
         const outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
         // let outcome;
@@ -1877,6 +1885,21 @@ io.on("connect", async (socket) => {
       }
 
       room.paused = flag
+      // start the timer again
+      // when you pause, record time
+      if (flag) {
+        // record time
+        room.pauseTime = Date.now()
+        clearTimeout(room.timerId)
+      } else {
+        // subtract paused time from current time
+        // add to start and expire time
+        const passedTime = Date.now() - room.pauseTime
+        room.turnStartTime += passedTime
+        room.turnExpireTime += passedTime
+        room.turnsSkipped = 0
+        startTimer(room)
+      }
       room.serverEvent = {
         'name': 'pause',
         'content': {

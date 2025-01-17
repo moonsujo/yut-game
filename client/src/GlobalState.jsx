@@ -3,6 +3,7 @@ import initialState from "../initialState";
 import mediaValues from "./mediaValues";
 
 import { atomWithReducer } from 'jotai/utils'
+import { useEffect } from "react";
 
 function atomWithCompare(initialValue, areEqual) {
   return atomWithReducer(initialValue, (prev, next) => {
@@ -93,7 +94,9 @@ export const timeLeftAtom = atom(60); // seconds
 export const timerOnAtom = atom(false);
 export const turnStartTimeAtom = atom(null);
 export const turnExpireTimeAtom = atom(null);
+export const remainingTimeAtom = atom(100000);
 export const resultsAtom = atom([])
+
 
 const deepPieceEquals = (prev, next) => {
   let result;

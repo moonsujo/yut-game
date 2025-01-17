@@ -39,6 +39,7 @@ import {
   pauseGameAtom,
   timerAtom,
   animationPlayingAtom,
+  turnExpireTimeAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -85,6 +86,7 @@ export default function Game() {
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
   const animationPlaying = useAtomValue(animationPlayingAtom)
+  const turnExpireTime = useAtomValue(turnExpireTimeAtom)
   
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)

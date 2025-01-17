@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { hasTurnAtom, pauseGameAtom, timeLeftAtom, timerOnAtom, turnExpireTimeAtom, turnStartTimeAtom } from "./GlobalState";
+import { animationPlayingAtom, hasTurnAtom, pauseGameAtom, remainingTimeAtom, timeLeftAtom, timerOnAtom, turnExpireTimeAtom, turnStartTimeAtom } from "./GlobalState";
 import { useAtom, useAtomValue } from "jotai";
 import { useFrame } from "@react-three/fiber";
 import { socket } from "./SocketManager";
@@ -8,21 +8,33 @@ export default function Timer(props) {
   // console.log('[Timer]')
   const [turnStartTime, setTurnStartTime] = useAtom(turnStartTimeAtom)
   const [turnExpireTime, setTurnExpireTime] = useAtom(turnExpireTimeAtom)
-  const [currentTime, setCurrentTime] = useState(Date.now())
+  const [remainingTime, setRemainingTime] = useAtom(remainingTimeAtom)
+  const animationPlaying = useAtomValue(animationPlayingAtom)
+  // const [currentTime, setCurrentTime] = useState(Date.now())
   const paused = useAtomValue(pauseGameAtom)
+  console.log('[Timer] remainingTime', remainingTime)
+
+  
+  useEffect(() => {
+    console.log('[Timer] remainingTime', remainingTime)
+  }, [remainingTime])
   
   useFrame(() => {
     if (turnExpireTime) {
-      if (!paused && currentTime < turnExpireTime) {
-        setCurrentTime(Date.now())
+      if (!paused && remainingTime < turnExpireTime) {
+        // if ((turnExpireTime - Date.now()) > (turnExpireTime - turnStartTime)) {
+        //   setRemainingTime(Math.min(turnExpireTime - turnStartTime, turnExpireTime - Date.now()))
+        // } else {
+        //   setRemainingTime(Math.max(turnExpireTime - Date.now(), 0))
+        // }
+        setRemainingTime(Math.max(turnExpireTime - Date.now(), 0))
       } else {
-        setTurnStartTime(null)
-        setTurnExpireTime(null)
+        // setTurnStartTime(null)
+        // setTurnExpireTime(null)
       }
     }
   })
 
-  const remainingTime = Math.min(turnExpireTime - turnStartTime, turnExpireTime - currentTime)
   return turnExpireTime && <group {...props}>
     <mesh name='background-outer'>
       <boxGeometry args={[2, 0.01, 0.5]}/>

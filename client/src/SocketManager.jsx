@@ -42,7 +42,8 @@ import {
   yutMoCatchAtom,
   turnExpireTimeAtom,
   resultsAtom,
-  turnStartTimeAtom
+  turnStartTimeAtom,
+  remainingTimeAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
 import { checkJoin } from "./SocketManagerHelper.js";
@@ -138,7 +139,8 @@ export const SocketManager = () => {
   const [yutMoCatch, setYutMoCatch] = useAtom(yutMoCatchAtom)
   const setTurnStartTime = useSetAtom(turnStartTimeAtom)
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
-  const [results, setResults] = useAtom(resultsAtom);
+  const setRemainingTime = useSetAtom(remainingTimeAtom)
+  const [results, setResults] = useAtom(resultsAtom)
 
   useEffect(() => {
 
@@ -292,9 +294,15 @@ export const SocketManager = () => {
       setTimer(room.rules.timer)
       setNak(room.rules.nak)
       setYutMoCatch(room.rules.yutMoCatch)
+      console.log('[room] room.turnStartTime', room.turnStartTime)
       console.log('[room] room.turnExpireTime', room.turnExpireTime)
       setTurnStartTime(room.turnStartTime)
       setTurnExpireTime(room.turnExpireTime)
+      if (room.paused) {
+        setRemainingTime(room.turnExpireTime - room.pauseTime)
+      } else {
+        setRemainingTime(room.turnExpireTime - Date.now())
+      }
       setResults(room.results);
       // don't set pieceAnimation or animation (alerts) playing so that
       // user can throw while timer is running
@@ -331,6 +339,7 @@ export const SocketManager = () => {
       console.log('[gameStart] turnExpireTime', turnExpireTime)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
+      setRemainingTime(turnExpireTime - turnStartTime)
       // setGameLogs(prevGameLogs => {
       //   return [
       //     ...prevGameLogs, 
@@ -381,13 +390,15 @@ export const SocketManager = () => {
       }
 
       setGamePhase(gamePhase)
-      let alerts = []
-      if (timeExpired) {
-        alerts.push('timesUp')
+      if (!paused) {
+        let alerts = []
+        if (timeExpired) {
+          alerts.push('timesUp')
+        }
+        alerts.push('turn')
+        setAlerts(alerts)
+        setAnimationPlaying(true);
       }
-      alerts.push('turn')
-      setAlerts(alerts)
-      setAnimationPlaying(true);
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setGameLogs(gameLogs)
@@ -852,9 +863,18 @@ export const SocketManager = () => {
       }
     })
 
-    socket.on("pause", ({ flag }) => {
+    socket.on("pause", ({ flag, turnStartTime, turnExpireTime }) => {
+      console.log('[pause]', flag)
       setPauseGame(flag)
       setAlerts([])
+      setTurnStartTime(turnStartTime)
+      setTurnExpireTime(turnExpireTime)
+      setRemainingTime(turnExpireTime - Date.now())
+      // if (flag && ((turnExpireTime - Date.now()) > (turnExpireTime - turnStartTime))) {
+      //   setRemainingTime(Math.min(turnExpireTime - turnStartTime, turnExpireTime - Date.now()))
+      // } else {
+      //   setRemainingTime(Math.max(turnExpireTime - Date.now(), 0))
+      // }
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
