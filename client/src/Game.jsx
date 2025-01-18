@@ -1009,7 +1009,12 @@ export default function Game() {
       {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
       {/* host */}
       { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
-      { timer && !animationPlaying && (gamePhase === 'pregame' || gamePhase === 'game') && <Timer position={layout[device].game.timer.position} scale={[layout[device].game.timer.scaleX, 1, 1]}/> }
+      { timer && !animationPlaying && (gamePhase === 'pregame' || gamePhase === 'game') && <Timer 
+        position={layout[device].game.timer.position} 
+        scale={[layout[device].game.timer.scaleX, 1, 1]}
+        boxArgs={layout[device].game.timer.boxArgs}
+        heightMultiplier={layout[device].game.timer.heightMultiplier}
+      /> }
       <MeteorsRealShader/>
     </>
   );

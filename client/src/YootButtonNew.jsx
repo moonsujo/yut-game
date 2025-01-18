@@ -20,6 +20,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const [enabledLocal, setEnabledLocal] = useState(false);
   const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
   const paused = useAtomValue(pauseGameAtom)
+  const throwCount = useAtomValue(throwCountAtom)
 
   // for the throw count
   const [client] = useAtom(clientAtom);
@@ -37,9 +38,9 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
       // buttonRef.current.scale.y = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
       // buttonRef.current.scale.z = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
     } else {
-      buttonRef.current.scale.x = scale
-      buttonRef.current.scale.y = scale
-      buttonRef.current.scale.z = scale
+      // buttonRef.current.scale.x = scale
+      // buttonRef.current.scale.y = scale
+      // buttonRef.current.scale.z = scale
     }
   })
 
@@ -66,7 +67,6 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   }
 
   function ThrowCount({position, orientation}) {
-    const throwCount = useAtomValue(throwCountAtom)
     // const throwCount = teams[turn.team].throws;
     console.log('[ThrowCount] throwCount', throwCount)
 
@@ -92,6 +92,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   return <group 
     position={position} 
     rotation={rotation} 
+    scale={scale}
     ref={buttonRef}
   >
     <group>

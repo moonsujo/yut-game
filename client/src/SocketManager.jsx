@@ -325,7 +325,6 @@ export const SocketManager = () => {
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
-        console.log('[gameStart] new turn', turn)
         return { ...turn } // must spread the object
       })
       setTeams(teams => {
@@ -334,23 +333,12 @@ export const SocketManager = () => {
         teams[newTeam] = newTeamObj
         return [...teams];
       })
+      setThrowCount(throwCount)
       setAlerts(['gameStart', 'turn'])
       setAnimationPlaying(true);
-      console.log('[gameStart] turnExpireTime', turnExpireTime)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
-      // setGameLogs(prevGameLogs => {
-      //   return [
-      //     ...prevGameLogs, 
-      //     {
-      //       logType: 'gameStart',
-      //       content: {
-      //         text: `Match ${results.length+1} started`
-      //       }
-      //     }
-      //   ]
-      // })
       setGameLogs(gameLogs)
     })
 
@@ -361,6 +349,13 @@ export const SocketManager = () => {
         turn.players[turn.team] = newPlayer
         return { ...turn } // must spread the object
       })
+      
+      let alerts = []
+      if (!paused) {
+        if (timeExpired) {
+          alerts.push('timesUp')
+        }
+      }
       setTeams(teams => {
         const newTeamObj = { ...teams[newTeam] }
         newTeamObj.throws = throwCount
@@ -371,10 +366,16 @@ export const SocketManager = () => {
             if (content.pregameOutcome === 'tie') {
               prevTeamObj.pregameRoll = null
               newTeamObj.pregameRoll = null
+              alerts.push('pregameTie')
             } else if (content.pregameOutcome === 'pass') { // pass or winner decided
               prevTeamObj.pregameRoll = 0
             } else {
               prevTeamObj.pregameRoll = 0
+              if (prevTeam === 0) {
+                alerts.push('pregameUfosWin')
+              } else {
+                alerts.push('pregameRocketsWin')
+              }
             }
           } else {
             prevTeamObj.moves = JSON.parse(JSON.stringify(initialState.initialMoves))
@@ -389,16 +390,12 @@ export const SocketManager = () => {
         setDisplayMoves(JSON.parse(JSON.stringify(initialState.initialMoves)))
       }
 
-      setGamePhase(gamePhase)
       if (!paused) {
-        let alerts = []
-        if (timeExpired) {
-          alerts.push('timesUp')
-        }
         alerts.push('turn')
         setAlerts(alerts)
         setAnimationPlaying(true);
       }
+      setGamePhase(gamePhase)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setGameLogs(gameLogs)
@@ -866,7 +863,7 @@ export const SocketManager = () => {
     socket.on("pause", ({ flag, turnStartTime, turnExpireTime }) => {
       console.log('[pause]', flag)
       setPauseGame(flag)
-      setAlerts([])
+      // setAlerts([])
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - Date.now())
@@ -901,11 +898,17 @@ export const SocketManager = () => {
       localStorage.removeItem('yootGame')
     })
 
-    socket.on('setGameRule', ({ rule, flag }) => {
+    socket.on('setGameRule', ({ rule, flag, turnStartTime, turnExpireTime, paused }) => {
       if (rule === 'backdoLaunch') {
         setBackdoLaunch(flag)
       } else if (rule === 'timer') {
         setTimer(flag)
+        if (flag) {
+          setTurnStartTime(turnStartTime)
+          setRemainingTime(turnExpireTime - turnStartTime)
+          setPauseGame(paused)
+        }
+        setTurnExpireTime(turnExpireTime)
       } else if (rule === 'nak') {
         setNak(flag)
       } else if (rule === 'yutMoCatch') {
