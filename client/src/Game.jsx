@@ -207,7 +207,7 @@ export default function Game() {
       function handlePointerUp(e) {
         e.stopPropagation();
         if (readyToStart) {
-          socket.emit("startGame", { roomId: params.id.toUpperCase() })
+          socket.emit("gameStart", { roomId: params.id.toUpperCase() })
         }
         setPointerDown(false)
         pushApi.start({

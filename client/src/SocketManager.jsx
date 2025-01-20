@@ -308,19 +308,17 @@ export const SocketManager = () => {
       // user can throw while timer is running
     })
 
-    socket.on('throwYoot', ({ yootOutcome, yootAnimation, throwCount, turnStartTime, turnExpireTime }) => {
+    socket.on('throwYut', ({ yootOutcome, yootAnimation, throwCount, turnExpireTime }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
       setThrowCount(throwCount)
-      setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       // const audio = new Audio('sounds/effects/throw.mp3');
       // audio.volume=0.3;
       // audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, gameLogs }) => {
-      console.log('[gameStart] throwCount', throwCount)
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -339,11 +337,11 @@ export const SocketManager = () => {
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
-      setGameLogs(gameLogs)
+      setGameLogs(gameLogs => [...gameLogs, newGameLog])
     })
 
     // if pregame, could end in a pass, tie or win
-    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnStartTime, turnExpireTime, content, gameLogs, gamePhase, paused }) => {
+    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
@@ -356,6 +354,7 @@ export const SocketManager = () => {
           alerts.push('timesUp')
         }
       }
+
       setTeams(teams => {
         const newTeamObj = { ...teams[newTeam] }
         newTeamObj.throws = throwCount
@@ -398,14 +397,14 @@ export const SocketManager = () => {
       setGamePhase(gamePhase)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
-      setGameLogs(gameLogs)
+      setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       setSelection(null)
       setLegalTiles({})
       setHelperTiles({})
       setPauseGame(paused)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, gameLogs, turnStartTime, turnExpireTime }) => {    
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, newGameLogs, turnStartTime, turnExpireTime }) => {    
       setTeams(teams) // only update the throw count of the current team
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
@@ -500,7 +499,7 @@ export const SocketManager = () => {
       setAnimationPlaying(true)
       setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
-      setGameLogs(gameLogs)
+      setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       if (gamePhaseUpdate === 'game') {
         setDisplayMoves(teams[turnUpdate.team].moves)
       }
@@ -516,7 +515,7 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on("move", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, moveUsed, turnStartTime, turnExpireTime }) => {
+    socket.on('move', ({ teamsUpdate, turnUpdate, legalTiles, tiles, newGameLogs, selection, moveUsed, turnStartTime, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -572,7 +571,7 @@ export const SocketManager = () => {
       setPieceTeam1Id2(teamsUpdate[1].pieces[2])
       setPieceTeam1Id3(teamsUpdate[1].pieces[3])
       setSelection(selection)
-      setGameLogs(gameLogs)
+      setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
     })
@@ -587,7 +586,7 @@ export const SocketManager = () => {
       return numPiecesScored;
     }
 
-    socket.on("score", ({ teamsUpdate, turnUpdate, legalTiles, tiles, gameLogs, selection, gamePhase, results, turnStartTime, turnExpireTime }) => {
+    socket.on('score', ({ teamsUpdate, turnUpdate, legalTiles, tiles, newGameLogs, selection, gamePhase, results, turnStartTime, turnExpireTime }) => {
       let teamsPrev;
       setTeams((prev) => {
         teamsPrev = prev;
@@ -634,7 +633,7 @@ export const SocketManager = () => {
       setPieceTeam1Id2(teamsUpdate[1].pieces[2])
       setPieceTeam1Id3(teamsUpdate[1].pieces[3])
       setSelection(selection)
-      setGameLogs(gameLogs)
+      setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       setGamePhase(gamePhase)
       setWinner(results[results.length-1])
       setThrowCount(teamsUpdate[turnUpdate.team].throws)

@@ -5,13 +5,14 @@ import { socket } from "./SocketManager";
 import { useParams } from "wouter";
 import { useFrame } from "@react-three/fiber";
 import layout from "./layout.js";
-import { pauseGameAtom } from "./GlobalState.jsx";
+import { clientAtom, pauseGameAtom } from "./GlobalState.jsx";
 import { useAtomValue } from "jotai";
 
 export default function ScoreButtons({ device, legalTiles, hasTurn }) {
   
   const params = useParams()
   const paused = useAtomValue(pauseGameAtom)
+  const client = useAtomValue(clientAtom)
 
   function MoveToken({moveInfo, position}) {
 
@@ -71,7 +72,7 @@ export default function ScoreButtons({ device, legalTiles, hasTurn }) {
         onPointerLeave={scorePointerOut}
         onPointerDown={() => {
           if (hasTurn && !paused) {
-            socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: moveInfo });
+            socket.emit('score', { roomId: params.id.toUpperCase(), selectedMove: moveInfo, playerName: client.name });
             setHover(false)
           }
         }}
@@ -172,7 +173,7 @@ export default function ScoreButtons({ device, legalTiles, hasTurn }) {
       e.stopPropagation();
       setHover(false)
       if (hasTurn && !paused) {
-        socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0] });
+        socket.emit('score', { roomId: params.id.toUpperCase(), selectedMove: legalTiles[29][0], playerName: client.name });
       }
     }
 

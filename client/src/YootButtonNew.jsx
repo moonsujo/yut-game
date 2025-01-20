@@ -62,13 +62,11 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     if (enabled && !paused) {
       setEnabledLocal(false)
       setAnimationPlaying(true)
-      socket.emit('throwYoot', { roomId: params.id.toUpperCase() })
+      socket.emit('throwYut', { roomId: params.id.toUpperCase() })
     }
   }
 
   function ThrowCount({position, orientation}) {
-    // const throwCount = teams[turn.team].throws;
-    console.log('[ThrowCount] throwCount', throwCount)
 
     function positionByOrientation(index, orientation) {
       if (orientation === 'downUp') {

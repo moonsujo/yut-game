@@ -70,7 +70,7 @@ export default function Piece ({
         }
       } else {
         if (selection.tile != tile && tile in legalTiles) {
-          socket.emit("move", { roomId: params.id.toUpperCase(), tile });
+          socket.emit("move", { roomId: params.id.toUpperCase(), tile, playerName: client.name });
         } else {
           socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
         }

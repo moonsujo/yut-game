@@ -70,7 +70,7 @@ export default function Tile({
       } else if (selection.tile !== tile && legalTileInfo) {
         // Server clears legalTiles and selection
         // When they're called separately, the order of operation is not kept
-        socket.emit("move", { roomId: params.id.toUpperCase(), tile });
+        socket.emit("move", { roomId: params.id.toUpperCase(), tile, playerName: client.name });
       } else {
         socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
 

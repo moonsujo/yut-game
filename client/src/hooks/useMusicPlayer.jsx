@@ -35,6 +35,13 @@ export default function useMusicPlayer() {
       'source': '다니헤르츠 DANI.HZ youtube',
       'path': 'sounds/music/asap-lofi.mp3',
       'length': 175
+    },
+    {
+      'title': 'Merry Go Round',
+      'artist': 'Korean Folk Song / Beat Rhino',
+      'source': 'Beat Rhino',
+      'path': 'sounds/music/mingle-song-music-box.mp3',
+      'length': 67
     }
   ]
 
