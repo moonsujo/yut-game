@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAtom } from 'jotai';
-import { displayMovesAtom, turnAtom } from './GlobalState';
+import { useAtomValue } from 'jotai';
+import { teamsAtom, turnAtom } from './GlobalState';
 import { Text3D } from '@react-three/drei';
 import BackdoToken from './moveTokens/BackdoToken';
 import DoToken from './moveTokens/DoToken';
@@ -12,8 +12,9 @@ import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 
 export default function MoveList({ position, rotation, tokenScale, tokenPosition, size, piecePosition, pieceScale, gamePhase }) {
-    const [moves] = useAtom(displayMovesAtom)
-    const [turn] = useAtom(turnAtom)
+    const teams = useAtomValue(teamsAtom)
+    const turn = useAtomValue(turnAtom)
+    const moves = teams[turn.team].moves
     const moveList = movesToArray()
 
     function movesToArray() {

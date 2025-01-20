@@ -70,7 +70,6 @@ export const throwResultAtom = atom({
 })
 export const animationPlayingAtom = atom(false)
 export const pieceAnimationPlayingAtom = atom(false)
-export const displayMovesAtom = atom({})
 export const legalTilesAtom = atom({})
 export const helperTilesAtom = atom({})
 export const winnerAtom = atom(-1)

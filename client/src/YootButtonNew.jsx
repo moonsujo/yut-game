@@ -22,10 +22,8 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const paused = useAtomValue(pauseGameAtom)
   const throwCount = useAtomValue(throwCountAtom)
 
-  // for the throw count
   const [client] = useAtom(clientAtom);
   const turn = useAtomValue(turnAtom);
-  const teams = useAtomValue(teamsAtom)
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]

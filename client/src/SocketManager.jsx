@@ -7,7 +7,6 @@ import {
   pregameAlertAtom, 
   clientAtom, 
   disconnectAtom, 
-  displayMovesAtom, 
   gamePhaseAtom, 
   hasTurnAtom, 
   helperTilesAtom, 
@@ -54,9 +53,9 @@ import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import initialState from "../initialState.js";
 
-const ENDPOINT = 'localhost:5000';
+// const ENDPOINT = 'localhost:5000';
 
-// const ENDPOINT = 'https://yoot-game-6c96a9884664.herokuapp.com/';
+const ENDPOINT = 'https://yoot-game-6c96a9884664.herokuapp.com/';
 
 export const socket = io(
   ENDPOINT, { 
@@ -94,7 +93,6 @@ export const SocketManager = () => {
 
   // Use state to check if the game phase changed
   const [_gamePhase, setGamePhase] = useAtom(gamePhaseAtom)
-  const [_displayMoves, setDisplayMoves] = useAtom(displayMovesAtom)
   const [_selection, setSelection] = useAtom(selectionAtom)
   const [_legalTiles, setLegalTiles] = useAtom(legalTilesAtom)
   const [_helperTiles, setHelperTiles] = useAtom(helperTilesAtom)
@@ -207,7 +205,7 @@ export const SocketManager = () => {
       // has at least one throw and there is a player on the team
       // and the thrown flag is off
       if ((room.gamePhase === "pregame" || room.gamePhase === 'game') && (room.teams[currentTeam].players.length > 0 && 
-      clientHasTurn(socket.id, room.teams, room.turn) &&
+      clientHasTurn(socket.id, room.teams, room.turn.team, room.turn.players[room.turn.team]) &&
       room.teams[currentTeam].throws > 0)) {
         setYootActive(true)
       } else {
@@ -226,12 +224,8 @@ export const SocketManager = () => {
 
       setTurn(room.turn)
 
-      if (room.gamePhase === 'game') {
-        setDisplayMoves(room.teams[room.turn.team].moves)
-      }
-
       if ((room.gamePhase === "pregame" || room.gamePhase === "game") && 
-      clientHasTurn(socket.id, room.teams, room.turn)) {
+      clientHasTurn(socket.id, room.teams, room.turn.team, room.turn.players[room.turn.team])) {
 
         setHasTurn(true)
 
@@ -294,10 +288,9 @@ export const SocketManager = () => {
       setTimer(room.rules.timer)
       setNak(room.rules.nak)
       setYutMoCatch(room.rules.yutMoCatch)
-      console.log('[room] room.turnStartTime', room.turnStartTime)
-      console.log('[room] room.turnExpireTime', room.turnExpireTime)
       setTurnStartTime(room.turnStartTime)
       setTurnExpireTime(room.turnExpireTime)
+      setAlerts([])
       if (room.paused) {
         setRemainingTime(room.turnExpireTime - room.pauseTime)
       } else {
@@ -341,7 +334,7 @@ export const SocketManager = () => {
     })
 
     // if pregame, could end in a pass, tie or win
-    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, timeExpired, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
+    socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
       setTurn(turn => {
         turn.team = newTeam;
         turn.players[turn.team] = newPlayer
@@ -350,44 +343,37 @@ export const SocketManager = () => {
       
       let alerts = []
       if (!paused) {
-        if (timeExpired) {
-          alerts.push('timesUp')
-        }
+        alerts.push('timesUp')
       }
 
       setTeams(teams => {
         const newTeamObj = { ...teams[newTeam] }
         newTeamObj.throws = throwCount
         const prevTeam = content.prevTeam
-        if (timeExpired) {
-          let prevTeamObj = { ...teams[prevTeam] }
-          if (content.pregameOutcome) {
-            if (content.pregameOutcome === 'tie') {
-              prevTeamObj.pregameRoll = null
-              newTeamObj.pregameRoll = null
-              alerts.push('pregameTie')
-            } else if (content.pregameOutcome === 'pass') { // pass or winner decided
-              prevTeamObj.pregameRoll = 0
-            } else {
-              prevTeamObj.pregameRoll = 0
-              if (prevTeam === 0) {
-                alerts.push('pregameUfosWin')
-              } else {
-                alerts.push('pregameRocketsWin')
-              }
-            }
+        let prevTeamObj = { ...teams[prevTeam] }
+        if (content.pregameOutcome) {
+          if (content.pregameOutcome === 'tie') {
+            prevTeamObj.pregameRoll = null
+            newTeamObj.pregameRoll = null
+            alerts.push('pregameTie')
+          } else if (content.pregameOutcome === 'pass') { // pass or winner decided
+            prevTeamObj.pregameRoll = 0
           } else {
-            prevTeamObj.moves = JSON.parse(JSON.stringify(initialState.initialMoves))
-            prevTeamObj.throws = 0
+            prevTeamObj.pregameRoll = 0
+            if (prevTeam === 0) {
+              alerts.push('pregameUfosWin')
+            } else {
+              alerts.push('pregameRocketsWin')
+            }
           }
-          teams[prevTeam] = prevTeamObj
+        } else {
+          prevTeamObj.moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+          prevTeamObj.throws = 0
         }
+        teams[prevTeam] = prevTeamObj
         teams[newTeam] = newTeamObj
         return [...teams];
       })
-      if (gamePhase === 'game') {
-        setDisplayMoves(JSON.parse(JSON.stringify(initialState.initialMoves)))
-      }
 
       if (!paused) {
         alerts.push('turn')
@@ -498,11 +484,8 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
       setAnimationPlaying(true)
       setYootAnimation(null)
-      setHasTurn(clientHasTurn(socket.id, teams, turnUpdate))
+      setHasTurn(clientHasTurn(socket.id, teams, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
-      if (gamePhaseUpdate === 'game') {
-        setDisplayMoves(teams[turnUpdate.team].moves)
-      }
     })
 
     function calculateNumPiecesCaught(piecesPrev, piecesUpdate) {
@@ -515,62 +498,118 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on('move', ({ teamsUpdate, turnUpdate, legalTiles, tiles, newGameLogs, selection, moveUsed, turnStartTime, turnExpireTime }) => {
-      let teamsPrev;
-      setTeams((prev) => {
-        teamsPrev = prev;
-        return teamsUpdate
-      }) // only update the throw count of the current team
-      let turnPrev;
-      setTurn((prev) => {
-        turnPrev = prev;
-        return turnUpdate
+    socket.on('move', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, updatedTiles, throws, newGameLogs, turnStartTime, turnExpireTime }) => {
+      // instead of teamsUpdate and tiles, receive updatedPieces and updatedTiles
+      // check if moves is empty. if it is, clear it
+      // clear legalTiles and selection
+      let alerts = []
+
+      let piecesCurrentTeam = []
+      let piecesEnemyTeam = []
+      setTeams(teams => {
+        // Update pieces
+        for (const piece of updatedPieces) {
+          teams[piece.team].pieces[piece.id] = piece
+          teams[piece.team].pieces[piece.id].history = [...piece.history]
+          teams[piece.team].pieces[piece.id].lastPath = [...piece.lastPath]
+          if (piece.team === 0 && piece.id === 0)
+            setPieceTeam0Id0(piece)
+          else if (piece.team === 0 && piece.id === 1)
+            setPieceTeam0Id1(piece)
+          else if (piece.team === 0 && piece.id === 2)
+            setPieceTeam0Id2(piece)
+          else if (piece.team === 0 && piece.id === 3)
+            setPieceTeam0Id3(piece)
+          else if (piece.team === 1 && piece.id === 0)
+            setPieceTeam1Id0(piece)
+          else if (piece.team === 1 && piece.id === 1)
+            setPieceTeam1Id1(piece)
+          else if (piece.team === 1 && piece.id === 2)
+            setPieceTeam1Id2(piece)
+          else if (piece.team === 1 && piece.id === 3)
+            setPieceTeam1Id3(piece)
+
+          // for catch
+          if (newTeam === prevTeam) {
+            if (piece.team === newTeam) 
+              piecesCurrentTeam.push(piece)
+            else
+              piecesEnemyTeam.push(piece)
+          }
+        }
+        
+        // Update throws
+        teams[newTeam].throws = throws
+        setThrowCount(throws)
+
+        // Update moves
+        if (newTeam !== prevTeam) {
+          teams[prevTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+        } else {
+          teams[prevTeam].moves[moveUsed]--
+        }
+      
+        // Update current player's name
+        const currentPlayerName = teams[newTeam].players[newPlayer].name
+        setCurrentPlayerName(currentPlayerName)
+
+        return [...teams]
+      })
+
+      setTiles(tiles => {
+
+        // Join
+        const movingTeam = prevTeam
+        const to = updatedTiles.to.index
+        console.log('[move] to', to, 'movingTeam', movingTeam, 'tiles[to]', tiles[to])
+        if (tiles[to].length > 0 && tiles[to][0].team === movingTeam) {
+          alerts.push(`join${movingTeam}${to}`)
+        }
+
+        let newTiles = [...tiles]
+        const from = updatedTiles.from.index
+        newTiles[to] = []
+        for (let i = 0; i < updatedTiles.to.pieces.length; i++) {
+          const newPiece = {
+            ...updatedTiles.to.pieces[i],
+            history: updatedTiles.to.pieces[i].history,
+            lastPath: updatedTiles.to.pieces[i].lastPath
+          }
+          newTiles[to].push(newPiece)
+        }
+
+        if (from !== -1) // true if piece is starting
+          newTiles[from] = []
+        return newTiles
       })
       
-      const currentPlayerName = teamsUpdate[turnUpdate.team].players[turnUpdate.players[turnUpdate.team]].name
-      setCurrentPlayerName(currentPlayerName)
-      
-      let alerts = []
-      // 1. catch
-      const opposingTeam = turnUpdate.team === 0 ? 1 : 0;
-      const opposingTeamPiecesPrev = teamsPrev[opposingTeam].pieces;
-      const opposingTeamPiecesUpdate = teamsUpdate[opposingTeam].pieces
-      let numPiecesCaught = calculateNumPiecesCaught(opposingTeamPiecesPrev, opposingTeamPiecesUpdate)
-      if (numPiecesCaught > 0) {
-        alerts.push(`catch${opposingTeam}${numPiecesCaught}`)
-        setCatchPath(gameLogs[gameLogs.length-1].content.path)
-        if (yutMoCatch || (moveUsed !== 4 && moveUsed !== 5)) {
-          setThrowCount(teamsUpdate[turnUpdate.team].throws)
-        }
-      } else { // 2. join / pass turn
-        let joined = checkJoin(teamsPrev[turnPrev.team].pieces, teamsUpdate[turnPrev.team].pieces)
-        if (joined.result) {
-          alerts.push(`join${turnPrev.team}${joined.tile}`)
-        }
-        if (turnPrev.team !== turnUpdate.team) {
-          alerts.push('turn')
-          setThrowCount(teamsUpdate[turnUpdate.team].throws)
-        }
+      // Catch
+      if (piecesEnemyTeam.length > 0) {
+        const enemyTeamId = piecesEnemyTeam[0].team
+        alerts.push(`catch${enemyTeamId}${piecesEnemyTeam.length}`)
+        setCatchPath(newGameLogs[newGameLogs.length-1].content.path)
       }
 
-      setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
-      setHelperTiles({})
+      setTurn((turn) => {
+        let newTurn = {
+          team: newTeam,
+          players: [...turn.players]
+        }
+        if (turn.team !== newTeam) {
+          alerts.push('turn')
+        }
+        newTurn.players[newTeam] = newPlayer
+        return newTurn
+      })
+
       setAlerts(alerts)
       setAnimationPlaying(true)
       setPieceAnimationPlaying(true)
-      // whenever turn could have changed
-      setHasTurn(clientHasTurn(socket.id, teamsUpdate, turnUpdate))
-      setLegalTiles(legalTiles)
-      setTiles(tiles)
-      setPieceTeam0Id0(teamsUpdate[0].pieces[0])
-      setPieceTeam0Id1(teamsUpdate[0].pieces[1])
-      setPieceTeam0Id2(teamsUpdate[0].pieces[2])
-      setPieceTeam0Id3(teamsUpdate[0].pieces[3])
-      setPieceTeam1Id0(teamsUpdate[1].pieces[0])
-      setPieceTeam1Id1(teamsUpdate[1].pieces[1])
-      setPieceTeam1Id2(teamsUpdate[1].pieces[2])
-      setPieceTeam1Id3(teamsUpdate[1].pieces[3])
-      setSelection(selection)
+      // Turn could have changed
+      setHasTurn(clientHasTurn(socket.id, teams, newTeam, newPlayer))
+      setLegalTiles({})
+      setHelperTiles({})
+      setSelection(null)
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
@@ -618,10 +657,9 @@ export const SocketManager = () => {
         setPieceAnimationPlaying(true)
       }
 
-      setDisplayMoves(teamsUpdate[turnUpdate.team].moves)
       setHelperTiles({})
       // whenever turn could have changed
-      setHasTurn(clientHasTurn(socket.id, teamsUpdate, turnUpdate))
+      setHasTurn(clientHasTurn(socket.id, teamsUpdate, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
       setLegalTiles(legalTiles)
       setTiles(tiles)
       setPieceTeam0Id0(teamsUpdate[0].pieces[0])
@@ -699,7 +737,6 @@ export const SocketManager = () => {
     })
 
     socket.on("reset", () => {
-      console.log('[reset]')
       setGamePhase('lobby');
       setTiles(initialState.initialTiles);
       setTurn(initialState.initialTurn);
@@ -742,7 +779,6 @@ export const SocketManager = () => {
 
     socket.on("setAway", ({ player }) => {
       setTeams((teams) => {
-        console.log('[setAway] teams', teams) // prints mutated value, the same one as 'newTeams'
         const newTeams = [...teams] // make shallow copy
         const newPlayers = [...newTeams[player.team].players]; // make shallow copy of nested array
         const awayPlayerIndex = newPlayers.findIndex((currentPlayer) => currentPlayer.name === player.name)
@@ -751,7 +787,6 @@ export const SocketManager = () => {
           ...newTeams[player.team],
           players: newPlayers
         }
-        console.log('[setAway] newTeams', newTeams)
         return newTeams;
       })
 
@@ -768,8 +803,6 @@ export const SocketManager = () => {
     })
 
     socket.on("setTeam", ({ user, prevTeam }) => {
-      // set with new info from server; setState works weirdly in useEffect
-      console.log('[setTeam] user', user)
       setSpectators((spectators) => {
         const newSpectators = [...spectators]
         if (prevTeam === -1) {
@@ -813,7 +846,6 @@ export const SocketManager = () => {
     })
 
     socket.on("assignHost", ({ newHost }) => {
-      console.log('[assignHost]')
       if (newHost.team !== -1) {
         // use the setter to access the latest state.
         // if I use the one from the outside, players arrays are empty
@@ -832,7 +864,6 @@ export const SocketManager = () => {
     })
 
     socket.on("kick", ({ team, name }) => {
-      console.log('[kick]')
       if (team === -1) {
         // use the setter to access the latest state.
         // if I use the one from the outside, players arrays are empty
@@ -860,25 +891,16 @@ export const SocketManager = () => {
     })
 
     socket.on("pause", ({ flag, turnStartTime, turnExpireTime }) => {
-      console.log('[pause]', flag)
       setPauseGame(flag)
-      // setAlerts([])
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - Date.now())
-      // if (flag && ((turnExpireTime - Date.now()) > (turnExpireTime - turnStartTime))) {
-      //   setRemainingTime(Math.min(turnExpireTime - turnStartTime, turnExpireTime - Date.now()))
-      // } else {
-      //   setRemainingTime(Math.max(turnExpireTime - Date.now(), 0))
-      // }
     })
 
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       setSpectators(spectators)
       setTeams(teams);
       setHost(host);
-      
-      // findAndStoreClient(spectators, teams)
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
@@ -915,22 +937,6 @@ export const SocketManager = () => {
       }
     })
 
-    // socket.on("timeExpired", ({ teamIndex, playerIndex }) => {
-    //   console.log('[timeExpired] teamIndex', teamIndex, 'playerIndex', playerIndex)
-    //   setTurn(turn => {
-    //     turn.team = teamIndex;
-    //     turn.players[teamIndex] = playerIndex
-    //     return turn;
-    //   })
-    //   setTeams(teams => {
-    //     const prevTeamIndex = teamIndex === 0 ? 1 : 0
-    //     teams[prevTeamIndex].moves = initialState.initialMoves
-    //     teams[prevTeamIndex].throws = 0
-    //   })
-    //   setSelection(null)
-    //   setLegalTiles({})
-    // })
-
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount
       setSettingsOpen(false)
@@ -946,24 +952,10 @@ export const SocketManager = () => {
   }, [])
 
   useEffect(() => {
-    console.log('[turn useEffect] turn', turn)
     if (turn.team !== -1) {
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
       setHasTurn(client.team === turn.team)
-
-      // setGameLogs(prevGameLogs => {
-      //   return [
-      //     ...prevGameLogs, 
-      //     {
-      //       logType: 'passTurn',
-      //       content: {
-      //         team: turn.team,
-      //         playerName: teams[turn.team].players[turn.players[turn.team]].name
-      //       }
-      //     }
-      //   ]
-      // })
     }
   }, [turn])
 
@@ -971,6 +963,7 @@ export const SocketManager = () => {
   // yut button didn't activate on gameStart
   // start timer
   useEffect(() => {
+    console.log('[useEffect] turn', turn, 'client', client)
     if (turn && turn.team !== -1 && client) {
       if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
         setHasTurn(true)

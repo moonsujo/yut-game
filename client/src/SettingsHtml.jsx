@@ -2171,7 +2171,6 @@ export default function SettingsHtml(props) {
         setHover(false)
       }
       function handleMouseUp() {
-        console.log('button click')
         setMainMenuOpen(false)
         setInviteFriendsOpen(true)
       }
@@ -2196,7 +2195,6 @@ export default function SettingsHtml(props) {
       </button>
     }
     function SetAwayButton() {
-      console.log('[SetAwayButton] client', client)
       const [hover, setHover] = useState(false);
       function handleMouseEnter() {
         setHover(true)

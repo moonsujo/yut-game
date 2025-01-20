@@ -29,7 +29,6 @@ export function useBeamDustShader() {
     // spawn via setInterval
     // randomize position and size
     function CreateBeamDust({ position, size, speed }) {
-        console.log('create beam dust')
         const color = new THREE.Color();
         color.setHSL(0.5, 0.5, 0.6)
         const geometry = new THREE.BufferGeometry()
@@ -71,7 +70,6 @@ export function useBeamDustShader() {
         )
 
         scene.add(points)
-        console.log('added points')
     }
 
     return [CreateBeamDust];

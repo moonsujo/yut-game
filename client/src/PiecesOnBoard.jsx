@@ -169,7 +169,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id0.tile)) {
@@ -249,7 +248,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -350,7 +348,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -445,7 +442,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id2.tile)) {
@@ -488,7 +484,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -583,7 +578,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id3.tile)) {
@@ -626,7 +620,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -652,7 +645,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -664,7 +656,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -723,7 +714,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id0.tile)) {
@@ -766,7 +756,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -793,7 +782,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -805,7 +793,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -864,7 +851,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id1.tile)) {
@@ -907,7 +893,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -934,7 +919,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             }
@@ -946,7 +930,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }
@@ -1005,7 +988,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id2.tile)) {
@@ -1048,7 +1030,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -1143,7 +1124,6 @@ export default function PiecesOnBoard() {
                     },
                     to: animations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id3.tile)) {
@@ -1186,7 +1166,6 @@ export default function PiecesOnBoard() {
                     },
                     to: toAnimations,
                     loop: false,
-                    // onStart: () => setPieceAnimationPlaying(true),
                     onRest: () => setPieceAnimationPlaying(false),
                 })
             } else {
@@ -1223,7 +1202,6 @@ export default function PiecesOnBoard() {
                 },
                 to: [],
                 loop: false,
-                // onStart: () => setPieceAnimationPlaying(true),
                 onRest: () => setPieceAnimationPlaying(false),
             })
         }

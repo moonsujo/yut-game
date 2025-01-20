@@ -101,9 +101,7 @@ export default function Game() {
 
   useEffect(() => {
     if (connectedToServer) {
-      console.log('[Game] calling addUser')
       socket.emit('addUser', {}, () => {
-        console.log('add user callback, roomId:', params.id)
         socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
       })
     }

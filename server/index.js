@@ -244,7 +244,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newTeam: room.turn.team,
               newPlayer: room.turn.players[room.turn.team],
               throwCount: room.teams[room.turn.team].throws,
-              timeExpired: serverEvent.content.timeExpired,
               turnStartTime: room.turnStartTime,
               turnExpireTime: room.turnExpireTime,
               gamePhase: room.gamePhase,
@@ -261,21 +260,22 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turnUpdate: data.fullDocument.turn,
               pregameOutcome: data.fullDocument.pregameOutcome,
               yootOutcome: data.fullDocument.yootOutcome,
-              newGameLogs: serverEvent.content.gameLogs, // only the new logs that were added
+              newGameLogs: serverEvent.content.gameLogs,
               turnStartTime: room.turnStartTime,
               turnExpireTime: room.turnExpireTime
             })
           } else if (serverEvent.name === 'move') {
             io.to(userSocketId).emit('move', {
-              teamsUpdate: roomPopulated.teams,
-              turnUpdate: data.fullDocument.turn,
-              legalTiles: data.fullDocument.legalTiles,
-              tiles: data.fullDocument.tiles, // should emit indices of elements that changed, and their contents
-              newGameLogs: serverEvent.content.gameLogs,
-              selection: data.fullDocument.selection,
+              newTeam: room.turn.team,
+              prevTeam: serverEvent.content.prevTeam,
+              newPlayer: room.turn.players[room.turn.team],
               moveUsed: serverEvent.content.moveUsed,
+              updatedPieces: serverEvent.content.updatedPieces,
+              updatedTiles: serverEvent.content.updatedTiles,
+              throws: serverEvent.content.throws,
+              newGameLogs: serverEvent.content.gameLogs,
               turnStartTime: room.turnStartTime,
-              turnExpireTime: room.turnExpireTime
+              turnExpireTime: room.turnExpireTime,
             })
           } else if (serverEvent.name === "select") {
             console.log('select')
@@ -368,11 +368,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turnExpireTime: room.turnExpireTime,
               paused: room.paused
             })
-          // } else if (serverEvent.name === "timeExpired") {
-          //   io.to(userSocketId).emit("timeExpired", { 
-          //     teamIndex: room.turn.team,
-          //     playerIndex: room.turn.players[room.turn.team]
-          //   })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -720,7 +715,6 @@ io.on("connect", async (socket) => {
     let serverEvent = {
       name: 'passTurn',
       content: {
-        timeExpired: true,
         gameLogs: []
       }
     }
@@ -733,7 +727,6 @@ io.on("connect", async (socket) => {
     if (room.gamePhase === 'pregame') {
       room.teams[prevTeam].pregameRoll = 0
       const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
-      console.log('[switchTurnByTimeExpired] outcomePregame', outcomePregame)
       if (outcomePregame === "pass") {
         room.pregameOutcome = outcomePregame
         room.turn = passTurn(room.turn, room.teams) // add throw here
@@ -952,9 +945,8 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        const outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        // let outcome;
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 1) {
         //     outcome = 5
@@ -962,12 +954,12 @@ io.on("connect", async (socket) => {
         //     outcome = 4
         //   }
         // } else if (room.gamePhase === 'game') {
-        //   outcome = 3
         //   if (room.turn.team === 0) {
         //     outcome = Math.random() > 0.5 ? 5 : 4
         //   } else {
         //     outcome = 1
         //   }
+        //   outcome = 1
         // }
         const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;
@@ -1316,13 +1308,34 @@ io.on("connect", async (socket) => {
         name: 'move',
         content: {
           moveUsed,
-          gameLogs: []
+          updatedPieces: [
+            // object
+            // teamId
+            // pieceId
+          ],
+          updatedTiles: {
+            from: {
+              index: -1,
+              pieces: []
+            },
+            to: {
+              index: null,
+              pieces: []
+            }
+            // fill in indexes of array in SocketManager
+          },
+          throws: null, // current team if bonus from catch, or next team,
+          // new teamId from room.turn.team
+          // new playerId from room.turn.players[room.turn.team]
+          prevTeam: movingTeam,
+          // throws from room.teams[room.turn.team].throws
+          gameLogs: [],
         }
       }
 
       // change throughout the function
       let gameLog = {
-        logType: "move",
+        logType: 'move',
         content: {
           playerName,
           team: movingTeam,
@@ -1334,19 +1347,24 @@ io.on("connect", async (socket) => {
       room.gameLogs.push(gameLog)
       serverEvent.content.gameLogs.push(gameLog)
 
-      for (const piece of pieces) {
-        room.teams[movingTeam].pieces[piece.id].tile = to
-        room.teams[movingTeam].pieces[piece.id].history = history
-        room.teams[movingTeam].pieces[piece.id].lastPath = path
-      }
-
       // Clear pieces from the 'from' tile if they were on the board
       if (!starting) {
         room.tiles[from] = []
+        serverEvent.content.updatedTiles.from.index = from
+        serverEvent.content.updatedTiles.from.pieces = []
       } else {
         turnStartTimeDelay += JUMP_TIME
       }
 
+      // Update moving team's pieces at home
+      for (const piece of pieces) {
+        room.teams[movingTeam].pieces[piece.id].tile = to
+        room.teams[movingTeam].pieces[piece.id].history = history
+        room.teams[movingTeam].pieces[piece.id].lastPath = path
+        serverEvent.content.updatedPieces.push(piece)
+      }
+
+      // Update moving pieces for the tiles
       pieces.forEach(function(_item, index, array) {
         array[index].tile = to
         array[index].history = history
@@ -1362,9 +1380,13 @@ io.on("connect", async (socket) => {
             piece.tile = -1
             piece.history = []
             room.teams[occupyingTeam].pieces[piece.id] = piece
+            serverEvent.content.updatedPieces.push(piece)
           }
           
           room.tiles[to] = pieces
+          serverEvent.content.updatedTiles.to.index = to
+          serverEvent.content.updatedTiles.to.pieces = pieces
+
           if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
             throws++;
           }
@@ -1387,6 +1409,8 @@ io.on("connect", async (socket) => {
           for (const piece of pieces) {
             room.tiles[to].push(piece)
           }
+          serverEvent.content.updatedTiles.to.index = to
+          serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
           
           gameLog = {
             logType: "join",
@@ -1405,6 +1429,8 @@ io.on("connect", async (socket) => {
         for (const piece of pieces) {
           room.tiles[to].push(piece)
         }
+        serverEvent.content.updatedTiles.to.index = to
+        serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
       }
 
       // Clear legal tiles and selection
@@ -1419,10 +1445,12 @@ io.on("connect", async (socket) => {
         room.turn = newTurn
         room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
         room.teams[newTurn.team].throws = 1
+        serverEvent.content.throws = 1
         turnStartTimeDelay += (1 * ALERT_TIME)
       } else {
         room.teams[movingTeam].moves = moves
-        room.teams[movingTeam].throws = throws
+        room.teams[movingTeam].throws = throws // may have an extra throw from catch
+        serverEvent.content.throws = throws
       }
 
       room.serverEvent = serverEvent

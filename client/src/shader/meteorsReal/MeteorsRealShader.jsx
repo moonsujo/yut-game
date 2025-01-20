@@ -80,7 +80,6 @@ export default function MeteorsRealShader() {
         const points = new THREE.Points(geometry, material)
         points.position.copy(position)
         const destroy = () => {
-            console.log('destroy')
             scene.remove(points)
             geometry.dispose()
             material.dispose()
@@ -129,7 +128,6 @@ export default function MeteorsRealShader() {
             }
         }, 2000);
         return (() => {
-            console.log('clear interval')
             clearInterval(interval);
         })
     }, [])

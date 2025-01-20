@@ -73,7 +73,6 @@ export default function useMeteorsShader() {
         const points = new THREE.Points(geometry, material)
         points.position.copy(position)
         const destroy = () => {
-            console.log('destroy')
             scene.remove(points)
             geometry.dispose()
             material.dispose()
