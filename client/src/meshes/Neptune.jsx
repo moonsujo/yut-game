@@ -21,7 +21,7 @@ export default function Neptune({ position=[0,0,0], rotation=[0,0,0], scale=1 })
           material={materials["Blue Planet"]}
           scale={1.3}
         />
-        <NeptuneParticles/>
+        {/* <NeptuneParticles/> */}
       </group>
     </group>
   );

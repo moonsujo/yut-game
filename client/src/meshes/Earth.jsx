@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { animated } from "@react-spring/three";
+import NeptuneParticles from "./NeptuneParticles";
 
 export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
   const { nodes, materials } = useGLTF("models/earth-round.glb");
@@ -53,6 +54,7 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
             material={materials.earth}
           />
         </mesh>
+        <NeptuneParticles/>
       </group>
     </animated.group>
   );

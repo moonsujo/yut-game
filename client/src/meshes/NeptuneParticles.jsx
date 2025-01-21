@@ -5,11 +5,11 @@ function randomNumberBetween(min, max) {
   return min + Math.random() * (max - min);
 }
 
-const countNeptune1 = 350;
+const countNeptune1 = 400; // original: 350
 const countNeptune2 = 470;
 const sizeNeptune = 0.07;
-const radius1MinNeptune = 1.54;
-const radius1MaxNeptune = 2.1;
+const radius1MinNeptune = 1.94; // original: 1.54
+const radius1MaxNeptune = 2.5; // original: 2.1
 const countSparkles1 = 50;
 const radius2MinNeptune = 2.34;
 const radius2MaxNeptune = 2.78;
@@ -113,7 +113,7 @@ function NeptuneParticles2() {
           vertexColors={true}
         />
       </points>
-      <points>
+      {/* <points>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
@@ -141,7 +141,7 @@ function NeptuneParticles2() {
           // depthTest={false}
           alphaTest={0}
         />
-      </points>
+      </points> */}
     </group>
   );
 }
