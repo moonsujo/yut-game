@@ -1501,7 +1501,6 @@ io.on("connect", async (socket) => {
       serverEvent.content.prevTeam = movingTeam
       const history = selectedMove.history
       const path = selectedMove.path
-      console.log('[score] path', path)
       for (const piece of pieces) {
         room.teams[movingTeam].pieces[piece.id].tile = 29
         room.teams[movingTeam].pieces[piece.id].history = history
@@ -1562,6 +1561,9 @@ io.on("connect", async (socket) => {
         serverEvent.content.gameLogs.push(gameLog)
 
         room.teams[movingTeam].moves = { ...moves }
+
+        // Stop timer
+        clearTimeout(room.timerId)
         room.turnExpireTime = null
       } else {
         // Check if turn should pass
