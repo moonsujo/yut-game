@@ -1594,7 +1594,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on("reset", async ({ roomId, clientId }) => {
+  socket.on('reset', async ({ roomId, clientId }) => {
     try {
       let room = await Room.findOne({ shortId: roomId })
       if (!room) {
@@ -1662,9 +1662,10 @@ io.on("connect", async (socket) => {
         content: {}
       }
 
+      // Stop timer
+      clearTimeout(room.timerId)
       room.turnExpireTime = null
       await room.save()
-      console.log(`[reset] success`)
     } catch (err) {
       console.log(`[reset] error resetting game`, err)
     }
