@@ -21,7 +21,7 @@ export default function Tile({
   scale=1, 
   tile=null,
   mesh,
-  legalTileInfo, // If key is not in the object, it's undefined
+  legalTileInfo, // If the key is not in the object, it's undefined
   pathNum,
   interactive=false
 }) {
@@ -137,9 +137,9 @@ export default function Tile({
         wrapperMat.current.opacity = 0.3
         wrapperMat.current.color = new THREE.Color('grey')
       }
-      wrapper.current.scale.x = Math.cos(time) * 0.1 + 1.1;
-      wrapper.current.scale.y = Math.cos(time) * 0.1 + 1.1;
-      wrapper.current.scale.z = Math.cos(time) * 0.1 + 1.1;
+      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + 1.1;
     } else if (selection != null && legalTileInfo) {
       if (turn.team === 0) {
         wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
@@ -147,9 +147,9 @@ export default function Tile({
         wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
       }
       wrapperMat.current.opacity = 0.3;
-      wrapper.current.scale.x = Math.cos(time) * 0.1 + 1.1;
-      wrapper.current.scale.y = Math.cos(time) * 0.1 + 1.1;
-      wrapper.current.scale.z = Math.cos(time) * 0.1 + 1.1;
+      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + 1.1;
     } else {
       wrapperMat.current.opacity = 0;
     }
@@ -174,22 +174,23 @@ export default function Tile({
 
   return <group position={position} rotation={rotation} scale={scale}>
     <group ref={group}>
-      <animated.mesh
-        name='wrapper'
-        onPointerEnter={(e) => { interactive && handlePointerEnter(e) }}
-        onPointerLeave={(e) => { interactive && handlePointerLeave(e) }}
-        onPointerDown={(e) => { interactive && handlePointerDown(e) }}
-        ref={wrapper}
-        scale={wrapperScale}
-      >
-        <sphereGeometry args={[0.8, 32, 16]} />
-        <meshStandardMaterial
-          transparent
-          opacity={0}
-          ref={wrapperMat}
-          depthWrite={false}
-        />
-      </animated.mesh>
+      <animated.group scale={wrapperScale}>
+        <mesh
+          name='wrapper'
+          onPointerEnter={(e) => { interactive && handlePointerEnter(e) }}
+          onPointerLeave={(e) => { interactive && handlePointerLeave(e) }}
+          onPointerDown={(e) => { interactive && handlePointerDown(e) }}
+          ref={wrapper}
+        >
+          <sphereGeometry args={[0.8, 32, 16]} />
+          <meshStandardMaterial
+            transparent
+            opacity={0}
+            ref={wrapperMat}
+            depthWrite={false}
+          />
+        </mesh>
+      </animated.group>
       {mesh}
       {/* path num */}
       { pathNum && <PathNumHelper pathNum={pathNum}/> }

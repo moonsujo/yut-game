@@ -1292,7 +1292,7 @@ export default {
       board: {
         lobby: {
           scale: 1,
-          position: [0, 0, -0.5]
+          position: [0, 0, 0]
         },
         pregame: {
           scale: 0.7,
@@ -1300,7 +1300,7 @@ export default {
         },
         game: {
           scale: 1,
-          position: [0, 0, -0.5]
+          position: [0, 0, 0]
         },
         finished: {
           scale: 0.2,
@@ -2868,7 +2868,7 @@ export default {
       board: {
         lobby: {
           scale: 1,
-          position: [0, 0, -0.5]
+          position: [0, 0, 0]
         },
         pregame: {
           scale: 0.7,
@@ -2876,7 +2876,7 @@ export default {
         },
         game: {
           scale: 1,
-          position: [0, 0, -0.5]
+          position: [0, 0, 0]
         },
         finished: {
           scale: 0.2,

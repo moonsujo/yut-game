@@ -380,6 +380,7 @@ export const SocketManager = () => {
         setAnimationPlaying(true);
       }
       setGamePhase(gamePhase)
+      setThrowCount(throwCount)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
