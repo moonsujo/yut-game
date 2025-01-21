@@ -3062,7 +3062,7 @@ export default {
         initialScale: 1
       },
       ufo: {
-        selectedAdditionalScale: 0.3,
+        selectedAdditionalScale: 0.5,
         selectedAnimatedScaleRange: 0.15
       },
       welcomeBackText: {
