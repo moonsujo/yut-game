@@ -44,8 +44,7 @@ import {
   turnStartTimeAtom,
   remainingTimeAtom
 } from "./GlobalState.jsx";
-import { clientHasTurn, isBackdoMovesWithoutPieces, movesIsEmpty } from "./helpers/helpers.js";
-import { checkJoin } from "./SocketManagerHelper.js";
+import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
 import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
@@ -53,9 +52,9 @@ import { TextureLoader } from 'three'
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import initialState from "../initialState.js";
 
-// const ENDPOINT = 'localhost:5000';
+const ENDPOINT = 'localhost:5000';
 
-const ENDPOINT = 'https://yoot-game-6c96a9884664.herokuapp.com/';
+// const ENDPOINT = 'https://yoot-game-6c96a9884664.herokuapp.com/';
 
 export const socket = io(
   ENDPOINT, { 
@@ -557,7 +556,6 @@ export const SocketManager = () => {
       })
 
       setTiles(tiles => {
-
         // Join
         const movingTeam = prevTeam
         const to = updatedTiles.to.index
@@ -615,66 +613,85 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
     })
 
-    function calculateNumPiecesScored(piecesPrev, piecesUpdate) {
-      let numPiecesScored = 0;
-      for (let i = 0; i < 4; i++) {
-        if (piecesUpdate[i].tile === 29 && piecesPrev[i].tile !== 29) {
-          numPiecesScored++;
+    socket.on('score', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, from, throws, winner, gamePhase, newGameLogs, turnStartTime, turnExpireTime }) => {
+      setTeams(teams => {
+        // Update pieces
+        for (const piece of updatedPieces) {
+          teams[piece.team].pieces[piece.id] = piece
+          teams[piece.team].pieces[piece.id].history = [...piece.history]
+          teams[piece.team].pieces[piece.id].lastPath = [...piece.lastPath]
+          if (piece.team === 0 && piece.id === 0)
+            setPieceTeam0Id0(piece)
+          else if (piece.team === 0 && piece.id === 1)
+            setPieceTeam0Id1(piece)
+          else if (piece.team === 0 && piece.id === 2)
+            setPieceTeam0Id2(piece)
+          else if (piece.team === 0 && piece.id === 3)
+            setPieceTeam0Id3(piece)
+          else if (piece.team === 1 && piece.id === 0)
+            setPieceTeam1Id0(piece)
+          else if (piece.team === 1 && piece.id === 1)
+            setPieceTeam1Id1(piece)
+          else if (piece.team === 1 && piece.id === 2)
+            setPieceTeam1Id2(piece)
+          else if (piece.team === 1 && piece.id === 3)
+            setPieceTeam1Id3(piece)
         }
-      }
-      return numPiecesScored;
-    }
+        setPieceAnimationPlaying(true)
 
-    socket.on('score', ({ teamsUpdate, turnUpdate, legalTiles, tiles, newGameLogs, selection, gamePhase, results, turnStartTime, turnExpireTime }) => {
-      let teamsPrev;
-      setTeams((prev) => {
-        teamsPrev = prev;
-        return teamsUpdate
-      })
-      let turnPrev;
-      setTurn((prev) => {
-        turnPrev = prev;
-        return turnUpdate
+        // Update throws
+        teams[newTeam].throws = throws
+        setThrowCount(throws)
+
+        // Update moves
+        if (newTeam !== prevTeam) {
+          teams[prevTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+        } else {
+          teams[prevTeam].moves[moveUsed]--
+        }
+        
+        // Update current player's name
+        const currentPlayerName = teams[newTeam].players[newPlayer].name
+        setCurrentPlayerName(currentPlayerName)
+
+        return [...teams]
       })
       
-      const currentPlayerName = teamsUpdate[turnUpdate.team].players[turnUpdate.players[turnUpdate.team]].name
-      setCurrentPlayerName(currentPlayerName)
+      // Update tiles
+      setTiles(tiles => {
+        tiles[from] = []
+        return [...tiles]
+      })
       
       if (gamePhase !== 'finished') {
         const alerts = []
-        const scoringTeamPiecesPrev = teamsPrev[turnPrev.team].pieces;
-        const scoringTeamPiecesUpdate = teamsUpdate[turnPrev.team].pieces
-        let numPiecesScored = calculateNumPiecesScored(scoringTeamPiecesPrev, scoringTeamPiecesUpdate)
-        alerts.push(`score${turnPrev.team}${numPiecesScored}`)
+        let numPiecesScored = updatedPieces.length
+        alerts.push(`score${prevTeam}${numPiecesScored}`)
   
-        if (turnPrev.team !== turnUpdate.team) {
+        if (newTeam !== prevTeam) {
+          setTurn(turn => {
+            let newTurn = {
+              team: newTeam,
+              players: [...turn.players]
+            }
+            newTurn.players[newTeam] = newPlayer
+            return newTurn
+          })
           alerts.push('turn')
-          setThrowCount(teamsUpdate[turnUpdate.team].throws)
         }
         
         setAlerts(alerts)
         setAnimationPlaying(true)
-        setPieceAnimationPlaying(true)
+      } else if (gamePhase === 'finished') {
+        setResults(results => [ ...results, winner ])
       }
 
+      setLegalTiles({})
       setHelperTiles({})
-      // whenever turn could have changed
-      setHasTurn(clientHasTurn(socket.id, teamsUpdate, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
-      setLegalTiles(legalTiles)
-      setTiles(tiles)
-      setPieceTeam0Id0(teamsUpdate[0].pieces[0])
-      setPieceTeam0Id1(teamsUpdate[0].pieces[1])
-      setPieceTeam0Id2(teamsUpdate[0].pieces[2])
-      setPieceTeam0Id3(teamsUpdate[0].pieces[3])
-      setPieceTeam1Id0(teamsUpdate[1].pieces[0])
-      setPieceTeam1Id1(teamsUpdate[1].pieces[1])
-      setPieceTeam1Id2(teamsUpdate[1].pieces[2])
-      setPieceTeam1Id3(teamsUpdate[1].pieces[3])
-      setSelection(selection)
-      setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
+      setSelection(null)
+      setGameLogs(gameLogs => [ ...gameLogs, ...newGameLogs ])
       setGamePhase(gamePhase)
-      setWinner(results[results.length-1])
-      setThrowCount(teamsUpdate[turnUpdate.team].throws)
+      setWinner(winner)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
     })
@@ -736,7 +753,7 @@ export const SocketManager = () => {
         }
     })
 
-    socket.on("reset", () => {
+    socket.on('reset', () => {
       setGamePhase('lobby');
       setTiles(initialState.initialTiles);
       setTurn(initialState.initialTurn);
@@ -963,13 +980,21 @@ export const SocketManager = () => {
   // yut button didn't activate on gameStart
   // start timer
   useEffect(() => {
-    console.log('[useEffect] turn', turn, 'client', client)
+    // console.log('[useEffect] turn', turn, 'client', client)
     if (turn && turn.team !== -1 && client) {
       if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
         setHasTurn(true)
       }
     }
-  }, [turn, client])
+  }, [turn, teams, client])
+  // useEffect(() => {
+  //   console.log('[useEffect] turn', turn, 'client', client)
+  //   if (turn && turn.team !== -1 && client) {
+  //     if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
+  //       setHasTurn(true)
+  //     }
+  //   }
+  // }, [turn, client])
 };
 
 /**

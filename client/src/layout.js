@@ -19,9 +19,9 @@ export default {
   portrait: {
     center: [0,0,0],
     camera: {
+      position: [0,17,7],
       zoomMin: 0,
       zoomMax: 55,
-      position: [0,17,7],
     },
     title: {
       camera: {
@@ -1591,9 +1591,9 @@ export default {
   landscapeDesktop: {
     center: [0,0,0],
     camera: {
+      position: [0,17,7],
       zoomMin: 30,
       zoomMax: 150,
-      position: [0,17,7],
       lookAtOffset: [0, 0, 0]
     },
     title: {

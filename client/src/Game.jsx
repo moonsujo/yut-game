@@ -86,7 +86,6 @@ export default function Game() {
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
   const animationPlaying = useAtomValue(animationPlayingAtom)
-  const turnExpireTime = useAtomValue(turnExpireTimeAtom)
   
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)

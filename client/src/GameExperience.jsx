@@ -9,7 +9,7 @@ export default function GameExperience() {
     <Game/>
     <StarsPatterns2Shader count={3000} texturePath={'textures/particles/3.png'}/>
     <StarsPatterns2Shader count={3000} texturePath={'textures/particles/6.png'} size={2.0}/>
-    <MilkyWay 
+    <MilkyWay // will not show without a camera
       rotation={[-Math.PI/2, 0, -35.0]} 
       position={[0, -10, -4]}
       scale={5}
