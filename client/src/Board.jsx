@@ -28,6 +28,8 @@ function getMeshByTile(tile) {
     return <Neptune scale={0.4}/>
   } else if (tile == 22) {
     return <Moon scale={0.35} shiny/>
+  } else if (tile == 1) {
+    return <Star scale={0.4} color='limegreen'/>
   } else {
     return <Star scale={0.35}/>
   }
@@ -251,10 +253,124 @@ export default function Board({
     />
   );
 
-  const second = true;
-
+  // arrow: sphere geometries
+  // add a star after Earth
+  // color the 'start' star in info-green
+  const finishMarkerRadius = 3.5
   return <animated.group position={position} rotation={rotation} scale={scale}>
     {tileComponents}
+    <group name='finish-marker' scale={1.67}>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (20/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (20/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (21/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (21/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (22/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (22/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (23/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (23/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (24/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32)), 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (28/32))+0.03, 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.06, 
+        ]}>
+        <sphereGeometry args={[0.05, 32, 16]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh>
+      <mesh name='arrow' rotation={[0, Math.PI * 2 * 6/32, 0]}
+        position={[
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32)), 
+        0, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.1, 
+        ]}>
+        <cylinderGeometry args={[0, 0.1, 0.01, 3]}/>
+        <meshStandardMaterial color='limegreen'/>
+      </mesh >
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].board.finish.text.position}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.25}
+        height={0.01}
+      >
+        FINISH
+        <meshStandardMaterial color='limegreen'/>
+      </Text3D>
+      <group name='finish-pad'>
+        <mesh name='finish-pad-background-inner' position={[0, 0, 3.9]}>
+          <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
+          <meshStandardMaterial color='limegreen'/>
+        </mesh>
+        <mesh name='finish-pad-background-outer' position={[0, 0, 3.9]}>
+          <cylinderGeometry args={[0.28, 0.28, 0.011, 32]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Star scale={0.22} color='limegreen' position={[0, -0.03, 3.9]}/>
+      </group>
+    </group>
     {showStart && <group 
       position={layout[device].board.startEarth.position} 
       scale={1.67}>

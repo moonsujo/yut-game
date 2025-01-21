@@ -1238,12 +1238,12 @@ export default {
         scale: [1.3, 1.3, 1.3]
       },
       chat: {
-        position: [-5.7,0,6.1],
+        position: [-5.7,0,6.8],
         rotation: [-Math.PI/2, 0, 0],
         scale: [0.5, 0.5, 0.5],
         box: {
           borderRadius: '5px',
-          height: '420px',
+          height: '330px',
           width: '270px',
           padding: '10px',
           fontSize: '30px',
@@ -1292,7 +1292,7 @@ export default {
       board: {
         lobby: {
           scale: 1,
-          position: [0, 0, 0]
+          position: [0, 0, -0.5]
         },
         pregame: {
           scale: 0.7,
@@ -1300,7 +1300,7 @@ export default {
         },
         game: {
           scale: 1,
-          position: [0, 0, 0]
+          position: [0, 0, -0.5]
         },
         finished: {
           scale: 0.2,
@@ -1502,6 +1502,20 @@ export default {
         position: [2.5, 0, 5.5],
         text: {
           position: [-0.9,0,0.4],
+          rotation: [-Math.PI/2, 0, 0],
+          fontSize: 15,
+        },
+        helperArrow: {
+          position: [0.3, 0, -0.4],
+          rotation: [Math.PI, -Math.PI/2 - Math.PI/8 - Math.PI/32, 0],
+          color: 'limegreen',
+          scale: [0.2, 0.1, 0.5]
+        },
+      },
+      finish: {
+        position: [2.5, 0, 5.5],
+        text: {
+          position: [-1.6,0,4.1],
           rotation: [-Math.PI/2, 0, 0],
           fontSize: 15,
         },
@@ -2854,7 +2868,7 @@ export default {
       board: {
         lobby: {
           scale: 1,
-          position: [0, 0, 0]
+          position: [0, 0, -0.5]
         },
         pregame: {
           scale: 0.7,
@@ -2862,7 +2876,7 @@ export default {
         },
         game: {
           scale: 1,
-          position: [0, 0, 0]
+          position: [0, 0, -0.5]
         },
         finished: {
           scale: 0.2,
@@ -3060,7 +3074,21 @@ export default {
       startEarth: {
         position: [2.5, 0, 5.5],
         text: {
-          position: [-0.9,0,0.4],
+          position: [-0.9,0,0.2],
+          rotation: [-Math.PI/2, 0, 0],
+          fontSize: 15,
+        },
+        helperArrow: {
+          position: [0.5, 0, -0.6],
+          rotation: [Math.PI, -Math.PI/2 - Math.PI/8 - Math.PI/32, 0],
+          color: 'limegreen',
+          scale: [0.2, 0.1, 0.5]
+        },
+      },
+      finish: {
+        position: [2.5, 0, 5.5],
+        text: {
+          position: [-1.6,0,4],
           rotation: [-Math.PI/2, 0, 0],
           fontSize: 15,
         },
