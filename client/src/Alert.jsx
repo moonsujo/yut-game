@@ -33,7 +33,7 @@ import tilePositions from './tilePositions';
 
 export default function Alert({ position, rotation }) {
     
-    const [alerts] = useAtom(alertsAtom)
+    const alerts = useAtomValue(alertsAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
     const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
     const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
