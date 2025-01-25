@@ -58,9 +58,9 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
     }
 
     function handlePointerDown(e) {
-      const audio = new Audio('sounds/effects/join.wav');
-      audio.volume=0.3;
-      audio.play();
+      // const audio = new Audio('sounds/effects/join.wav');
+      // audio.volume=0.3;
+      // audio.play();
       e.stopPropagation();
       setJoinTeam(team);
       setHover(false)

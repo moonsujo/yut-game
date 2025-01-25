@@ -61,6 +61,7 @@ import MeteorsRealShader from "./shader/meteorsReal/MeteorsRealShader.jsx";
 import SettingsHtml from "./SettingsHtml.jsx";
 import PauseGame from "./PauseGame.jsx";
 import Timer from "./Timer.jsx";
+import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 
 // There should be no state
 export default function Game() {
@@ -86,6 +87,7 @@ export default function Game() {
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
   const animationPlaying = useAtomValue(animationPlayingAtom)
+  const [playMusic] = useMusicPlayer();
   
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)
@@ -205,7 +207,9 @@ export default function Game() {
         e.stopPropagation();
         if (readyToStart) {
           socket.emit("gameStart", { roomId: params.id.toUpperCase() })
+          playMusic();
         }
+
         setPointerDown(false)
         pushApi.start({
           from: {
