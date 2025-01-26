@@ -15,7 +15,8 @@ export default function Rocket({
   selected=false,
   onBoard=false,
   animationPlaying=false,
-  selection=null
+  selection=null,
+  offset=0
 }) {
   const { scene, materials } = useGLTF(
     "models/rocket.glb"
@@ -69,7 +70,7 @@ export default function Rocket({
       whiteMat.color = new THREE.Color('white')
     }
     if (onBoard) {
-      flame.current.scale.y = 4 + Math.sin(state.clock.elapsedTime * 10) * 0.7;
+      flame.current.scale.y = 4 + Math.sin(state.clock.elapsedTime * 10 + offset) * 0.7;
       rocket.current.position.z = position[2] + Math.cos(state.clock.elapsedTime * 2) * 0.05
     }
   });

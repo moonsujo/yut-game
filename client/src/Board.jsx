@@ -259,7 +259,7 @@ export default function Board({
   const finishMarkerRadius = 3.5
   return <animated.group position={position} rotation={rotation} scale={scale}>
     {tileComponents}
-    {/* <group name='finish-marker' scale={1.67}>
+    <group name='finish-marker' scale={1.67}>
       <mesh position={[
         finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (20/32)), 
         0, 
@@ -370,7 +370,7 @@ export default function Board({
         </mesh>
         <Star scale={0.22} color='limegreen' position={[0, -0.03, 3.9]}/>
       </group>
-    </group> */}
+    </group>
     {showStart && <group 
       position={layout[device].board.startEarth.position} 
       scale={1.67}>

@@ -47,6 +47,7 @@ export default function useMusicPlayer() {
 
   function playMusic() {
 
+    console.log('[playMusic]')
     // every client has a different song playing
     function playRandomSong() {
       const randomSong = songs[Math.floor(Math.random() * songs.length)]

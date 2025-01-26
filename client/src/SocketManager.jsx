@@ -49,7 +49,6 @@ import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
 import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
-import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import initialState from "../initialState.js";
 
 const ENDPOINT = 'localhost:5000';

@@ -62,6 +62,7 @@ import SettingsHtml from "./SettingsHtml.jsx";
 import PauseGame from "./PauseGame.jsx";
 import Timer from "./Timer.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
+import TeamLobby from "./TeamLobby.jsx";
 
 // There should be no state
 export default function Game() {
@@ -865,7 +866,41 @@ export default function Game() {
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
       <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
-      { gamePhase !== 'finished' && <animated.group scale={gameScale}>
+      { gamePhase === 'lobby' && <animated.group>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-12,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.6}
+          height={0.01}
+        >
+          YUT NORI!
+          <meshStandardMaterial color="yellow"/>
+        </Text3D>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-7,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.4}
+          height={0.01}
+        >
+          {`ID: ${params.id}`}
+          <meshStandardMaterial color="yellow"/>
+        </Text3D>
+        <TeamLobby
+          position={[-12,0,-4]}
+          scale={layout[device].game.team0.scale}
+          device={device}
+          team={0} 
+        />
+        <JoinTeamModal 
+          position={[-11.5, 0, -3]}
+          rotation={layout[device].game.joinTeamModal.rotation}
+          scale={layout[device].game.joinTeamModal.scale}
+          teams={teams}
+        />
+      </animated.group> }
+      { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
         <Team 
           position={layout[device].game.team0.position}
           scale={layout[device].game.team0.scale}
@@ -878,29 +913,22 @@ export default function Game() {
           device={device}
           team={1} 
         />
-        <JoinTeamModal 
+        {/* <JoinTeamModal 
           position={layout[device].game.joinTeamModal.position}
           rotation={layout[device].game.joinTeamModal.rotation}
           scale={layout[device].game.joinTeamModal.scale}
           teams={teams}
-        />
+        /> */}
         { !disconnect && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
-        {/* { gamePhase === 'lobby' && <InviteInstructions
-          position={layout[device].game.chat.position}
-          rotation={layout[device].game.chat.rotation}
-          scale={layout[device].game.chat.scale}
-        /> } */}
         { gamePhase === 'lobby' && <InviteInstructions2
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
-        {/* <InviteButton position={layout[device].game.invite.position}/> */}
-        {/* <DiscordButton position={layout[device].game.discord.position}/> */}
         { disconnect && <DisconnectModal
           position={layout[device].game.disconnectModal.position}
           rotation={layout[device].game.disconnectModal.rotation}
@@ -914,14 +942,14 @@ export default function Game() {
         />
         <animated.group position={boardPosition} scale={boardScale}>
           <Board 
-            position={[0,0,0]}
-            scale={1}
-            tiles={tiles}
-            legalTiles={legalTiles}
-            helperTiles={helperTiles}
-            interactive={true}
-            showStart={true}
-            device={device}
+          position={[0,0,0]}
+          scale={1}
+          tiles={tiles}
+          legalTiles={legalTiles}
+          helperTiles={helperTiles}
+          interactive={true}
+          showStart={true}
+          device={device}
           />
         </animated.group>
         {/* Who Goes First components */}
@@ -978,7 +1006,7 @@ export default function Game() {
           hasTurn={hasTurn}
         /> }
         <PiecesOnBoard/>
-        { (gamePhase === 'pregame' || gamePhase === 'game') && (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
+        { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}
           tokenScale={layout[device].game.moveList.tokenScale}
@@ -988,34 +1016,31 @@ export default function Game() {
           pieceScale={layout[device].game.moveList.pieceScale}
           gamePhase={gamePhase}
         /> }
-        {/* { gamePhase === 'pregame' && <PregameMoveDisplay/> } */}
+        <DisplayHostAndSpectating/>
+        { showRulebook && <group>
+          <mesh name='blocker' position={layout[device].game.rulebook.blocker.position}>
+            <boxGeometry args={layout[device].game.rulebook.blocker.args}/>
+            <meshStandardMaterial color='black' transparent opacity={0.95}/>
+          </mesh>
+          <HowToPlay 
+            device={device} 
+            position={layout[device].game.rulebook.position} 
+            scale={layout[device].game.rulebook.scale}
+            closeButton={true}
+            setShowRulebook={setShowRulebook}
+          />
+        </group> }
+        { timer && !animationPlaying && <Timer 
+          position={layout[device].game.timer.position} 
+          scale={[layout[device].game.timer.scaleX, 1, 1]}
+          boxArgs={layout[device].game.timer.boxArgs}
+          heightMultiplier={layout[device].game.timer.heightMultiplier}
+        /> }
       </animated.group> }
       { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
-        { (gamePhase === 'finished' && winner === 0) && <RocketsWin/>}
-        { (gamePhase === 'finished' && winner === 1) && <UfosWin/>}
+        { winner === 0 && <RocketsWin/>}
+        { winner === 1 && <UfosWin/>}
       </animated.group> }
-      { showRulebook && gamePhase !== 'finished' && <group>
-        <mesh name='blocker' position={layout[device].game.rulebook.blocker.position}>
-          <boxGeometry args={layout[device].game.rulebook.blocker.args}/>
-          <meshStandardMaterial color='black' transparent opacity={0.95}/>
-        </mesh>
-        <HowToPlay 
-          device={device} 
-          position={layout[device].game.rulebook.position} 
-          scale={layout[device].game.rulebook.scale}
-          closeButton={true}
-          setShowRulebook={setShowRulebook}
-        />
-      </group> }
-      {/* { parseInt(client.team) === -1 && <InitialJoinTeamModal position={[0, 2.7, 1]} />} */}
-      {/* host */}
-      { gamePhase !== 'finished' && <DisplayHostAndSpectating/> }
-      { timer && !animationPlaying && (gamePhase === 'pregame' || gamePhase === 'game') && <Timer 
-        position={layout[device].game.timer.position} 
-        scale={[layout[device].game.timer.scaleX, 1, 1]}
-        boxArgs={layout[device].game.timer.boxArgs}
-        heightMultiplier={layout[device].game.timer.heightMultiplier}
-      /> }
       <MeteorsRealShader/>
     </>
   );
