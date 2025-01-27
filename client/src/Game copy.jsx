@@ -63,7 +63,6 @@ import PauseGame from "./PauseGame.jsx";
 import Timer from "./Timer.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import TeamLobby from "./TeamLobby.jsx";
-import MeshColors from "./MeshColors.jsx";
 
 // There should be no state
 export default function Game() {
@@ -110,72 +109,212 @@ export default function Game() {
     }
   }, [connectedToServer])
 
-  function StartGameButton({ position }) {
+  function LetsPlayButton({ position }) {
 
-    const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
+    function DisabledButton({ position, scale }) {
+      const button = useRef();
 
-    const [hover, setHover] = useState(false);
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      setHover(true)
+      return <group position={position} scale={scale} ref={button}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleInner}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
+        </mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleOuter}
+        >
+          <meshStandardMaterial color='gray' transparent opacity={1}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.letsPlayButton.disabledButton.text.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.text.rotation}
+          size={layout[device].game.letsPlayButton.disabledButton.text.size}
+          height={layout[device].game.letsPlayButton.disabledButton.text.height}
+          lineHeight={layout[device].game.letsPlayButton.disabledButton.text.lineHeight}
+        >
+          {`waiting\nfor\nplayers`}
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+      </group>
     }
 
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      setHover(false)
-    }
+    function ActivatedButton({ position }) {
 
-    function handlePointerUp(e) {
-      // const audio = new Audio('sounds/effects/join.wav');
-      // audio.volume=0.3;
-      // audio.play();
-      e.stopPropagation();
-      setHover(false)
-      if (readyToStart) {
-        socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
+      const [pointerDown, setPointerDown] = useState(false);
+      const [pushSprings, pushApi] = useSpring(() => ({        
+        from: {
+          scale: 1, 
+        }
+      }))
+
+      const letsPlayTextMaterial = new MeshStandardMaterial({ color: new Color('limegreen') });
+      const letsPlayBackgroundMaterial = new MeshStandardMaterial({ color: new Color('black'), transparent: true, opacity: 1 });
+      const letsPlayButton = useRef()
+      useFrame((state) => {
+        const time = state.clock.elapsedTime;
+        letsPlayTextMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
+        // letsPlayButton.current.scale.x = Math.cos(time * 2) * 0.2 + 0.8;
+      })
+  
+      const backdropHeight = layout[device].game.letsPlayButton.activeButton.backdropHeight
+      const backdropWidth = layout[device].game.letsPlayButton.activeButton.backdropWidth
+  
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = "pointer";
       }
+      
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = "default";
+        if (pointerDown) {
+          setPointerDown(false)
+          pushApi.start({
+            from: {
+              scale: 1.2
+            },
+            to: {
+              scale: 1
+            }
+          })
+        }
+      }
+
+      function handlePointerDown(e) {
+        e.stopPropagation();
+        setPointerDown(true)
+        pushApi.start({
+          from: {
+            scale: 1,
+          },
+          to: {
+            scale: 1.2
+          }
+        })
+      }
+
+      function handlePointerUp(e) {
+        e.stopPropagation();
+        if (readyToStart) {
+          socket.emit("gameStart", { roomId: params.id.toUpperCase() })
+          playMusic();
+        }
+
+        setPointerDown(false)
+        pushApi.start({
+          from: {
+            scale: 1.2
+          },
+          to: {
+            scale: 1
+          }
+        })
+      }
+  
+      return <animated.group 
+        name='lets-play-button-active' 
+        position={position} 
+        scale={pushSprings.scale}
+      >
+        <group ref={letsPlayButton}>
+          <mesh 
+            position={[0, 0, 0]} 
+            rotation={[0, 0, 0]} 
+            scale={[backdropWidth, 0.1, backdropHeight]} 
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            material={letsPlayBackgroundMaterial}
+          >
+            <cylinderGeometry args={[1, 1, 0.1, 48]}/>
+          </mesh>
+          <mesh 
+            position={[0, 0, 0]} 
+            rotation={[0, 0, 0]} 
+            scale={[backdropWidth+0.1, 0.05, backdropHeight+0.1]} 
+            material={letsPlayTextMaterial}
+          >
+            <cylinderGeometry args={[1, 1, 0.1, 48]}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={layout[device].game.letsPlayButton.activeButton.text.position}
+            rotation={layout[device].game.letsPlayButton.activeButton.text.rotation}
+            size={layout[device].game.letsPlayButton.activeButton.text.size}
+            height={layout[device].game.letsPlayButton.activeButton.text.height}
+            lineHeight={layout[device].game.letsPlayButton.activeButton.text.lineHeight}
+            material={letsPlayTextMaterial}
+          >
+            {`Let's\nPlay!`}
+          </Text3D>
+        </group>
+      </animated.group>
     }
 
-    return <group
-      position={position}
-      scale={2}
-    >
-      <mesh
-        name='background-outer'
-        scale={[1.3, 1, 0.45]}
-      >
-        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-        <meshStandardMaterial color={ !readyToStart ? 'grey' : hover ? 'green' : 'yellow' }/>
-      </mesh>
-      <mesh
-        name='background-inner'
-        scale={[1.3, 1, 0.42]}
-      >
-        <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        scale={[1.3, 1, 0.45]}
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerUp(e)}
-      >
-        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={[-1.02, 0.025, 0.12]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.25}
-        height={0.01}
-        lineHeight={0.7}
-      >
-        {`START GAME!`}
-        <meshStandardMaterial color={ !readyToStart ? 'grey' : hover ? 'green' : 'yellow' }/>
-      </Text3D>
+    function WaitingForHostButton({ position, scale }) {    
+      return <group position={position} scale={scale}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleInner}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
+        </mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.letsPlayButton.disabledButton.border.position}
+          rotation={layout[device].game.letsPlayButton.disabledButton.border.rotation}
+          scale={layout[device].game.letsPlayButton.disabledButton.border.scaleOuter}
+        >
+          <meshStandardMaterial color='gray' transparent opacity={1}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.letsPlayButton.waitingForHostButton.text.position}
+          rotation={layout[device].game.letsPlayButton.waitingForHostButton.text.rotation}
+          size={layout[device].game.letsPlayButton.waitingForHostButton.text.size}
+          height={layout[device].game.letsPlayButton.waitingForHostButton.text.height}
+          lineHeight={layout[device].game.letsPlayButton.waitingForHostButton.text.lineHeight}
+        >
+          {`waiting\nfor\nhost`}
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+      </group>
+    }
+
+    return <group>
+      { host && host.socketId === client.socketId && gamePhase === 'lobby' && <group position={position}>
+        { readyToStart ? <ActivatedButton
+        position={layout[device].game.letsPlayButton.activeButton.position}/> : <DisabledButton 
+        position={layout[device].game.letsPlayButton.disabledButton.position}
+        scale={layout[device].game.letsPlayButton.disabledButton.scale}
+        /> }
+      </group> }
+      { host && host.socketId !== client.socketId && gamePhase === 'lobby' && <group position={position}>
+        { readyToStart ? <WaitingForHostButton
+        position={layout[device].game.letsPlayButton.waitingForHostButton.position}
+        scale={layout[device].game.letsPlayButton.waitingForHostButton.scale}/> : <DisabledButton 
+        position={layout[device].game.letsPlayButton.disabledButton.position}
+        scale={layout[device].game.letsPlayButton.disabledButton.scale}
+        /> }
+      </group> }
     </group>
   }
 
@@ -297,16 +436,11 @@ export default function Game() {
   }
 
   // Animations
-  const { boardScale, boardPosition, gameScale, winScreenScale, lobbyScale } = useSpring({
+  const { boardScale, boardPosition, gameScale, winScreenScale } = useSpring({
     boardScale: layout[device].game.board[gamePhase].scale,
     boardPosition: layout[device].game.board[gamePhase].position,
-    gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
-    winScreenScale: gamePhase === 'finished' ? 1 : 0,
-    lobbyScale: gamePhase === 'lobby' ? 1 : 0,
-    config: {
-      tension: 170,
-      friction: 26
-    },
+    gameScale: gamePhase !== 'finished' ? 1 : 1,
+    winScreenScale: gamePhase === 'finished' ? 1 : 0
   })
 
   function DiscordButton({ position }) {
@@ -552,96 +686,225 @@ export default function Game() {
     }
   }
 
+  // UI prop guideline
+  // Pass position, rotation and scale
+  // pass device if component has another responsive attribute
+    // such as HtmlElement fontsize or team display
+    // children positions
+  // If state is contained globally, don't pass it as a prop
+    // example: <Host/> is in this component. 'device' is
+    // declared at the top. don't pass it in as a prop
+    // because that will make other components render
+
+  const { nodes, materials } = useGLTF("/models/rounded-rectangle.glb");
+
+
+  function InviteInstructions2() {
+    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+
+    const [pointerDown, setPointerDown] = useState(false);
+    const [springs, api] = useSpring(() => ({        
+      from: {
+        opacity: 0, 
+      }
+    }))
+    const [pushSprings, pushApi] = useSpring(() => ({ 
+      from: {
+        scale: 1, 
+      }
+    }))
+
+    function handlePointerEnter(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "pointer";
+    }
+
+    function handlePointerLeave(e) {
+      e.stopPropagation();
+      document.body.style.cursor = "default";
+      if (pointerDown) {
+        setPointerDown(false);
+        pushApi.start({
+          from: {
+            scale: 1.2
+          },
+          to: {
+            scale: 1
+          }
+        })
+      }
+    }
+
+    function copyURLToClipboard() {
+      const url = window.location.href;
+    
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        // Modern browsers with Clipboard API support
+        navigator.clipboard.writeText(url)
+          .then(() => {
+          })
+          .catch(err => {
+            console.error("Failed to copy URL: ", err);
+          });
+      } else {
+        // Fallback for older browsers
+        const tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+        tempInput.value = url;
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+      }
+    }
+
+    function handlePointerDown(e) {
+      e.stopPropagation();  
+      setPointerDown(true)
+      pushApi.start({
+        from: {
+          scale: 1,
+        },
+        to: {
+          scale: 1.2
+        }
+      })
+    }
+
+    function handlePointerUp(e) {
+      e.stopPropagation();
+      console.log(e)
+      setPointerDown(false)
+      copyURLToClipboard();
+      api.start({
+        from: {
+          opacity: 1
+        },
+        to: [
+          {
+            opacity: 1
+          },
+          { 
+            opacity: 0,
+            delay: 500,
+            config: {
+              tension: 170,
+              friction: 26
+            }
+          }
+        ]
+      })
+      pushApi.start({
+        from: {
+          scale: 1.2
+        },
+        to: {
+          scale: 1
+        }
+      })
+    }
+
+    return <group position={layout[device].game.invite.position}>
+      <animated.group scale={ pushSprings.scale } position={layout[device].game.invite.button.position}>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.invite.text.position}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={layout[device].game.invite.text.size}
+          height={0.01}
+        >
+          {layout[device].game.invite.text.content}
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+        {/* have to prepend 'www' for safari to redirect to the website instead of searching it in google */}
+        {/* <QRCode3D url={'www.yutnori.app/E70E'}/>  */}
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.invite.border.position}
+          rotation={layout[device].game.invite.border.rotation}
+          scale={layout[device].game.invite.border.scaleInner}
+          onPointerEnter={e => handlePointerEnter(e)}
+          onPointerLeave={e => handlePointerLeave(e)}
+          onPointerDown={e => handlePointerDown(e)}
+          onPointerUp={e => handlePointerUp(e)}
+        >
+          <meshStandardMaterial color='black' transparent opacity={0.5}/>
+        </mesh>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Cube.geometry}
+          position={layout[device].game.invite.border.position}
+          rotation={layout[device].game.invite.border.rotation}
+          scale={layout[device].game.invite.border.scaleOuter}
+        >
+          <meshStandardMaterial color='limegreen' transparent opacity={1}/>
+        </mesh>
+      </animated.group>
+      <Text3D 
+        name='copied-tooltip'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.invite.copiedText.position}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={layout[device].game.invite.copiedText.size}
+        height={layout[device].game.invite.copiedText.height}
+      >
+        copied!
+        <AnimatedMeshDistortMaterial
+          speed={5}
+          distort={0}
+          color='limegreen'
+          transparent
+          opacity={springs.opacity}
+        />
+      </Text3D>
+    </group>
+  }
+
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
       <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
-      { gamePhase === 'lobby' && <animated.group scale={lobbyScale}>
-        <group name='title'>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-12,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.6}
-            height={0.01}
-          >
-            YUT NORI!
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-7,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.4}
-            height={0.01}
-          >
-            {`ID: ${params.id}`}
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-        </group>
-        <group name='players'>
-          <TeamLobby
-            position={[-12,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={0} 
-          />
-          <TeamLobby
-            position={[-7.5,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={1} 
-          />
-          <JoinTeamModal 
-            position={[-11.5, 0, -3]}
-            rotation={layout[device].game.joinTeamModal.rotation}
-            scale={layout[device].game.joinTeamModal.scale}
-            teams={teams}
-          />
-          { client._id === host._id && <StartGameButton
-            position={layout[device].game.letsPlayButton.position}
-            rotation={layout[device].game.letsPlayButton.rotation}
-          /> }
-        </group>
-        <group name='rulebook'>
-          <group name='rulebook-label' position={[1, 0, -5.6]}>
-            <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='yellow'/>
-            </mesh> 
-            <mesh name='background-inner' scale={[2.95, 0.02, 0.7]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color={MeshColors.spaceDark}/>
-            </mesh>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              size={0.4}
-              height={0.01}
-              rotation={[-Math.PI/2, 0, 0]}
-              position={[-1.3, 0.02, 0.19]}
-            >
-              RULEBOOK
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </group>
-          <HowToPlay 
-            device={device} 
-            position={[-1,0,-1]} 
-            scale={0.6}
-            closeButton={false}
-            setShowRulebook={setShowRulebook}
-          />
-          <Text3D 
-          name='goal'
+      { gamePhase === 'lobby' && <animated.group>
+        <Text3D
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-2.5, 0, 4]}
-          rotation={layout[device].game.whoGoesFirst.title.rotation}
-          size={0.3}
-          height={layout[device].game.whoGoesFirst.title.height}>
-            {`GOAL: MOVE FOUR SHIPS AROUND\nTHE STARS FROM START TO FINISH!`}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-        </group>
+          position={[-12,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.6}
+          height={0.01}
+        >
+          YUT NORI!
+          <meshStandardMaterial color="yellow"/>
+        </Text3D>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-7,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.4}
+          height={0.01}
+        >
+          {`ID: ${params.id}`}
+          <meshStandardMaterial color="yellow"/>
+        </Text3D>
+        <TeamLobby
+          position={[-12,0,-4]}
+          scale={layout[device].game.team0.scale}
+          device={device}
+          team={0} 
+        />
+        <TeamLobby
+          position={[-7.5,0,-4]}
+          scale={layout[device].game.team0.scale}
+          device={device}
+          team={1} 
+        />
+        <JoinTeamModal 
+          position={[-11.5, 0, -3]}
+          rotation={layout[device].game.joinTeamModal.rotation}
+          scale={layout[device].game.joinTeamModal.scale}
+          teams={teams}
+        />
       </animated.group> }
       { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
         <Team 
@@ -667,6 +930,11 @@ export default function Game() {
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
+        { gamePhase === 'lobby' && <InviteInstructions2
+          position={layout[device].game.chat.position}
+          rotation={layout[device].game.chat.rotation}
+          scale={layout[device].game.chat.scale}
+        /> }
         { disconnect && <DisconnectModal
           position={layout[device].game.disconnectModal.position}
           rotation={layout[device].game.disconnectModal.rotation}
@@ -674,6 +942,10 @@ export default function Game() {
         { pauseGame && <PauseGame
           position={[0, 5, 2]}
         />}
+        <LetsPlayButton
+          position={layout[device].game.letsPlayButton.position}
+          rotation={layout[device].game.letsPlayButton.rotation}
+        />
         <animated.group position={boardPosition} scale={boardScale}>
           <Board 
           position={[0,0,0]}

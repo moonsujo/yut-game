@@ -794,10 +794,14 @@ io.on("connect", async (socket) => {
     await room.save();
   }
 
-  socket.on("gameStart", async ({ roomId }) => {
+  socket.on("gameStart", async ({ roomId, clientId }) => {
     try {
 
-      const room = await Room.findOne({ shortId: roomId }).populate('host')
+      const room = await Room.findOne({ shortId: roomId, host: clientId })
+      if (!room) {
+        throw new Error('room with short id', roomId, 'or host with id', clientId, 'not found')
+      }
+
       // Set turn
       let newTurn;
       if (room.results.length > 0) {

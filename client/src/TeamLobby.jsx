@@ -298,7 +298,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
       }
       function getDisplayColor(player) {
         const connectedToRoom = (player.roomId === params.id.toUpperCase() && player.connectedToRoom)
-        return (!connectedToRoom ? 'gray' : hover ? 'green' : team === 0 ? 'red' : 'turquoise')
+        return (!connectedToRoom ? 'grey' : hover ? 'green' : team === 0 ? 'red' : 'turquoise')
       }
       return <group key={index} position={[0, -index * 0.8, 0]}>
         <Text3D
@@ -310,15 +310,11 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
           {`${formatName(player.name, layout[device].game[`team${team}`].names.maxLength)}` + `${(host && player.socketId === host.socketId ? ' (h) ' : '')}`}
           <meshStandardMaterial color={getDisplayColor(player)}/>
         </Text3D>
-        {client.socketId === host.socketId && <group rotation={[Math.PI/2, 0, 0]}> key={index}
-          <mesh name='background-outer' scale={[3.7, 0.01, 0.75]} position={[1.63, -1, -0.57]}>
+        <group rotation={[Math.PI/2, 0, 0]}> key={index}
+          { client.socketId === host.socketId && <><mesh name='background-outer' scale={[3.7, 0.01, 0.75]} position={[1.63, -1, -0.57]}>
             <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={ hover ? 'green' : team === 0 ? 'red' : 'turquoise' }/>
-          </mesh>
-          <mesh name='background-inner' scale={[3.65, 0.02, 0.7]} position={[1.63, -1, -0.57]}>
-            <boxGeometry args={[1, 1, 1]}/>
-            <meshStandardMaterial color={MeshColors.spaceDark}/>
-          </mesh>
+            <meshStandardMaterial color={getDisplayColor(player)}/>
+          </mesh> 
           <mesh 
           name='wrapper' 
           scale={[3.7, 0.01, 0.75]} 
@@ -328,8 +324,13 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
           onPointerUp={handlePointerUp}>
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color='white' transparent opacity={0}/>
+          </mesh></> }
+          <mesh name='background-inner' scale={[3.65, 0.02, 0.7]} position={[1.63, -1, -0.57]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            { client.socketId !== host.socketId && <meshStandardMaterial color={ team === 0 ? 'red' : 'turquoise' } transparent opacity={0.1}/> }
+            { client.socketId === host.socketId && <meshStandardMaterial color={MeshColors.spaceDark}/> }
           </mesh>
-        </group>}
+        </group>
       </group>
     }
 
@@ -415,8 +416,105 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     </group>
   }
 
-  function TeamSwitchButton(team) {
-    return <group>
+  function TeamSwitchButton() {
+
+    const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
+    const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
+
+    const [hover, setHover] = useState(false);
+
+    const button = useRef();
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (button.current) {
+        if (hover) {
+          // limegreen
+          // colorMaterial.color.r = 0;
+          // colorMaterial.color.g = 50 / 255;
+          // colorMaterial.color.b = 0 / 255;
+          // colorMaterial.color.b = 0.031896033067374104;
+          // colorMaterial.color.g = 0.6104955708001716;
+          // colorMaterial.color.r = 0.031896033067374104;
+          // button.current.scale.x = 1;
+        } else {
+          if (client.team === -1) {
+            // colorMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
+            // button.current.scale.x = Math.cos(time * 2) * 0.3 + 0.7;
+          } else {
+            if (team === 0) {
+              colorMaterial.color.r = 1
+              colorMaterial.color.g = 0
+              colorMaterial.color.b = 0
+            } else if (team === 1) {
+              colorMaterial.color.r = 176 / 256
+              colorMaterial.color.g = 241 / 256
+              colorMaterial.color.b = 235 / 256
+            }
+            // colorMaterial.color.setHSL(1/6, 1, 0.5); // yellow
+            // button.current.scale.x = 1;
+          }
+        }
+      }
+    })
+
+    function handlePointerEnter(e) {
+      e.stopPropagation();
+      setHover(true)
+    }
+
+    function handlePointerLeave(e) {
+      e.stopPropagation();
+      setHover(false)
+    }
+
+    function handlePointerDown(e) {
+      // const audio = new Audio('sounds/effects/join.wav');
+      // audio.volume=0.3;
+      // audio.play();
+      e.stopPropagation();
+      setJoinTeam(team);
+      setHover(false)
+    }
+
+    return <group
+      position={[1.9,0,0]}
+      scale={2}
+      ref={button}
+    >
+      <mesh
+        name='background-outer'
+        scale={[0.8, 1, 0.4]}
+      >
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+        <meshStandardMaterial color={ hover ? 'green' : team === 0 ? 'red' : 'turquoise' }/>
+      </mesh>
+      <mesh
+        name='background-inner'
+        scale={[0.8, 1, 0.37]}
+      >
+        <cylinderGeometry args={[0.95, 0.95, 0.02, 32]}/>
+        <meshStandardMaterial color='black'/>
+      </mesh>
+      <mesh 
+        name='wrapper' 
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerDown={e => handlePointerDown(e)}
+      >
+        <boxGeometry args={[1.2, 0.1, 0.6]}/>
+        <meshStandardMaterial transparent opacity={0}/>
+      </mesh>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-0.48, 0.025, 0]}
+        rotation={layout[device].game[`team${team}`].join.rotation}
+        size={0.2}
+        height={layout[device].game[`team${team}`].join.height}
+        lineHeight={0.7}
+      >
+        {`SWITCH\n  TEAM`}
+        <meshStandardMaterial color={ hover ? 'green' : team === 0 ? 'red' : 'turquoise' }/>
+      </Text3D>
     </group>
   }
 
@@ -428,8 +526,8 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     { team === 0 && client.team === -1 && <JoinTeamButtonRocket/> }
     { team === 1 && client.team === -1 && <JoinTeamButtonUfo/> }
     { team === 0 && client.team === 0 && <ReadyTextRocket/> }
-    { team === 0 && client.team === 1 && <TeamSwitchButton team={team}/> }
-    { team === 1 && client.team === 0 && <TeamSwitchButton team={team}/> }
+    { team === 0 && client.team === 1 && <TeamSwitchButton/> }
+    { team === 1 && client.team === 0 && <TeamSwitchButton/> }
     { team === 1 && client.team === 1 && <ReadyTextUfo/> }
     {/* pieces */}
     { team === 0 && <HomePiecesRockets 

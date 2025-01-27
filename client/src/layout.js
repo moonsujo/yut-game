@@ -2660,7 +2660,7 @@ export default {
     },
     game: {
       letsPlayButton: {
-        position: [8.65,0,4.5],
+        position: [-7.8,0,5.3],
         rotation: [-Math.PI / 2, 0, 0],
         disabledButton: {
           position: [0.3,0,0.2],
