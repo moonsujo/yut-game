@@ -552,6 +552,109 @@ export default function Game() {
     }
   }
 
+  function ThirdSection() {
+    const [inviteFriendsVisible, setInviteFriendsVisible] = useState(true)
+    const [settingsVisible, setSettingsVisible] = useState(false)
+    function InviteFriendsButton() {
+      const [hover, setHover] = useState(false)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        console.log('[InviteFriendsButton] click')
+        setInviteFriendsVisible(true)
+        setSettingsVisible(false)
+      }
+      return <group name='invite-friends-button' position={[7, 0, -5.6]}>
+        <mesh name='background-outer' scale={[4.2, 0.01, 0.75]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={ (hover || inviteFriendsVisible) ? 'green' : 'yellow' }/>
+        </mesh> 
+        <mesh name='background-inner' scale={[4.15, 0.02, 0.7]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={MeshColors.spaceDark}/>
+        </mesh>
+        <mesh 
+        name='wrapper' 
+        scale={[4.2, 0.02, 0.75]}
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerUp={e => handlePointerUp(e)}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow' transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-1.9, 0.02, 0.19]}
+        >
+          INVITE FRIENDS
+          <meshStandardMaterial color={ (hover || inviteFriendsVisible) ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    function SettingsButton() {
+      const [hover, setHover] = useState(false)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        console.log('[SettingsButton] click')
+        setSettingsVisible(true)
+        setInviteFriendsVisible(false)
+      }
+      return <group name='settings-button' position={[10.6, 0, -5.6]}>
+        <mesh name='background-outer' scale={[2.8, 0.01, 0.75]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={ (hover || settingsVisible) ? 'green' : 'yellow' }/>
+        </mesh> 
+        <mesh name='background-inner' scale={[2.75, 0.02, 0.7]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={MeshColors.spaceDark}/>
+        </mesh>
+        <mesh 
+        name='wrapper' 
+        scale={[2.8, 0.02, 0.75]}
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerUp={e => handlePointerUp(e)}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow' transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-1.2, 0.02, 0.19]}
+        >
+          SETTINGS
+          <meshStandardMaterial color={ (hover || settingsVisible) ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+
+    return <group name='third-section'>
+      <InviteFriendsButton/>
+      <SettingsButton/>
+    </group>
+  }
+  
+
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
@@ -642,6 +745,7 @@ export default function Game() {
             <meshStandardMaterial color='yellow'/>
           </Text3D>
         </group>
+        <ThirdSection/>
       </animated.group> }
       { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
         <Team 
