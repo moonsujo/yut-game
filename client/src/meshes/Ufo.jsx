@@ -18,7 +18,8 @@ export default function Ufo({
   selected=false,
   onBoard=false,
   animationPlaying=false,
-  selection=null
+  selection=null,
+  offset=0
 }) {
   const { scene, materials } = useGLTF("models/ufo.glb");
 
@@ -111,7 +112,7 @@ export default function Ufo({
     }
     if (onBoard) {
       balls.current.rotation.y = state.clock.elapsedTime * 0.7;
-      ufo.current.position.z = position[2] + Math.cos(state.clock.elapsedTime * 2) * 0.05
+      ufo.current.position.z = position[2] + Math.cos(state.clock.elapsedTime * 2 + offset) * 0.05
     }
   });
 

@@ -893,6 +893,12 @@ export default function Game() {
           device={device}
           team={0} 
         />
+        <TeamLobby
+          position={[-7.5,0,-4]}
+          scale={layout[device].game.team0.scale}
+          device={device}
+          team={1} 
+        />
         <JoinTeamModal 
           position={[-11.5, 0, -3]}
           rotation={layout[device].game.joinTeamModal.rotation}

@@ -11,6 +11,8 @@ import { useFrame } from '@react-three/fiber';
 import { animated, useSpring } from '@react-spring/three';
 import { useParams } from 'wouter';
 import Rocket from './meshes/Rocket';
+import MeshColors from './MeshColors';
+import Ufo from './meshes/Ufo';
 
 export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
   const teams = useAtomValue(teamsAtom)
@@ -20,7 +22,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
   const client = useAtomValue(clientAtom);
   const params = useParams();
 
-  function JoinTeamButton() {
+  function JoinTeamButtonRocket() {
     const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
     const colorMaterial = new MeshStandardMaterial({ color: team === 0 ? 'red' : 'turquoise' })
 
@@ -120,8 +122,109 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
       </Text3D>
     </group>
   }
-  function HomePieces({position, scale=1}) {
 
+  function JoinTeamButtonUfo() {
+    const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom);
+    const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
+
+    const [hover, setHover] = useState(false);
+
+    const button = useRef();
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (button.current) {
+        if (hover) {
+          // limegreen
+          // colorMaterial.color.r = 0;
+          // colorMaterial.color.g = 50 / 255;
+          // colorMaterial.color.b = 0 / 255;
+          // colorMaterial.color.b = 0.031896033067374104;
+          // colorMaterial.color.g = 0.6104955708001716;
+          // colorMaterial.color.r = 0.031896033067374104;
+          // button.current.scale.x = 1;
+        } else {
+          if (client.team === -1) {
+            // colorMaterial.color.setHSL(Math.cos(time * 3) * 0.05 + 0.07, 1, 0.3);
+            // button.current.scale.x = Math.cos(time * 2) * 0.3 + 0.7;
+          } else {
+            if (team === 0) {
+              colorMaterial.color.r = 1
+              colorMaterial.color.g = 0
+              colorMaterial.color.b = 0
+            } else if (team === 1) {
+              colorMaterial.color.r = 176 / 256
+              colorMaterial.color.g = 241 / 256
+              colorMaterial.color.b = 235 / 256
+            }
+            // colorMaterial.color.setHSL(1/6, 1, 0.5); // yellow
+            // button.current.scale.x = 1;
+          }
+        }
+      }
+    })
+
+    function handlePointerEnter(e) {
+      e.stopPropagation();
+      setHover(true)
+    }
+
+    function handlePointerLeave(e) {
+      e.stopPropagation();
+      setHover(false)
+    }
+
+    function handlePointerDown(e) {
+      // const audio = new Audio('sounds/effects/join.wav');
+      // audio.volume=0.3;
+      // audio.play();
+      e.stopPropagation();
+      setJoinTeam(team);
+      setHover(false)
+    }
+
+    return <group
+      position={[1.9,0,0]}
+      scale={2}
+      ref={button}
+    >
+      <mesh
+        name='background-outer'
+        scale={[0.93, 1, 0.46]}
+      >
+        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+        <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
+      </mesh>
+      <mesh
+        name='background-inner'
+        scale={[0.93, 1, 0.43]}
+      >
+        <cylinderGeometry args={[0.95, 0.95, 0.02, 32]}/>
+        <meshStandardMaterial color='black'/>
+      </mesh>
+      <mesh 
+        name='wrapper' 
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerDown={e => handlePointerDown(e)}
+      >
+        <boxGeometry args={[1.2, 0.1, 0.6]}/>
+        <meshStandardMaterial transparent opacity={0}/>
+      </mesh>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-0.67, 0.025, 0.02]}
+        rotation={layout[device].game[`team${team}`].join.rotation}
+        size={0.2}
+        height={layout[device].game[`team${team}`].join.height}
+        lineHeight={0.7}
+      >
+        {`JOIN TEAM\n        UFO`}
+        <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
+      </Text3D>
+    </group>
+  }
+
+  function HomePiecesRockets({position, scale=1}) {
     const fleet = useRef()
     useFrame((state, delta) => {
       const time = state.clock.elapsedTime
@@ -138,6 +241,22 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
         <Rocket position={[1.1, 0, 6]} scale={2.3} onBoard offset={0.6}/>
         <Rocket position={[2.8, 0, 3.3]} scale={2.5} onBoard offset={0.9}/>
         <Rocket position={[4, 0, 5]} scale={2.4} onBoard/>
+      </group>
+    );
+  }
+
+  function HomePiecesUfos({ position, scale=1 }) {
+    useFrame((state, delta) => {
+      const time = state.clock.elapsedTime
+    })
+
+    return (
+      // position is controlled by useFrame
+      <group scale={scale}>
+        <Ufo position={[3.9, 0, 4.9]} scale={3.5} onBoard offset={0.3}/>
+        <Ufo position={[1.1, 0, 6]} scale={1.8} onBoard offset={0.6}/>
+        <Ufo position={[1.5, 0, 3.3]} rotation={[0, Math.PI/32, 0]} scale={2.5} onBoard offset={0.9}/>
+        <Ufo position={[6.8, 0, 5.7]} rotation={[0, -Math.PI/64, 0]}scale={2.4} onBoard/>
       </group>
     );
   }
@@ -160,24 +279,66 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
         })
       })
     })
+    // if host, add button background and wrapper
+
+    function PlayerButton({ index, refElem, player }) {
+      const [hover, setHover] = useState(false)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        // execute action
+        console.log('[PlayerButton] player', player.name, 'team', team)
+      }
+      function getDisplayColor(player) {
+        const connectedToRoom = (player.roomId === params.id.toUpperCase() && player.connectedToRoom)
+        return (!connectedToRoom ? 'gray' : hover ? 'green' : team === 0 ? 'red' : 'turquoise')
+      }
+      return <group key={index} position={[0, -index * 0.8, 0]}>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={layout[device].game[`team${team}`].names.size}
+          height={layout[device].game[`team${team}`].names.height}
+          ref={(ref => refElem = ref)}
+        >
+          {`${formatName(player.name, layout[device].game[`team${team}`].names.maxLength)}` + `${(host && player.socketId === host.socketId ? ' (h) ' : '')}`}
+          <meshStandardMaterial color={getDisplayColor(player)}/>
+        </Text3D>
+        {client.socketId === host.socketId && <group rotation={[Math.PI/2, 0, 0]}> key={index}
+          <mesh name='background-outer' scale={[3.7, 0.01, 0.75]} position={[1.63, -1, -0.57]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : team === 0 ? 'red' : 'turquoise' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[3.65, 0.02, 0.7]} position={[1.63, -1, -0.57]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={MeshColors.spaceDark}/>
+          </mesh>
+          <mesh 
+          name='wrapper' 
+          scale={[3.7, 0.01, 0.75]} 
+          position={[1.63, -1, -0.57]}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onPointerUp={handlePointerUp}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color='white' transparent opacity={0}/>
+          </mesh>
+        </group>}
+      </group>
+    }
+
     return <group
-      position={[0.3, 0, 4.5]}
+      position={[0.2, 0, 4.5]}
       rotation={layout[device].game[`team${team}`].names.rotation}
     >
       {teams[team].players.map((value, index) => (
-        index < 5 && <group key={index}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            size={layout[device].game[`team${team}`].names.size}
-            height={layout[device].game[`team${team}`].names.height}
-            position={[0, -index * 0.5, 0]}
-            ref={(ref => playerIdsRef.current[team][index] = ref)}
-          >
-            {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
-            + (host && value.socketId === host.socketId ? ' (h) ' : '')}
-            <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? (team === 0 ? 'red' : 'turquoise') : 'gray' }/>
-          </Text3D>
-        </group>
+        index < 5 && <PlayerButton key={index} index={index} refElem={playerIdsRef.current[team][index]} player={value}/>
       ))}
       {/* y position in case it overlaps with a name */}
       <group ref={yootIconRef} scale={0} position={[0, 0.17, 0]}>
@@ -202,15 +363,60 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
   // team === 1 && client.team === 0 && show 'switch team' button'
   // team === 1 && client.team === 1 && show 'prepare for contact' button'
 
-  function ReadyTextRocket(team) {
-    return <group>
+  function ReadyTextRocket() {
+    return <group 
+    position={[1.9, 0, 0]}
+    scale={2}
+    >
       <mesh
         name='background'
         scale={[0.93, 1, 0.46]}
-        material={colorMaterial}
       >
-        <cylinderGeometry args={[1, 1, 0.01, 32]}/>
+        <cylinderGeometry args={[1, 1, 0.001, 32]}/>
+        <meshStandardMaterial color='red' transparent opacity={0.1}/>
       </mesh>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-0.6, 0.025, 0]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.2}
+        height={0.01}
+        lineHeight={0.7}
+      >
+        {`READY TO\n  LAUNCH`}
+        <meshStandardMaterial color='red'/>
+      </Text3D>
+    </group>
+  }
+
+  function ReadyTextUfo() {
+    return <group 
+    position={[1.9, 0, 0]}
+    scale={2}
+    >
+      <mesh
+        name='background'
+        scale={[1, 1, 0.5]}
+      >
+        <cylinderGeometry args={[1, 1, 0.001, 32]}/>
+        <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+      </mesh>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-0.79, 0.025, 0]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.2}
+        height={0.01}
+        lineHeight={0.7}
+      >
+        {`PREPARE FOR\n    CONTACT`}
+        <meshStandardMaterial color='turquoise'/>
+      </Text3D>
+    </group>
+  }
+
+  function TeamSwitchButton(team) {
+    return <group>
     </group>
   }
 
@@ -219,18 +425,23 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     scale={scale}
   >
     {/* join button */}
-    { team === 0 && client.team === -1 && <JoinTeamButton/> }
-    { team === 1 && client.team === -1 && <JoinTeamButton/> }
-    { team === 0 && client.team === 0 && <ReadyText team={team}/> }
+    { team === 0 && client.team === -1 && <JoinTeamButtonRocket/> }
+    { team === 1 && client.team === -1 && <JoinTeamButtonUfo/> }
+    { team === 0 && client.team === 0 && <ReadyTextRocket/> }
     { team === 0 && client.team === 1 && <TeamSwitchButton team={team}/> }
     { team === 1 && client.team === 0 && <TeamSwitchButton team={team}/> }
-    { team === 1 && client.team === 1 && <ReadyText team={team}/> }
+    { team === 1 && client.team === 1 && <ReadyTextUfo/> }
     {/* pieces */}
-    <HomePieces 
+    { team === 0 && <HomePiecesRockets 
     position={[0.6,0,0.1]} 
     team={team} 
     scale={layout[device].game[`team${team}`].pieces.sectionScale}
-    />
+    /> }
+    { team === 1 && <HomePiecesUfos
+    position={[0.6,0,0.1]} 
+    team={team} 
+    scale={layout[device].game[`team${team}`].pieces.sectionScale}
+    /> }
     {/* player ids */}
     <PlayerIds/>
     {/* copy link */}
