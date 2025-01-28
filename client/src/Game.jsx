@@ -64,6 +64,7 @@ import Timer from "./Timer.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import TeamLobby from "./TeamLobby.jsx";
 import MeshColors from "./MeshColors.jsx";
+import QRCodeStyling from "qr-code-styling";
 
 // There should be no state
 export default function Game() {
@@ -601,7 +602,7 @@ export default function Game() {
         </Text3D>
       </group>
     }
-    function SettingsButton() {
+    function SettingsButtonLobby() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
         e.stopPropagation()
@@ -647,10 +648,43 @@ export default function Game() {
         </Text3D>
       </group>
     }
+    function InviteFriends() {
+      const qrCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        type: "svg",
+        data: window.location.href,
+        image: "./images/yoot.png",
+        dotsOptions: {
+          color: "#4267b2",
+          type: "rounded"
+        },
+        backgroundOptions: {
+          color: "#e9ebee",
+        },
+        imageOptions: {
+          crossOrigin: "anonymous",
+          margin: 20
+        }
+      });
+
+      qrCode.append(document.getElementById("canvas"));
+      qrCode.download({ name: "qr", extension: "svg" });
+
+      // get image before download
+      // display it as drei-image
+      return <group>
+      </group>
+    }
+    function SettingsLobby() {
+      return
+    }
 
     return <group name='third-section'>
       <InviteFriendsButton/>
-      <SettingsButton/>
+      { inviteFriendsVisible && <InviteFriends/> }
+      <SettingsButtonLobby/>
+      { settingsVisible && <SettingsLobby/> }
     </group>
   }
   
