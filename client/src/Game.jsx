@@ -65,6 +65,7 @@ import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import TeamLobby from "./TeamLobby.jsx";
 import MeshColors from "./MeshColors.jsx";
 import QRCodeStyling from "qr-code-styling";
+import QrCode3d from "./QRCode3D.jsx";
 
 // There should be no state
 export default function Game() {
@@ -649,33 +650,68 @@ export default function Game() {
       </group>
     }
     function InviteFriends() {
-      const qrCode = new QRCodeStyling({
-        width: 300,
-        height: 300,
-        type: "svg",
-        data: window.location.href,
-        image: "./images/yoot.png",
-        dotsOptions: {
-          color: "#4267b2",
-          type: "rounded"
-        },
-        backgroundOptions: {
-          color: "#e9ebee",
-        },
-        imageOptions: {
-          crossOrigin: "anonymous",
-          margin: 20
+      function CopyLinkButton({ position }) {
+        const [hover, setHover] = useState(false)
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          setHover(true)
         }
-      });
-
-      qrCode.append(document.getElementById("canvas"));
-      qrCode.download({ name: "qr", extension: "svg" });
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          setHover(false)
+        }
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          console.log('[CopyLinkButton] click')
+        }
+        return <group name='copy-link-button' position={position}>
+          <mesh name='background-outer' scale={[3, 0.01, 0.75]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh> 
+          <mesh name='background-inner' scale={[2.95, 0.02, 0.7]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={MeshColors.spaceDark}/>
+          </mesh>
+          <mesh 
+          name='wrapper' 
+          scale={[2.7, 0.02, 0.75]}
+          onPointerEnter={e => handlePointerEnter(e)}
+          onPointerLeave={e => handlePointerLeave(e)}
+          onPointerUp={e => handlePointerUp(e)}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color='yellow' transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            size={0.4}
+            height={0.01}
+            rotation={[-Math.PI/2, 0, 0]}
+            position={[-1.3, 0.02, 0.19]}
+          >
+            COPY LINK
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+        </group>
+      }
 
       // get image before download
       // display it as drei-image
       return <group>
+        <QrCode3d text={window.location.href} position={[8.5,0,-2]} scale={0.8} rotation={[-Math.PI/2,0,0]}/>
+        <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[5,0,1.5]}
+        rotation={[-Math.PI/2,0,0]}
+        size={0.4}
+        height={0.01}>
+          {`SCAN THE QR CODE TO JOIN\nTHIS ROOM, OR COPY THE\nLINK AND SHARE WITH YOUR\nFRIENDS`}
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        <CopyLinkButton position={[8.6, 0, 5]}/>
       </group>
     }
+
     function SettingsLobby() {
       return
     }

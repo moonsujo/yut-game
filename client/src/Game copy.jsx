@@ -815,8 +815,6 @@ export default function Game() {
           {layout[device].game.invite.text.content}
           <meshStandardMaterial color='limegreen'/>
         </Text3D>
-        {/* have to prepend 'www' for safari to redirect to the website instead of searching it in google */}
-        {/* <QRCode3D url={'www.yutnori.app/E70E'}/>  */}
         <mesh
           castShadow
           receiveShadow

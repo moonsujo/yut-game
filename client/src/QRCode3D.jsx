@@ -1,41 +1,104 @@
-import React, { useEffect, useState } from 'react';
-import QRCode from 'qrcode';
-import { Image, Html } from '@react-three/drei';
-import * as THREE from 'three';
+import { useLoader } from "@react-three/fiber";
+import QRCodeStyling from "qr-code-styling";
+import { useEffect, useState } from "react";
+import { TextureLoader } from "three";
+import Star from "./meshes/Star";
 
-const QRCode3D = ({ url }) => {
-  const [qrCodeDataURL, setQRCodeDataURL] = useState('');
+export default function QrCode3d({ text, position, scale, rotation }) {
+  console.log('[QrCode3d]')
+  const [texture, setTexture] = useState(null)
 
+  // Generate the QR code as an image
   useEffect(() => {
-    // Generate the QR code as a Data URL
-    if (url) {
-      QRCode.toDataURL(url, { margin: 2, width: 512 }, (err, url) => {
-        if (err) {
-          console.error('Failed to generate QR Code', err);
-        } else {
-          setQRCodeDataURL(url); // Save the generated QR code as a data URL
-        }
+    console.log('[useEffect]')
+    const qrCode = new QRCodeStyling({
+      width: 256,
+      height: 256,
+      data: text,
+      image: './images/yoot.png',
+      dotsOptions: {
+        color: "#000000",
+        type: "dots",
+        // gradient applies to dots like a background
+      },
+      backgroundOptions: {
+        color: "#ffffff",
+        // gradient: {
+        //   type: 'radial',
+        //   colorStops: [
+        //     // inner
+        //     {
+        //       offset: 0.1, // radius, between 0 and 1 (edge of box)
+        //       color: 'yellow'
+        //     },
+        //     // outer
+        //     {
+        //       offset: 0.4,
+        //       color: '#005500'
+        //     }
+        //   ]
+        // }
+      },
+      cornersSquareOptions: {
+        type: 'dot',
+        // gradient: {
+        //   type: 'radial',
+        //   colorStops: [
+        //     // inner
+        //     {
+        //       offset: 0.8, // radius, between 0 and 1 (edge of box)
+        //       color: 'yellow'
+        //     },
+        //     // outer
+        //     {
+        //       offset: 1,
+        //       color: '#555500'
+        //     }
+        //   ]
+        // }
+      },
+      cornersDotOptions: {
+        type: 'dot',
+        // gradient: {
+        //   type: 'radial',
+        //   colorStops: [
+        //     // inner
+        //     {
+        //       offset: 0.5, // radius, between 0 and 1 (edge of box)
+        //       color: 'yellow'
+        //     },
+        //     // outer
+        //     {
+        //       offset: 1,
+        //       color: '#555500'
+        //     }
+        //   ]
+        // }
+      }
+    });
+    console.log('[useEffect] qrCode', qrCode)
+
+    // Generate the blob and set the texture
+    qrCode.getRawData('png').then((blob) => {
+      const url = URL.createObjectURL(blob);
+      new TextureLoader().load(url, (loadedTexture) => {
+        setTexture(loadedTexture);
+        URL.revokeObjectURL(url); // Cleanup the object URL
       });
-    }
-  }, [url]);
+    });
 
-  return qrCodeDataURL ? (
-    <group position={[0,3,0]} rotation={[-Math.PI/8,0,0]} scale={[1,1,1]}>
-      {/* Display QR Code */}
-      <Image position={[0, 0, 0]} scale={[4, 4, 2]} url={qrCodeDataURL} side={THREE.DoubleSide}/>
+    console.log('[useEffect] finish')
+  }, []);
 
-      {/* Optional: Add explanatory text */}
-      {/* <Html position={[0, -1.5, 0]} center>
-        <p style={{ color: 'white', fontSize: '1rem', textAlign: 'center' }}>
-          Scan the QR Code to join!
-        </p>
-      </Html> */}
-    </group>
-  ) : (
-    <Html center>
-      <p style={{ color: 'white' }}>Generating QR Code...</p>
-    </Html>
-  )
-};
+  if (!texture) return null; // Wait for the texture to load
 
-export default QRCode3D;
+  return <group>
+    <mesh position={position} rotation={rotation} scale={scale}>
+      <planeGeometry args={[5, 5]} />
+      <meshBasicMaterial map={texture} />
+    </mesh>
+    {/* <Star position={[7.127, 0, -3.36]} scale={0.1} color='white'/>
+    <Star position={[9.878, 0, -3.36]} scale={0.1} color='white'/>
+    <Star position={[7.127, 0, -0.61]} scale={0.1} color='white'/> */}
+  </group>
+}
