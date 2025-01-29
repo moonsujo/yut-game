@@ -81,10 +81,13 @@ export const catchPathAtom = atom(null)
 // editting a field doesn't trigger re-render of the toggle state
 // when I click on the box to enable the rule, the box stays lit
 // instead of highlighting in the hover state
+
+// Rules
 export const backdoLaunchAtom = atom(true)
 export const timerAtom = atom(true)
 export const nakAtom = atom(true)
 export const yutMoCatchAtom = atom(true)
+
 export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
 export const pauseGameAtom = atom(false)

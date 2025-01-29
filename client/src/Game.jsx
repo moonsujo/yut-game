@@ -40,6 +40,9 @@ import {
   timerAtom,
   animationPlayingAtom,
   turnExpireTimeAtom,
+  backdoLaunchAtom,
+  nakAtom,
+  yutMoCatchAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -555,8 +558,10 @@ export default function Game() {
   }
 
   function ThirdSection() {
-    const [inviteFriendsVisible, setInviteFriendsVisible] = useState(true)
-    const [settingsVisible, setSettingsVisible] = useState(false)
+    const [inviteFriendsVisible, setInviteFriendsVisible] = useState(false)
+    const [settingsVisible, setSettingsVisible] = useState(true)
+    // const [inviteFriendsVisible, setInviteFriendsVisible] = useState(true)
+    // const [settingsVisible, setSettingsVisible] = useState(false)
     function InviteFriendsButton() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
@@ -660,9 +665,55 @@ export default function Game() {
           e.stopPropagation()
           setHover(false)
         }
+        function copyURLToClipboard() {
+          const url = window.location.href;
+        
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            // Modern browsers with Clipboard API support
+            navigator.clipboard.writeText(url)
+              .then(() => {
+              })
+              .catch(err => {
+                console.error("Failed to copy URL: ", err);
+              });
+          } else {
+            // Fallback for older browsers
+            const tempInput = document.createElement("input");
+            document.body.appendChild(tempInput);
+            tempInput.value = url;
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+          }
+        }
+        const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+        const [springs, api] = useSpring(() => ({        
+          from: {
+            opacity: 0, 
+          }
+        }))
         function handlePointerUp(e) {
           e.stopPropagation()
           console.log('[CopyLinkButton] click')
+          copyURLToClipboard()
+          api.start({
+            from: {
+              opacity: 1
+            },
+            to: [
+              {
+                opacity: 1
+              },
+              { 
+                opacity: 0,
+                delay: 500,
+                config: {
+                  tension: 170,
+                  friction: 26
+                }
+              }
+            ]
+          })
         }
         return <group name='copy-link-button' position={position}>
           <mesh name='background-outer' scale={[3, 0.01, 0.75]}>
@@ -692,6 +743,23 @@ export default function Game() {
             COPY LINK
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
           </Text3D>
+          <Text3D 
+            name='copied-tooltip'
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-1,0,-0.6]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            copied!
+            <AnimatedMeshDistortMaterial
+              speed={5}
+              distort={0}
+              color='limegreen'
+              transparent
+              opacity={springs.opacity}
+            />
+          </Text3D>
         </group>
       }
 
@@ -711,9 +779,173 @@ export default function Game() {
         <CopyLinkButton position={[8.6, 0, 5]}/>
       </group>
     }
-
+    // reuse this component in the Settings menu in Game
     function SettingsLobby() {
-      return
+      // hover states
+      const [setting0Hover, setSetting0Hover] = useState(false)
+      const [setting1Hover, setSetting1Hover] = useState(false)
+      const [setting2Hover, setSetting2Hover] = useState(false)
+      const [setting3Hover, setSetting3Hover] = useState(false)
+      // toggle states (global)
+      // pointer handlers (enter, leave, and up for each rule)
+      const backdoLaunch = useAtomValue(backdoLaunchAtom)
+      console.log('[SettingsLobby] backdoLaunch', backdoLaunch)
+      const timer = useAtomValue(timerAtom)
+      const nak = useAtomValue(nakAtom)
+      const yutMoCatch = useAtomValue(yutMoCatchAtom)
+      const { 
+        setting0TogglePosition, 
+        setting0ToggleBackgroundColor 
+      } = useSpring({
+        setting0TogglePosition: !backdoLaunch ? [0,0,0] : [0.4, 0, 0],
+        setting0ToggleBackgroundColor: '#FFFFFF',
+        config: {
+          tension: 170,
+          friction: 26
+        },
+      })
+      function handleSetting0PointerEnter(e) {
+        e.stopPropagation()
+        setSetting0Hover(true)
+      }
+      function handleSetting0PointerLeave(e) {
+        e.stopPropagation()
+        setSetting0Hover(false)
+      }
+      function handleSetting0PointerUp(e) {
+        console.log('[handleSetting0PointerUp]')
+        e.stopPropagation()
+        if (!backdoLaunch) 
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'backdoLaunch', flag: true }))
+        else
+          console.log('[handleSetting0PointerUp] disable backdoLaunch')
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'backdoLaunch', flag: false }))
+      }
+      return <group position={[0,0,0]}>
+        <group position={[5.2, 0, -3.2]}>
+          <group name='setting-0-background'>
+            { client.socketId === host.socketId && <mesh
+            name='setting-0-background-outer'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.01, 2.9]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial color='yellow'/>
+            </mesh> }
+            <mesh 
+            name='setting-0-background-inner'
+            position={[3.25, 0, 0]}
+            scale={[7.05, 0.02, 2.85]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              color={MeshColors.disabledGreyBackground} 
+              transparent 
+              opacity={1}/>
+            </mesh>
+            <mesh 
+            name='setting-0-background-wrapper'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.02, 2.9]}
+            onPointerEnter={e=>handleSetting0PointerEnter(e)}
+            onPointerLeave={e=>handleSetting0PointerLeave(e)}
+            onPointerUp={e=>handleSetting0PointerUp(e)}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              transparent 
+              opacity={0}/>
+            </mesh>
+          </group>
+          <Text3D 
+          name='setting-0-title'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.1,0.02,-0.8]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.4}
+          height={0.01}>
+            BACKDO LAUNCH
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
+          { client.socketId === host.socketId && <group 
+          name='setting-0-toggle' 
+          position={[5.95, 0.02, -1]}>
+            <group name='setting-0-toggle-background'>
+              <mesh 
+              name='setting-0-toggle-background-left-circle'
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <meshStandardMaterial color='black'/>
+              </mesh>
+              <mesh
+              name='setting-0-toggle-background-block'
+              position={[0.2, 0, 0]}
+              scale={[0.4, 0.01, 0.5]}
+              >
+                <boxGeometry args={[1, 1, 1]}/>
+                <meshStandardMaterial color='black'/>
+              </mesh>
+              <mesh 
+              name='setting-0-toggle-background-right-circle'
+              position={[0.4, 0, 0]}
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <meshStandardMaterial color='black'/>
+              </mesh>
+            </group>
+            <animated.mesh
+            name='setting-0-toggle-switch'
+            scale={[0.15, 0.02, 0.15]}
+            position={setting0TogglePosition}>
+              <cylinderGeometry args={[1, 1, 1, 32]}/>
+              <meshStandardMaterial color='yellow'/>
+            </animated.mesh>
+          </group> }
+          <Text3D 
+          name='setting-0-description'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.1,0.02,-0.2]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.3}
+          height={0.01}
+          lineHeight={0.8}>
+            {`IF A TEAM THROWS A BACKDO (-1)\nAND HAS NO PIECES ON THE BOARD,\nTHEY CAN PUT A PIECE ON THE STAR\nBEHIND EARTH.`}
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
+        </group>
+        <group>
+          <Text3D
+          name='setting-1-title'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-12,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.6}
+          height={0.01}></Text3D>
+          <group name='setting-1-checkbox'></group>
+          <group name='setting-1-description'></group>
+        </group>
+        <group>
+          <Text3D
+          name='setting-2-title'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-12,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.6}
+          height={0.01}></Text3D>
+          <group name='setting-2-checkbox'></group>
+          <group name='setting-2-description'></group>
+        </group>
+        <group>
+          <Text3D
+          name='setting-3-title'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-12,0,-5.3]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.6}
+          height={0.01}></Text3D>
+          <group name='setting-3-checkbox'></group>
+          <group name='setting-3-description'></group>
+        </group>
+      </group>
     }
 
     return <group name='third-section'>

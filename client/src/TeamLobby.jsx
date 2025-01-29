@@ -256,7 +256,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
         <Ufo position={[3.9, 0, 4.9]} scale={3.5} onBoard offset={0.3}/>
         <Ufo position={[1.1, 0, 6]} scale={1.8} onBoard offset={0.6}/>
         <Ufo position={[1.5, 0, 3.3]} rotation={[0, Math.PI/32, 0]} scale={2.5} onBoard offset={0.9}/>
-        <Ufo position={[6.8, 0, 5.7]} rotation={[0, -Math.PI/64, 0]}scale={2.4} onBoard/>
+        <Ufo position={[6.6, 0, 5.7]} rotation={[0, -Math.PI/64, 0]}scale={1.9} onBoard/>
       </group>
     );
   }
