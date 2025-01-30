@@ -1963,7 +1963,7 @@ io.on("connect", async (socket) => {
     try {
       let room = await Room.findOne({ shortId: roomId, host: clientId })
       if (!room) 
-        throw new Error('room with short id', roomId, 'and host', clientId, 'not found')
+        throw new Error(`room with short id ${roomId} and host ${clientId} not found`)
       else {
         room.rules[rule] = flag
         room.serverEvent = {

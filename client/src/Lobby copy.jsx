@@ -70,9 +70,8 @@ import MeshColors from "./MeshColors.jsx";
 import QRCodeStyling from "qr-code-styling";
 import QrCode3d from "./QRCode3D.jsx";
 
-// There should be no state
-export default function Game() {
-  
+export default function Lobby() {
+
   useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
   const [disconnect] = useAtom(disconnectAtom)
@@ -92,21 +91,11 @@ export default function Game() {
   const [teams] = useAtom(teamsAtom)
   const [yootAnimation] = useAtom(yootAnimationAtom);
   const pauseGame = useAtomValue(pauseGameAtom)
-  const timer = useAtomValue(timerAtom)
   const animationPlaying = useAtomValue(animationPlayingAtom)
   const [playMusic] = useMusicPlayer();
-  
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)
-
-  useEffect(() => {
-    // socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
-    return (() => {
-      // remove player from room (grey text)
-      socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
-    })
-  }, [])
-
+  
   useEffect(() => {
     if (connectedToServer) {
       socket.emit('addUser', {}, () => {
@@ -114,6 +103,19 @@ export default function Game() {
       })
     }
   }, [connectedToServer])
+
+  // Animations
+  const { boardScale, boardPosition, gameScale, winScreenScale, lobbyScale } = useSpring({
+    boardScale: layout[device].game.board[gamePhase].scale,
+    boardPosition: layout[device].game.board[gamePhase].position,
+    gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
+    winScreenScale: gamePhase === 'finished' ? 1 : 0,
+    lobbyScale: gamePhase === 'lobby' ? 1 : 0,
+    config: {
+      tension: 170,
+      friction: 26
+    },
+  })
 
   function StartGameButton({ position }) {
 
@@ -182,379 +184,6 @@ export default function Game() {
         <meshStandardMaterial color={ !readyToStart ? 'grey' : hover ? 'green' : 'yellow' }/>
       </Text3D>
     </group>
-  }
-
-  function InitialJoinTeamModal({ position }) {
-    const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom)
-    // e.stopPropagation doesn't stop tile from being clicked
-    
-    const [joinRocketsHover, setJoinRocketsHover] = useState(false)
-    const [joinUfosHover, setJoinUfosHover] = useState(false)
-
-    function handleJoinRocketsPointerEnter(e) {
-      e.stopPropagation()
-      setJoinRocketsHover(true)
-    }
-    function handleJoinRocketsPointerLeave(e) {
-      e.stopPropagation()
-      setJoinRocketsHover(false)
-    }
-    function handleJoinRocketsClick(e) {
-      e.stopPropagation()
-      setJoinRocketsHover(false)
-      setJoinTeam(0)
-    }
-    function handleJoinUfosPointerEnter(e) {
-      e.stopPropagation()
-      setJoinUfosHover(true)
-    }
-    function handleJoinUfosPointerLeave(e) {
-      e.stopPropagation()
-      setJoinUfosHover(false)
-    }
-    function handleJoinUfosClick(e) {
-      e.stopPropagation()
-      setJoinUfosHover(false)
-      setJoinTeam(1)
-    }
-    return <group position={position}>
-      { joinTeam === null && <group name='pick-a-team-modal'>
-        <group name='background'>
-          <mesh>
-            <boxGeometry args={[7.6, 0.01, 5]}/>
-            <meshStandardMaterial color='yellow'/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[7.5, 0.02, 4.9]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-        </group>
-        <Text3D name='guide-text'
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-2,0.03,-1.5]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.5}
-          height={0.01}
-        >
-          pick a team
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <group name='join-rockets-button' position={[-1.8, 0.02, 0.3]}>
-          <mesh>
-            <boxGeometry args={[3.4, 0.01, 2.5]}/>
-            <meshStandardMaterial color={ joinRocketsHover ? 'green' : 'red' }/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[3.3, 0.02, 2.4]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-          <mesh 
-            name='wrapper'
-            onPointerEnter={e => handleJoinRocketsPointerEnter(e)}
-            onPointerLeave={e => handleJoinRocketsPointerLeave(e)}
-            onClick={e => handleJoinRocketsClick(e)}
-          >
-            <boxGeometry args={[3.4, 0.02, 2.5]}/>
-            <meshStandardMaterial transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.4,0.03,-0.3]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.5}
-            height={0.01}
-          >
-            {`join the\nrockets`}
-            <meshStandardMaterial color={ joinRocketsHover ? 'green' : 'red' }/>
-          </Text3D>
-        </group>
-        <group name='join-ufos-button' position={[1.8, 0.02, 0.3]}>
-          <mesh>
-            <boxGeometry args={[3.4, 0.01, 2.5]}/>
-            <meshStandardMaterial color={ joinUfosHover ? 'green' : 'turquoise' }/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[3.3, 0.02, 2.4]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-          <mesh 
-            name='wrapper'
-            onPointerEnter={e => handleJoinUfosPointerEnter(e)}
-            onPointerLeave={e => handleJoinUfosPointerLeave(e)}
-            onClick={e => handleJoinUfosClick(e)}
-          >
-            <boxGeometry args={[3.4, 0.02, 2.5]}/>
-            <meshStandardMaterial transparent opacity={0}/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-1.4,0.03,-0.3]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.5}
-            height={0.01}
-          >
-            {`join the\nufos`}
-            <meshStandardMaterial color={ joinUfosHover ? 'green' : 'turquoise' }/>
-          </Text3D>
-        </group>
-      </group>}
-    </group>
-  }
-
-  // Animations
-  const { boardScale, boardPosition, gameScale, winScreenScale, lobbyScale } = useSpring({
-    boardScale: layout[device].game.board[gamePhase].scale,
-    boardPosition: layout[device].game.board[gamePhase].position,
-    gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
-    winScreenScale: gamePhase === 'finished' ? 1 : 0,
-    lobbyScale: gamePhase === 'lobby' ? 1 : 0,
-    config: {
-      tension: 170,
-      friction: 26
-    },
-  })
-
-  function DiscordButton({ position }) {
-    const [hover, setHover] = useState(false);
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      setHover(true);
-    }
-
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      setHover(false);
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();
-    }
-
-    return <group position={position}>
-      <mesh>
-        <boxGeometry args={[1.83, 0.03, 0.55]}/>
-        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-      </mesh>
-      <mesh>
-        <boxGeometry args={[1.77, 0.04, 0.5]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-      >
-        <boxGeometry args={[1.83, 0.1, 0.55]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={[-0.77, 0.025, 0.15]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={layout[device].game.discord.size}
-        height={layout[device].game.discord.height}
-      >
-        DISCORD
-        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-      </Text3D>
-    </group>
-  }
-
-  function SettingsButton({ position, scale }) {
-    const [open, setOpen] = useAtom(settingsOpenAtom)
-    const [hover, setHover] = useState(false)
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      if (!hover) {
-        setHover(true)
-      }
-    }
-    function handlePointerMove(e) {
-      e.stopPropagation();
-      if (!hover) {
-        setHover(true)
-      }
-    }
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      if (hover) {
-        setHover(false)
-      }
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();
-      if (open) {
-        setOpen(false)
-        if (hover) {
-          setHover(false)
-        }
-      } else {
-        setOpen(true)
-      }
-    }
-
-    return <group position={position} scale={scale}>
-      <mesh>
-        <meshStandardMaterial color={hover? 'green' : 'yellow'}/>
-        <boxGeometry args={[2.1, 0.03, 0.55]}/>
-      </mesh>
-      <mesh>
-        <boxGeometry args={[2.05, 0.04, 0.5]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-        onPointerMove={e => handlePointerMove(e)}
-      >
-        <boxGeometry args={[1.2, 0.1, 0.6]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.settings.mainButton.text.position}
-        rotation={layout[device].game.settings.mainButton.text.rotation}
-        size={layout[device].game.settings.mainButton.text.size}
-        height={layout[device].game.settings.mainButton.text.height}
-      >
-        <meshStandardMaterial color={hover? 'green' : 'yellow'}/>
-        Settings
-      </Text3D>
-      {/* display different panes based on user state (spectator/player) */}
-      { open && <SettingsHtml
-        position={[-3.5,3,3.5]}
-        rotation={[0,0,0]}
-        scale={[1,1,1]}
-      /> }
-    </group>
-  }
-
-  function RulebookButton({ position, scale }) {
-    const [hover, setHover] = useState(false)
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      setHover(true)
-    }
-
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      setHover(false)
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();
-      if (showRulebook) {
-        setShowRulebook(false)
-      } else {
-        setShowRulebook(true)
-      }
-    }
-
-    return <group position={position} scale={scale}>
-      <mesh>
-        <boxGeometry args={[1.5, 0.03, 0.6]}/>
-        <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
-      </mesh>
-      <mesh>
-        <boxGeometry args={[1.45, 0.04, 0.5]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-      >
-        <boxGeometry args={[1.5, 0.1, 0.6]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={[-0.6,0.02,0.15]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.3}
-        height={0.01}
-      >
-        Rules
-        <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
-      </Text3D>
-    </group>
-  }
-
-  function DisplayHostAndSpectating() {
-    // case 0: spectating
-    const Spectating = () => {
-      return <Text3D 
-        name='spectating-text'
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.spectating.position}
-        rotation={layout[device].game.spectating.rotation}
-        size={layout[device].game.spectating.size}
-        height={layout[device].game.spectating.height}
-      >
-        {`SPECTATING`}
-        <meshStandardMaterial color='grey'/>
-      </Text3D>
-    }
-    
-    // case 1: spectating and hosting
-    const SpectatingAndHosting = () => {
-      return <group>
-        <Text3D 
-          name='spectating-text'
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.spectatingAndHosting.line0Pos}
-          rotation={layout[device].game.spectatingAndHosting.rotation}
-          size={layout[device].game.spectatingAndHosting.size}
-          height={layout[device].game.spectatingAndHosting.height}
-        >
-          {`SPECTATING`}
-          <meshStandardMaterial color='grey'/>
-        </Text3D>
-        <Text3D 
-          name='host-text'
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.spectatingAndHosting.line1Pos}
-          rotation={layout[device].game.spectatingAndHosting.rotation}
-          size={layout[device].game.spectatingAndHosting.size}
-          height={layout[device].game.spectatingAndHosting.height}
-        >
-          {`HOST`}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-    }
-
-    // case 2: hosting
-    const Hosting = () => {
-      return <Text3D 
-        name='host-text'
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].game.hosting.position}
-        rotation={layout[device].game.hosting.rotation}
-        size={layout[device].game.hosting.size}
-        height={layout[device].game.hosting.height}
-      >
-        {`HOST`}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-    }
-
-    if (host && client.team === -1 && client.socketId === host.socketId) {
-      return <SpectatingAndHosting/>
-    } else if (client.team === -1) {
-      return <Spectating/>
-    } else if (host && client.team !== -1 && client.socketId === host.socketId) {
-      return <Hosting/>
-    } else {
-      return <></>
-    }
   }
 
   function ThirdSection() {
@@ -797,11 +426,19 @@ export default function Game() {
         setting0ToggleBackgroundColor,
         setting1TogglePosition, 
         setting1ToggleBackgroundColor,
+        setting2TogglePosition, 
+        setting2ToggleBackgroundColor,
+        setting3TogglePosition, 
+        setting3ToggleBackgroundColor,
       } = useSpring({
         setting0TogglePosition: !backdoLaunch ? [0,0,0] : [0.4, 0, 0],
         setting0ToggleBackgroundColor: !backdoLaunch ? '#5C5800' : 'green',
         setting1TogglePosition: !timer ? [0,0,0] : [0.4, 0, 0],
         setting1ToggleBackgroundColor: !timer ? '#5C5800' : 'green',
+        setting2TogglePosition: !nak ? [0,0,0] : [0.4, 0, 0],
+        setting2ToggleBackgroundColor: !nak ? '#5C5800' : 'green',
+        setting3TogglePosition: !yutMoCatch ? [0,0,0] : [0.4, 0, 0],
+        setting3ToggleBackgroundColor: !yutMoCatch ? '#5C5800' : 'green',
         config: {
           tension: 170,
           friction: 26
@@ -851,6 +488,50 @@ export default function Game() {
           socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: false }))
         }
       }
+      function handleSetting2PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSetting2Hover(true)
+      }
+      function handleSetting2PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSetting2Hover(false)
+      }
+      function handleSetting2PointerUp(e) {
+        console.log('[handleSetting2PointerUp]')
+        e.stopPropagation()
+        if (!nak) {
+          console.log('[handleSetting2PointerUp] enable nak')
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'nak', flag: true }))
+        }
+        else {
+          console.log('[handleSetting2PointerUp] disable nak')
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'nak', flag: false }))
+        }
+      }
+      function handleSetting3PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSetting3Hover(true)
+      }
+      function handleSetting3PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSetting3Hover(false)
+      }
+      function handleSetting3PointerUp(e) {
+        console.log('[handleSetting3PointerUp]')
+        e.stopPropagation()
+        if (!yutMoCatch) {
+          console.log('[handleSetting3PointerUp] enable yutMoCatch')
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'yutMoCatch', flag: true }))
+        }
+        else {
+          console.log('[handleSetting3PointerUp] disable yutMoCatch')
+          socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'yutMoCatch', flag: false }))
+        }
+      }
       
       const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
 
@@ -867,7 +548,7 @@ export default function Game() {
             <mesh 
             name='setting-0-background-inner'
             position={[3.25, 0, 0]}
-            scale={[7.05, 0.02, 2.85]}>
+            scale={[7.05, 0.07, 2.85]}>
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial 
               color={ !setting0Hover ? MeshColors.disabledGreyBackground : '#444444' } 
@@ -877,7 +558,7 @@ export default function Game() {
             <mesh 
             name='setting-0-background-wrapper'
             position={[3.25, 0, 0]}
-            scale={[7.1, 0.02, 2.9]}
+            scale={[7.1, 0.07, 2.9]}
             onPointerEnter={e=>handleSetting0PointerEnter(e)}
             onPointerLeave={e=>handleSetting0PointerLeave(e)}
             onPointerUp={e=>handleSetting0PointerUp(e)}>
@@ -890,7 +571,7 @@ export default function Game() {
           <Text3D 
           name='setting-0-title'
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.1,0.02,-0.8]}
+          position={[-0.1,0.04,-0.8]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
           height={0.01}>
@@ -899,7 +580,7 @@ export default function Game() {
           </Text3D>
           { client.socketId === host.socketId && <group 
           name='setting-0-toggle' 
-          position={[5.95, 0.02, -1]}>
+          position={[5.95, 0.04, -1]}>
             <group name='setting-0-toggle-background'>
               <mesh 
               name='setting-0-toggle-background-left-circle'
@@ -948,7 +629,7 @@ export default function Game() {
           <Text3D 
           name='setting-0-description'
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.1,0.02,-0.2]}
+          position={[-0.1,0.04,-0.2]}
           rotation={[-Math.PI/2,0,0]}
           size={0.3}
           height={0.01}
@@ -957,29 +638,29 @@ export default function Game() {
             <meshStandardMaterial color='yellow'/>
           </Text3D>
         </group>
-        <group name='setting-1' position={[5.2, 0, -0.1]}>
+        <group name='setting-1' position={[5.2, 0, -0.9]}>
           <group name='setting-1-background'>
             { client.socketId === host.socketId && <mesh
             name='setting-1-background-outer'
             position={[3.25, 0, 0]}
-            scale={[7.1, 0.01, 2.9]}>
+            scale={[7.1, 0.01, 1.5]}>
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='yellow'/>
             </mesh> }
             <mesh 
             name='setting-1-background-inner'
             position={[3.25, 0, 0]}
-            scale={[7.05, 0.02, 2.85]}>
+            scale={[7.05, 0.07, 1.45]}>
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial 
-              color={MeshColors.disabledGreyBackground} 
+              color={ !setting1Hover ? MeshColors.disabledGreyBackground : '#444444' } 
               transparent 
               opacity={1}/>
             </mesh>
             <mesh 
             name='setting-1-background-wrapper'
             position={[3.25, 0, 0]}
-            scale={[7.1, 0.02, 2.9]}
+            scale={[7.1, 0.07, 1.5]}
             onPointerEnter={e=>handleSetting1PointerEnter(e)}
             onPointerLeave={e=>handleSetting1PointerLeave(e)}
             onPointerUp={e=>handleSetting1PointerUp(e)}>
@@ -992,7 +673,7 @@ export default function Game() {
           <Text3D
           name='setting-1-title'
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.1,0.02,-0.8]}
+          position={[-0.1,0.04,-0.1]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
           height={0.01}>
@@ -1001,7 +682,7 @@ export default function Game() {
           </Text3D>
           { client.socketId === host.socketId && <group 
           name='setting-1-toggle' 
-          position={[5.95, 0.02, -1]}>
+          position={[5.95, 0.04, -0.3]}>
             <group name='setting-1-toggle-background'>
               <mesh 
               name='setting-1-toggle-background-left-circle'
@@ -1047,28 +728,221 @@ export default function Game() {
               <meshStandardMaterial color={MeshColors.disabledGreyBackground} />
             </animated.mesh>
           </group> }
+          <Text3D 
+          name='setting-1-description'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.1,0.04,0.5]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.3}
+          height={0.01}
+          lineHeight={0.8}>
+            {`1 MINUTE TIME LIMIT PER TURN.`}
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
         </group>
-        <group>
-          <Text3D
+        <group name='setting-2' position={[5.2, 0, 0.95]}>
+          <group name='setting-2-background'>
+            { client.socketId === host.socketId && <mesh
+            name='setting-2-background-outer'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.01, 2]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial color='yellow'/>
+            </mesh> }
+            <mesh 
+            name='setting-2-background-inner'
+            position={[3.25, 0, 0]}
+            scale={[7.05, 0.07, 1.95]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              color={ !setting2Hover ? MeshColors.disabledGreyBackground : '#444444' } 
+              transparent 
+              opacity={1}/>
+            </mesh>
+            <mesh 
+            name='setting-2-background-wrapper'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.07, 2.9]}
+            onPointerEnter={e=>handleSetting2PointerEnter(e)}
+            onPointerLeave={e=>handleSetting2PointerLeave(e)}
+            onPointerUp={e=>handleSetting2PointerUp(e)}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              transparent 
+              opacity={0}/>
+            </mesh>
+          </group>
+          <Text3D 
           name='setting-2-title'
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-12,0,-5.3]}
+          position={[-0.1,0.04,-0.35]}
           rotation={[-Math.PI/2,0,0]}
-          size={0.6}
-          height={0.01}></Text3D>
-          <group name='setting-2-checkbox'></group>
-          <group name='setting-2-description'></group>
+          size={0.4}
+          height={0.01}>
+            NAK THROW
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
+          { client.socketId === host.socketId && <group 
+          name='setting-2-toggle' 
+          position={[5.95, 0.04, -0.55]}>
+            <group name='setting-2-toggle-background'>
+              <mesh 
+              name='setting-2-toggle-background-left-circle'
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting2ToggleBackgroundColor}
+                />
+              </mesh>
+              <mesh
+              name='setting-2-toggle-background-block'
+              position={[0.2, 0, 0]}
+              scale={[0.4, 0.01, 0.5]}
+              >
+                <boxGeometry args={[1, 1, 1]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting2ToggleBackgroundColor}
+                />
+              </mesh>
+              <mesh 
+              name='setting-2-toggle-background-right-circle'
+              position={[0.4, 0, 0]}
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting2ToggleBackgroundColor}
+                />
+              </mesh>
+            </group>
+            <animated.mesh
+            name='setting-2-toggle-switch'
+            scale={[0.15, 0.02, 0.15]}
+            position={setting2TogglePosition}>
+              <cylinderGeometry args={[1, 1, 1, 32]}/>
+              <meshStandardMaterial color={MeshColors.disabledGreyBackground} />
+            </animated.mesh>
+          </group> }
+          <Text3D 
+          name='setting-2-description'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.1,0.04,0.25]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.3}
+          height={0.01}
+          lineHeight={0.8}>
+            {`THE STICKS WILL SOMETIMES FALL\nOUT OF BOUNDS.`}
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
         </group>
-        <group>
-          <Text3D
+        <group name='setting-3' position={[5.2, 0, 3.05]}>
+          <group name='setting-3-background'>
+            { client.socketId === host.socketId && <mesh
+            name='setting-3-background-outer'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.01, 2]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial color='yellow'/>
+            </mesh> }
+            <mesh 
+            name='setting-3-background-inner'
+            position={[3.25, 0, 0]}
+            scale={[7.05, 0.07, 1.95]}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              color={ !setting3Hover ? MeshColors.disabledGreyBackground : '#444444' } 
+              transparent 
+              opacity={1}/>
+            </mesh>
+            <mesh 
+            name='setting-3-background-wrapper'
+            position={[3.25, 0, 0]}
+            scale={[7.1, 0.05, 2.9]}
+            onPointerEnter={e=>handleSetting3PointerEnter(e)}
+            onPointerLeave={e=>handleSetting3PointerLeave(e)}
+            onPointerUp={e=>handleSetting3PointerUp(e)}>
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial 
+              transparent 
+              opacity={0}/>
+            </mesh>
+          </group>
+          <Text3D 
           name='setting-3-title'
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-12,0,-5.3]}
+          position={[-0.1,0.04,-0.35]}
           rotation={[-Math.PI/2,0,0]}
-          size={0.6}
-          height={0.01}></Text3D>
-          <group name='setting-3-checkbox'></group>
-          <group name='setting-3-description'></group>
+          size={0.4}
+          height={0.01}>
+            BONUS THROW CATCH
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
+          { client.socketId === host.socketId && <group 
+          name='setting-3-toggle' 
+          position={[5.95, 0.04, -0.55]}>
+            <group name='setting-3-toggle-background'>
+              <mesh 
+              name='setting-3-toggle-background-left-circle'
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting3ToggleBackgroundColor}
+                />
+              </mesh>
+              <mesh
+              name='setting-3-toggle-background-block'
+              position={[0.2, 0, 0]}
+              scale={[0.4, 0.01, 0.5]}
+              >
+                <boxGeometry args={[1, 1, 1]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting3ToggleBackgroundColor}
+                />
+              </mesh>
+              <mesh 
+              name='setting-3-toggle-background-right-circle'
+              position={[0.4, 0, 0]}
+              scale={[0.25, 0.01, 0.25]}
+              >
+                <cylinderGeometry args={[1, 1, 1, 32]}/>
+                <AnimatedMeshDistortMaterial
+                  speed={5}
+                  distort={0}
+                  color={setting3ToggleBackgroundColor}
+                />
+              </mesh>
+            </group>
+            <animated.mesh
+            name='setting-3-toggle-switch'
+            scale={[0.15, 0.02, 0.15]}
+            position={setting3TogglePosition}>
+              <cylinderGeometry args={[1, 1, 1, 32]}/>
+              <meshStandardMaterial color={MeshColors.disabledGreyBackground} />
+            </animated.mesh>
+          </group> }
+          <Text3D 
+          name='setting-3-description'
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-0.1,0.04,0.25]}
+          rotation={[-Math.PI/2,0,0]}
+          size={0.3}
+          height={0.01}
+          lineHeight={0.8}>
+            {`THE STICKS WILL SOMETIMES FALL\nOUT OF BOUNDS.`}
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
         </group>
       </group>
     }
@@ -1081,232 +955,93 @@ export default function Game() {
     </group>
   }
   
-
-  return (<>
-      {/* <Perf/> */}
-      {/* <Leva hidden /> */}
-      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
-      { gamePhase === 'lobby' && <animated.group scale={lobbyScale}>
-        <group name='title'>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-12,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.6}
-            height={0.01}
-          >
-            YUT NORI!
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-7,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.4}
-            height={0.01}
-          >
-            {`ID: ${params.id}`}
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-        </group>
-        <group name='players'>
-          <TeamLobby
-            position={[-12,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={0} 
-          />
-          <TeamLobby
-            position={[-7.5,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={1} 
-          />
-          <JoinTeamModal 
-            position={[-11.5, 0, -3]}
-            rotation={layout[device].game.joinTeamModal.rotation}
-            scale={layout[device].game.joinTeamModal.scale}
-            teams={teams}
-          />
-          { client._id === host._id && <StartGameButton
-            position={layout[device].game.letsPlayButton.position}
-            rotation={layout[device].game.letsPlayButton.rotation}
-          /> }
-        </group>
-        <group name='rulebook'>
-          <group name='rulebook-label' position={[1, 0, -5.6]}>
-            <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='yellow'/>
-            </mesh> 
-            <mesh name='background-inner' scale={[2.95, 0.02, 0.7]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color={MeshColors.spaceDark}/>
-            </mesh>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              size={0.4}
-              height={0.01}
-              rotation={[-Math.PI/2, 0, 0]}
-              position={[-1.3, 0.02, 0.19]}
-            >
-              RULEBOOK
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </group>
-          <HowToPlay 
-            device={device} 
-            position={[-1,0,-1]} 
-            scale={0.6}
-            closeButton={false}
-            setShowRulebook={setShowRulebook}
-          />
-          <Text3D 
-          name='goal'
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-2.5, 0, 4]}
-          rotation={layout[device].game.whoGoesFirst.title.rotation}
-          size={0.3}
-          height={layout[device].game.whoGoesFirst.title.height}>
-            {`GOAL: MOVE FOUR SHIPS AROUND\nTHE STARS FROM START TO FINISH!`}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-        </group>
-        <ThirdSection/>
-      </animated.group> }
-      { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
-        <Team 
-          position={layout[device].game.team0.position}
-          scale={layout[device].game.team0.scale}
-          device={device}
-          team={0} 
-        />
-        <Team 
-          position={layout[device].game.team1.position}
-          scale={layout[device].game.team1.scale}
-          device={device}
-          team={1} 
-        />
-        {/* <JoinTeamModal 
-          position={layout[device].game.joinTeamModal.position}
-          rotation={layout[device].game.joinTeamModal.rotation}
-          scale={layout[device].game.joinTeamModal.scale}
-          teams={teams}
-        /> */}
-        { !disconnect && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
-          position={layout[device].game.chat.position}
-          rotation={layout[device].game.chat.rotation}
-          scale={layout[device].game.chat.scale}
-        /> }
-        { disconnect && <DisconnectModal
-          position={layout[device].game.disconnectModal.position}
-          rotation={layout[device].game.disconnectModal.rotation}
-        /> }
-        { pauseGame && <PauseGame
-          position={[0, 5, 2]}
-        />}
-        <animated.group position={boardPosition} scale={boardScale}>
-          <Board 
-          position={[0,0,0]}
-          scale={1}
-          tiles={tiles}
-          legalTiles={legalTiles}
-          helperTiles={helperTiles}
-          interactive={true}
-          showStart={true}
-          device={device}
-          />
-        </animated.group>
-        {/* Who Goes First components */}
-        { gamePhase === "pregame" && <group>
-          <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.whoGoesFirst.title.position}
-          rotation={layout[device].game.whoGoesFirst.title.rotation}
-          size={layout[device].game.whoGoesFirst.title.size}
-          height={layout[device].game.whoGoesFirst.title.height}
-          >
-            {`Who goes first?`}
-            <meshStandardMaterial color="limegreen"/>
-          </Text3D>
-          <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.whoGoesFirst.description.position}
-          rotation={layout[device].game.whoGoesFirst.description.rotation}
-          size={layout[device].game.whoGoesFirst.description.size}
-          height={layout[device].game.whoGoesFirst.title.height}
-          lineHeight={layout[device].game.whoGoesFirst.title.lineHeight}
-          >
-            {`One player from each team throws\nthe yoot. The team with a higher\nnumber goes first.`}
-            <meshStandardMaterial color="limegreen"/>
-          </Text3D>
-        </group>}
-        { yootAnimation && <YootNew
-          animation={yootAnimation}
-          scale={0.22}
-          position={[0, 2, 0]}
-        /> }
-        { (gamePhase === 'pregame' || gamePhase === 'game') && turn.team !== -1 && <YootButtonNew
-          position={layout[device].game.yootButton.position}
-          rotation={layout[device].game.yootButton.rotation}
-          scale={layout[device].game.yootButton.scale}
-          hasThrow={teams[turn.team].throws > 0}
-          device={device}
-        /> }
-        <SettingsButton 
-          position={layout[device].game.settings.mainButton.position}
-          scale={layout[device].game.settings.mainButton.scale}
-        />
-        <RulebookButton 
-          position={layout[device].game.rulebookButton.position}
-          scale={layout[device].game.rulebookButton.scale}
-        />
-        { ((device === 'portrait' && !(29 in legalTiles)) || device === 'landscapeDesktop') && <PiecesSection 
-        position={layout[device].game.piecesSection.position}
+  return <animated.group scale={lobbyScale}>
+    <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
+    <group name='title'>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-12,0,-5.3]}
+        rotation={[-Math.PI/2,0,0]}
+        size={0.6}
+        height={0.01}
+      >
+        YUT NORI!
+        <meshStandardMaterial color="yellow"/>
+      </Text3D>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-7,0,-5.3]}
+        rotation={[-Math.PI/2,0,0]}
+        size={0.4}
+        height={0.01}
+      >
+        {`ID: ${params.id}`}
+        <meshStandardMaterial color="yellow"/>
+      </Text3D>
+    </group>
+    <group name='players'>
+      <TeamLobby
+        position={[-12,0,-4]}
+        scale={layout[device].game.team0.scale}
         device={device}
-        /> }
-        { (29 in legalTiles) && <ScoreButtons
-          device={device}
-          legalTiles={legalTiles}
-          hasTurn={hasTurn}
-        /> }
-        <PiecesOnBoard/>
-        { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
-          position={layout[device].game.moveList.position}
-          rotation={layout[device].game.moveList.rotation}
-          tokenScale={layout[device].game.moveList.tokenScale}
-          tokenPosition={layout[device].game.moveList.tokenPosition}
-          size={layout[device].game.moveList.size}
-          piecePosition={layout[device].game.moveList.piecePosition}
-          pieceScale={layout[device].game.moveList.pieceScale}
-          gamePhase={gamePhase}
-        /> }
-        <DisplayHostAndSpectating/>
-        { showRulebook && <group>
-          <mesh name='blocker' position={layout[device].game.rulebook.blocker.position}>
-            <boxGeometry args={layout[device].game.rulebook.blocker.args}/>
-            <meshStandardMaterial color='black' transparent opacity={0.95}/>
-          </mesh>
-          <HowToPlay 
-            device={device} 
-            position={layout[device].game.rulebook.position} 
-            scale={layout[device].game.rulebook.scale}
-            closeButton={true}
-            setShowRulebook={setShowRulebook}
-          />
-        </group> }
-        { timer && !animationPlaying && <Timer 
-          position={layout[device].game.timer.position} 
-          scale={[layout[device].game.timer.scaleX, 1, 1]}
-          boxArgs={layout[device].game.timer.boxArgs}
-          heightMultiplier={layout[device].game.timer.heightMultiplier}
-        /> }
-      </animated.group> }
-      { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
-        { winner === 0 && <RocketsWin/>}
-        { winner === 1 && <UfosWin/>}
-      </animated.group> }
-      <MeteorsRealShader/>
-    </>
-  );
+        team={0} 
+      />
+      <TeamLobby
+        position={[-7.5,0,-4]}
+        scale={layout[device].game.team0.scale}
+        device={device}
+        team={1} 
+      />
+      <JoinTeamModal 
+        position={[-11.5, 0, -3]}
+        rotation={layout[device].game.joinTeamModal.rotation}
+        scale={layout[device].game.joinTeamModal.scale}
+        teams={teams}
+      />
+      { client._id === host._id && <StartGameButton
+        position={layout[device].game.letsPlayButton.position}
+        rotation={layout[device].game.letsPlayButton.rotation}
+      /> }
+    </group>
+    <group name='rulebook'>
+      <group name='rulebook-label' position={[1, 0, -5.6]}>
+        <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh> 
+        <mesh name='background-inner' scale={[2.95, 0.02, 0.7]} position={[0,0,0]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={MeshColors.spaceDark}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-1.3, 0.02, 0.19]}
+        >
+          RULEBOOK
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      <HowToPlay 
+        device={device} 
+        position={[-1,0,-1]} 
+        scale={0.6}
+        closeButton={false}
+        setShowRulebook={setShowRulebook}
+      />
+      <Text3D 
+      name='goal'
+      font="fonts/Luckiest Guy_Regular.json"
+      position={[-2.5, 0, 4]}
+      rotation={layout[device].game.whoGoesFirst.title.rotation}
+      size={0.3}
+      height={layout[device].game.whoGoesFirst.title.height}>
+        {`GOAL: MOVE FOUR SHIPS AROUND\nTHE STARS FROM START TO FINISH!`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+    </group>
+    <ThirdSection/>
+  </animated.group>
 }

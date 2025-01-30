@@ -310,7 +310,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
           {`${formatName(player.name, layout[device].game[`team${team}`].names.maxLength)}` + `${(host && player.socketId === host.socketId ? ' (h) ' : '')}`}
           <meshStandardMaterial color={getDisplayColor(player)}/>
         </Text3D>
-        <group rotation={[Math.PI/2, 0, 0]}> key={index}
+        <group rotation={[Math.PI/2, 0, 0]}> 
           { client.socketId === host.socketId && <><mesh name='background-outer' scale={[3.7, 0.01, 0.75]} position={[1.63, -1, -0.57]}>
             <boxGeometry args={[1, 1, 1]}/>
             <meshStandardMaterial color={getDisplayColor(player)}/>
