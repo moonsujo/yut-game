@@ -23,13 +23,17 @@ export const currentPlayerAtom = atom(false)
 export const turnAtom = atom(JSON.parse(JSON.stringify(initialState.initialTurn)));
 export const yootActiveAtom = atom(false);
 export const spectatorsAtom = atom([])
-export const clientAtom = atom({})
+export const clientAtom = atom({
+  socketId: 'clientSocketId'
+})
 export const teamsAtom = atom(JSON.parse(JSON.stringify(initialState.initialTeams)))
 export const messagesAtom = atom([]);
 export const gameLogsAtom = atom([]);
 export const roomAtom = atom({})
 export const displayDisconnectAtom = atom(false)
-export const hostAtom = atom('')
+export const hostAtom = atom({
+  socketId: 'hostSocketId'
+})
 export const particleSettingAtom = atom(null)
 export const yootThrowValuesAtom = atom(null)
 export const yootThrownAtom = atom({
