@@ -1155,7 +1155,7 @@ export default function HowToPlay({
         size={layout[device].howToPlay.movingPiecesPage.text.size}
         height={0.01}
       >
-        {'1. START YOUR TOKENS FROM\nEARTH.'}
+        {'4. Advance your piece.'}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       <FirstCornerTiles position={layout[device].howToPlay.movingPiecesPage.firstCornerTiles.position}/>
@@ -2877,22 +2877,22 @@ export default function HowToPlay({
 
     return <group name='tabs' position={position} scale={scale}>
       <group name='tab-0' position={[0,0,0]} scale={0.8}>
-        <mesh position={[1.5225, -0.1, -0.15]}>
-          <boxGeometry args={[3.35, 0.05, 0.6]}/>
+        <mesh position={[2.1, -0.1, -0.15]}>
+          <boxGeometry args={[4.5, 0.05, 0.6]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
-        <mesh position={[1.5225, -0.1, -0.15]}>
-          <boxGeometry args={[3.45, 0.04, 0.7]}/>
-          <meshStandardMaterial color={movingPiecesHover || page === 3 ? 'green' : 'yellow'}/>
+        <mesh position={[2.1, -0.1, -0.15]}>
+          <boxGeometry args={[4.6, 0.04, 0.7]}/>
+          <meshStandardMaterial color={pickingTeamsHover || page === 0 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
           name='tab-0-wrapper' 
-          position={[1.5225, -0.1, -0.15]}
-          onClick={handleMovingPiecesClick}
-          onPointerEnter={handleMovingPiecesPointerEnter}
-          onPointerLeave={handleMovingPiecesPointerLeave}
+          position={[2.1, -0.1, -0.15]} 
+          onClick={handlePickingTeamsClick}
+          onPointerEnter={handlePickingTeamsPointerEnter}
+          onPointerLeave={handlePickingTeamsPointerLeave}
         >
-          <boxGeometry args={[3.45, 0.1, 0.7]}/>
+          <boxGeometry args={[4.6, 0.1, 0.7]}/>
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
@@ -2901,25 +2901,83 @@ export default function HowToPlay({
           size={0.3}
           height={0.01}
         >
-          1. MOVE TOKENS
-          <meshStandardMaterial color={movingPiecesHover || page === 3 ? 'green' : 'yellow'}/>
+          1. Picking the teams
+          <meshStandardMaterial color={pickingTeamsHover || page === 0 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
       <group name='tab-1' position={[0,0,0.6]} scale={0.8}>
+        <mesh position={[2.1, -0.1, -0.15]}>
+          <boxGeometry args={[4.5, 0.05, 0.6]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh position={[2.1, -0.1, -0.15]}>
+          <boxGeometry args={[4.6, 0.04, 0.7]}/>
+          <meshStandardMaterial color={throwingTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
+        </mesh>
+        <mesh 
+          name='tab-1-wrapper' 
+          position={[2.1, -0.1, -0.15]} 
+          onClick={handleThrowingTheDiceClick}
+          onPointerEnter={handleThrowingTheDicePointerEnter}
+          onPointerLeave={handleThrowingTheDicePointerLeave}
+        >
+          <boxGeometry args={[4.6, 0.1, 0.7]}/>
+          <meshStandardMaterial transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.3}
+          height={0.01}
+        >
+          2. Throwing the dice
+          <meshStandardMaterial color={throwingTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
+        </Text3D>
+      </group>
+      <group name='tab-2' position={[0,0,1.2]} scale={0.8}>
+        <mesh position={[1.9, -0.1, -0.15]}>
+          <boxGeometry args={[4.1, 0.05, 0.6]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh position={[1.9, -0.1, -0.15]}>
+          <boxGeometry args={[4.2, 0.04, 0.7]}/>
+          <meshStandardMaterial color={readingTheDiceHover || page === 2 ? 'green' : 'yellow'}/>
+        </mesh>
+        <mesh 
+          name='tab-2-wrapper' 
+          position={[1.9, -0.1, -0.15]}
+          onClick={handleReadingTheDiceClick}
+          onPointerEnter={handleReadingTheDicePointerEnter}
+          onPointerLeave={handleReadingTheDicePointerLeave}
+        >
+          <boxGeometry args={[4.2, 0.1, 0.7]}/>
+          <meshStandardMaterial transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.3}
+          height={0.01}
+        >
+          3. reading the dice
+          <meshStandardMaterial color={readingTheDiceHover || page === 2 ? 'green' : 'yellow'}/>
+        </Text3D>
+      </group>
+      <group name='tab-3' position={[0,0,1.8]} scale={0.8}>
         <mesh position={[1.65, -0.1, -0.15]}>
           <boxGeometry args={[3.6, 0.05, 0.6]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
         <mesh position={[1.65, -0.1, -0.15]}>
           <boxGeometry args={[3.7, 0.04, 0.7]}/>
-          <meshStandardMaterial color={catchingPiecesHover || page === 5 ? 'green' : 'yellow'}/>
+          <meshStandardMaterial color={movingPiecesHover || page === 3 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
-          name='tab-1-wrapper' 
+          name='tab-3-wrapper' 
           position={[1.65, -0.1, -0.15]}
-          onClick={handleCatchingPiecesClick}
-          onPointerEnter={handleCatchingPiecesPointerEnter}
-          onPointerLeave={handleCatchingPiecesPointerLeave}
+          onClick={handleMovingPiecesClick}
+          onPointerEnter={handleMovingPiecesPointerEnter}
+          onPointerLeave={handleMovingPiecesPointerLeave}
         >
           <boxGeometry args={[3.7, 0.1, 0.7]}/>
           <meshStandardMaterial transparent opacity={0}/>
@@ -2930,25 +2988,25 @@ export default function HowToPlay({
           size={0.3}
           height={0.01}
         >
-          2. CATCH ENEMIES
-          <meshStandardMaterial color={catchingPiecesHover || page === 5 ? 'green' : 'yellow'}/>
+          4. moving pieces
+          <meshStandardMaterial color={movingPiecesHover || page === 3 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
-      <group name='tab-2' position={[0,0,1.2]} scale={0.8}>
+      <group name='tab-4' position={[0,0,2.4]} scale={0.8}>
         <mesh position={[2.05, -0.1, -0.15]}>
           <boxGeometry args={[4.4, 0.05, 0.6]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
         <mesh position={[2.05, -0.1, -0.15]}>
           <boxGeometry args={[4.5, 0.04, 0.7]}/>
-          <meshStandardMaterial color={combiningPiecesHover || page === 6 ? 'green' : 'yellow'}/>
+          <meshStandardMaterial color={scoringHover || page === 4 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
-          name='tab-2-wrapper' 
+          name='tab-4-wrapper' 
           position={[2.05, -0.1, -0.15]}
-          onClick={handleCombiningPiecesClick}
-          onPointerEnter={handleCombiningPiecesPointerEnter}
-          onPointerLeave={handleCombiningPiecesPointerLeave}
+          onClick={handleScoringClick}
+          onPointerEnter={handleScoringPointerEnter}
+          onPointerLeave={handleScoringPointerLeave}
         >
           <boxGeometry args={[4.5, 0.1, 0.7]}/>
           <meshStandardMaterial transparent opacity={0}/>
@@ -2959,85 +3017,27 @@ export default function HowToPlay({
           size={0.3}
           height={0.01}
         >
-          3. PIGGYBACK TOKENS
-          <meshStandardMaterial color={combiningPiecesHover || page === 6 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-3' position={[0,0,1.8]} scale={0.8}>
-        <mesh position={[1.7, -0.1, -0.15]}>
-          <boxGeometry args={[3.7, 0.05, 0.6]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.7, -0.1, -0.15]}>
-          <boxGeometry args={[3.8, 0.04, 0.7]}/>
-          <meshStandardMaterial color={scoringHover || page === 4 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-3-wrapper' 
-          position={[1.7, -0.1, -0.15]}
-          onClick={handleScoringClick}
-          onPointerEnter={handleScoringPointerEnter}
-          onPointerLeave={handleScoringPointerLeave}
-        >
-          <boxGeometry args={[3.8, 0.1, 0.7]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.3}
-          height={0.01}
-        >
-          4. SCORE AND WIN
+          5. scoring & winning
           <meshStandardMaterial color={scoringHover || page === 4 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
-      <group name='tab-4' position={[0,0,2.4]} scale={0.8}>
-        <mesh position={[1.75, -0.1, -0.15]}>
-          <boxGeometry args={[3.8, 0.05, 0.6]}/>
+      <group name='tab-5' position={[0,0,3]} scale={0.8}>
+        <mesh position={[1.8, -0.1, -0.15]}>
+          <boxGeometry args={[3.9, 0.05, 0.6]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
-        <mesh position={[1.75, -0.1, -0.15]}>
-          <boxGeometry args={[3.9, 0.04, 0.7]}/>
-          <meshStandardMaterial color={throwingTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-4-wrapper' 
-          position={[1.75, -0.1, -0.15]} 
-          onClick={handleThrowingTheDiceClick}
-          onPointerEnter={handleThrowingTheDicePointerEnter}
-          onPointerLeave={handleThrowingTheDicePointerLeave}
-        >
-          <boxGeometry args={[3.9, 0.1, 0.7]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.3}
-          height={0.01}
-        >
-          5. THROW THE DICE
-          <meshStandardMaterial color={throwingTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-5' position={[0,0,3.0]} scale={0.8}>
-        <mesh position={[1.55, -0.1, -0.15]}>
-          <boxGeometry args={[3.4, 0.05, 0.6]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.55, -0.1, -0.15]}>
-          <boxGeometry args={[3.5, 0.04, 0.7]}/>
-          <meshStandardMaterial color={readingTheDiceHover || page === 2 ? 'green' : 'yellow'}/>
+        <mesh position={[1.8, -0.1, -0.15]}>
+          <boxGeometry args={[4, 0.04, 0.7]}/>
+          <meshStandardMaterial color={catchingPiecesHover || page === 5 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
           name='tab-5-wrapper' 
-          position={[1.55, -0.1, -0.15]}
-          onClick={handleReadingTheDiceClick}
-          onPointerEnter={handleReadingTheDicePointerEnter}
-          onPointerLeave={handleReadingTheDicePointerLeave}
+          position={[1.8, -0.1, -0.15]}
+          onClick={handleCatchingPiecesClick}
+          onPointerEnter={handleCatchingPiecesPointerEnter}
+          onPointerLeave={handleCatchingPiecesPointerLeave}
         >
-          <boxGeometry args={[3.5, 0.1, 0.7]}/>
+          <boxGeometry args={[4, 0.1, 0.7]}/>
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
@@ -3046,27 +3046,56 @@ export default function HowToPlay({
           size={0.3}
           height={0.01}
         >
-          6. READ THE DICE
-          <meshStandardMaterial color={readingTheDiceHover || page === 2 ? 'green' : 'yellow'}/>
+          6. catching pieces
+          <meshStandardMaterial color={catchingPiecesHover || page === 5 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
       <group name='tab-6' position={[0,0,3.6]} scale={0.8}>
-        <mesh position={[1.2, -0.1, -0.15]}>
-          <boxGeometry args={[2.7, 0.05, 0.6]}/>
+        <mesh position={[2, -0.1, -0.15]}>
+          <boxGeometry args={[4.3, 0.05, 0.6]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
-        <mesh position={[1.2, -0.1, -0.15]}>
-          <boxGeometry args={[2.8, 0.04, 0.7]}/>
-          <meshStandardMaterial color={shortcutsHover || page === 7 ? 'green' : 'yellow'}/>
+        <mesh position={[2, -0.1, -0.15]}>
+          <boxGeometry args={[4.4, 0.04, 0.7]}/>
+          <meshStandardMaterial color={combiningPiecesHover || page === 6 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
           name='tab-6-wrapper' 
-          position={[1.2, -0.1, -0.15]}
+          position={[2, -0.1, -0.15]}
+          onClick={handleCombiningPiecesClick}
+          onPointerEnter={handleCombiningPiecesPointerEnter}
+          onPointerLeave={handleCombiningPiecesPointerLeave}
+        >
+          <boxGeometry args={[4.4, 0.1, 0.7]}/>
+          <meshStandardMaterial transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.3}
+          height={0.01}
+        >
+          7. combining pieces
+          <meshStandardMaterial color={combiningPiecesHover || page === 6 ? 'green' : 'yellow'}/>
+        </Text3D>
+      </group>
+      <group name='tab-7' position={[0,0,4.2]} scale={0.8}>
+        <mesh position={[1.35, -0.1, -0.15]}>
+          <boxGeometry args={[3, 0.05, 0.6]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh position={[1.35, -0.1, -0.15]}>
+          <boxGeometry args={[3.1, 0.04, 0.7]}/>
+          <meshStandardMaterial color={shortcutsHover || page === 7 ? 'green' : 'yellow'}/>
+        </mesh>
+        <mesh 
+          name='tab-7-wrapper' 
+          position={[1.35, -0.1, -0.15]}
           onClick={handleShortcutsClick}
           onPointerEnter={handleShortcutsPointerEnter}
           onPointerLeave={handleShortcutsPointerLeave}
         >
-          <boxGeometry args={[2.8, 0.1, 0.7]}/>
+          <boxGeometry args={[3.1, 0.1, 0.7]}/>
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
@@ -3075,7 +3104,7 @@ export default function HowToPlay({
           size={0.3}
           height={0.01}
         >
-          7. SHORTCUT
+          8. shortcuts
           <meshStandardMaterial color={shortcutsHover || page === 7 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>

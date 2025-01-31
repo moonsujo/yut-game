@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { connectedToServerAtom, gamePhaseAtom } from "./GlobalState.jsx";
 import { useAtomValue } from "jotai";
 import GameExperience from "./GameExperience.jsx";
-import LobbyExperience from "./LobbyExperience copy.jsx";
+import LobbyExperience from "./LobbyExperience.jsx";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
 
