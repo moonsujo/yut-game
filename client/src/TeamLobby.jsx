@@ -82,8 +82,8 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     }
 
     return <group
-      position={[1.9,0,0]}
-      scale={2}
+      position={[1.7,0,0]}
+      scale={1.8}
       ref={button}
     >
       <mesh
@@ -183,8 +183,8 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     }
 
     return <group
-      position={[1.9,0,0]}
-      scale={2}
+      position={[1.5,0,0]}
+      scale={1.8}
       ref={button}
     >
       <mesh
@@ -245,14 +245,10 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     );
   }
 
-  function HomePiecesUfos({ position, scale=1 }) {
-    useFrame((state, delta) => {
-      const time = state.clock.elapsedTime
-    })
+  function HomePiecesUfos({ position, scale=0.9 }) {
 
     return (
-      // position is controlled by useFrame
-      <group scale={scale}>
+      <group position={position} scale={scale}>
         <Ufo position={[3.9, 0, 4.9]} scale={3.5} onBoard offset={0.3}/>
         <Ufo position={[1.1, 0, 6]} scale={1.8} onBoard offset={0.6}/>
         <Ufo position={[1.5, 0, 3.3]} rotation={[0, Math.PI/32, 0]} scale={2.5} onBoard offset={0.9}/>
@@ -536,7 +532,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device }) {
     scale={layout[device].game[`team${team}`].pieces.sectionScale}
     /> }
     { team === 1 && <HomePiecesUfos
-    position={[0.6,0,0.1]} 
+    position={[-0.2,0,0.3]} 
     team={team} 
     scale={layout[device].game[`team${team}`].pieces.sectionScale}
     /> }

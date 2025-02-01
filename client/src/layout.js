@@ -2786,7 +2786,7 @@ export default {
           rotation: [0, 0, 0],
           scale: 1.2,
           space: 1.2,
-          sectionScale: 0.5
+          sectionScale: 0.45
         },
         names: {
           position: [0, 0, 1.3],
