@@ -19,6 +19,7 @@ import Rocket from './meshes/Rocket';
 import Ufo from './meshes/Ufo';
 import useResponsiveSetting from './hooks/useResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
+import YootDisplay from './YootDisplay';
 
 export default function Home2() {
 
@@ -79,21 +80,6 @@ export default function Home2() {
         <UfoAnimated rotation={[-Math.PI/4,0,0]} position={[-2.6, 0.8, -4.3]} scale={0.5}/>
       </Float>
     </group>
-  }
-
-  function Yoots({position, rotation, scale}) {
-    return <animated.group
-      position={position}
-      rotation={rotation}
-      scale={scale}
-    >
-      <Float floatIntensity={0.001} floatingRange={[0.05, 0.05]} speed={2} rotationIntensity={0.3}>
-        <YootMesh scale={0.9} position={[0,0,-2.1]} rotation={[-Math.PI/8, Math.PI/16, -Math.PI/2]}/>
-        <YootMesh scale={0.9} position={[0.5,0,0]} rotation={[0, 0, -Math.PI/2 + Math.PI/16]} />
-        <YootMesh scale={0.9} position={[0.5,1.0,2]} rotation={[Math.PI/32, -Math.PI/32, -Math.PI/2]} />
-        <YootMesh scale={0.9} position={[0,1,4]} rotation={[Math.PI/6, -Math.PI/16, -Math.PI/2]} />
-      </Float>
-    </animated.group>
   }
 
   const [_location, setLocation] = useLocation();
@@ -467,7 +453,7 @@ export default function Home2() {
         scale={layout[device].title.text.scale}
         setDisplay={setDisplay}
       />
-      <Yoots 
+      <YootDisplay
         position={layout[device].title.yoots.position}
         rotation={layout[device].title.yoots.rotation}
         scale={layout[device].title.yoots.scale} 

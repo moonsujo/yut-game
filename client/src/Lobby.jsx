@@ -67,7 +67,6 @@ import Timer from "./Timer.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import TeamLobby from "./TeamLobby.jsx";
 import MeshColors from "./MeshColors.jsx";
-import QRCodeStyling from "qr-code-styling";
 import QrCode3d from "./QRCode3D.jsx";
 
 export default function Lobby() {
@@ -211,11 +210,11 @@ export default function Lobby() {
 
   function SecondSection() {
     return <group name='rulebook'>
-      <mesh name='background-panel' position={[0.7, 0, 0]}>
+      <mesh name='background-panel' position={[0.7, -0.5, 0]}>
         <boxGeometry args={[8.4, 0.01, 14]}/>
         <meshStandardMaterial color='black' transparent opacity={0.5}/>
       </mesh>
-      <group name='rulebook-label' position={[0.9, 0, -5.6]} scale={0.9}>
+      <group name='rulebook-label' position={[0.67, 0, -5.6]} scale={0.9}>
         <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='yellow'/>
@@ -241,16 +240,6 @@ export default function Lobby() {
         scale={0.6}
         closeButton={false}
       />
-      <Text3D 
-      name='goal'
-      font="fonts/Luckiest Guy_Regular.json"
-      position={[-2.5, 0, 4]}
-      rotation={layout[device].game.whoGoesFirst.title.rotation}
-      size={0.3}
-      height={layout[device].game.whoGoesFirst.title.height}>
-        {`GOAL: MOVE FOUR SHIPS AROUND\nTHE STARS FROM START TO FINISH!`}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
     </group>
   }
 

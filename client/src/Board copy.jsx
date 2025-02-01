@@ -31,7 +31,7 @@ function getMeshByTile(tile) {
   } else if (tile == 1) {
     return <Star scale={0.4} color='limegreen'/>
   } else {
-    return <Star scale={0.4}/>
+    return <Star scale={0.35}/>
   }
 }
 
@@ -385,10 +385,11 @@ export default function Board({
         Start
         <meshStandardMaterial color='limegreen'/>
       </Text3D>
-      <mesh scale={[0.07, 0.25, 0.07]} position={[-0.15, 0, -0.65]} rotation={[Math.PI/2, 0, -Math.PI/2 - Math.PI/32 * 6]}>
-        <coneGeometry args={[1, 1, 3]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
+      <CurvedArrow 
+      color='limegreen' 
+      position={layout[device].board.startEarth.helperArrow.position} 
+      scale={layout[device].board.startEarth.helperArrow.scale} 
+      rotation={layout[device].board.startEarth.helperArrow.rotation}/>
     </group>}
     <group name='helper-arrows'>
       <mesh name='mars-top' position={[4.8, 0, -1]} rotation={[Math.PI/2, 0, Math.PI - Math.PI/32]}>
