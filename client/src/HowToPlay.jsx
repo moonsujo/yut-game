@@ -47,41 +47,36 @@ export default function HowToPlay({
         setPage(1)
       }, 9000000)
       setPageTimeout(page1Timeout)
-    } else if (page === 1) { // throwing the dice
+    } else if (page === 1) { // Throw the dice
       const page2Timeout = setTimeout(() => {
         setPage(2)
       }, 10000)
       setPageTimeout(page2Timeout)
-    } else if (page === 2) { // reading the dice
+    } else if (page === 2) { // Catch enemies
       const page3Timeout = setTimeout(() => {
         setPage(3)
       }, 9000)
       setPageTimeout(page3Timeout)
-    } else if (page === 3) { // moving pieces
+    } else if (page === 3) { // Piggyback
       const page4Timeout = setTimeout(() => {
         setPage(4)
       }, 1040000)
       setPageTimeout(page4Timeout)
-    } else if (page === 4) { // scoring pieces
+    } else if (page === 4) { // Score
       const page5Timeout = setTimeout(() => {
         setPage(5)
       }, 12900)
       setPageTimeout(page5Timeout)
-    } else if (page === 5) { // catching pieces
+    } else if (page === 5) { // Read the dice
       const page6Timeout = setTimeout(() => {
         setPage(6)
       }, 11500)
       setPageTimeout(page6Timeout)
-    } else if (page === 6) { // combining pieces
+    } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
-        setPage(7)
+        setPage(0)
       }, 15500)
       setPageTimeout(page7Timeout)
-    } else if (page === 7) { // shortcuts
-      const page0Timeout = setTimeout(() => {
-        setPage(0)
-      }, 23500)
-      setPageTimeout(page0Timeout)
     }
   }, [page])
 
@@ -3211,8 +3206,576 @@ export default function HowToPlay({
   }
 
   function Overview() {
+    const TILE_RADIUS = 5
+    const springs = useSpring({
+      from: {
+        catchTokenPosition: [
+          -Math.cos(((12) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          1.5,
+          Math.sin(((12) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+        ],
+        catchTokenScale: 1.5,
+        piggybackTokenPosition: [-4.1,1,-3.1],
+        movingTokenPosition: [1.6,0,2.4],
+        movingTokenScale: 1,
+        catchAlertScale: 0,
+        catchTokenHomeScale: 0,
+        piggybackAlertScale: 0,
+        piggybackTokenScale: 1,
+        welcomeHomeAlertScale: 0,
+        scoredIndicator0Scale: 0,
+        scoredIndicator1Scale: 0,
+      },
+      to: [
+        {
+          movingTokenPosition: [
+            -Math.cos(((5) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            2.5,
+            Math.sin(((5) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          movingTokenScale: 1.4,
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((6) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((6) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((7) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((7) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((8) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((8) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((9) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((9) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((10) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((10) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((11) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((11) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((12) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((12) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          catchAlertScale: 1,
+        },
+        {
+          catchTokenPosition: [-1, 0, 1.9],
+          catchTokenScale: 0,
+          delay: 500
+        },
+        {
+          catchTokenHomeScale: 1,
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((13) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((13) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          catchAlertScale: 0
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((14) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((14) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((15) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((15) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((16) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((16) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((17) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((17) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+            1.5,
+            Math.sin(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackAlertScale: 0.85
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenScale: 1.4,
+          delay: 500
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((19) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((19) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((19) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((19) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackAlertScale: 0
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5,
+          ],
+          welcomeHomeAlertScale: 1
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5 + 2,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 - 4,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5 + 2,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 - 4,
+          ],
+          movingTokenScale: 0,
+          piggybackTokenScale: 0,
+          welcomeHomeAlertScale: 0,
+          delay: 500
+        },
+        {
+          scoredIndicator0Scale: 0.4,
+          scoredIndicator1Scale: 0.4,
+        }
+      ],
+      delay: 1000,
+      config: {
+        tension: 170,
+        friction: 26
+      }
+    })
+
+    function CatchAlert({ position, scale }) {
+      
+      const borderMesh0Ref = useRef();
+      const borderMesh1Ref = useRef();
+      const borderMesh2Ref = useRef();
+      const borderMesh3Ref = useRef();
+      const borderMesh4Ref = useRef();
+      const borderMesh5Ref = useRef();
+      const borderMesh6Ref = useRef();
+      const borderMeshRefs = [
+        borderMesh0Ref,
+        borderMesh1Ref,
+        borderMesh2Ref,
+        borderMesh3Ref,
+        borderMesh4Ref,
+        borderMesh5Ref,
+        borderMesh6Ref
+      ]
+
+      const height = 1
+      const width = 2
+      const starScale = 0.1
+      useFrame((state) => {
+        const time = state.clock.elapsedTime 
+        for (let i = 0; i < borderMeshRefs.length; i++) {      
+          if (borderMeshRefs[i].current) {
+            borderMeshRefs[i].current.position.x = Math.cos(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
+            borderMeshRefs[i].current.position.y = 0.05
+            borderMeshRefs[i].current.position.z = Math.sin(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          }
+        }
+      })
+
+      return <animated.group position={position} scale={scale}>
+        <mesh scale={[width, 0.01, height]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={0.3}/>
+        </mesh>
+        <Text3D
+        name='main-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.1,0,0.2]}
+        rotation={layout[device].game.whoGoesFirst.title.rotation}
+        size={0.5}
+        height={layout[device].game.whoGoesFirst.title.height}>
+          CATCH!
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+        <group ref={borderMesh0Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh1Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh2Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh3Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh4Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh5Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh6Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+      </animated.group>
+    }
+
+    function PiggybackAlert({ position, scale }) {
+      
+      const borderMesh0Ref = useRef();
+      const borderMesh1Ref = useRef();
+      const borderMesh2Ref = useRef();
+      const borderMesh3Ref = useRef();
+      const borderMesh4Ref = useRef();
+      const borderMesh5Ref = useRef();
+      const borderMesh6Ref = useRef();
+      const borderMeshRefs = [
+        borderMesh0Ref,
+        borderMesh1Ref,
+        borderMesh2Ref,
+        borderMesh3Ref,
+        borderMesh4Ref,
+        borderMesh5Ref,
+        borderMesh6Ref
+      ]
+
+      const height = 1
+      const width = 2.5
+      const starScale = 0.1
+      useFrame((state) => {
+        const time = state.clock.elapsedTime 
+        for (let i = 0; i < borderMeshRefs.length; i++) {      
+          if (borderMeshRefs[i].current) {
+            borderMeshRefs[i].current.position.x = Math.cos(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
+            borderMeshRefs[i].current.position.y = 0.05
+            borderMeshRefs[i].current.position.z = Math.sin(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          }
+        }
+      })
+
+      return <animated.group position={position} scale={scale}>
+        <mesh scale={[width, 0.01, height]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={0.3}/>
+        </mesh>
+        <Text3D
+        name='main-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.8,0,0.2]}
+        rotation={layout[device].game.whoGoesFirst.title.rotation}
+        size={0.5}
+        height={layout[device].game.whoGoesFirst.title.height}>
+          PIGGYBACK!
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+        <group ref={borderMesh0Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh1Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh2Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh3Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh4Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh5Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh6Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+      </animated.group>
+    }
+
+    function WelcomeHomeAlert({ position, scale }) {
+      
+      const borderMesh0Ref = useRef();
+      const borderMesh1Ref = useRef();
+      const borderMesh2Ref = useRef();
+      const borderMesh3Ref = useRef();
+      const borderMesh4Ref = useRef();
+      const borderMesh5Ref = useRef();
+      const borderMesh6Ref = useRef();
+      const borderMeshRefs = [
+        borderMesh0Ref,
+        borderMesh1Ref,
+        borderMesh2Ref,
+        borderMesh3Ref,
+        borderMesh4Ref,
+        borderMesh5Ref,
+        borderMesh6Ref
+      ]
+
+      const height = 1.3
+      const width = 2.4
+      const starScale = 0.12
+      useFrame((state) => {
+        const time = state.clock.elapsedTime 
+        for (let i = 0; i < borderMeshRefs.length; i++) {      
+          if (borderMeshRefs[i].current) {
+            borderMeshRefs[i].current.position.x = Math.cos(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
+            borderMeshRefs[i].current.position.y = 0.05
+            borderMeshRefs[i].current.position.z = Math.sin(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          }
+        }
+      })
+
+      return <animated.group position={position} scale={scale}>
+        <mesh scale={[width, 0.01, height]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={0.8}/>
+        </mesh>
+        <Text3D
+        name='main-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.45,0,-0.1]}
+        rotation={layout[device].game.whoGoesFirst.title.rotation}
+        size={0.5}
+        height={layout[device].game.whoGoesFirst.title.height}
+        lineHeight={0.8}>
+          {`WELCOME\n    HOME!`}
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+        <group ref={borderMesh0Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh1Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh2Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh3Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh4Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh5Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+        <group ref={borderMesh6Ref}>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
+        </group>
+      </animated.group>
+    }
+
     return <group>
-      <Board position={[2.8, 0, -0.5]} constellations={false} showStart/>
+      <CatchAlert position={[7, 1, -6]} scale={springs.catchAlertScale}/>
+      <PiggybackAlert position={[-1.7, 1, -5.6]} scale={springs.piggybackAlertScale}/>
+      <WelcomeHomeAlert position={[2.8,1,2]} scale={springs.welcomeHomeAlertScale}/>
+      <group position={[2.8, 0, -0.5]}>
+        <Board constellations={false} showStart/>
+        {/* Catch token */}
+        <animated.group position={springs.catchTokenPosition} scale={springs.catchTokenScale}>
+          <Ufo onBoard/>
+        </animated.group>
+        {/* Piggyback token */}
+        <animated.group scale={springs.piggybackTokenScale} position={springs.piggybackTokenPosition}>
+          <Rocket onBoard/>
+        </animated.group>
+        {/* Moving token */}
+        <animated.group scale={springs.movingTokenScale} position={springs.movingTokenPosition}>
+          <Rocket onBoard/>
+        </animated.group>
+      </group>
       <group name='ufo-home' position={[0.6, 0, 1.5]}>
         <mesh position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
@@ -3221,14 +3784,26 @@ export default function HowToPlay({
         <Ufo position={[-0.5,0,-0.4]}/>
         <Ufo position={[0.5,0,-0.4]}/>
         <Ufo position={[-0.5,0,0.4]}/>
+        <animated.group scale={springs.catchTokenHomeScale}>
+          <Ufo position={[0.5,0,0.4]}/>
+        </animated.group>
+        {/* Add hologram Ufo */}
       </group>
       <group name='rocket-home' position={[5, 0, 1.5]}>
         <mesh position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
           <meshStandardMaterial color='red' transparent opacity={0.1}/>
         </mesh>
-        <Rocket position={[-0.6,0,-0.4]}/>
-        <Rocket position={[0.4,0,-0.4]}/>
+        <Rocket position={[-0.6,0,-0.5]}/>
+        <Rocket position={[0.4,0,-0.5]}/>
+        {/* Moving token */}
+        {/* Add hologram Rocket */}
+        <animated.group name='scored-indicator-0' position={[-0.5, 0, 0.5]} scale={springs.scoredIndicator0Scale}>
+          <Star color='red'/>
+        </animated.group>
+        <animated.group name='scored-indicator-1' position={[0.5, 0, 0.5]} scale={springs.scoredIndicator1Scale}>
+          <Star color='red'/>
+        </animated.group>
       </group>
       <group name='yoot-display' position={[6.8, 0, 5.5]}>
         <Text3D 
@@ -3250,7 +3825,7 @@ export default function HowToPlay({
       rotation={layout[device].game.whoGoesFirst.title.rotation}
       size={0.4}
       height={layout[device].game.whoGoesFirst.title.height}>
-        {`MOVE SHIPS AROUND THE STARS FROM START\nTO FINISH. FINISH 4 SHIPS FIRSTTO WIN!`}
+        {`MOVE SHIPS AROUND THE STARS FROM START\nTO FINISH. FINISH 4 SHIPS FIRST TO WIN!`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
     </group>

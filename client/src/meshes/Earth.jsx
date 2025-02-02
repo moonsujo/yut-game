@@ -24,7 +24,8 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
           position={[0, 0.12, 0]}
           rotation={[-0.4, -0.4, 0.3]}
         >
-          <mesh
+          {/* <mesh
+            name='flag'
             castShadow
             receiveShadow
             geometry={nodes.Cylinder.geometry}
@@ -40,7 +41,7 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
               position={[0.24, 1.29, 0]}
               scale={0.77}
             />
-          </mesh>
+          </mesh> */}
           <mesh
             castShadow
             receiveShadow

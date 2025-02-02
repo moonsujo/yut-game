@@ -107,7 +107,8 @@ function NeptuneParticles2() {
           sizeAttenuation
           transparent
           blending={THREE.AdditiveBlending}
-          depthTest={false}
+          depthWrite={false}
+          // depthTest={false}
           alphaTest={0}
           map={pointsMap}
           vertexColors={true}

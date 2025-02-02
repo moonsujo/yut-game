@@ -19,8 +19,7 @@ export default function Ufo({
   onBoard=false,
   animationPlaying=false,
   selection=null,
-  offset=0,
-  tokenOpacity=1
+  offset=0
 }) {
   const { scene, materials } = useGLTF("models/ufo.glb");
 
