@@ -37,7 +37,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function HowToPlay({
     if (page === 0) { // Overview
       const page1Timeout = setTimeout(() => {
         setPage(1)
-      }, 9000000)
+      }, 9000)
       setPageTimeout(page1Timeout)
     } else if (page === 1) { // Throw the dice
       const page2Timeout = setTimeout(() => {
@@ -576,7 +576,7 @@ export default function HowToPlay({
     </group>
   }
   
-  function ThrowingTheDicePage() {
+  function ThrowTheYutPage() {
 
     const [startTime, setStartTime] = useState(0)
     const yoot0 = useRef();
@@ -805,7 +805,7 @@ export default function HowToPlay({
       }
     })
 
-    return <group name='how-to-play-page-0' scale={layout[device].howToPlay.throwingTheDicePage.scale}>
+    return <group name='throw-the-yut-page' scale={layout[device].howToPlay.throwingTheDicePage.scale}>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.throwingTheDicePage.text.position}
@@ -813,7 +813,7 @@ export default function HowToPlay({
         size={layout[device].howToPlay.throwingTheDicePage.text.size}
         height={layout[device].howToPlay.throwingTheDicePage.text.height}
       >
-        {`2. Throw the yoot (dice).`}
+        {`THROW THE YUT (DICE) TO DETERMINE HOW\nMANY STARS TO JUMP. EACH FLAT SIDE IS\nONE STAR.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       {/* <Physics/> component is in <Home2/> */}
@@ -825,6 +825,7 @@ export default function HowToPlay({
           layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.z,
         ]}
         rotation={[0, Math.PI/4 + Math.PI/4 + Math.PI/16, 0]}
+        scale={1.2}
       >
         <group
           ref={yoot0}
@@ -853,6 +854,7 @@ export default function HowToPlay({
           layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.z,
         ]}
         rotation={[0, Math.PI/4 + Math.PI/4 + Math.PI/32, 0]}
+        scale={1.2}
       >
         <group
           ref={yoot1}
@@ -881,6 +883,7 @@ export default function HowToPlay({
           layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.z,
         ]}
         rotation={[0, Math.PI/2, 0]}
+        scale={1.2}
       >
         <group
           ref={yoot2}
@@ -909,6 +912,7 @@ export default function HowToPlay({
           layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.z,
         ]}
         rotation={[0, Math.PI/2 - Math.PI/32, 0]}
+        scale={1.2}
       >
         <group 
           ref={yoot3}
@@ -2784,7 +2788,7 @@ export default function HowToPlay({
 
   function Tabs({ position=[0,0,0], scale=1 }) {
     const [overviewHover, setOverviewHover] = useState(false)
-    const [throwTheDiceHover, setThrowTheDiceHover] = useState(false)
+    const [throwTheYutHover, setThrowTheYutHover] = useState(false)
     const [catchEnemiesHover, setCatchEnemiesHover] = useState(false)
     const [piggybackHover, setPiggybackHover] = useState(false)
     const [scoreHover, setScoreHover] = useState(false)
@@ -2800,14 +2804,14 @@ export default function HowToPlay({
     function handleOverviewPointerLeave() {
       setOverviewHover(false)
     }
-    function handleThrowTheDiceClick() {
+    function handleThrowTheYutClick() {
       setPage(1)
     }
-    function handleThrowTheDicePointerEnter() {
-      setThrowTheDiceHover(true)
+    function handleThrowTheYutPointerEnter() {
+      setThrowTheYutHover(true)
     }
-    function handleThrowTheDicePointerLeave() {
-      setThrowTheDiceHover(false)
+    function handleThrowTheYutPointerLeave() {
+      setThrowTheYutHover(false)
     }
     function handleCatchEnemiesClick() {
       setPage(2)
@@ -2893,14 +2897,14 @@ export default function HowToPlay({
         </mesh>
         <mesh position={[2.3, -0.1, -0.2]}>
           <boxGeometry args={[5, 0.04, 0.85]}/>
-          <meshStandardMaterial color={throwTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
+          <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
         </mesh>
         <mesh 
           name='tab-1-wrapper' 
           position={[2.3, -0.1, -0.2]}
-          onClick={handleThrowTheDiceClick}
-          onPointerEnter={handleThrowTheDicePointerEnter}
-          onPointerLeave={handleThrowTheDicePointerLeave}
+          onClick={handleThrowTheYutClick}
+          onPointerEnter={handleThrowTheYutPointerEnter}
+          onPointerLeave={handleThrowTheYutPointerLeave}
         >
           <boxGeometry args={[5, 0.1, 0.85]}/>
           <meshStandardMaterial transparent opacity={0}/>
@@ -2911,8 +2915,8 @@ export default function HowToPlay({
           size={0.4}
           height={0.01}
         >
-          2. THROW THE DICE
-          <meshStandardMaterial color={throwTheDiceHover || page === 1 ? 'green' : 'yellow'}/>
+          2. THROW THE YUT
+          <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
       <group name='tab-2' position={[7,0,0]} scale={0.8}>
@@ -3027,7 +3031,7 @@ export default function HowToPlay({
           size={0.4}
           height={0.01}
         >
-          6. READ THE DICE
+          6. READ THE YUT
           <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
         </Text3D>
       </group>
@@ -3831,7 +3835,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowingTheDicePage/>, <CatchingPiecesPage/>, <CombiningPiecesPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchingPiecesPage/>, <CombiningPiecesPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

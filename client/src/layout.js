@@ -272,7 +272,7 @@ export default {
           height: 0.01
         },
         moveText: {
-          text: "MOVE:\n3-STEPS",
+          text: "MOVE:\n3-STARS",
           position: [2.3, 0.7, -0.9],
           size: 0.5
         },
@@ -1734,9 +1734,9 @@ export default {
       }
     },
     howToPlay: {
-      position: [-1,0,0],
+      position: [-1,0,-2],
       rotation: [0,Math.PI/32,Math.PI/64],
-      scale: 1,
+      scale: 0.6,
       pickingTheTeamsPage: {
         cursorPos: [
           [4,0,0],
@@ -1891,97 +1891,97 @@ export default {
       },
       throwingTheDicePage: {
         text: {
-          position: [-3, 0, -3.5],
+          position: [-2.5, 0, 5.5],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01
         },
         moveText: {
-          text: "MOVE:\n3-STEPS",
-          position: [2, 0.7, -0.9],
-          size: 0.4
+          text: "MOVE:\n3-STARS",
+          position: [5.5, 0.7, -0.9],
+          size: 0.5
         },
         gulToken: {
-          position: [2.5, 0, 0.6],
+          position: [3.1, 0, 0.7],
           rotation: [0, Math.PI/2, 0],
-          scale: 0.8
+          scale: 1
         },
         yoot: {
           yoot0Wrapper: {
             restPos: {
-              x: -2.2,
+              x: 0.8,
               y: 0,
-              z: 1
+              z: 0
             },
             throwPos: {
-              x: -2.5,
+              x: 0,
               y: 0,
-              z: 1
+              z: 0
             },
             liePos: {
-              x: -2.8,
+              x: -1.2,
               y: 0,
-              z: 1,
+              z: -0.3,
             }
           },
           yoot1Wrapper: {
             restPos: {
-              x: -1.5,
+              x: 1.9,
               y: 1.0,
-              z: 1
+              z: 0
             },
             throwPos: {
-              x: -1.5,
+              x: 1.5,
               y: 0.5,
-              z: 1
+              z: 0
             },
             liePos: {
-              x: -1.5,
+              x: 0.6,
               y: 0,
-              z: 1,
+              z: -0.3,
             }
           },
           yoot2Wrapper: {
             restPos: {
-              x: -0.7,
+              x: 3,
               y: 0,
-              z: 1
+              z: -0.4
             },
             throwPos: {
-              x: -0.4,
+              x: 2.7,
               y: 0,
-              z: 1
+              z: -0.4
             },
             liePos: {
-              x: -0.2,
+              x: 2.4,
               y: 0,
-              z: 1,
+              z: -0.3,
             }
           },
           yoot3Wrapper: {
             restPos: {
-              x: 0.1,
+              x: 3.7,
               y: 0.8,
-              z: 1
+              z: 0
             },
             throwPos: {
-              x: 0.5,
+              x: 4.2,
               y: 0.7,
-              z: 1
+              z: 0
             },
             liePos: {
-              x: 1.1,
+              x: 4.2,
               y: 0,
-              z: 1,
+              z: -0.3,
             }
           },
         },
         yootButtonModel: {
-          position: [3, 0, 2],
+          position: [6.5, 0, 2],
           rotation: [0,Math.PI/2,0]
         },
         cursor: {
-          position: [3.3, 0.3, 3.5],
+          position: [7.3, 0.3, 3.5],
           rotation: [0, 0, 0],
           scale: [3, 3, 0.1]
         },
