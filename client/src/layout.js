@@ -2150,7 +2150,7 @@ export default {
       },
       combiningPiecesPage: {
         text: {
-          position: [-3.5,0,-4],
+          position: [-2.5,0,5],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
@@ -2226,32 +2226,32 @@ export default {
           position: [-0.3,1.7,0]
         },
         firstCornerTiles: {
-          position: [-1, 0, 0]
+          position: [1, 0, -6]
         },
         moveText0: {
-          position: [-3, 0, 0.5],
+          position: [-2.5, 0, 3],
           rotation: [-Math.PI/2,0,0],
           size: 0.5,
           height: 0.01,
           lineHeight: 0.9
         },
         moveText1: {
-          position: [-3, 0, 1],
+          position: [0, 0, 3],
           rotation: [-Math.PI/2,0,0],
           size: 0.5,
           height: 0.01,
           lineHeight: 0.9
         },
         gulToken: {
-          position: [-0.2, 0, 0.2],
+          position: [1.3, 0, 2.7],
           rotation: [0, Math.PI/2, 0],
         },
         geToken0: {
-          position: [0.7, 0, 0.2],
+          position: [0.4, 0, 2.7],
           rotation: [0, Math.PI/2, 0]
         },
         geToken1: {
-          position: [-0.2, 0, 0.7],
+          position: [3, 0, 2.7],
           rotation: [0, Math.PI/2, 0]
         }
       },

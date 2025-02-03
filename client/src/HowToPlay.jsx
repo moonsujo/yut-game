@@ -36,7 +36,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(2)
+  const [page, setPage] = useState(3)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -1380,16 +1380,15 @@ export default function HowToPlay({
     </group>
   }
 
-  // combine
-  function CombiningPiecesPage() {    
+  function PiggybackPage() {    
     const springs = useSpring({
       from: {
         cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[0],
         rocket0Scale: 1.2,
         rocket1Scale: 1.2,
         cursorEffectOpacity: 0,
-        legalTile0Scale: 0.5,
-        legalTile1Scale: 0.5,
+        legalTile0Scale: 0.4,
+        legalTile1Scale: 0.4,
         pointer0Opacity: 0,
         pointer1Opacity: 0,
         rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[0],
@@ -1399,44 +1398,41 @@ export default function HowToPlay({
         bonusTurnScale: 0,
         yootButtonScale: 0,
         moveTokenScale: 0,
-        moveToken1Scale: 0
+        moveToken1Scale: 0,
+        gulTokenScale: 1,
+        geTokenScale: 1
       },
       to: [
+        // {
+        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[1],
+        //   delay: 1000
+        // },
         {
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[1],
-          delay: 1000
-        },
-        {
-          cursorEffectOpacity: 1,
+          // cursorEffectOpacity: 1,
           rocket0Scale: 1.6,
           rocket1Scale: 1.6,
           legalTile0Scale: 0.6,
           pointer0Opacity: 1,
           moveTokenScale: 1,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
+          // delay: 500,
         },
+        // {
+        //   cursorEffectOpacity: 0,
+        //   delay: 200,
+        // },
+        // {
+        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[2],
+        //   delay: 1000,
+        // },
         {
-          cursorEffectOpacity: 0,
-          delay: 200,
-        },
-        {
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[2],
-          delay: 1000,
-        },
-        {
-          cursorEffectOpacity: 1,
+          // cursorEffectOpacity: 1,
           moveTokenScale: 0,
           rocket0Scale: 1.2,
           rocket1Scale: 1.2,
-          legalTile0Scale: 0.5,
+          legalTile0Scale: 0.4,
           pointer0Opacity: 0,
-          delay: 200,
-          config: {
-            tension: 0,
-          }
+          gulTokenScale: 0,
+          delay: 1000,
         },
         {
           cursorEffectOpacity: 0,
@@ -1462,59 +1458,56 @@ export default function HowToPlay({
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[3],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[1],
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[3],
+          // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[3],
           config: {
             tension: 170,
             friction: 26
           }
         },
+        // {
+        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[4],
+        //   delay: 1000
+        // },
         {
-          moveText0Scale: 0,          
-          moveText1Scale: 1,
-        },
-        {
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[4],
-          delay: 1000
-        },
-        {
-          cursorEffectOpacity: 1,
+          // cursorEffectOpacity: 1,
           moveToken1Scale: 1,
           rocket0Scale: 1.6,
           rocket1Scale: 1.6,
-          legalTile1Scale: 0.6,
+          legalTile1Scale: 0.7,
           pointer1Opacity: 1,
           delay: 500,
-          config: {
-            tension: 0,
-          }
+          // config: {
+          //   tension: 0,
+          // }
         },
+        // {
+        //   cursorEffectOpacity: 0,
+        //   delay: 200,
+        // },
+        // {
+        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[5],
+        //   delay: 1000
+        // },
         {
-          cursorEffectOpacity: 0,
-          delay: 200,
-        },
-        {
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[5],
-          delay: 1000
-        },
-        {
-          cursorEffectOpacity: 1,
+          // cursorEffectOpacity: 1,
           moveToken1Scale: 0,
           rocket0Scale: 1.2,
           rocket1Scale: 1.2,
           legalTile1Scale: 0.4,
+          geTokenScale: 0,
           pointer1Opacity: 0,
           delay: 500,
-          config: {
-            tension: 0,
-          }
+          // config: {
+          //   tension: 0,
+          // }
         },
         {
-          cursorEffectOpacity: 0,
-          cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[6],
-          delay: 200,
-          config: {
-            tension: 0,
-          }
+          // cursorEffectOpacity: 0,
+          // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[6],
+          // delay: 200,
+          // config: {
+          //   tension: 0,
+          // }
         },
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[4],
@@ -1540,7 +1533,7 @@ export default function HowToPlay({
       delay: 500
     })
 
-    function FirstCornerTiles({ position }) {
+    function FirstCornerTiles({ position, scale }) {
       let tiles = [];
 
       //circle
@@ -1585,44 +1578,35 @@ export default function HowToPlay({
         }
       }
   
-      return <group position={position}>
+      return <group position={position} scale={scale}>
         { tiles }
         <animated.group name='rocket-0' position={springs.rocket0Pos} scale={springs.rocket0Scale} >
-          <Rocket />
+          <Rocket onBoard/>
         </animated.group>
         <animated.group name='rocket-1' position={springs.rocket1Pos} scale={springs.rocket1Scale} >
-          <Rocket/>
+          <Rocket onBoard/>
         </animated.group>
-        <Cursor
+        {/* <Cursor
           position={springs.cursorPos}
           rotation={[0,0,0]}
           scale={[3, 3, 0.1]}
           effectOpacity={springs.cursorEffectOpacity}
           effect={true}
-        />
-        <animated.group scale={springs.moveTokenScale}>
-          <GulToken position={[4,0,5]} rotation={[0, Math.PI/2, 0]}/>
+        /> */}
+        <animated.group>
+          <GulToken scale={springs.moveTokenScale} position={[4,0,5]} rotation={[0, Math.PI/2, 0]}/>
         </animated.group>
-        <animated.group scale={springs.moveToken1Scale}>
-          <GeToken position={[6,0,3]} rotation={[0, Math.PI/2, 0]}/>
+        <animated.group >
+          <GeToken scale={springs.moveToken1Scale} position={[6,0,0]} rotation={[0, Math.PI/2, 0]}/>
         </animated.group>
       </group>;
     }
 
     return <group>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].howToPlay.combiningPiecesPage.text.position}
-        rotation={layout[device].howToPlay.combiningPiecesPage.text.rotation}
-        size={layout[device].howToPlay.combiningPiecesPage.text.size}
-        height={layout[device].howToPlay.combiningPiecesPage.text.height}
-        lineHeight={layout[device].howToPlay.combiningPiecesPage.text.lineHeight}
-      >
-        {'7. If you move a piece into a\ntile with your own piece, you\nwill piggyback them.'}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-      <FirstCornerTiles position={layout[device].howToPlay.combiningPiecesPage.firstCornerTiles.position}/>
-      <animated.group scale={springs.moveText0Scale}>
+      <FirstCornerTiles 
+      position={layout[device].howToPlay.combiningPiecesPage.firstCornerTiles.position}
+      scale={1.3}/>
+      <animated.group>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json" 
           position={layout[device].howToPlay.combiningPiecesPage.moveText0.position}
@@ -1631,16 +1615,18 @@ export default function HowToPlay({
           height={layout[device].howToPlay.combiningPiecesPage.moveText0.height}
           lineHeight={layout[device].howToPlay.combiningPiecesPage.moveText0.lineHeight}
         >
-          {`MOVES:`}
+          {`JUMPS:`}
           <meshStandardMaterial color={ "limegreen" }/>
         </Text3D>
-        <GulToken 
-          position={layout[device].howToPlay.combiningPiecesPage.gulToken.position} 
-          rotation={layout[device].howToPlay.combiningPiecesPage.gulToken.rotation}
-        />
         <GeToken 
           position={layout[device].howToPlay.combiningPiecesPage.geToken0.position} 
           rotation={layout[device].howToPlay.combiningPiecesPage.geToken0.rotation}
+          scale={springs.geTokenScale}
+        />
+        <GulToken 
+          position={layout[device].howToPlay.combiningPiecesPage.gulToken.position} 
+          rotation={layout[device].howToPlay.combiningPiecesPage.gulToken.rotation}
+          scale={springs.gulTokenScale}
         />
       </animated.group>
       <animated.group scale={springs.moveText1Scale}>
@@ -1660,6 +1646,17 @@ export default function HowToPlay({
           rotation={layout[device].howToPlay.combiningPiecesPage.geToken1.rotation}
         />
       </animated.group>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].howToPlay.combiningPiecesPage.text.position}
+        rotation={layout[device].howToPlay.combiningPiecesPage.text.rotation}
+        size={layout[device].howToPlay.combiningPiecesPage.text.size}
+        height={layout[device].howToPlay.combiningPiecesPage.text.height}
+        lineHeight={layout[device].howToPlay.combiningPiecesPage.text.lineHeight}
+      >
+        {'LAND ON YOUR OWN TOKEN TO PIGGYBACK\nTHEM. THEY WILL MOVE TOGETHER ON THEIR\nNEXT JUMP.'}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
     </group>
   }
   
@@ -3447,7 +3444,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <CombiningPiecesPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

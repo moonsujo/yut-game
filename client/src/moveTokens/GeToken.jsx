@@ -1,8 +1,9 @@
 import { Text3D } from "@react-three/drei";
+import { animated } from "@react-spring/three";
 
 export default function GeToken(props) {
 
-  return <group {...props}>
+  return <animated.group {...props}>
   <group name='move-token'>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
@@ -23,5 +24,5 @@ export default function GeToken(props) {
         <meshStandardMaterial color='black' opacity={1}/>
       </mesh>
     </group>
-  </group>
+  </animated.group>
 }
