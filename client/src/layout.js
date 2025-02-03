@@ -2085,16 +2085,12 @@ export default {
       },
       catchingPiecesPage: {
         text: {
-          position: [-3.5,0,-4],
+          position: [-2.5,0,6.3],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
           lineHeight: 0.9
         },
-        firstCornerTilesPos: [
-          [-1.5,0,-1],
-          [-1.5,0,-1]
-        ],
         cursorPos: [
           [0, 0.3, 1],
           [-1,2,5],
@@ -2133,16 +2129,16 @@ export default {
             1.5,
             Math.sin(((3+5) * (Math.PI * 2)) / 20) * 5,
           ],
-          [6, -3, -2]
+          [0.5, 1.5, 7]
         ],
         pointer: {
           position: [-0.5,2.5,0]
         },
         bonusTurn: {
-          position: [-3, 0, 0.5]
+          position: [6.5, 0, 3]
         },
         yootButtonModel: {
-          position: [0.5, 0, 0.5]
+          position: [3.5, 0, 3]
         },
         moveText: {
           position: [-3, 0, 0]

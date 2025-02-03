@@ -17,7 +17,6 @@ import Cursor2 from './meshes/Cursor2';
 import Check from './meshes/Check';
 import * as THREE from 'three';
 import Ufo from './meshes/Ufo';
-import BonusTurn from './meshes/BonusTurn';
 import ArrowBlender from './meshes/ArrowBlender';
 import YootSet from './meshes/YootSet';
 import GulToken from './moveTokens/GulToken';
@@ -37,7 +36,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(2)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function HowToPlay({
     if (page === 0) { // Overview
       const page1Timeout = setTimeout(() => {
         setPage(1)
-      }, 9000)
+      }, 23000)
       setPageTimeout(page1Timeout)
     } else if (page === 1) { // Throw the dice
       const page2Timeout = setTimeout(() => {
@@ -55,7 +54,7 @@ export default function HowToPlay({
     } else if (page === 2) { // Catch enemies
       const page3Timeout = setTimeout(() => {
         setPage(3)
-      }, 9000)
+      }, 10500)
       setPageTimeout(page3Timeout)
     } else if (page === 3) { // Piggyback
       const page4Timeout = setTimeout(() => {
@@ -79,502 +78,6 @@ export default function HowToPlay({
       setPageTimeout(page7Timeout)
     }
   }, [page])
-
-  function PickingTheTeamsPage() {
-    const springs = useSpring({
-      from: {
-        cursorPos: layout[device].howToPlay.pickingTheTeamsPage.cursorPos[0],
-        cursorEffectOpacity: 0,
-        inputModalScale: 0,
-        placeholderScale: 1,
-        letterRScale: 0,
-        letterHScale: 0,
-        letterIScale: 0,
-        letterNScale: 0,
-        letterOScale: 0,
-        rhinoTextScale: 0,
-      },
-      to: [
-        {
-          cursorPos: layout[device].howToPlay.pickingTheTeamsPage.cursorPos[1],
-          delay: 100
-        },
-        {
-          cursorEffectOpacity: 1,
-          inputModalScale: 1,
-          inputCursorScale: 1,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          cursorEffectOpacity: 0,
-          delay: 100,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          inputCursorScale: 0,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          placeholderScale: 0,
-          letterRScale: 1,
-          config: {
-            tension: 0
-          },
-          delay: 1000
-        },
-        {
-          placeholderScale: 0,
-          letterHScale: 1,
-          config: {
-            tension: 0
-          },
-          delay: 200
-        },
-        {
-          placeholderScale: 0,
-          letterIScale: 1,
-          config: {
-            tension: 0
-          },
-          delay: 200
-        },
-        {
-          placeholderScale: 0,
-          letterNScale: 1,
-          config: {
-            tension: 0
-          },
-          delay: 200
-        },
-        {
-          placeholderScale: 0,
-          letterOScale: 1,
-          config: {
-            tension: 0
-          },
-          delay: 200
-        },
-        {
-          cursorPos: layout[device].howToPlay.pickingTheTeamsPage.cursorPos[2],
-          delay: 300,
-          config: {
-            tension: 170,
-            friction: 26
-          }
-        },
-        {
-          cursorEffectOpacity: 1,
-          inputModalScale: 0,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          cursorEffectOpacity: 0,
-          delay: 100,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rhinoTextScale: 1,
-          config: {
-            tension: 170,
-            friction: 26
-          }
-        }
-      ],
-      delay: 1000,
-      config: {
-        tension: 170,
-        friction: 26
-      }
-    })
-    return <group scale={layout[device].howToPlay.pickingTheTeamsPage.scale}>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].howToPlay.pickingTheTeamsPage.text.position}
-        rotation={layout[device].howToPlay.pickingTheTeamsPage.text.rotation}
-        size={layout[device].howToPlay.pickingTheTeamsPage.text.size}
-        height={layout[device].howToPlay.pickingTheTeamsPage.text.height}
-      >
-        {'1. Press join to Pick a team.'}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-      <group name='rockets' position={layout[device].howToPlay.pickingTheTeamsPage.rockets.position}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.height}
-        >
-          {'Rockets'}
-          <meshStandardMaterial color='red'/>
-        </Text3D>
-        <Rocket position={layout[device].howToPlay.pickingTheTeamsPage.rockets.piece0.position}/>
-        <Rocket position={layout[device].howToPlay.pickingTheTeamsPage.rockets.piece1.position}/>
-        <Rocket position={layout[device].howToPlay.pickingTheTeamsPage.rockets.piece2.position}/>
-        <Rocket position={layout[device].howToPlay.pickingTheTeamsPage.rockets.piece3.position}/>
-        <group name='rockets-join-button' position={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.position}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.position}
-            rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.rotation}
-            size={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.size}
-            height={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.height}
-          >
-            {'join'}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-          <mesh position={[1.3, -0.01, -0.15]}>
-            <boxGeometry args={[1.5, 0.01, 0.8]}/>
-            <meshStandardMaterial color='yellow'/>
-          </mesh>
-          <mesh position={[1.3, -0.01, -0.15]}>
-            <boxGeometry args={[1.4, 0.02, 0.7]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-        </group>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].height}
-        >
-          ros&#233;
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].height}
-        >
-          {'lisa'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].height}
-        >
-          {'jisoo'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].height}
-        >
-          {'jennie'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <animated.group scale={springs.rhinoTextScale}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].position}
-            rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].rotation}
-            size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].size}
-            height={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].height}
-          >
-            {'Rhino'}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-        </animated.group>
-      </group>
-      <group name='ufos' position={layout[device].howToPlay.pickingTheTeamsPage.ufos.position}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.height}
-        >
-          {'ufos'}
-          <meshStandardMaterial color='turquoise'/>
-        </Text3D>
-        <Ufo position={layout[device].howToPlay.pickingTheTeamsPage.ufos.piece0.position}/>
-        <Ufo position={layout[device].howToPlay.pickingTheTeamsPage.ufos.piece1.position}/>
-        <Ufo position={layout[device].howToPlay.pickingTheTeamsPage.ufos.piece2.position}/>
-        <Ufo position={layout[device].howToPlay.pickingTheTeamsPage.ufos.piece3.position}/>
-        <group name='ufos-join-button' position={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.position}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.position}
-            rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.rotation}
-            size={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.size}
-            height={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.height}
-          >
-            {'join'}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-          <mesh position={[1.3, -0.01, -0.15]}>
-            <boxGeometry args={[1.5, 0.01, 0.8]}/>
-            <meshStandardMaterial color='yellow'/>
-          </mesh>
-          <mesh position={[1.3, -0.01, -0.15]}>
-            <boxGeometry args={[1.4, 0.02, 0.7]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-        </group>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].height}
-        >
-          {'j-hope'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].height}
-        >
-          {'jimin'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].height}
-        >
-          {'jin'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].height}
-        >
-          {'rm'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].height}
-        >
-          {'jungkook'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].height}
-        >
-          {'suga'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].position}
-          rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].rotation}
-          size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].size}
-          height={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].height}
-        >
-          {'v'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <animated.group position={springs.cursorPos}>
-        <Cursor 
-        scale={1.5}
-        effect={true}
-        effectOpacity={springs.cursorEffectOpacity}
-        />
-      </animated.group>
-      <animated.group name='input-modal' scale={springs.inputModalScale}  position={layout[device].howToPlay.pickingTheTeamsPage.inputModal.position}>
-        <mesh>
-          <boxGeometry args={[5.7, 0.01, 3.4]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[5.6, 0.02, 3.3]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-2.4, 0.02, -0.9]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.35}
-          height={0.01}
-        >
-          {'joining'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.45, 0.02, -0.9]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.35}
-          height={0.01}
-        >
-          rockets
-          <meshStandardMaterial color='red'/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[1.65, 0.02, -0.9]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.35}
-          height={0.01}
-        >
-          as
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-        <group position={[0, 0.01, -0.1]}>
-          <mesh>
-            <boxGeometry args={[4.2, 0.01, 0.8]}/>
-            <meshStandardMaterial color='yellow'/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[4.1, 0.02, 0.7]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-          <animated.group scale={springs.placeholderScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.95, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'here...'}
-              <meshStandardMaterial color='grey' transparent opacity={0.7}/>
-            </Text3D>
-          </animated.group>
-          <animated.group scale={springs.letterRScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.95, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'R'}
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </animated.group>
-          <animated.group scale={springs.letterHScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.68, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'H'}
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </animated.group>
-          <animated.group scale={springs.letterIScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.39, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'I'}
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </animated.group>
-          <animated.group scale={springs.letterNScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-1.25, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'N'}
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </animated.group>
-          <animated.group scale={springs.letterOScale}>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              position={[-0.94, 0.02, 0.15]}
-              rotation={[-Math.PI/2, 0, 0]}
-              size={0.3}
-              height={0.01}
-            >
-              {'O'}
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </animated.group>
-        </group>
-        <group name='leggo-button' position={[-0.7, 0.01, 1]}>
-          <mesh>
-            <boxGeometry args={[1.7, 0.01, 0.75]}/>
-            <meshStandardMaterial color='yellow'/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[1.6, 0.02, 0.65]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-0.7, 0.02, 0.15]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.3}
-            height={0.01}
-          >
-            {'leggo!'}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-        </group>
-        <group name='nah-button' position={[1, 0.01, 1]}>
-          <mesh>
-            <boxGeometry args={[1.1, 0.01, 0.75]}/>
-            <meshStandardMaterial color='red'/>
-          </mesh>
-          <mesh>
-            <boxGeometry args={[1, 0.02, 0.65]}/>
-            <meshStandardMaterial color='black'/>
-          </mesh>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-0.4, 0.02, 0.15]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.3}
-            height={0.01}
-          >
-            {'nah'}
-            <meshStandardMaterial color='red'/>
-          </Text3D>
-        </group>
-      </animated.group>
-    </group>
-  }
   
   function ThrowTheYutPage() {
 
@@ -1559,58 +1062,58 @@ export default function HowToPlay({
   }
 
   // capture
-  function CatchingPiecesPage() {
+  function CatchEnemiesPage() {
     const springs = useSpring({
       from: {
         cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[0],
         rocketScale: 1.5,
         cursorEffectOpacity: 0,
-        legalTileScale: 0.5,
+        legalTileScale: 0.4,
         pointerOpacity: 0,
         rocketPos: layout[device].howToPlay.catchingPiecesPage.rocketPos[0],
         ufoPos: layout[device].howToPlay.catchingPiecesPage.ufoPos[0],
         ufoScale: 1.5,
         moveTextScale: 1,
-        bonusTurnScale: 0,
+        bonusAlertScale: 0,
         yootButtonScale: 0,
-        firstCornerTilesPos: layout[device].howToPlay.catchingPiecesPage.firstCornerTilesPos[0],
         moveTokenScale: 1,
-        moveToken1Scale: 0
+        moveToken1Scale: 0,
+        catchTokenHomeScale: 0
       },
       to: [
+        // {
+        //   cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[1],
+        //   delay: 1000
+        // },
         {
-          cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[1],
-          delay: 1000
-        },
-        {
-          cursorEffectOpacity: 1,
+          // cursorEffectOpacity: 1,
           moveToken1Scale: 1,
           rocketScale: 2.1,
-          legalTileScale: 0.8,
           pointerOpacity: 1,
           ufoScale: 2,
           delay: 500,
           config: {
-            tension: 0,
+            tension: 170,
+            friction: 26
           }
         },
-        {
-          cursorEffectOpacity: 0,
-          delay: 200,
-        },
-        {
-          cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[2],
-          delay: 1000,
-        },
+        // {
+        //   cursorEffectOpacity: 0,
+        //   delay: 200,
+        // },
+        // {
+        //   cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[2],
+        //   delay: 1000,
+        // },
         {
           cursorEffectOpacity: 1,
           moveTokenScale: 0,
           moveToken1Scale: 0,
           rocketScale: 1.5,
-          legalTileScale: 0.5,
+          legalTileScale: 0.4,
           pointerOpacity: 0,
           ufoScale: 1.5,
-          delay: 200,
+          delay: 1000,
           config: {
             tension: 0,
           }
@@ -1639,6 +1142,12 @@ export default function HowToPlay({
         },
         {
           rocketPos: layout[device].howToPlay.catchingPiecesPage.rocketPos[3],
+          config: {
+            tension: 170,
+            friction: 26
+          }
+        },
+        {
           ufoPos: layout[device].howToPlay.catchingPiecesPage.ufoPos[1],
           ufoScale: 0,
           config: {
@@ -1647,10 +1156,10 @@ export default function HowToPlay({
           }
         },
         {
+          catchTokenHomeScale: 1,
           moveTextScale: 0,
-          bonusTurnScale: 2,
+          bonusAlertScale: 1,
           yootButtonScale: 1,
-          firstCornerTilesPos: layout[device].howToPlay.catchingPiecesPage.firstCornerTilesPos[1],
           config: {
             tension: 170,
             friction: 26
@@ -1664,7 +1173,7 @@ export default function HowToPlay({
       delay: 500
     })
 
-    function FirstCornerTiles({ position }) {
+    function FirstCornerTiles({ position, scale }) {
       let tiles = [];
 
       //circle
@@ -1703,35 +1212,129 @@ export default function HowToPlay({
         }
       }
   
-      return <animated.group position={position}>
+      return <animated.group position={position} scale={scale}>
         { tiles }
         <animated.group name='rocket' position={springs.rocketPos} scale={springs.rocketScale} >
-          <Rocket/>
+          <Rocket onBoard/>
         </animated.group>
         <animated.group name='ufo' position={springs.ufoPos} scale={springs.ufoScale} >
-          <Ufo/>
+          <Ufo onBoard/>
         </animated.group>
-        <animated.group scale={springs.moveToken1Scale}>
-          <GulToken position={[5,0,4]} rotation={[0, Math.PI/2, 0]}/>
-        </animated.group>
+          <GulToken position={[5,0,4]} rotation={[0, Math.PI/2, 0]} scale={springs.moveToken1Scale}/>
       </animated.group>;
+    }
+
+    function BonusAlert({ position, scale }) {
+      
+      const borderMesh0Ref = useRef();
+      const borderMesh1Ref = useRef();
+      const borderMesh2Ref = useRef();
+      const borderMesh3Ref = useRef();
+      const borderMesh4Ref = useRef();
+      const borderMesh5Ref = useRef();
+      const borderMesh6Ref = useRef();
+      const borderMeshRefs = [
+        borderMesh0Ref,
+        borderMesh1Ref,
+        borderMesh2Ref,
+        borderMesh3Ref,
+        borderMesh4Ref,
+        borderMesh5Ref,
+        borderMesh6Ref
+      ]
+
+      const height = 1.3
+      const width = 1.9
+      const starScale = 0.1
+      const starColor = 'limegreen'
+      useFrame((state) => {
+        const time = state.clock.elapsedTime 
+        for (let i = 0; i < borderMeshRefs.length; i++) {      
+          if (borderMeshRefs[i].current) {
+            borderMeshRefs[i].current.position.x = Math.cos(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
+            borderMeshRefs[i].current.position.y = 0.05
+            borderMeshRefs[i].current.position.z = Math.sin(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          }
+        }
+      })
+
+      return <animated.group position={position} scale={scale}>
+        <mesh scale={[width, 0.01, height]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={0.3}/>
+        </mesh>
+        <Text3D
+        name='main-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.1,0,-0.15]}
+        rotation={layout[device].game.whoGoesFirst.title.rotation}
+        size={0.5}
+        height={layout[device].game.whoGoesFirst.title.height}
+        lineHeight={0.8}>
+          {`BONUS\n TURN!`}
+          <meshStandardMaterial color={starColor}/>
+        </Text3D>
+        <group ref={borderMesh0Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh1Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh2Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh3Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh4Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh5Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+        <group ref={borderMesh6Ref}>
+          <Star 
+            scale={starScale}
+            color={starColor}
+          />
+        </group>
+      </animated.group>
     }
 
     // ufo is flipped over, moved to a corner and scaled to 0. show sparkle
     return <group name='catching-pieces-page'>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={layout[device].howToPlay.catchingPiecesPage.text.position}
-          rotation={layout[device].howToPlay.catchingPiecesPage.text.rotation}
-          size={layout[device].howToPlay.catchingPiecesPage.text.size}
-          height={layout[device].howToPlay.catchingPiecesPage.text.height}
-          lineHeight={layout[device].howToPlay.catchingPiecesPage.text.lineHeight}
-        >
-          {`6. If you move into a tile with\nan opponent, you will kick\nthem out to the start, and\nyou will get another turn.`}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      <FirstCornerTiles position={springs.firstCornerTilesPos}/>
-      <animated.group scale={springs.moveTextScale}>
+      <FirstCornerTiles position={[0,0,-6.5]} scale={1.3}/>
+      <group name='ufo-home' position={[0.3, 0, 3]} scale={1.2}>
+        <mesh position={[0, -0.5, -0.2]}>
+          <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
+          <meshStandardMaterial color='turquoise' transparent opacity={0.05}/>
+        </mesh>
+        <Ufo position={[-0.5,0,-0.4]}/>
+        <Ufo position={[0.5,0,-0.4]}/>
+        <Ufo position={[-0.5,0,0.4]}/>
+        <animated.group scale={springs.catchTokenHomeScale}>
+          <Ufo position={[0.5,0,0.4]}/>
+        </animated.group>
+      </group>
+      {/* <animated.group scale={springs.moveTextScale}>
         <Text3D
           position={layout[device].howToPlay.catchingPiecesPage.moveText.position}
           rotation={[-Math.PI/2,0,0]}
@@ -1748,8 +1351,8 @@ export default function HowToPlay({
             rotation={layout[device].howToPlay.catchingPiecesPage.gulToken.rotation}
           />
         </animated.group>
-      </animated.group>
-      <group>
+      </animated.group> */}
+      {/* <group>
         <Cursor
           position={springs.cursorPos}
           rotation={[0,0,0]}
@@ -1757,13 +1360,23 @@ export default function HowToPlay({
           effectOpacity={springs.cursorEffectOpacity}
           effect={true}
         />
-      </group>
-      <BonusTurn rotation={[Math.PI/16, Math.PI/2, 0]} position={layout[device].howToPlay.catchingPiecesPage.bonusTurn.position} scale={springs.bonusTurnScale}/>
-      <Float>
-        <animated.group scale={springs.yootButtonScale}>
-          <YootButtonModel rotation={[Math.PI/16, Math.PI/2, 0]} position={layout[device].howToPlay.catchingPiecesPage.yootButtonModel.position} turnedOn={true}/>
-        </animated.group>
-      </Float>
+      </group> */}
+      {/* <Float> */}
+        <YootButtonModel scale={springs.yootButtonScale} rotation={[Math.PI/16, Math.PI/2, 0]} position={layout[device].howToPlay.catchingPiecesPage.yootButtonModel.position} turnedOn={true}/>
+
+      {/* </Float> */}
+      <BonusAlert position={[7, 0, 3]} scale={springs.bonusAlertScale}/>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={layout[device].howToPlay.catchingPiecesPage.text.position}
+        rotation={layout[device].howToPlay.catchingPiecesPage.text.rotation}
+        size={layout[device].howToPlay.catchingPiecesPage.text.size}
+        height={layout[device].howToPlay.catchingPiecesPage.text.height}
+        lineHeight={layout[device].howToPlay.catchingPiecesPage.text.lineHeight}
+      >
+        {`KICK ENEMIES BACK HOME BY LANDING ON\nTHEIR STAR. YOU GET A BONUS THROW TOO!`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
     </group>
   }
 
@@ -1996,7 +1609,6 @@ export default function HowToPlay({
       </group>;
     }
 
-    // ufo is flipped over, moved to a corner and scaled to 0. show sparkle
     return <group>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
@@ -3835,7 +3447,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchingPiecesPage/>, <CombiningPiecesPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <CombiningPiecesPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

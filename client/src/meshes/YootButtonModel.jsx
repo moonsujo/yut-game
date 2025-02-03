@@ -3,6 +3,7 @@ import { useFrame, useGraph } from '@react-three/fiber';
 import React, { useMemo, useRef } from 'react';
 import { SkeletonUtils } from 'three-stdlib';
 import YootMesh from './YootMesh';
+import { animated } from '@react-spring/three';
 
 export default function YootButtonModel({
   position,
@@ -27,7 +28,7 @@ export default function YootButtonModel({
       // expand with time
     }
   })
-  return <group 
+  return <animated.group 
     position={position} 
     rotation={rotation} 
     scale={scale} 
@@ -87,5 +88,5 @@ export default function YootButtonModel({
       THROW
       <meshStandardMaterial color={ turnedOn ? "yellow" : "grey" }/>
     </Text3D>
-  </group>
+  </animated.group>
 }
