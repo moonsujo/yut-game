@@ -39,7 +39,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(5)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function HowToPlay({
     } else if (page === 5) { // Read the dice
       const page6Timeout = setTimeout(() => {
         setPage(6)
-      }, 11500)
+      }, 11500000)
       setPageTimeout(page6Timeout)
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
@@ -2131,7 +2131,7 @@ export default function HowToPlay({
     </group>
   }
 
-  function ReadingTheDicePage() {
+  function ReadTheYutPage() {
     return <group>
       <animated.group name='text'>
         <Text3D
@@ -2141,7 +2141,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.text.size}
           height={layout[device].howToPlay.readingTheDicePage.text.height}
         >
-          {'3. How to read the dice'}
+          {'EACH FLAT SIDE IS 1 STAR. IF YOU THROW A\nYUT OR MO, YOU GET ANOTHER TURN!'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </animated.group>
@@ -2165,7 +2165,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.do.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.do.text.line1.height}
         >
-          {'1 Step'}
+          {'1 STAR'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -2195,7 +2195,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.ge.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.ge.text.line1.height}
         >
-          {'2 Steps'}
+          {'2 STARS'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -2225,7 +2225,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.gul.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.gul.text.line1.height}
         >
-          {'3 Steps'}
+          {'3 STARS'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -2245,7 +2245,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line0.size}
           height={layout[device].howToPlay.readingTheDicePage.yoot.text.line0.height}
         >
-          {'YOOT'}
+          {'YUT'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
         <Text3D
@@ -2255,7 +2255,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.height}
         >
-          {'4 Steps'}
+          {'4 STARS'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Text3D
@@ -2265,7 +2265,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line2.size}
           height={layout[device].howToPlay.readingTheDicePage.yoot.text.line2.height}
         >
-          {'bonus turn'}
+          {'BONUS TURN'}
           <meshStandardMaterial color='limegreen'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -2295,7 +2295,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.mo.text.line1.height}
         >
-          {'5 steps'}
+          {'5 STARS'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
@@ -2305,7 +2305,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line2.size}
           height={layout[device].howToPlay.readingTheDicePage.mo.text.line2.height}
         >
-          {'bonus turn'}
+          {'BONUS TURN'}
           <meshStandardMaterial color='limegreen'/>
         </Text3D>      
         <Float rotationIntensity={0.1}>
@@ -2335,7 +2335,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.height}
         >
-          {'-1 step'}
+          {'-1 STAR'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
@@ -2345,7 +2345,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line2.size}
           height={layout[device].howToPlay.readingTheDicePage.backdo.text.line2.height}
         >
-          {'backward'}
+          {'BACKWARD'}
           <meshStandardMaterial color='red'/>
         </Text3D>
         <Float rotationIntensity={0.1}>
@@ -3407,7 +3407,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScorePage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScorePage/>, <ReadTheYutPage/>, <ShortcutsPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

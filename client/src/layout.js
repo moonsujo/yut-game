@@ -2483,14 +2483,14 @@ export default {
       },
       readingTheDicePage: {
         text: {
-          position: [-3.2,0,-4],
+          position: [-2.4,0,8],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
         },
         do: {
-          position: [-3.1, 0, -1.2],
-          scale: 0.6,
+          position: [-2.7, 0, -2.7],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2511,8 +2511,8 @@ export default {
           }
         },
         ge: {
-          position: [-0.2, 0, -1.2],
-          scale: 0.6,
+          position: [1.7, 0, -2.7],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2533,8 +2533,8 @@ export default {
           }
         },
         gul: {
-          position: [2.6, 0, -1.2],
-          scale: 0.6,
+          position: [6.1, 0,  -2.7],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2555,8 +2555,8 @@ export default {
           }
         },
         yoot: {
-          position: [-3.1, 0, 3.5],
-          scale: 0.6,
+          position: [-2.7, 0, 4.5],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-3.5],
@@ -2583,8 +2583,8 @@ export default {
           }
         },
         mo: {
-          position: [-0.1, 0, 3.5],
-          scale: 0.6,
+          position: [1.7, 0, 4.5],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-3.5],
@@ -2611,8 +2611,8 @@ export default {
           }
         },
         backdo: {
-          position: [2.8, 0, 3.5],
-          scale: 0.6,
+          position: [6.1, 0, 4.5],
+          scale: 0.9,
           text: {
             line0: {
               position: [-0.2,0,-3.5],
