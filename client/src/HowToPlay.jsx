@@ -57,12 +57,12 @@ export default function HowToPlay({
     } else if (page === 2) { // Catch enemies
       const page3Timeout = setTimeout(() => {
         setPage(3)
-      }, 10500)
+      }, 8500)
       setPageTimeout(page3Timeout)
     } else if (page === 3) { // Piggyback
       const page4Timeout = setTimeout(() => {
         setPage(4)
-      }, 10500)
+      }, 7500)
       setPageTimeout(page4Timeout)
     } else if (page === 4) { // Score
       const page5Timeout = setTimeout(() => {
@@ -679,17 +679,6 @@ export default function HowToPlay({
     </group>
   }
 
-  function createSprite(texturePath) {
-    var map = new THREE.TextureLoader().load(texturePath);
-    var material = new THREE.SpriteMaterial({
-      map: map,
-      color: 0xfffff,
-      blending: THREE.AdditiveBlending,
-      fog: true,
-    });
-    return new THREE.Sprite(material);
-  }
-
   function ScorePage() {
 
     const [CreateFirework] = useFireworksShader();
@@ -715,7 +704,7 @@ export default function HowToPlay({
         color.setHSL(hue, 1, 0.6)
         
         CreateFirework({ count, position, size, texture, radius, color });
-      }, 5500) 
+      }, 4500) 
       const fireworkTimeout1 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
@@ -729,7 +718,7 @@ export default function HowToPlay({
         color.setHSL(hue, 1, 0.6)
         
         CreateFirework({ count, position, size, texture, radius, color });
-      }, 5700) // When 'welcome home!' displays
+      }, 4700) // When 'welcome home!' displays
       const fireworkTimeout2 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
@@ -743,7 +732,7 @@ export default function HowToPlay({
         color.setHSL(hue, 1, 0.6)
         
         CreateFirework({ count, position, size, texture, radius, color });
-      }, 6100) // When 'welcome home!' displays
+      }, 5100) // When 'welcome home!' displays
       const fireworkTimeout3 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
@@ -757,7 +746,7 @@ export default function HowToPlay({
         color.setHSL(hue, 1, 0.6)
         
         CreateFirework({ count, position, size, texture, radius, color });
-      }, 6500) // When 'welcome home!' displays
+      }, 5500) // When 'welcome home!' displays
       return () => {
         clearTimeout(fireworkTimeout0)
         clearTimeout(fireworkTimeout1)
@@ -880,7 +869,6 @@ export default function HowToPlay({
           scoredIndicator1Scale: 0.4,
         }
       ],
-      delay: 1000,
       config: {
         tension: 170,
         friction: 26
@@ -1065,7 +1053,6 @@ export default function HowToPlay({
           rocketScale: 2.1,
           pointerOpacity: 1,
           ufoScale: 2,
-          delay: 500,
           config: {
             tension: 170,
             friction: 26
@@ -1080,17 +1067,13 @@ export default function HowToPlay({
         //   delay: 1000,
         // },
         {
-          cursorEffectOpacity: 1,
-          moveTokenScale: 0,
-          moveToken1Scale: 0,
-          rocketScale: 1.5,
-          legalTileScale: 0.4,
-          pointerOpacity: 0,
-          ufoScale: 1.5,
-          delay: 1000,
-          config: {
-            tension: 0,
-          }
+          // cursorEffectOpacity: 1,
+          // rocketScale: 1.5,
+          // pointerOpacity: 0,
+          // ufoScale: 1.5,
+          // config: {
+          //   tension: 0,
+          // }
         },
         {
           cursorEffectOpacity: 0,
@@ -1116,6 +1099,9 @@ export default function HowToPlay({
         },
         {
           rocketPos: layout[device].howToPlay.catchingPiecesPage.rocketPos[3],
+          moveTokenScale: 0,
+          moveToken1Scale: 0,
+          legalTileScale: 0.4,
           config: {
             tension: 170,
             friction: 26
@@ -1398,16 +1384,16 @@ export default function HowToPlay({
         //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[2],
         //   delay: 1000,
         // },
-        {
-          // cursorEffectOpacity: 1,
-          moveTokenScale: 0,
-          rocket0Scale: 1.2,
-          rocket1Scale: 1.2,
-          legalTile0Scale: 0.4,
-          pointer0Opacity: 0,
-          gulTokenScale: 0,
-          delay: 1000,
-        },
+        // {
+        //   cursorEffectOpacity: 1,
+        //   moveTokenScale: 0,
+        //   rocket0Scale: 1.2,
+        //   rocket1Scale: 1.2,
+        //   legalTile0Scale: 0.4,
+        //   gulTokenScale: 0,
+        //   pointer0Opacity: 0,
+        //   delay: 1000,
+        // },
         {
           cursorEffectOpacity: 0,
           delay: 200,
@@ -1433,6 +1419,12 @@ export default function HowToPlay({
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[3],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[1],
           // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[3],
+          legalTile0Scale: 0.4,
+          gulTokenScale: 0,
+          moveTokenScale: 0,
+          moveToken1Scale: 1,
+          legalTile1Scale: 0.7,
+          pointer1Opacity: 1,
           config: {
             tension: 170,
             friction: 26
@@ -1442,18 +1434,14 @@ export default function HowToPlay({
         //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[4],
         //   delay: 1000
         // },
-        {
-          // cursorEffectOpacity: 1,
-          moveToken1Scale: 1,
-          rocket0Scale: 1.6,
-          rocket1Scale: 1.6,
-          legalTile1Scale: 0.7,
-          pointer1Opacity: 1,
-          delay: 500,
-          // config: {
-          //   tension: 0,
-          // }
-        },
+        // {
+        //   cursorEffectOpacity: 1,
+        //   rocket0Scale: 1.6,
+        //   rocket1Scale: 1.6,
+        //   config: {
+        //     tension: 0,
+        //   }
+        // },
         // {
         //   cursorEffectOpacity: 0,
         //   delay: 200,
@@ -1464,28 +1452,26 @@ export default function HowToPlay({
         // },
         {
           // cursorEffectOpacity: 1,
-          moveToken1Scale: 0,
-          rocket0Scale: 1.2,
-          rocket1Scale: 1.2,
-          legalTile1Scale: 0.4,
-          geTokenScale: 0,
-          pointer1Opacity: 0,
-          delay: 500,
+          // rocket0Scale: 1.2,
+          // rocket1Scale: 1.2,
+          // pointer1Opacity: 0,
+          // delay: 500,
           // config: {
           //   tension: 0,
           // }
         },
-        {
+        // {
           // cursorEffectOpacity: 0,
           // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[6],
           // delay: 200,
           // config: {
           //   tension: 0,
           // }
-        },
+        // },
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[4],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[2],
+          delay: 200,
           config: {
             tension: 170,
             friction: 26
@@ -1494,6 +1480,9 @@ export default function HowToPlay({
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[5],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[3],
+          moveToken1Scale: 0,
+          legalTile1Scale: 0.4,
+          geTokenScale: 0,
           config: {
             tension: 170,
             friction: 26

@@ -2182,17 +2182,17 @@ export default {
             Math.sin(((1+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((2+5) * (Math.PI * 2)) / 20) * 5-0.35,
+            -Math.cos(((2+5) * (Math.PI * 2)) / 20) * 5 - 0.45,
             1,
             Math.sin(((2+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((3+5) * (Math.PI * 2)) / 20) * 5-0.35,
+            -Math.cos(((3+5) * (Math.PI * 2)) / 20) * 5 - 0.45,
             1,
             Math.sin(((3+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((4+5) * (Math.PI * 2)) / 20) * 5-0.35,
+            -Math.cos(((4+5) * (Math.PI * 2)) / 20) * 5 - 0.45,
             1,
             Math.sin(((4+5) * (Math.PI * 2)) / 20) * 5,
           ],
@@ -2204,18 +2204,18 @@ export default {
             Math.sin(((2+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((2+5) * (Math.PI * 2)) / 20) * 5 +0.35,
+            -Math.cos(((2+5) * (Math.PI * 2)) / 20) * 5 + 0.45,
             1,
             Math.sin(((2+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((3+5) * (Math.PI * 2)) / 20) * 5  +0.35,
+            -Math.cos(((3+5) * (Math.PI * 2)) / 20) * 5 + 0.45,
             1,
             Math.sin(((3+5) * (Math.PI * 2)) / 20) * 5,
           ],
           [
-            -Math.cos(((4+5) * (Math.PI * 2)) / 20) * 5 +0.35,
-            1.1,
+            -Math.cos(((4+5) * (Math.PI * 2)) / 20) * 5 + 0.45,
+            1,
             Math.sin(((4+5) * (Math.PI * 2)) / 20) * 5,
           ],
         ],
