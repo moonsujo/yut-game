@@ -272,7 +272,7 @@ export default {
           height: 0.01
         },
         moveText: {
-          text: "MOVE:\n3-STARS",
+          text: "JUMP:\n3-STARS",
           position: [2.3, 0.7, -0.9],
           size: 0.5
         },
@@ -1897,7 +1897,7 @@ export default {
           height: 0.01
         },
         moveText: {
-          text: "MOVE:\n3-STARS",
+          text: "JUMP:\n3-STARS",
           position: [5.5, 0.7, -0.9],
           size: 0.5
         },
@@ -2027,10 +2027,10 @@ export default {
         ],
       },
       scoringPage: {
-        scale: 0.8,
-        position: [0, 0, 0.5],
+        scale: 1.2,
+        position: [6, 0, -4],
         text: {
-          position: [1.5,0,1.5],
+          position: [-2.2,0,6],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           lineHeight: 1,
@@ -3084,7 +3084,7 @@ export default {
       finish: {
         position: [2.5, 0, 5.5],
         text: {
-          position: [-1.6,0,4],
+          position: [-1.5,0,4.1],
           rotation: [-Math.PI/2, 0, 0],
           fontSize: 15,
         },

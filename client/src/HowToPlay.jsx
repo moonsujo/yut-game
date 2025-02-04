@@ -1,7 +1,7 @@
 import { Float, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import Cursor from './meshes/Cursor';
 import Earth from './meshes/Earth';
 import Mars from './meshes/Mars';
@@ -26,6 +26,9 @@ import YootMesh from './meshes/YootMesh';
 import YootRhino from './meshes/YootRhino';
 import Board from './Board';
 import YootDisplay from './YootDisplay';
+import Tile from './components/Tile';
+import { useFireworksShader } from './shader/fireworks/FireworksShader';
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 export default function HowToPlay({ 
   device, 
@@ -36,7 +39,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(3)
+  const [page, setPage] = useState(0)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -59,12 +62,12 @@ export default function HowToPlay({
     } else if (page === 3) { // Piggyback
       const page4Timeout = setTimeout(() => {
         setPage(4)
-      }, 1040000)
+      }, 10500)
       setPageTimeout(page4Timeout)
     } else if (page === 4) { // Score
       const page5Timeout = setTimeout(() => {
         setPage(5)
-      }, 12900)
+      }, 10100)
       setPageTimeout(page5Timeout)
     } else if (page === 5) { // Read the dice
       const page6Timeout = setTimeout(() => {
@@ -687,10 +690,205 @@ export default function HowToPlay({
     return new THREE.Sprite(material);
   }
 
-  function ScoringPage() {
-    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+  function ScorePage() {
 
-    function WelcomeBackText({ position, scale }) {
+    const [CreateFirework] = useFireworksShader();
+    const fireworkTextures = [
+      useLoader(TextureLoader, 'textures/particles/3.png'),
+      useLoader(TextureLoader, 'textures/particles/5.png'),
+      useLoader(TextureLoader, 'textures/particles/6.png'),
+      useLoader(TextureLoader, 'textures/particles/8.png'),
+    ]
+
+    useEffect(() => {
+      // When 'welcome home!' displays
+      const fireworkTimeout0 = setTimeout(() => {
+        // firework 1 - left
+        const count = Math.round(500 + Math.random() * 400);
+        const position = new THREE.Vector3(2,2,-4)
+
+        const size = 0.25 + Math.random() * 0.1
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        const radius = 0.6 + Math.random() * 0.1
+        const color = new THREE.Color();
+        const hue = 140/360
+        color.setHSL(hue, 1, 0.6)
+        
+        CreateFirework({ count, position, size, texture, radius, color });
+      }, 5500) 
+      const fireworkTimeout1 = setTimeout(() => {
+        // firework 1 - left
+        const count = Math.round(500 + Math.random() * 400);
+        const position = new THREE.Vector3(2.5,2,-3)
+
+        const size = 0.25 + Math.random() * 0.1
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        const radius = 0.6 + Math.random() * 0.1
+        const color = new THREE.Color();
+        const hue = 140/360
+        color.setHSL(hue, 1, 0.6)
+        
+        CreateFirework({ count, position, size, texture, radius, color });
+      }, 5700) // When 'welcome home!' displays
+      const fireworkTimeout2 = setTimeout(() => {
+        // firework 1 - left
+        const count = Math.round(500 + Math.random() * 400);
+        const position = new THREE.Vector3(1,2,-3)
+
+        const size = 0.25 + Math.random() * 0.1
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        const radius = 0.6 + Math.random() * 0.1
+        const color = new THREE.Color();
+        const hue = 140/360
+        color.setHSL(hue, 1, 0.6)
+        
+        CreateFirework({ count, position, size, texture, radius, color });
+      }, 6100) // When 'welcome home!' displays
+      const fireworkTimeout3 = setTimeout(() => {
+        // firework 1 - left
+        const count = Math.round(500 + Math.random() * 400);
+        const position = new THREE.Vector3(-0.5,2,-2.3)
+
+        const size = 0.25 + Math.random() * 0.1
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        const radius = 0.6 + Math.random() * 0.1
+        const color = new THREE.Color();
+        const hue = 140/360
+        color.setHSL(hue, 1, 0.6)
+        
+        CreateFirework({ count, position, size, texture, radius, color });
+      }, 6500) // When 'welcome home!' displays
+      return () => {
+        clearTimeout(fireworkTimeout0)
+        clearTimeout(fireworkTimeout1)
+        clearTimeout(fireworkTimeout2)
+        clearTimeout(fireworkTimeout3)
+      }
+    }, [])
+    const TILE_RADIUS = 5
+    const homeTokenShift = [-5, 0, 0]
+    const springs = useSpring({
+      from: {
+        piggybackTokenPosition: [
+          -Math.cos(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+          1.5,
+          Math.sin(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+        ],
+        movingTokenPosition: [
+          -Math.cos(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+          1.5,
+          Math.sin(((20) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+        ],
+        movingTokenScale: 1.4,
+        piggybackTokenScale: 1.4,
+        welcomeHomeAlertScale: 0,
+        scoredIndicator0Scale: 0,
+        scoredIndicator1Scale: 0,
+      },
+      to: [
+        {
+          movingTokenPosition: [
+            -Math.cos(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((21) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((22) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((23) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((24) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS,
+          ],
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5,
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5,
+            1.5,
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5,
+          ],
+          welcomeHomeAlertScale: 1
+        },
+        {
+          movingTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5 + homeTokenShift[0],
+            1.5 + homeTokenShift[1],
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 + homeTokenShift[2],
+          ],
+          piggybackTokenPosition: [
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5 + homeTokenShift[0],
+            1.5 + homeTokenShift[1],
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 + homeTokenShift[2],
+          ],
+          movingTokenScale: 0,
+          piggybackTokenScale: 0,
+          welcomeHomeAlertScale: 0,
+          delay: 2200
+        },
+        {
+          scoredIndicator0Scale: 0.4,
+          scoredIndicator1Scale: 0.4,
+        }
+      ],
+      delay: 1000,
+      config: {
+        tension: 170,
+        friction: 26
+      }
+    })
+
+    function WelcomeHomeAlert({ position, scale }) {
+      
       const borderMesh0Ref = useRef();
       const borderMesh1Ref = useRef();
       const borderMesh2Ref = useRef();
@@ -708,343 +906,121 @@ export default function HowToPlay({
         borderMesh6Ref
       ]
 
-      const height = 1.1
-      const width = 1.8
-      useFrame((state, delta) => {
+      const height = 1.3
+      const width = 2.4
+      const starScale = 0.12
+      useFrame((state) => {
+        const time = state.clock.elapsedTime 
         for (let i = 0; i < borderMeshRefs.length; i++) {      
-          borderMeshRefs[i].current.position.x = Math.cos(state.clock.elapsedTime / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
-          borderMeshRefs[i].current.position.y = 0.05
-          borderMeshRefs[i].current.position.z = Math.sin(state.clock.elapsedTime / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          if (borderMeshRefs[i].current) {
+            borderMeshRefs[i].current.position.x = Math.cos(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * width
+            borderMeshRefs[i].current.position.y = 0.05
+            borderMeshRefs[i].current.position.z = Math.sin(time / 2 + 2 * Math.PI/borderMeshRefs.length * i) * height
+          }
         }
       })
 
-      return <animated.group
-        position={position}
-        scale={scale}
-      >
-        <mesh scale={[width, 1,height]}>
-          <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-          <meshStandardMaterial color='black' transparent opacity={0.9}/>
+      return <animated.group position={position} scale={scale}>
+        <mesh scale={[width, 0.01, height]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={0.8}/>
         </mesh>
         <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
-            position={[-1.2, 0.1, -0.1]}
-            rotation={[-Math.PI/2, 0, 0]}
-            height={0.01}
-            lineHeight={0.9} 
-            size={0.33}
-        >
-            {`Finished\nthe route!`}
-            <meshStandardMaterial color='yellow'/>
+        name='main-text'
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[-1.45,0,-0.1]}
+        rotation={layout[device].game.whoGoesFirst.title.rotation}
+        size={0.5}
+        height={layout[device].game.whoGoesFirst.title.height}
+        lineHeight={0.8}>
+          {`WELCOME\n    HOME!`}
+          <meshStandardMaterial color='limegreen'/>
         </Text3D>
         <group ref={borderMesh0Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh1Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh2Ref}>
-            <Star scale={0.1} color='yellow'/>
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh3Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh4Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh5Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
         <group ref={borderMesh6Ref}>
-            <Star scale={0.1} color='yellow' />
+          <Star 
+            scale={starScale}
+            color='limegreen'
+          />
         </group>
       </animated.group>
     }
 
-    // place on top of tiles with .map
-    // adjust neptune particle size
-    function Tiles({ device, rotation }) {
-      const TILE_RADIUS = layout[device].howToPlay.tileRadius.ring
-      const NUM_STARS = 20;
-      let tiles = [];
-      let rocket3AnimationsArray = []
-      //circle
-      for (let i = 0; i < NUM_STARS; i++) {
-        if (i == 0 || i >= 5) {
-          let position = [
-            -Math.cos(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-            0,
-            Math.sin(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-          ];
-          if (i == 0) {
-            tiles.push(<Earth position={position} scale={0.4} key={i}/>);
-          } else if (i == 5) {
-            tiles.push(
-              <Mars
-                position={position}
-                scale={0.4}
-                key={i}
-              />
-            );
-          } else if (i == 10) {
-            tiles.push(<Saturn position={position} scale={0.4} key={i}/>);
-          } else if (i == 15) {
-            tiles.push(<Neptune position={position} scale={0.4} key={i}/>);
-          } else {
-            tiles.push(
-              <Star
-                position={position}
-                key={i}
-                scale={layout[device].howToPlay.star.scale}
-                device={device}
-              />
-            );
-          }
-          rocket3AnimationsArray.push(
-            {
-              rocket3Pos: [
-                position[0]-0.2,
-                position[1]+1,
-                position[2]
-              ],
-              delay: 100,
-              config: {
-                tension: 300,
-                clamp: true
-              },
-            },
-          )
-        }
-      }
-
-      // doesn't trigger re-render
-      const springs = useSpring({
-        from: {
-          rocket3Pos: rocket3AnimationsArray[1].rocket3Pos,
-          rocket3Scale: 1,
-          tilesScale: layout[device].howToPlay.scoringPage.tilesScale0,
-          tilesPos: layout[device].howToPlay.scoringPage.tilesPos0,
-          rocketHomeScale: 0,
-          shortcutStarScale: layout[device].howToPlay.star.scale,
-          moveScale: 0,
-          scoreScale: 0,
-          scoreColor: '#ffff00',
-          cursorScale: 0,
-          cursorPos: layout[device].howToPlay.scoringPage.cursorPos[0],
-          cursorEffectOpacity: 0,
-          checkmarkColor: '#808080',
-          checkmarkScale: 0,
-          scoreTextScale: 0,
-        },
-        to: [
-          ...rocket3AnimationsArray.slice(2), 
-          rocket3AnimationsArray[0],
-          {
-            tilesScale: layout[device].howToPlay.scoringPage.tilesScale1,
-            tilesPos: layout[device].howToPlay.scoringPage.tilesPos1,
-            rocketHomeScale: layout[device].howToPlay.scoringPage.rocketHomeScale1,
-            checkmarkScale: 0.3,
-            shortcutStarScale: 0,
-            moveScale: 1,
-            cursorScale: 2,
-            delay: 500
-          },
-          {
-            cursorPos: layout[device].howToPlay.scoringPage.cursorPos[1],
-            delay: 500
-          },
-          {
-            cursorEffectOpacity: 1,
-            rocket3Scale: 1.5,
-            scoreScale: 1,
-            delay: 500,
-            config: {
-              tension: 0,
-              clamp: true
-            },
-          },
-          {
-            cursorEffectOpacity: 0,
-            delay: 200,
-            config: {
-              tension: 0,
-              clamp: true
-            },
-          },
-          {
-            cursorPos: layout[device].howToPlay.scoringPage.cursorPos[2],
-            scoreColor: '#ffffff',
-            delay: 500
-          },
-          {
-            cursorEffectOpacity: 1,
-            cursorPos: layout[device].howToPlay.scoringPage.cursorPos[3],
-            scoreScale: 0,
-            moveScale: 0,
-            rocket3Scale: 0,
-            checkmarkColor: '#ff0000',
-            delay: 500,
-            config: {
-              tension: 0,
-              clamp: true
-            },
-          },
-          {
-            cursorEffectOpacity: 0,
-            scoreTextScale: 1,
-            // delay: 100,
-            config: {
-              friction: 26,
-              tension: 170,
-              // tension: 0,
-              clamp: true
-            },
-          },
-          {
-            delay: 20000,
-          },
-        ],
-        loop: true
-      })
-
-      function HomePieces({ position }) {
-        return <group position={position}>
-          <animated.group name='rocket-0' position={layout[device].howToPlay.scoringPage.rocket0Pos} scale={springs.rocketHomeScale}>
-            <Rocket/>
-          </animated.group>
-          <animated.group name='rocket-1' position={layout[device].howToPlay.scoringPage.rocket1Pos} scale={springs.rocketHomeScale}>
-            <Rocket/>
-          </animated.group>
-          <animated.group name='rocket-2' position={layout[device].howToPlay.scoringPage.rocket2Pos} scale={springs.rocketHomeScale}>
-            <Rocket/>
-          </animated.group>
-          <Check 
-            position={layout[device].howToPlay.scoringPage.checkPos} 
-            rotation={[Math.PI/8, 0, 0]}
-            scale={springs.checkmarkScale} 
-            color={springs.checkmarkColor}
-          />
-        </group>
-      }
-      // add components that use springs
-  
-      //shortcuts
-      const radiusShortcut1 = layout[device].howToPlay.tileRadius.shortcut1;
-      const radiusShortcut2 = layout[device].howToPlay.tileRadius.shortcut2;
-      for (let i = 0; i < NUM_STARS; i++) {
-        let indexShortcut1;
-        let indexShortcut2;
-        if (i == 0) {
-          indexShortcut1 = 24;
-          indexShortcut2 = 23;
-        } else if (i == 5) {
-          indexShortcut1 = 28;
-          indexShortcut2 = 27;
-        } else if (i == 10) {
-          indexShortcut1 = 20;
-          indexShortcut2 = 21;
-        } else if (i == 15) {
-          indexShortcut1 = 25;
-          indexShortcut2 = 26;
-        }
-        if (i == 0 || i == 5 || i == 10 || i == 15) {
-          let position1 = [
-            Math.sin(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut1,
-            0,
-            Math.cos(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut1,
-          ]
-          tiles.push(
-            <Star
-              position={position1}
-              tile={indexShortcut1}
-              key={i + 30}
-              scale={i == 5 ? springs.shortcutStarScale : layout[device].howToPlay.star.scale}
-              device={device}
-            />
-          );
-          let position2 = [
-            Math.sin(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut2,
-            0,
-            Math.cos(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut2,
-          ]
-          tiles.push(
-            <Star
-              position={position2}
-              tile={indexShortcut2}
-              key={i + 41}
-              scale={i == 5 ? springs.shortcutStarScale : layout[device].howToPlay.star.scale}
-              device={device}
-            />
-          );
-        }
-      }
-      // center piece
-      tiles.push(
-        <Moon
-          position={[0,0,0]}
-          scale={0.4}
-          key={100}
-        />
-      );
-      // shoot fireworks
-      // change color on 'lets go' text into rainbow
-      return <animated.group position={springs.tilesPos} rotation={rotation} scale={springs.tilesScale}>
-        {tiles}
-        <animated.group name='rocket-3' position={springs.rocket3Pos} scale={springs.rocket3Scale}>
-          <Rocket/>
-        </animated.group>
-        <group name='rocket-home'>
-          <HomePieces position={[-2, 0, 2]}/>
-        </group>
-        <animated.group scale={springs.moveScale}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={layout[device].howToPlay.scoringPage.moveText.position}
-            rotation={layout[device].howToPlay.scoringPage.moveText.rotation}
-            size={0.4}
-            height={0.01}
-          >
-            {'MOVE: 1-STEP'}
-            <meshStandardMaterial color='limegreen'/>
-          </Text3D>
-        </animated.group>
-        <animated.group scale={springs.scoreScale}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
-            position={layout[device].howToPlay.scoringPage.scoreText.position}
-            rotation={layout[device].howToPlay.scoringPage.scoreText.rotation}
-            size={layout[device].howToPlay.scoringPage.scoreText.size} 
-            height={0.01}
-          >
-            SCORE
-            <AnimatedMeshDistortMaterial color={springs.scoreColor} distort={0}/>
-          </Text3D>
-        </animated.group>
-        <WelcomeBackText 
-        scale={springs.scoreTextScale} 
-        position={layout[device].howToPlay.scoringPage.welcomeBackText.position}
-        />
-        <group>
-          <Cursor2
-            position={springs.cursorPos}
-            rotation={[0,0,0]}
-            scale={springs.cursorScale}
-            effectOpacity={springs.cursorEffectOpacity}
-            effect={true}
-          />
-        </group>
-      </animated.group>;
-    }
-
     return <group 
       name='scoring-page' 
-      position={layout[device].howToPlay.scoringPage.position}
-      scale={layout[device].howToPlay.scoringPage.scale}
     >
+      <group 
+      name='board'
+      position={layout[device].howToPlay.scoringPage.position}
+      scale={layout[device].howToPlay.scoringPage.scale}>
+        <Board
+        constellations={false}
+        omit
+        showTiles={[0, 15, 16, 17, 18, 19, 29]}
+        showArrows={false}
+        />
+        {/* Piggyback token */}
+        <animated.group scale={springs.piggybackTokenScale} position={springs.piggybackTokenPosition}>
+          <Rocket onBoard/>
+        </animated.group>
+        {/* Moving token */}
+        <animated.group scale={springs.movingTokenScale} position={springs.movingTokenPosition}>
+          <Rocket onBoard/>
+        </animated.group>
+      </group>
+      
+      <group name='rocket-home' position={[-0.5, 0, 2.5]} scale={1.2}>
+        <mesh position={[0, -0.5, -0.2]}>
+          <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
+          <meshStandardMaterial color='red' transparent opacity={0.1}/>
+        </mesh>
+        <Rocket position={[-0.6,0,-0.5]}/>
+        <Rocket position={[0.4,0,-0.5]}/>
+        {/* Moving token */}
+        {/* Add hologram Rocket */}
+        <animated.group name='scored-indicator-0' position={[-0.5, 0, 0.5]} scale={springs.scoredIndicator0Scale}>
+          <Star color='red'/>
+        </animated.group>
+        <animated.group name='scored-indicator-1' position={[0.5, 0, 0.5]} scale={springs.scoredIndicator1Scale}>
+          <Star color='red'/>
+        </animated.group>
+      </group>
+      <WelcomeHomeAlert position={[4.8,1,-1]} scale={springs.welcomeHomeAlertScale}/>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.scoringPage.text.position}
@@ -1053,11 +1029,9 @@ export default function HowToPlay({
         height={layout[device].howToPlay.scoringPage.text.height}
         lineHeight={layout[device].howToPlay.scoringPage.text.lineHeight}
       >
-        {`5. Bring the piece\nhome to score.\nFirst team to score\nfour pieces wins!`}
+        {`SCORE THE TOKEN BY BRINGING IT TO THE\nFINISH STAR. IT HAS TO PASS EARTH.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
-      <Tiles device={device}/>
-      {/* <Fireworks position={position}/> */}
     </group>
   }
 
@@ -3444,7 +3418,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScoringPage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScorePage/>, <ReadingTheDicePage/>, <ShortcutsPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

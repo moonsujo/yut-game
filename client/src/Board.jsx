@@ -15,8 +15,6 @@ import { TaurusConstellation } from './meshes/TaurusConstellation';
 import { AriesConstellation } from './meshes/AriesConstellation';
 import CurvedArrow from './meshes/CurvedArrow';
 
-// Accept flag to enable click
-// Pass flag to Tile component
 function getMeshByTile(tile) {
   if (tile == 0) {
     return <Earth scale={0.45}/>
@@ -45,7 +43,10 @@ export default function Board({
   showStart=false, 
   interactive=false,
   device="landscapeDesktop",
-  constellations=true
+  constellations=true,
+  omit=false,
+  showTiles=[],
+  showArrows=true
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
@@ -253,13 +254,9 @@ export default function Board({
       interactive={interactive}
     />
   );
-
-  // arrow: sphere geometries
-  // add a star after Earth
-  // color the 'start' star in info-green
+  // position 29
   const finishMarkerRadius = 3.5
-  return <animated.group position={position} rotation={rotation} scale={scale}>
-    {tileComponents}
+  tileComponents.push(
     <group name='finish-marker' scale={1.67}>
       { /* <mesh position={[
         finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (20/32)), 
@@ -294,58 +291,58 @@ export default function Board({
         <meshStandardMaterial color='limegreen'/>
       </mesh> */}
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32))+0.19, 
         0, 
         -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (24/32)), 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32))+0.17, 
         0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32)), 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32))-0.04, 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32))+0.13, 
         0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32)), 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32))-0.05, 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32))+0.08, 
         0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32)), 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32))-0.02, 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32))+0.02, 
         0, 
         -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (28/32))+0.03, 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
       <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32))-0.05, 
         0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.06, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.1, 
         ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
+        <sphereGeometry args={[0.04, 32, 16]}/>
         <meshStandardMaterial color='limegreen'/>
       </mesh>
-      <mesh name='arrow' rotation={[0, Math.PI * 2 * 6/32, 0]}
+      <mesh name='arrow' rotation={[0, Math.PI * 2 * 4/32, 0]}
         position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32)), 
+        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32))-0.1, 
         0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.1, 
+        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.2, 
         ]}>
         <cylinderGeometry args={[0, 0.1, 0.01, 3]}/>
         <meshStandardMaterial color='limegreen'/>
@@ -371,7 +368,21 @@ export default function Board({
         </mesh>
         <Star scale={0.22} color='limegreen' position={[0, -0.03, 3.9]}/>
       </group>
-    </group>
+    </group>)
+
+  const selectTileComponents = []
+  if (omit) {
+    for (const i of showTiles) {
+      selectTileComponents.push(tileComponents[i])
+    }
+  }
+
+  // arrow: sphere geometries
+  // add a star after Earth
+  // color the 'start' star in info-green
+  return <animated.group position={position} rotation={rotation} scale={scale}>
+    {!omit && tileComponents}
+    {omit && selectTileComponents}
     {showStart && <group 
       position={layout[device].board.startEarth.position} 
       scale={1.67}>
@@ -390,7 +401,7 @@ export default function Board({
         <meshStandardMaterial color='limegreen'/>
       </mesh>
     </group>}
-    <group name='helper-arrows'>
+    { showArrows && <group name='helper-arrows'>
       <mesh name='mars-top' position={[4.8, 0, -1]} rotation={[Math.PI/2, 0, Math.PI - Math.PI/32]}>
         <coneGeometry args={[0.08, 0.3, 8]}/>
         <meshBasicMaterial color='grey'/>
@@ -419,8 +430,7 @@ export default function Board({
         <coneGeometry args={[0.08, 0.3, 8]}/>
         <meshBasicMaterial color='grey'/>
       </mesh>
-    </group>
-    
+    </group>}
     { constellations && <WolfConstellation position={[-2.1,0,-1.2]} rotation={[-Math.PI/2, 0, 0]} scale={0.85}/> }
     { constellations && <RhinoConstellation position={[2.1,0,-1.3]} rotation={[-Math.PI/2, 0, 0]} scale={0.8}/> }
     { constellations && <AriesConstellation position={[-2.3,0,4.1]} rotation={[-Math.PI/2, 0, 0]} scale={0.75}/> }

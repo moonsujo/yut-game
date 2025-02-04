@@ -188,11 +188,6 @@ export const SocketManager = () => {
       findAndStoreClient(room.spectators, room.teams);
 
       setGamePhase((lastPhase) => {
-        if (lastPhase === 'pregame' && room.gamePhase === 'game') {
-        } else if (lastPhase === 'finished' && room.gamePhase === 'lobby') {
-          // Reset fireworks from win screen
-          setParticleSetting(null)
-        }
         return room.gamePhase
       });
 
