@@ -2257,7 +2257,7 @@ export default {
       },
       shortcutsPage: {
         text: {
-          position: [-3.5,0,-4],
+          position: [-2.2,0,7],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,

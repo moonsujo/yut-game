@@ -29,6 +29,7 @@ import YootDisplay from './YootDisplay';
 import Tile from './components/Tile';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import { useShootingStarShader } from './shader/shootingStar/ShootingStarShader';
 
 export default function HowToPlay({ 
   device, 
@@ -39,7 +40,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(5)
+  const [page, setPage] = useState(6)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -72,12 +73,12 @@ export default function HowToPlay({
     } else if (page === 5) { // Read the dice
       const page6Timeout = setTimeout(() => {
         setPage(6)
-      }, 11500000)
+      }, 11500)
       setPageTimeout(page6Timeout)
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
         setPage(0)
-      }, 15500)
+      }, 15500000)
       setPageTimeout(page7Timeout)
     }
   }, [page])
@@ -1623,450 +1624,118 @@ export default function HowToPlay({
     </group>
   }
   
-  function ShortcutsPage() {
-    const springs = useSpring({
+  function ShortcutPage() {
+    // #region Springs
+    const springsArrow0 = useSpring({
       from: {
-        cursorPos: layout[device].howToPlay.shortcutsPage.cursor.position[0],
-        cursorScale: layout[device].howToPlay.shortcutsPage.cursor.scale[0],
-        cursorEffectOpacity: layout[device].howToPlay.shortcutsPage.cursor.effectOpacity[0],
-        rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[0],
-        legalTile0Scale: 0.4,
-        legalTile1Scale: 0.4,
-        legalTile2Scale: 0.5,
-        legalTile3Scale: 0.5,
-        pointer0Scale: 0,
-        pointer1Scale: 0,
-        pointer2Scale: 0,
-        pointer3Scale: 0,
-        pointer4Scale: 0,
-        rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[0],
-        scoreScale: 0,
-        tilesScale: layout[device].howToPlay.shortcutsPage.tilesScale[0],
-        tilesPos: layout[device].howToPlay.shortcutsPage.tilesPos[0],
-        tilesRotation: [0,0,0],
-        ruleTextScale: layout[device].howToPlay.shortcutsPage.text.scales[0],
-        noteTextScale: 0,
-        moveTextScale: layout[device].howToPlay.shortcutsPage.moveText.scale[0],
-        moveTokenScale: 0
+        scale: 0
       },
       to: [
         {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[1],
-          delay: 1000,
+          scale: 1.7,
           config: {
-            tension: 0,
+            tension: 180,
+            friction: 12
           }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[2],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[3],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[4],
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[1],
-          legalTile0Scale: 0.6,
-          pointer0Scale: 1.5,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[5],
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[2],
-          legalTile0Scale: 0.4,
-          pointer0Scale: 0,
-          delay: 1000,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[6],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[7],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[3],
-          delay: 500,
-          scoreScale: 1,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[8],
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[4],
-          scoreScale: 0,
-          delay: 1000,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[9],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[10],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[11],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[5],
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[12],
-          legalTile1Scale: 0.6,
-          pointer1Scale: 1,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[6],
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[13],
-          legalTile1Scale: 0.4,
-          pointer1Scale: 0,
-          delay: 1000,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[14],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[15],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[16],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[17],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[18],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          scoreScale: 1,
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[7],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          scoreScale: 0,
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[8],
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[19],
-          tilesScale: layout[device].howToPlay.shortcutsPage.tilesScale[1],
-          tilesPos: layout[device].howToPlay.shortcutsPage.tilesPos[1],
-          tilesRotation: [0, -Math.PI/16, 0],
-          ruleTextScale: layout[device].howToPlay.shortcutsPage.text.scales[1],
-          noteTextScale: 1,
-          cursorPos: layout[device].howToPlay.shortcutsPage.cursor.position[1],
-          cursorScale: layout[device].howToPlay.shortcutsPage.cursor.scale[1],
-          moveTextScale: layout[device].howToPlay.shortcutsPage.moveText.scale[1],
-          delay: 1000
-        },
-        {
-          cursorPos: layout[device].howToPlay.shortcutsPage.cursor.position[2],
-          delay: 1000
-        },
-        {
-          cursorEffectOpacity: layout[device].howToPlay.shortcutsPage.cursor.effectOpacity[1],
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[9],
-          legalTile2Scale: 0.4,
-          legalTile3Scale: 0.8,
-          pointer2Scale: 1,
-          pointer3Scale: 1,
-          pointer4Scale: 2.5,
-          moveTokenScale: 1,
-          delay: 1000,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          cursorEffectOpacity: layout[device].howToPlay.shortcutsPage.cursor.effectOpacity[2],
-          delay: 200,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Scale: layout[device].howToPlay.shortcutsPage.rocket0Scale[10],
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[20],
-          delay: 2000,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[21],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[22],
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket0Pos: layout[device].howToPlay.shortcutsPage.rocket0Pos[23],
-          moveTokenScale: 0,
-          pointer4Scale: 0,
-          legalTile3Scale: 0.4,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          delay: 5000
         }
       ],
-      loop: true
     })
+    const springsArrow1 = useSpring({
+      from: {
+        scale: 0
+      },
+      to: [
+        {
+          scale: 1.7,
+          config: {
+            tension: 180,
+            friction: 12
+          },
+          delay: 100
+        }
+      ],
+    })
+    const springsArrow2 = useSpring({
+      from: {
+        scale: 0
+      },
+      to: [
+        {
+          scale: 1.7,
+          config: {
+            tension: 180,
+            friction: 12
+          },
+          delay: 200
+        }
+      ],
+    })
+    const springsArrow3 = useSpring({
+      from: {
+        scale: 0
+      },
+      to: [
+        {
+          scale: 1.7,
+          config: {
+            tension: 180,
+            friction: 12
+          },
+          delay: 300
+        }
+      ],
+    })
+    // #endregion
 
-    function Tiles(props) {
-      const TILE_RADIUS = layout[device].howToPlay.tileRadius.ring
-      const NUM_STARS = 20;
-      let tiles = [];
-  
-      //circle
-      for (let i = 0; i < NUM_STARS; i++) {
-        let position = [
-          -Math.cos(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-          0,
-          Math.sin(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-        ];
-        if (i == 0) {
-          tiles.push(<Earth position={position} scale={0.4} key={i}/>);
-        } else if (i == 3) {
-          tiles.push(
-            <Star
-              position={position}
-              tile={i}
-              key={i}
-              scale={springs.legalTile2Scale}
-              device={device}
-            />
-          );
-        } else if (i == 7) {
-          tiles.push(
-            <group 
-            key={i}>
-              <Star
-                position={position}
-                scale={springs.legalTile3Scale}
-              />
-              <Pointer color='red' position={[position[0], position[1] + 2, position[2]]} scale={springs.pointer4Scale}/>
-            </group>
-          );
-        } else if (i == 5) {
-          tiles.push(
-            <Mars
-              position={position}
-              scale={0.4}
-              key={i}
-            />
-          );
-        } else if (i == 10) {
-          tiles.push(
-            <Saturn position={position} scale={springs.legalTile1Scale} key={i}/>
-          );
-        } else if (i == 15) {
-          tiles.push(<Neptune position={position} scale={0.4} key={i}/>);
-        } else {
-          tiles.push(
-            <Star
-              position={position}
-              tile={i}
-              key={i}
-              scale={layout[device].howToPlay.star.scale}
-              device={device}
-            />
-          );
-        }
+    const textures = [
+      useLoader(TextureLoader, 'textures/particles/3.png'),
+      // useLoader(TextureLoader, 'textures/particles/4.png'),
+      // useLoader(TextureLoader, 'textures/particles/5.png'),
+      // useLoader(TextureLoader, 'textures/particles/6.png'),
+      // useLoader(TextureLoader, 'textures/particles/8.png'),
+    ]
+
+    const [CreateShootingStar] = useShootingStarShader();
+    useEffect(() => {
+      const shootingStar0Timeout = setTimeout(() => {
+        const color = new THREE.Color();
+        color.setHSL(Math.random(), 1, 0.7)
+
+        CreateShootingStar({
+          count: 500,
+          position: new THREE.Vector2(1, 1),
+          fallDirection: new THREE.Vector2(-0.01, 0),
+          size: 0.5,
+          texture: textures[Math.floor(Math.random() * textures.length)],
+          radius: 0.4 + Math.random() * 0.3,
+          color,
+          duration: 3
+        })
+      }, 1000)
+      const shootingStar1Timeout = setTimeout(() => {
+        const color = new THREE.Color();
+        color.setHSL(Math.random(), 1, 0.7)
+
+        CreateShootingStar({
+          count: 500,
+          position: new THREE.Vector2(1, 1),
+          fallDirection: new THREE.Vector2(0, -0.02),
+          size: 0.5,
+          texture: textures[Math.floor(Math.random() * textures.length)],
+          radius: 0.4 + Math.random() * 0.3,
+          color,
+          duration: 3.5
+        })
+      }, 4000)
+
+      return () => {
+        clearTimeout(shootingStar0Timeout)
+        clearTimeout(shootingStar1Timeout)
       }
-  
-      //shortcuts
-      const radiusShortcut1 = layout[device].howToPlay.tileRadius.shortcut1;
-      const radiusShortcut2 = layout[device].howToPlay.tileRadius.shortcut2;
-      for (let i = 0; i < NUM_STARS; i++) {
-        let indexShortcut1;
-        let indexShortcut2;
-        if (i == 0) {
-          indexShortcut1 = 24;
-          indexShortcut2 = 23;
-        } else if (i == 5) {
-          indexShortcut1 = 28;
-          indexShortcut2 = 27;
-        } else if (i == 10) {
-          indexShortcut1 = 20;
-          indexShortcut2 = 21;
-        } else if (i == 15) {
-          indexShortcut1 = 25;
-          indexShortcut2 = 26;
-        }
-        if (i == 0 || i == 5 || i == 10 || i == 15) {
-          let position1 = [
-            Math.sin(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut1,
-            0,
-            Math.cos(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut1,
-          ]
-          tiles.push(
-            <Star
-              position={position1}
-              tile={indexShortcut1}
-              key={i + 30}
-              scale={layout[device].howToPlay.star.scale}
-              device={device}
-            />
-          );
-          let position2 = [
-            Math.sin(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut2,
-            0,
-            Math.cos(((i -5) * (Math.PI * 2)) / NUM_STARS) *
-              radiusShortcut2,
-          ]
-          tiles.push(
-            <Star
-              position={position2}
-              tile={indexShortcut2}
-              key={i + 41}
-              scale={layout[device].howToPlay.star.scale}
-              device={device}
-            />
-          );
-        }
-      }
-      // center piece
-      tiles.push(
-        <Moon
-          position={[0,0,0]}
-          intensity={3}
-          key={100}
-          tile={22}
-          device={device}
-          scale={springs.legalTile0Scale}
-        />
-      );
-      return <animated.group {...props}>
-        {tiles}
-        <animated.group name='rocket-0' scale={springs.rocket0Scale} position={springs.rocket0Pos}>
-          <Rocket />
-        </animated.group>
-        <animated.group name='moon-arrow' scale={springs.pointer0Scale}>
-          <ArrowBlender
-            position={[0, 0.5, 1.5]}
-            rotation={[0, -Math.PI/2, 0]}
-            scale={0.5}
-            color='red'
-          />
-        </animated.group>
-        <animated.group name='saturn-arrow' scale={springs.pointer1Scale}>
-          <ArrowBlender
-            position={[0, 0.5, -3.5]}
-            rotation={[0, -Math.PI/2, 0]}
-            scale={0.5}
-            color='red'
-          />
-        </animated.group>
-        <animated.group name='mars-arrow-wrong' scale={springs.pointer2Scale}>
-          <ArrowBlender
-            position={[3.5, 0.5, 0]}
-            rotation={[0, -Math.PI, 0]}
-            scale={0.5}
-            color='grey'
-          />
-        </animated.group>
-        <animated.group name='mars-arrow-correct' scale={springs.pointer3Scale}>
-          <ArrowBlender
-            position={[4.6, 0.5, -1.5]}
-            rotation={[0, -Math.PI/8 * 11, 0]}
-            scale={0.5}
-            color='red'
-          />
-        </animated.group>
-        <animated.group scale={springs.scoreScale}>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
-            size={0.5} 
-            height={0.01}
-            position={layout[device].howToPlay.shortcutsPage.scoreText.position}
-            rotation={layout[device].howToPlay.shortcutsPage.scoreText.rotation}
-          >
-            SCORE!
-            <meshStandardMaterial color='limegreen'/>
-          </Text3D>
-        </animated.group>
-      </animated.group>;
-    }
+    }, [])
 
     return <group name='shortcuts-page'>
-      <animated.group name='text' 
-        scale={springs.ruleTextScale}
-      >
+      <animated.group name='text'>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.shortcutsPage.text.position} 
@@ -2075,59 +1744,35 @@ export default function HowToPlay({
           height={layout[device].howToPlay.shortcutsPage.text.height}
           lineHeight={layout[device].howToPlay.shortcutsPage.text.lineHeight}
         >
-          {`8. When you start a move\nfrom a planet or the Moon,\nyou can take a shortcut.`}
+          {`TAKE A SHORTCUT BY STARTING A JUMP\nFROM A PLANET. YOU CANNOT BEND IN\nTHE MIDDLE OF A JUMP.`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </animated.group>
-      <animated.group 
-      name='note-text' 
-      position={layout[device].howToPlay.shortcutsPage.noteText.position} 
-      rotation={layout[device].howToPlay.shortcutsPage.noteText.rotation} 
-      scale={springs.noteTextScale}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[0,0,0]}
-          rotation={[0, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          {'NOTE: you cannot\nbend in the middle\nof a move.'}
-          <meshStandardMaterial color='yellow'/>
-        </Text3D> 
-      </animated.group>
-      <animated.group 
-        name='move-text' 
-        position={layout[device].howToPlay.shortcutsPage.moveText.position}
-        rotation={layout[device].howToPlay.shortcutsPage.moveText.rotation}
-        scale={springs.moveTextScale}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json" 
-          size={0.5} 
-          height={0.01}
-        >
-          {'MOVE:'}
-          <meshStandardMaterial color='limegreen'/>
-        </Text3D>
-        <YootToken position={layout[device].howToPlay.shortcutsPage.yootToken.position} rotation={[Math.PI/2, Math.PI/2, 0]} />
-      </animated.group>
-      <Cursor2
-        position={springs.cursorPos}
-        rotation={[0,0,0]}
-        scale={springs.cursorScale}
-        effectOpacity={springs.cursorEffectOpacity}
-        effect={true}
-      />
-      <Tiles 
-        position={springs.tilesPos} 
-        rotation={springs.tilesRotation} 
-        scale={springs.tilesScale}
-      />
-      <animated.group scale={springs.moveTokenScale}>
-        <YootToken 
-          position={layout[device].howToPlay.shortcutsPage.tileHelper.position} 
-          rotation={layout[device].howToPlay.shortcutsPage.tileHelper.rotation} 
-        />
-      </animated.group>
+      <Board position={[2.8, 0, -0.5]} scale={0.9} showArrows={false} starColor='#44442B' />
+      <group position={[2.5, 0.5, -0.3]} scale={0.9}>
+        <animated.mesh name='mars-left' scale={springsArrow0.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+          <coneGeometry args={[0.15, 0.4, 32]}/>
+          <meshBasicMaterial color='#ffff33'/>
+        </animated.mesh>
+      </group>
+      <group position={[-2.15, 0.5, -0.3]} scale={0.9}>
+        <animated.mesh name='moon-left' scale={springsArrow1.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+          <coneGeometry args={[0.15, 0.4, 32]}/>
+          <meshBasicMaterial color='#ffff33'/>
+        </animated.mesh>
+      </group>
+      <group position={[-0.8, 0.5, -3.5]} scale={0.9}>
+        <animated.mesh name='saturn-bottom' scale={springsArrow2.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <coneGeometry args={[0.15, 0.4, 32]}/>
+          <meshBasicMaterial color='#ffff33'/>
+        </animated.mesh>
+      </group>
+      <group position={[-0.8, 0.5, 1.15]} scale={0.9}>
+        <animated.mesh name='moon-bottom' scale={springsArrow3.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <coneGeometry args={[0.15, 0.4, 32]}/>
+          <meshBasicMaterial color='#ffff33'/>
+        </animated.mesh>
+      </group>
     </group>
   }
 
@@ -3408,7 +3053,7 @@ export default function HowToPlay({
     </group>
   }
 
-  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScorePage/>, <ReadTheYutPage/>, <ShortcutsPage/>]
+  const pages = [<Overview/>, <ThrowTheYutPage/>, <CatchEnemiesPage/>, <PiggybackPage/>, <ScorePage/>, <ReadTheYutPage/>, <ShortcutPage/>]
 
   return <group position={position} rotation={rotation} scale={scale}>
     {pages[page]}

@@ -155,10 +155,10 @@ export default function Lobby() {
     }
 
     return <group>
-      <mesh name='background-panel' position={[-8.2, 0, 0]}>
+      {/* <mesh name='background-panel' position={[-8.2, 0, 0]}>
         <boxGeometry args={[9, 0.01, 14]}/>
         <meshStandardMaterial color='black' transparent opacity={0.5}/>
-      </mesh>
+      </mesh> */}
       <group name='title'>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -210,10 +210,10 @@ export default function Lobby() {
 
   function SecondSection() {
     return <group name='rulebook'>
-      <mesh name='background-panel' position={[0.7, -0.5, 0]}>
+      {/* <mesh name='background-panel' position={[0.7, -0.5, 0]}>
         <boxGeometry args={[8.4, 0.01, 14]}/>
         <meshStandardMaterial color='black' transparent opacity={0.5}/>
-      </mesh>
+      </mesh> */}
       <group name='rulebook-label' position={[0.67, 0, -5.6]} scale={0.9}>
         <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
           <boxGeometry args={[1, 1, 1]}/>
@@ -1017,10 +1017,10 @@ export default function Lobby() {
     }
 
     return <group name='third-section'>
-      <mesh name='background-panel' position={[8.8, 0, 0]}>
+      {/* <mesh name='background-panel' position={[8.8, 0, 0]}>
         <boxGeometry args={[7.4, 0.01, 14]}/>
         <meshStandardMaterial color='black' transparent opacity={0.5}/>
-      </mesh>
+      </mesh> */}
       <InviteFriendsButton/>
       { inviteFriendsVisible && <InviteFriends/> }
       <SettingsButtonLobby/>

@@ -15,23 +15,7 @@ import { TaurusConstellation } from './meshes/TaurusConstellation';
 import { AriesConstellation } from './meshes/AriesConstellation';
 import CurvedArrow from './meshes/CurvedArrow';
 
-function getMeshByTile(tile) {
-  if (tile == 0) {
-    return <Earth scale={0.45}/>
-  } else if (tile == 5) {
-    return <Mars scale={0.4}/>
-  } else if (tile == 10) {
-    return <Saturn scale={0.4}/>
-  } else if (tile == 15) {
-    return <Neptune scale={0.4}/>
-  } else if (tile == 22) {
-    return <Moon scale={0.35} shiny/>
-  } else if (tile == 1) {
-    return <Star scale={0.4} color='limegreen'/>
-  } else {
-    return <Star scale={0.4}/>
-  }
-}
+
 
 export default function Board({ 
   position=[0,0,0], 
@@ -46,11 +30,31 @@ export default function Board({
   constellations=true,
   omit=false,
   showTiles=[],
-  showArrows=true
+  showArrows=true,
+  starColor='yellow'
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
   let tileComponents = [];
+
+  function getMeshByTile(tile) {
+    if (tile == 0) {
+      return <Earth scale={0.45}/>
+    } else if (tile == 5) {
+      return <Mars scale={0.4}/>
+    } else if (tile == 10) {
+      return <Saturn scale={0.4}/>
+    } else if (tile == 15) {
+      return <Neptune scale={0.4}/>
+    } else if (tile == 22) {
+      return <Moon scale={0.35} shiny/>
+    } else if (tile == 1) {
+      return <Star scale={0.4} color={starColor}/>
+      // return <Star scale={0.4} color='limegreen'/>
+    } else {
+      return <Star scale={0.4} color={starColor}/>
+    }
+  }
 
   // Circle
   for (let i = 0; i < NUM_STARS; i++) {
