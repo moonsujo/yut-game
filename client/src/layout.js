@@ -2483,7 +2483,7 @@ export default {
       },
       readingTheDicePage: {
         text: {
-          position: [-2.4,0,8],
+          position: [-2.4,0,7.7],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
@@ -2555,7 +2555,7 @@ export default {
           }
         },
         yoot: {
-          position: [-2.7, 0, 4.5],
+          position: [-2.7, 0, 4.2],
           scale: 0.9,
           text: {
             line0: {
@@ -2583,7 +2583,7 @@ export default {
           }
         },
         mo: {
-          position: [1.7, 0, 4.5],
+          position: [1.7, 0, 4.2],
           scale: 0.9,
           text: {
             line0: {
@@ -2611,7 +2611,7 @@ export default {
           }
         },
         backdo: {
-          position: [6.1, 0, 4.5],
+          position: [6.1, 0, 4.2],
           scale: 0.9,
           text: {
             line0: {

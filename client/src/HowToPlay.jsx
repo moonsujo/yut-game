@@ -2783,6 +2783,7 @@ export default function HowToPlay({
 
   function Overview() {
     const TILE_RADIUS = 5
+    const scorePositionShift = [-4.5, 0, 1]
     const springs = useSpring({
       from: {
         catchTokenPosition: [
@@ -2792,12 +2793,12 @@ export default function HowToPlay({
         ],
         catchTokenScale: 1.5,
         piggybackTokenPosition: [-4.1,1,-3.1],
-        movingTokenPosition: [1.6,0,2.4],
+        movingTokenPosition: [-4.3,0,6.5],
         movingTokenScale: 1,
         catchAlertScale: 0,
         catchTokenHomeScale: 0,
         piggybackAlertScale: 0,
-        piggybackTokenScale: 1,
+        piggybackTokenScale: 1.5,
         welcomeHomeAlertScale: 0,
         scoredIndicator0Scale: 0,
         scoredIndicator1Scale: 0,
@@ -2859,10 +2860,10 @@ export default function HowToPlay({
             1.5,
             Math.sin(((12) * (Math.PI * 2)) / 20) * TILE_RADIUS,
           ],
-          catchAlertScale: 1,
+          catchAlertScale: 0.7,
         },
         {
-          catchTokenPosition: [-1, 0, 1.9],
+          catchTokenPosition: [4.5, 0, 5.5],
           catchTokenScale: 0,
           delay: 500
         },
@@ -2911,7 +2912,7 @@ export default function HowToPlay({
             1.5,
             Math.sin(((18) * (Math.PI * 2)) / 20) * TILE_RADIUS,
           ],
-          piggybackAlertScale: 0.85
+          piggybackAlertScale: 0.7
         },
         {
           movingTokenPosition: [
@@ -3027,14 +3028,14 @@ export default function HowToPlay({
         },
         {
           movingTokenPosition: [
-            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5 + 2,
-            1.5,
-            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 - 4,
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 0.5 + scorePositionShift[0],
+            1.5 + scorePositionShift[1],
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 + scorePositionShift[2],
           ],
           piggybackTokenPosition: [
-            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5 + 2,
-            1.5,
-            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 - 4,
+            -Math.cos(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS - 0.5 + scorePositionShift[0],
+            1.5 + scorePositionShift[1],
+            Math.sin(((25) * (Math.PI * 2)) / 20) * TILE_RADIUS + 1.5 + scorePositionShift[2],
           ],
           movingTokenScale: 0,
           piggybackTokenScale: 0,
@@ -3094,10 +3095,10 @@ export default function HowToPlay({
         <Text3D
         name='main-text'
         font="fonts/Luckiest Guy_Regular.json"
-        position={[-1.1,0,0.2]}
-        rotation={layout[device].game.whoGoesFirst.title.rotation}
-        size={0.5}
-        height={layout[device].game.whoGoesFirst.title.height}>
+        position={[-1.29,0,0.25]}
+        rotation={[-Math.PI/2,0,0]}
+        size={0.6}
+        height={0.01}>
           CATCH!
           <meshStandardMaterial color='limegreen'/>
         </Text3D>
@@ -3334,10 +3335,10 @@ export default function HowToPlay({
     }
 
     return <group>
-      <CatchAlert position={[7, 1, -6]} scale={springs.catchAlertScale}/>
-      <PiggybackAlert position={[-1.7, 1, -5.6]} scale={springs.piggybackAlertScale}/>
+      <CatchAlert position={[7.5, 1, -5]} scale={springs.catchAlertScale}/>
+      <PiggybackAlert position={[-1.5, 1, -5]} scale={springs.piggybackAlertScale}/>
       <WelcomeHomeAlert position={[2.8,1,2]} scale={springs.welcomeHomeAlertScale}/>
-      <group position={[2.8, 0, -0.5]}>
+      <group name='board' position={[2.8, 0, -0.5]} scale={0.9}>
         <Board constellations={false} showStart/>
         {/* Catch token */}
         <animated.group position={springs.catchTokenPosition} scale={springs.catchTokenScale}>
@@ -3352,7 +3353,7 @@ export default function HowToPlay({
           <Rocket onBoard/>
         </animated.group>
       </group>
-      <group name='ufo-home' position={[0.6, 0, 1.5]}>
+      <group name='ufo-home' position={[7, 0, 5]}>
         <mesh position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
           <meshStandardMaterial color='turquoise' transparent opacity={0.05}/>
@@ -3365,7 +3366,7 @@ export default function HowToPlay({
         </animated.group>
         {/* Add hologram Ufo */}
       </group>
-      <group name='rocket-home' position={[5, 0, 1.5]}>
+      <group name='rocket-home' position={[-1.5, 0, 5]}>
         <mesh position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
           <meshStandardMaterial color='red' transparent opacity={0.1}/>
@@ -3381,18 +3382,18 @@ export default function HowToPlay({
           <Star color='red'/>
         </animated.group>
       </group>
-      <group name='yoot-display' position={[6.8, 0, 5.5]}>
+      <group name='yoot-display' position={[4.2, 0, 1.4]}>
         <Text3D 
         name='goal'
         font="fonts/Luckiest Guy_Regular.json"
-        position={[1.3,0,0.2]}
+        position={[1,0,-0.5]}
         rotation={layout[device].game.whoGoesFirst.title.rotation}
-        size={0.4}
+        size={0.3}
         height={layout[device].game.whoGoesFirst.title.height}>
           {`YUT\n(DICE)`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-        <YootDisplay rotation={[0, Math.PI/2, 0]} scale={0.2}/>
+        <YootDisplay rotation={[0, Math.PI/2, 0]} scale={0.15}/>
       </group>
       <Text3D 
       name='goal'
