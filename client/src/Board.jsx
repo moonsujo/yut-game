@@ -31,7 +31,8 @@ export default function Board({
   omit=false,
   showTiles=[],
   showArrows=true,
-  starColor='yellow'
+  starColor='yellow',
+  highlightShortcuts=false
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
@@ -41,13 +42,13 @@ export default function Board({
     if (tile == 0) {
       return <Earth scale={0.45}/>
     } else if (tile == 5) {
-      return <Mars scale={0.4}/>
+      return <Mars scale={!highlightShortcuts ? 0.4 : 0.55}/>
     } else if (tile == 10) {
-      return <Saturn scale={0.4}/>
+      return <Saturn scale={!highlightShortcuts ? 0.4 : 0.55}/>
     } else if (tile == 15) {
       return <Neptune scale={0.4}/>
     } else if (tile == 22) {
-      return <Moon scale={0.35} shiny/>
+      return <Moon scale={!highlightShortcuts ? 0.35 : 0.42} shiny/>
     } else if (tile == 1) {
       return <Star scale={0.4} color={starColor}/>
       // return <Star scale={0.4} color='limegreen'/>

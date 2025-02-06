@@ -35,25 +35,37 @@ export function useShootingStarShader() {
         useLoader(TextureLoader, 'textures/particles/8.png'),
     ]
 
-    function CreateShootingStar({count, position, fallDirection, size, texture, radius, color, duration=5}) {
+    function generateRandomNumberInRange(num, plusMinus) {
+        return num + Math.random() * plusMinus * (Math.random() > 0.5 ? 1 : -1);
+    };
+
+    function CreateShootingStar({
+        count, 
+        position, 
+        fallDirection, size, texture, radius, color, duration, 
+        cutOff=1,
+        trailXRange=[-1, 1],
+        trailZRange=[-1, 1],
+    }) {
         const positionsArray = new Float32Array(count * 3)
         const sizesArray = new Float32Array(count)
-        const directionsArray = new Float32Array(count*2);
+        const directionsArray = new Float32Array(count*3);
         const timingsArray = new Float32Array(count);
 
         for (let i = 0; i < count; i++) {
             const i3 = i * 3
 
             positionsArray[i3] = position.x + i * fallDirection.x + 2;
-            positionsArray[i3+1] = position.y + i * fallDirection.y + 2
-            positionsArray[i3+2] = 0
+            positionsArray[i3+1] = position.y
+            positionsArray[i3+2] = position.z + i * fallDirection.z + 2
 
             sizesArray[i] = Math.random()
 
-            directionsArray[i*2] = Math.random();
-            directionsArray[i*2+1] = Math.random();
+            directionsArray[i*3] = generateRandomNumberInRange(trailXRange[0], trailXRange[1])
+            directionsArray[i*3+1] = 0
+            directionsArray[i*3+2] = generateRandomNumberInRange(trailZRange[0], trailZRange[1])
 
-            timingsArray[i] = i/count;
+            timingsArray[i] = (i*cutOff)/count;
         }
 
         texture.flipY = false;
@@ -62,7 +74,7 @@ export function useShootingStarShader() {
         const geometry = new THREE.BufferGeometry()
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3))
         geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(sizesArray, 1))
-        geometry.setAttribute('aDirection', new THREE.Float32BufferAttribute(directionsArray, 2));
+        geometry.setAttribute('aDirection', new THREE.Float32BufferAttribute(directionsArray, 3));
         geometry.setAttribute('aTiming', new THREE.Float32BufferAttribute(timingsArray, 1));
         const material = new THREE.ShaderMaterial({
             vertexShader: fireworkVertexShader,
@@ -95,27 +107,6 @@ export function useShootingStarShader() {
         )
 
         scene.add(points)
-    }
-
-    function CreateRandomShootingStar() {
-        const count = 500;
-        const position = new THREE.Vector3(
-            Math.random() * Math.random() > 0.5 ? 1 : -1, 
-            Math.random() * Math.random() > 0.5 ? 1 : -1, 
-        )
-        const size = 0.5 + Math.random() * 0.06
-        const texture = textures[Math.floor(Math.random() * textures.length)]
-        const radius = 0.8 + Math.random() * 0.6
-        const color = new THREE.Color();
-        color.setHSL(Math.random(), 1, 0.7)
-        CreateShootingStar({
-            count,
-            position,
-            size,
-            texture,
-            radius,
-            color
-        })
     }
     
     return [CreateShootingStar]

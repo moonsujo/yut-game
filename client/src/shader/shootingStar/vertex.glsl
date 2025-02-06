@@ -5,7 +5,7 @@ uniform float uSparkDuration;
 
 attribute float aSize;
 attribute float aTiming;
-attribute vec2 aDirection;
+attribute vec3 aDirection;
 
 varying float vTiming;
 
@@ -22,14 +22,15 @@ void main()
     float progress = uProgress;
     vec3 newPosition = position;
 
+    float life = 0.1;
     // Sparking
-    float sparkingProgress = remap(progress, aTiming, aTiming + 0.1, 0.0, 1.0);
+    float sparkingProgress = remap(progress, aTiming, aTiming + life, 0.0, 1.0);
     newPosition.x += aDirection.x * sparkingProgress;
-    newPosition.y += aDirection.y * sparkingProgress;
+    newPosition.z += aDirection.z * sparkingProgress;
     
     // Scaling
-    float sizeOpeningProgress = remap(progress, aTiming, aTiming + 0.1, 0.0, 1.0);
-    float sizeClosingProgress = remap(progress, aTiming + 0.1, aTiming + 0.2, 1.0, 0.0);
+    float sizeOpeningProgress = remap(progress, aTiming, aTiming + life, 0.0, 1.0);
+    float sizeClosingProgress = remap(progress, aTiming + life, aTiming + life * 2.0, 1.0, 0.0);
     float sizeProgress = min(sizeOpeningProgress, sizeClosingProgress);
     sizeProgress = clamp(sizeProgress, 0.0, 1.0);
 

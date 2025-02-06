@@ -40,7 +40,7 @@ export default function HowToPlay({
   setShowRulebook=null
 }) {
   
-  const [page, setPage] = useState(6)
+  const [page, setPage] = useState(0)
 
   const [pageTimeout, setPageTimeout] = useState(null)
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function HowToPlay({
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
         setPage(0)
-      }, 15500000)
+      }, 12000)
       setPageTimeout(page7Timeout)
     }
   }, [page])
@@ -1626,17 +1626,21 @@ export default function HowToPlay({
   
   function ShortcutPage() {
     // #region Springs
+    const arrowFriction = 10
+    const arrowTension = 180
+    const arrowDelay = 100
     const springsArrow0 = useSpring({
       from: {
         scale: 0
       },
       to: [
         {
-          scale: 1.7,
+          scale: 1.5,
           config: {
-            tension: 180,
-            friction: 12
-          }
+            tension: arrowTension,
+            friction: arrowFriction
+          },
+          delay: arrowDelay
         }
       ],
     })
@@ -1646,12 +1650,12 @@ export default function HowToPlay({
       },
       to: [
         {
-          scale: 1.7,
+          scale: 1.5,
           config: {
-            tension: 180,
-            friction: 12
+            tension: arrowTension,
+            friction: arrowFriction
           },
-          delay: 100
+          delay: arrowDelay + 100
         }
       ],
     })
@@ -1661,12 +1665,12 @@ export default function HowToPlay({
       },
       to: [
         {
-          scale: 1.7,
+          scale: 1.5,
           config: {
-            tension: 180,
-            friction: 12
+            tension: arrowTension,
+            friction: arrowFriction
           },
-          delay: 200
+          delay: arrowDelay + 200
         }
       ],
     })
@@ -1676,15 +1680,154 @@ export default function HowToPlay({
       },
       to: [
         {
-          scale: 1.7,
+          scale: 1.5,
           config: {
-            tension: 180,
-            friction: 12
+            tension: arrowTension,
+            friction: arrowFriction
           },
-          delay: 300
+          delay: arrowDelay + 300
         }
       ],
     })
+    const life = 500
+    const startDelay = 600
+    const numDotSpringsMiddle = 19
+    const dotSpringsMiddle = []
+    const frictionWobbly = 15
+    for (let i = 0; i < numDotSpringsMiddle; i++) {
+      dotSpringsMiddle.push(useSpring({
+        from: {
+          scale: 0
+        },
+        to: [
+          {
+            scale: 0.1,
+            config: {
+              tension: 180,
+              friction: frictionWobbly
+            },
+            delay: startDelay + i * 100
+          },
+          {
+            scale: 0,
+            config: {
+              tension: 170,
+              friction: 26
+            },
+            delay: life
+          }
+        ],
+      }))
+    }
+    const dotSpringsCorner = []
+    const numDotSpringsCorner = 16
+    for (let i = 0; i < numDotSpringsCorner; i++) {
+      dotSpringsCorner.push(useSpring({
+        from: {
+          scale: 0
+        },
+        to: [
+          {
+            scale: 0.1,
+            config: {
+              tension: 180,
+              friction: frictionWobbly
+            },
+            delay: startDelay + 100 * numDotSpringsMiddle + i * 100
+          },
+          {
+            scale: 0,
+            config: {
+              tension: 170,
+              friction: 26
+            },
+            delay: life
+          }
+        ],
+      }))
+    }
+    const dotSpringsVertical = []
+    const numDotSpringsVertical = 25
+    for (let i = 0; i < numDotSpringsVertical; i++) {
+      dotSpringsVertical.push(useSpring({
+        from: {
+          scale: 0
+        },
+        to: [
+          {
+            scale: 0.1,
+            config: {
+              tension: 180,
+              friction: frictionWobbly
+            },
+            delay: startDelay + 100 * numDotSpringsMiddle + 100 * numDotSpringsCorner + i * 100
+          },
+          {
+            scale: 0,
+            config: {
+              tension: 170,
+              friction: 26
+            },
+            delay: life
+          }
+        ],
+      }))
+    }
+    const dotSpringsMiddleHalf = []
+    const numDotSpringsMiddleHalf = 7
+    for (let i = 0; i < numDotSpringsMiddleHalf; i++) {
+      dotSpringsMiddleHalf.push(useSpring({
+        from: {
+          scale: 0
+        },
+        to: [
+          {
+            scale: 0.1,
+            config: {
+              tension: 180,
+              friction: frictionWobbly
+            },
+            delay: startDelay + 100 * numDotSpringsMiddle + 100 * numDotSpringsCorner + 100 * numDotSpringsVertical + i * 100
+          },
+          {
+            scale: 0,
+            config: {
+              tension: 170,
+              friction: 26
+            },
+            delay: life
+          }
+        ],
+      }))
+    }
+    const dotSpringsVerticalHalf = []
+    const numDotSpringsVerticalHalf = 10
+    for (let i = 0; i < numDotSpringsVerticalHalf; i++) {
+      dotSpringsVerticalHalf.push(useSpring({
+        from: {
+          scale: 0
+        },
+        to: [
+          {
+            scale: 0.1,
+            config: {
+              tension: 180,
+              friction: frictionWobbly
+            },
+            // Extra 100 to highlight moving from the Moon
+            delay: startDelay + 100 * numDotSpringsMiddle + 100 * numDotSpringsCorner + 100 * numDotSpringsVertical + 100 * numDotSpringsMiddleHalf + i * 100 + 300
+          },
+          {
+            scale: 0,
+            config: {
+              tension: 170,
+              friction: 26
+            },
+            delay: life
+          }
+        ],
+      }))
+    }
     // #endregion
 
     const textures = [
@@ -1696,43 +1839,50 @@ export default function HowToPlay({
     ]
 
     const [CreateShootingStar] = useShootingStarShader();
+    /*
     useEffect(() => {
       const shootingStar0Timeout = setTimeout(() => {
         const color = new THREE.Color();
-        color.setHSL(Math.random(), 1, 0.7)
+        color.setHSL(55/360, 0.68, 0.55)
 
         CreateShootingStar({
-          count: 500,
-          position: new THREE.Vector2(1, 1),
-          fallDirection: new THREE.Vector2(-0.01, 0),
-          size: 0.5,
+          count: 600,
+          position: new THREE.Vector3(1.5, 1, -2.9),
+          fallDirection: new THREE.Vector3(-0.01, 0, 0),
+          size: 0.8,
           texture: textures[Math.floor(Math.random() * textures.length)],
-          radius: 0.4 + Math.random() * 0.3,
+          radius: 0.2 + Math.random() * 0.3,
           color,
-          duration: 3
+          duration: 3,
+          cutOff: 0.8,
+          trailXRange: [0.5, 0.5],
+          trailZRange: [0, 0.1]
         })
-      }, 1000)
+      }, 700)
       const shootingStar1Timeout = setTimeout(() => {
         const color = new THREE.Color();
-        color.setHSL(Math.random(), 1, 0.7)
+        color.setHSL(55/360, 0.68, 0.55)
 
         CreateShootingStar({
-          count: 500,
-          position: new THREE.Vector2(1, 1),
-          fallDirection: new THREE.Vector2(0, -0.02),
-          size: 0.5,
+          count: 600,
+          position: new THREE.Vector3(-1.3, 1, -5.9),
+          fallDirection: new THREE.Vector3(0, 0, 0.01),
+          size: 0.8,
           texture: textures[Math.floor(Math.random() * textures.length)],
-          radius: 0.4 + Math.random() * 0.3,
+          radius: 0.24 + Math.random() * 0.3,
           color,
-          duration: 3.5
+          duration: 3,
+          cutOff: 0.8,
+          trailXRange: [0, 0.1],
+          trailZRange: [-0.5, 0.1]
         })
-      }, 4000)
+      }, 3000)
 
       return () => {
         clearTimeout(shootingStar0Timeout)
         clearTimeout(shootingStar1Timeout)
       }
-    }, [])
+    }, [])*/
 
     return <group name='shortcuts-page'>
       <animated.group name='text'>
@@ -1748,30 +1898,62 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </animated.group>
-      <Board position={[2.8, 0, -0.5]} scale={0.9} showArrows={false} starColor='#44442B' />
-      <group position={[2.5, 0.5, -0.3]} scale={0.9}>
-        <animated.mesh name='mars-left' scale={springsArrow0.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
-          <coneGeometry args={[0.15, 0.4, 32]}/>
-          <meshBasicMaterial color='#ffff33'/>
-        </animated.mesh>
-      </group>
-      <group position={[-2.15, 0.5, -0.3]} scale={0.9}>
-        <animated.mesh name='moon-left' scale={springsArrow1.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
-          <coneGeometry args={[0.15, 0.4, 32]}/>
-          <meshBasicMaterial color='#ffff33'/>
-        </animated.mesh>
-      </group>
-      <group position={[-0.8, 0.5, -3.5]} scale={0.9}>
-        <animated.mesh name='saturn-bottom' scale={springsArrow2.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
-          <coneGeometry args={[0.15, 0.4, 32]}/>
-          <meshBasicMaterial color='#ffff33'/>
-        </animated.mesh>
-      </group>
-      <group position={[-0.8, 0.5, 1.15]} scale={0.9}>
-        <animated.mesh name='moon-bottom' scale={springsArrow3.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
-          <coneGeometry args={[0.15, 0.4, 32]}/>
-          <meshBasicMaterial color='#ffff33'/>
-        </animated.mesh>
+      <group position={[2.8, 0, -0.5]} scale={0.9}>
+        <Board showArrows={false} starColor='#44442B' highlightShortcuts/>
+        <group position={[-0.4, 0.5, 0.2]}>
+          <animated.mesh name='mars-left' scale={springsArrow0.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+            <coneGeometry args={[0.15, 0.4, 32]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        </group>
+        {dotSpringsMiddle.map((value, index) => {
+          return <animated.mesh scale={value.scale} position={[3 - 0.4*index, 0.5, 0.2]}>
+            <sphereGeometry args={[1, 32, 16]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        })}
+        {dotSpringsCorner.map((value, index) => {
+          return <animated.mesh scale={value.scale} position={[5 * Math.cos(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32)), 0.5, 0.2 - 5 * Math.sin(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32))]}>
+            <sphereGeometry args={[1, 32, 16]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        })}
+        {dotSpringsVertical.map((value, index) => {
+          return <animated.mesh scale={value.scale} position={[0, 0.5, -4.5 + 0.4*index]}>
+            <sphereGeometry args={[1, 32, 16]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        })}
+        {dotSpringsMiddleHalf.map((value, index) => {
+          return <animated.mesh scale={value.scale} position={[3.5 - 0.4*index, 0.5, 0.2]}>
+            <sphereGeometry args={[1, 32, 16]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        })}
+        {dotSpringsVerticalHalf.map((value, index) => {
+          return <animated.mesh scale={value.scale} position={[0, 0.5, 1 + 0.4*index]}>
+            <sphereGeometry args={[1, 32, 16]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        })}
+        <group position={[-5.45, 0.5, 0.2]}>
+          <animated.mesh name='moon-left' scale={springsArrow1.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+            <coneGeometry args={[0.15, 0.4, 32]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        </group>
+        <group position={[-4, 0.5, -3.3]}>
+          <animated.mesh name='saturn-bottom' scale={springsArrow2.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+            <coneGeometry args={[0.15, 0.4, 32]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        </group>
+        <group position={[-4, 0.5, 1.8]}>
+          <animated.mesh name='moon-bottom' scale={springsArrow3.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+            <coneGeometry args={[0.15, 0.4, 32]}/>
+            <meshBasicMaterial color='#ffff33'/>
+          </animated.mesh>
+        </group>
       </group>
     </group>
   }
@@ -2075,7 +2257,6 @@ export default function HowToPlay({
     function handleShortcutPointerLeave() {
       setShortcutHover(false)
     }
-
 
     return <group name='tabs' position={position} scale={scale}>
       <group name='tab-0' position={[0,0,0]} scale={0.8}>
