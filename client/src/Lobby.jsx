@@ -1033,5 +1033,6 @@ export default function Lobby() {
     <FirstSection/>
     <SecondSection/>
     <ThirdSection/>
+    <MeteorsRealShader/>
   </animated.group>
 }

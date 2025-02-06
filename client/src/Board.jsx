@@ -262,7 +262,7 @@ export default function Board({
   // position 29
   const finishMarkerRadius = 3.5
   tileComponents.push(
-    <group name='finish-marker' scale={1.67}>
+    <group name='finish-marker' key={29} scale={1.67}>
       { /* <mesh position={[
         finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (20/32)), 
         0, 

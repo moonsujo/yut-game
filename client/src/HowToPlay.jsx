@@ -1,4 +1,4 @@
-import { Float, MeshDistortMaterial, Text3D } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Text3D, useAnimations, useGLTF } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
 import { useFrame, useLoader } from '@react-three/fiber';
@@ -30,6 +30,7 @@ import Tile from './components/Tile';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { useShootingStarShader } from './shader/shootingStar/ShootingStarShader';
+import YootNew from './YootNew';
 
 export default function HowToPlay({ 
   device, 
@@ -53,7 +54,7 @@ export default function HowToPlay({
     } else if (page === 1) { // Throw the dice
       const page2Timeout = setTimeout(() => {
         setPage(2)
-      }, 10000)
+      }, 10700)
       setPageTimeout(page2Timeout)
     } else if (page === 2) { // Catch enemies
       const page3Timeout = setTimeout(() => {
@@ -86,18 +87,6 @@ export default function HowToPlay({
   function ThrowTheYutPage() {
 
     const [startTime, setStartTime] = useState(0)
-    const yoot0 = useRef();
-    const yoot0Wrapper = useRef();
-    const yoot0Mat = useRef();
-    const yoot1 = useRef();
-    const yoot1Wrapper = useRef();
-    const yoot1Mat = useRef();
-    const yoot2 = useRef();
-    const yoot2Wrapper = useRef();
-    const yoot2Mat = useRef();
-    const yoot3 = useRef();
-    const yoot3Wrapper = useRef();
-    const yoot3Mat = useRef();
     const textRef = useRef()
     const [textVisible, setTextVisible] = useState(false)
     const [yootButtonTurnedOn, setYootButtonTurnedOn] = useState(true)
@@ -109,207 +98,108 @@ export default function HowToPlay({
     const highlightYoot2Time = highlightYoot1Time + 0.5 // time: 8 - 8.5
     const recordTime = highlightYoot2Time + 0.5 // time: 8.5 - 9
     const loopTime = recordTime + 2 // time: 9 - 11
+    const [animation, setAnimation] = useState(null)
+    const initialYutPosition = [-5.5,8,9]
+    const initialYutRotation = [Math.PI/16,Math.PI/2+Math.PI/32,-Math.PI/2]
+    const [yutPosition, setYutPosition] = useState(initialYutPosition)
+    const [yutRotation, setYutRotation] = useState(initialYutRotation)
 
-    useFrame((state) => {
-      const time = state.clock.getElapsedTime();
-      if (yoot0.current) {
-        if (startTime === 0) {
-          setStartTime(time)
-        } else {
-          if (startTime + loopTime > time) {
-  
-            if (startTime + restTime > time) { // held in a hand
-  
-              // set up
-              setYootButtonTurnedOn(true)
-              yoot0Mat.current.opacity = 0
-              yoot1Mat.current.opacity = 0
-              yoot2Mat.current.opacity = 0
-              setTextVisible(false)
+    useEffect(() => {
+      const animationTimeout = setTimeout(() => {
 
-              // yoot 0
-              yoot0Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/16
-              yoot0Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.x
-              yoot0Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.y
-              yoot0Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.z
-              const eulerRotation0 = new THREE.Euler(-Math.PI/8*6, 0, 0);
-              const quaternionRotation0 = new THREE.Quaternion();
-              quaternionRotation0.setFromEuler(eulerRotation0);
-              yoot0.current.rotation.x = quaternionRotation0.x;
-              yoot0.current.rotation.y = quaternionRotation0.y;
-              yoot0.current.rotation.z = quaternionRotation0.z;
-              yoot0.current.rotation.w = quaternionRotation0.w;
+        setYootButtonTurnedOn(false)
+        setYutPosition([-2,0,-3])
+        setYutRotation([0,0,0])
+        setAnimation(17)
+      }, 2000)
 
-              // yoot 1
-              yoot1Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/32
-              yoot1Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.x
-              yoot1Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.y
-              yoot1Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.z
-              const eulerRotation1 = new THREE.Euler(-Math.PI/2 + Math.PI/4, 0, 0);
-              const quaternionRotation1 = new THREE.Quaternion();
-              quaternionRotation1.setFromEuler(eulerRotation1);
-              yoot1.current.rotation.x = quaternionRotation1.x;
-              yoot1.current.rotation.y = quaternionRotation1.y;
-              yoot1.current.rotation.z = quaternionRotation1.z;
-              yoot1.current.rotation.w = quaternionRotation1.w;
-
-              // yoot 2
-              yoot2Wrapper.current.rotation.y = Math.PI/2
-              yoot2Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.x
-              yoot2Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.y
-              yoot2Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.z
-              const eulerRotation2 = new THREE.Euler(Math.PI/2 + Math.PI/4, 0, 0);
-              const quaternionRotation2 = new THREE.Quaternion();
-              quaternionRotation2.setFromEuler(eulerRotation2);
-              yoot2.current.rotation.x = quaternionRotation2.x;
-              yoot2.current.rotation.y = quaternionRotation2.y;
-              yoot2.current.rotation.z = quaternionRotation2.z;
-              yoot2.current.rotation.w = quaternionRotation2.w;
-
-              // yoot 3
-              yoot3Wrapper.current.rotation.y = Math.PI/2 - Math.PI/32
-              yoot3Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.x
-              yoot3Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.y
-              yoot3Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.z
-              const eulerRotation3 = new THREE.Euler(Math.PI/2 - Math.PI/4, 0, 0);
-              const quaternionRotation3 = new THREE.Quaternion();
-              quaternionRotation3.setFromEuler(eulerRotation3);
-              yoot3.current.rotation.x = quaternionRotation3.x;
-              yoot3.current.rotation.y = quaternionRotation3.y;
-              yoot3.current.rotation.z = quaternionRotation3.z;
-              yoot3.current.rotation.w = quaternionRotation3.w;
-  
-            } else if (startTime + throwTime > time) { // spinning
-              setYootButtonTurnedOn(false)
-
-              // yoot 0
-              yoot0Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/16
-              yoot0Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.throwPos.x
-              yoot0Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.throwPos.y
-              yoot0Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.throwPos.z
-              const eulerRotation0 = new THREE.Euler(time*5, 0, 0);
-              const quaternionRotation0 = new THREE.Quaternion();
-              quaternionRotation0.setFromEuler(eulerRotation0);
-              yoot0.current.rotation.x = eulerRotation0.x;
-              yoot0.current.rotation.y = eulerRotation0.y;
-              yoot0.current.rotation.z = eulerRotation0.z;
-              yoot0.current.rotation.w = eulerRotation0.w;
-              yoot0.current.position.y = Math.sin((startTime + throwTime - time - Math.PI + Math.PI/2 + Math.PI/2 + Math.PI/8) * 1) * 4
-              
-              // yoot 1
-              yoot1Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/32
-              yoot1Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.throwPos.x
-              yoot1Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.throwPos.y
-              yoot1Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.throwPos.z
-              const eulerRotation1 = new THREE.Euler(time*6.9 + Math.PI/4 + Math.PI/32, 0, 0);
-              const quaternionRotation1 = new THREE.Quaternion();
-              quaternionRotation1.setFromEuler(eulerRotation1);
-              yoot1.current.rotation.x = eulerRotation1.x;
-              yoot1.current.rotation.y = eulerRotation1.y;
-              yoot1.current.rotation.z = eulerRotation1.z;
-              yoot1.current.rotation.w = eulerRotation1.w;
-              yoot1.current.position.y = Math.sin((startTime + throwTime - time - Math.PI + Math.PI/2 + Math.PI/2 + Math.PI/8) * 1) * 4.5 + 0.8
-              
-              // yoot 2
-              yoot2Wrapper.current.rotation.y = Math.PI/2
-              yoot2Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.throwPos.x
-              yoot2Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.throwPos.y
-              yoot2Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.throwPos.z
-              const eulerRotation2 = new THREE.Euler(time*5.7 + Math.PI/4 + Math.PI/16, 0, 0);
-              const quaternionRotation2 = new THREE.Quaternion();
-              quaternionRotation2.setFromEuler(eulerRotation2);
-              yoot2.current.rotation.x = eulerRotation2.x;
-              yoot2.current.rotation.y = eulerRotation2.y;
-              yoot2.current.rotation.z = eulerRotation2.z;
-              yoot2.current.rotation.w = eulerRotation2.w;
-              yoot2.current.position.y = Math.sin((startTime + throwTime - time - Math.PI + Math.PI/2 + Math.PI/2 + Math.PI/8) * 1) * 4.5 + 0.8
-              
-              // yoot 3
-              yoot3Wrapper.current.rotation.y = Math.PI/2 - Math.PI/32
-              yoot3Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.throwPos.x
-              yoot3Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.throwPos.y
-              yoot3Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.throwPos.z
-              const eulerRotation3 = new THREE.Euler(time*7.4 + Math.PI/4 + Math.PI/8, 0, 0);
-              const quaternionRotation3 = new THREE.Quaternion();
-              quaternionRotation3.setFromEuler(eulerRotation3);
-              yoot3.current.rotation.x = eulerRotation3.x;
-              yoot3.current.rotation.y = eulerRotation3.y;
-              yoot3.current.rotation.z = eulerRotation3.z;
-              yoot3.current.rotation.w = eulerRotation3.w;
-              yoot3.current.position.y = Math.sin((startTime + throwTime - time - Math.PI + Math.PI/2 + Math.PI/2 + Math.PI/8) * 1) * 4.5 + 0.8
-              
-            } else if (startTime + lieTime > time) {
-  
-              // yoot0
-              yoot0Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/16
-              yoot0Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.liePos.x
-              yoot0Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.liePos.y
-              yoot0Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.liePos.z
-              const eulerRotation0 = new THREE.Euler(Math.PI, 0, 0);
-              const quaternionRotation0 = new THREE.Quaternion();
-              quaternionRotation0.setFromEuler(eulerRotation0);
-              yoot0.current.rotation.x = eulerRotation0.x;
-              yoot0.current.rotation.y = eulerRotation0.y;
-              yoot0.current.rotation.z = eulerRotation0.z;
-              yoot0.current.rotation.w = eulerRotation0.w;
-              yoot0.current.position.y = 0
-              
-              // yoot1
-              yoot1Wrapper.current.rotation.y = Math.PI/4 + Math.PI/4 + Math.PI/32
-              yoot1Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.liePos.x
-              yoot1Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.liePos.y
-              yoot1Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.liePos.z
-              const eulerRotation1 = new THREE.Euler(Math.PI, 0, 0);
-              const quaternionRotation1 = new THREE.Quaternion();
-              quaternionRotation1.setFromEuler(eulerRotation1);
-              yoot1.current.rotation.x = eulerRotation1.x;
-              yoot1.current.rotation.y = eulerRotation1.y;
-              yoot1.current.rotation.z = eulerRotation1.z;
-              yoot1.current.rotation.w = eulerRotation1.w;
-              yoot1.current.position.y = 0
-              
-              // yoot2
-              yoot2Wrapper.current.rotation.y = Math.PI/2
-              yoot2Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.liePos.x
-              yoot2Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.liePos.y
-              yoot2Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.liePos.z
-              const eulerRotation2 = new THREE.Euler(Math.PI, 0, 0);
-              const quaternionRotation2 = new THREE.Quaternion();
-              quaternionRotation2.setFromEuler(eulerRotation2);
-              yoot2.current.rotation.x = eulerRotation2.x;
-              yoot2.current.rotation.y = eulerRotation2.y;
-              yoot2.current.rotation.z = eulerRotation2.z;
-              yoot2.current.rotation.w = eulerRotation2.w;
-              yoot2.current.position.y = 0
-              
-              // yoot3
-              yoot3Wrapper.current.rotation.y = Math.PI/2 - Math.PI/32
-              yoot3Wrapper.current.position.x = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.liePos.x
-              yoot3Wrapper.current.position.y = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.liePos.y
-              yoot3Wrapper.current.position.z = layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.liePos.z
-              const eulerRotation3 = new THREE.Euler(0, 0, 0);
-              const quaternionRotation3 = new THREE.Quaternion();
-              quaternionRotation3.setFromEuler(eulerRotation3);
-              yoot3.current.rotation.x = eulerRotation3.x;
-              yoot3.current.rotation.y = eulerRotation3.y;
-              yoot3.current.rotation.z = eulerRotation3.z;
-              yoot3.current.rotation.w = eulerRotation3.w;
-              yoot3.current.position.y = 0
-              
-            } else if (startTime + highlightYoot0Time > time) {
-              yoot0Mat.current.opacity = 1
-            } else if (startTime + highlightYoot1Time > time) {
-              yoot1Mat.current.opacity = 1
-            } else if (startTime + highlightYoot2Time > time) {
-              yoot2Mat.current.opacity = 1
-            } else if (startTime + recordTime > time) {
-              setTextVisible(true)
-            }
-          } else {
-            setStartTime(0);
-          }
-        }
+      return () => {
+        clearTimeout(animationTimeout)
       }
+    }, [])
+
+    const springsText = useSpring({
+      from: {
+        scale: 0
+      },
+      to: [
+        {
+          scale: 1.2,
+          config: {
+            tension: 180,
+            friction: 15
+          },
+          delay: 6700
+        }
+      ],
+    })
+
+    const yutNewGroup = useRef();
+    useFrame((state) => {
+      const time = state.clock.elapsedTime
+      if (!animation) {
+        yutNewGroup.current.position.y = Math.sin(time * 2) * 1.1
+        yutNewGroup.current.rotation.y = Math.sin(time * 2) * 0.03
+      } else {
+        yutNewGroup.current.position.y = 0
+        yutNewGroup.current.rotation.y = 0
+      }
+    })
+
+    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+    const springsSide0 = useSpring({
+      from: {
+        // opacity: 1
+        opacity: 1,
+        scale: 0
+      },
+      to: [
+        {
+          // opacity: 1,
+          scale: 1,
+          config: {
+            tension: 180,
+            friction: 15
+          },
+          delay: 5000
+        }
+      ],
+    })
+    const springsSide1 = useSpring({
+      from: {
+        // opacity: 1
+        opacity: 1,
+        scale: 0
+      },
+      to: [
+        {
+          // opacity: 1,
+          scale: 1,
+          config: {
+            tension: 180,
+            friction: 15
+          },
+          delay: 5500
+        }
+      ],
+    })
+    const springsSide2 = useSpring({
+      from: {
+        // opacity: 1
+        opacity: 1,
+        scale: 0
+      },
+      to: [
+        {
+          // opacity: 1,
+          scale: 1,
+          config: {
+            tension: 180,
+            friction: 15
+          },
+          delay: 6000
+        }
+      ],
     })
 
     return <group name='throw-the-yut-page' scale={layout[device].howToPlay.throwingTheDicePage.scale}>
@@ -323,127 +213,9 @@ export default function HowToPlay({
         {`THROW THE YUT (DICE) TO DETERMINE HOW\nMANY STARS TO JUMP. EACH FLAT SIDE IS\nONE STAR.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
-      {/* <Physics/> component is in <Home2/> */}
-      <group 
-        ref={yoot0Wrapper} 
-        position={[
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.x,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.y,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot0Wrapper.restPos.z,
-        ]}
-        rotation={[0, Math.PI/4 + Math.PI/4 + Math.PI/16, 0]}
-        scale={1.2}
-      >
-        <group
-          ref={yoot0}
-          scale={0.5}
-          rotation={[-Math.PI/8*6, 0, 0]}
-        >
-          <YootMesh
-            rotation={[0, 0, -Math.PI / 2]}
-          />
-          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
-            <cylinderGeometry args={[1, 1, 0.01]}/>
-            <meshStandardMaterial 
-              color="#B9B9B9" 
-              transparent 
-              opacity={0}
-              ref={yoot0Mat}
-            />
-          </mesh>
-        </group>
-      </group>
-      <group 
-        ref={yoot1Wrapper}
-        position={[
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.x,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.y,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot1Wrapper.restPos.z,
-        ]}
-        rotation={[0, Math.PI/4 + Math.PI/4 + Math.PI/32, 0]}
-        scale={1.2}
-      >
-        <group
-          ref={yoot1}
-          scale={0.5}
-          rotation={[-Math.PI/2 + Math.PI/4, 0, 0]}
-        >
-          <YootMesh
-            rotation={[0, 0, -Math.PI / 2]}
-          />
-          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
-            <cylinderGeometry args={[1, 1, 0.01]}/>
-            <meshStandardMaterial 
-              color="#B9B9B9" 
-              transparent 
-              opacity={0}
-              ref={yoot1Mat}
-            />
-          </mesh>
-        </group>
-      </group>
-      <group 
-        ref={yoot2Wrapper}
-        position={[
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.x,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.y,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot2Wrapper.restPos.z,
-        ]}
-        rotation={[0, Math.PI/2, 0]}
-        scale={1.2}
-      >
-        <group
-          ref={yoot2}
-          scale={0.5}
-          rotation={[Math.PI/2 + Math.PI/4, 0, 0]}
-        >
-          <YootMesh
-            rotation={[0, 0, -Math.PI / 2]}
-          />
-          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
-            <cylinderGeometry args={[1, 1, 0.01]}/>
-            <meshStandardMaterial 
-              color="#B9B9B9" 
-              transparent 
-              opacity={0}
-              ref={yoot2Mat}
-            />
-          </mesh>
-        </group>
-      </group>
-      <group 
-        ref={yoot3Wrapper}
-        position={[
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.x,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.y,
-          layout[device].howToPlay.throwingTheDicePage.yoot.yoot3Wrapper.restPos.z,
-        ]}
-        rotation={[0, Math.PI/2 - Math.PI/32, 0]}
-        scale={1.2}
-      >
-        <group 
-          ref={yoot3}
-          scale={0.5}
-          rotation={[Math.PI/2 - Math.PI/4, 0, 0]}
-        >
-          <YootRhino
-            position={[0, 0.3, 0]}
-            rotation={[0, 0, -Math.PI / 2]}
-          />
-          <mesh scale={[6, 0.1, 1]} position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI/100]}>
-            <cylinderGeometry args={[1, 1, 0.01]}/>
-            <meshStandardMaterial 
-              color="#B9B9B9" 
-              transparent 
-              opacity={0}
-              ref={yoot3Mat}
-            />
-          </mesh>
-        </group>
-      </group>
-      { textVisible && <group
+      <animated.group
         position={layout[device].howToPlay.throwingTheDicePage.moveText.position}
-        ref={textRef}
+        scale={springsText.scale}
       >
         <Text3D
           rotation={[-Math.PI/2,0,0]}
@@ -459,7 +231,28 @@ export default function HowToPlay({
           position={layout[device].howToPlay.throwingTheDicePage.gulToken.position} 
           rotation={layout[device].howToPlay.throwingTheDicePage.gulToken.rotation}
         />
-      </group> }
+      </animated.group>
+      <group ref={yutNewGroup}>
+        <YootNew animation={animation} scale={0.4} position={yutPosition} rotation={yutRotation}/>
+      </group>
+      <animated.group name='side-0-highlight' position={[-0.3, 0.6, -0.8]} scale={springsSide0.scale}>
+        <mesh scale={[1.1, 0.01, 0.3]} rotation={[0, -Math.PI/128, -Math.PI/32]}>
+          <cylinderGeometry args={[1, 1, 1]}/>
+          <AnimatedMeshDistortMaterial distort={0.1} color='limegreen' transparent opacity={springsSide0.opacity}/>
+        </mesh>
+      </animated.group>
+      <animated.group name='side-1-highlight' position={[5.6, 0.6, -1.2]} scale={springsSide1.scale}>
+        <mesh scale={[1.1, 0.01, 0.3]} rotation={[0, Math.PI/4 - Math.PI/32 - Math.PI/64, -Math.PI/32]}>
+          <cylinderGeometry args={[1, 1, 1]}/>
+          <AnimatedMeshDistortMaterial distort={0.1} color='limegreen' transparent opacity={springsSide1.opacity}/>
+        </mesh>
+      </animated.group>
+      <animated.group name='side-2-highlight' position={[3.9, 0.6, 1.1]} scale={springsSide2.scale}>
+        <mesh scale={[1.1, 0.01, 0.3]} rotation={[0, -Math.PI/8 + Math.PI/16, -Math.PI/32]}>
+          <cylinderGeometry args={[1, 1, 1]}/>
+          <AnimatedMeshDistortMaterial distort={0.1} color='limegreen' transparent opacity={springsSide2.opacity}/>
+        </mesh>
+      </animated.group>
       <YootButtonModel
         position={layout[device].howToPlay.throwingTheDicePage.yootButtonModel.position}
         rotation={layout[device].howToPlay.throwingTheDicePage.yootButtonModel.rotation}

@@ -1898,7 +1898,7 @@ export default {
         },
         moveText: {
           text: "JUMP:\n3-STARS",
-          position: [5.5, 0.7, -0.9],
+          position: [0, 0.7, -3.5],
           size: 0.5
         },
         gulToken: {

@@ -6,7 +6,7 @@ import { Route } from "wouter"
 import ParticleSystem from './particles/ParticleSystem';
 import Home2Experience from './Home2Experience';
 import LoadingScreen from './LoadingScreen';
-import { Loader } from '@react-three/drei';
+import { Loader, useGLTF } from '@react-three/drei';
 import MilkyWay from './shader/MilkyWay';
 import StarsPatterns2Shader from './shader/starsPatterns2/StarsPatterns2Shader';
 import * as THREE from 'three';
@@ -51,3 +51,7 @@ export default function App () {
     <Loader/>
   </>)
 }
+
+useGLTF.preload("models/yoot.glb")
+useGLTF.preload("/models/rounded-rectangle.glb")
+useGLTF.preload("/models/yoot-for-button.glb")

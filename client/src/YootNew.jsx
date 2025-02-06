@@ -9,7 +9,7 @@ import React, { useEffect, useRef } from 'react'
 import { LoopOnce } from 'three'
 import { useAnimations, useGLTF } from '@react-three/drei';
 
-export default function YootNew({ animation, scale, position }) {
+export default function YootNew({ animation, scale, position, rotation=[0,0,0] }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF('models/yoot-animation-2.glb')
   const { actions, mixer } = useAnimations(animations, group)
@@ -23,8 +23,8 @@ export default function YootNew({ animation, scale, position }) {
     }
   }, [animation])
 
-  return <group ref={group} scale={scale} position={position} dispose={null}>
-      <group name="Scene">
+  return <group ref={group} scale={scale} position={position} rotation={rotation} dispose={null}>
+    <group name="Scene">
       <mesh
         name="yoot1"
         castShadow
