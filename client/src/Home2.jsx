@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Float, Html, Text3D, useGLTF } from "@react-three/drei";
-import { animated } from "@react-spring/three";
+import { animated, useSpring } from "@react-spring/three";
 import { useAtom } from "jotai";
 import layout from './layout';
 import RocketAnimated from './meshes/RocketAnimated';
@@ -59,7 +59,7 @@ export default function Home2() {
         rotation={layout[device].title.pieces.rocketHome1.rotation} 
         scale={layout[device].title.pieces.rocketHome1.scale}
       />
-      <mesh name='rocket-home' scale={[1.2, 0.01, 1.2]} position={[-4.3,0,5.2]}>
+      <mesh name='rocket-home' scale={layout[device].title.rocketHome.scale} position={layout[device].title.rocketHome.position}>
         <cylinderGeometry args={[1, 1, 1]}/>
         <meshStandardMaterial color='red' transparent opacity={0.1}/>
       </mesh>
@@ -69,7 +69,7 @@ export default function Home2() {
         position={layout[device].title.pieces.ufoHome.position} 
         scale={layout[device].title.pieces.ufoHome.scale}
       />
-      <mesh name='ufo-home' scale={[1.2, 0.01, 1.2]} position={[4.5,0,5.2]}>
+      <mesh name='ufo-home' scale={layout[device].title.ufoHome.scale} position={layout[device].title.ufoHome.position}>
         <cylinderGeometry args={[1, 1, 1]}/>
         <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
       </mesh>
@@ -448,6 +448,20 @@ export default function Home2() {
       </Html>
     </group>
   }
+
+  // To make room in portrait mode
+  const {titleScale, titlePosition, titleBoardScale, howToPlayScale} = useSpring({
+    titleScale: display === 'howToPlay' ? 0.5 : 1,
+    titlePosition: display === 'howToPlay' ? [-2,0,-5] : [0,0,0],
+    yutDisplayScale: display === 'howToPlay' ? 0.5 : 1,
+    yutDisplayPosition: display === 'howToPlay' ? [-2,0,-5] : [0,0,0],
+    titleBoardScale: display === 'board' ? 1 : 0,
+    howToPlayScale: display === 'howToPlay' ? 1 : 0,
+    config: {
+      tension: 170,
+      friction: 26
+    },
+  })
   
   return <>
     <GameCamera 
@@ -455,22 +469,32 @@ export default function Home2() {
       lookAt={layout[device].title.camera.lookAt}
     />
     <group>
-      <Title 
-        position={layout[device].title.text.position}
-        rotation={layout[device].title.text.rotation}
-        scale={layout[device].title.text.scale}
-        setDisplay={setDisplay}
-      />
-      <YootDisplay
+      { device === 'portrait' && <animated.group scale={titleScale} position={titlePosition}>
+        <Title 
+          position={layout[device].title.text.position}
+          rotation={layout[device].title.text.rotation}
+          scale={layout[device].title.text.scale}
+          setDisplay={setDisplay}
+        />
+      </animated.group>}
+      { device === 'landscapeDesktop' && <Title 
+          position={layout[device].title.text.position}
+          rotation={layout[device].title.text.rotation}
+          scale={layout[device].title.text.scale}
+          setDisplay={setDisplay}
+        />}
+      { device === 'portrait' && <animated.group scale={titleScale} position={titlePosition}>
+        <YootDisplay
+          position={layout[device].title.yoots.position}
+          rotation={layout[device].title.yoots.rotation}
+          scale={layout[device].title.yoots.scale} 
+        />
+      </animated.group>}
+      { device === 'landscapeDesktop' && <YootDisplay
         position={layout[device].title.yoots.position}
         rotation={layout[device].title.yoots.rotation}
         scale={layout[device].title.yoots.scale} 
-      />
-      {/* <AboutButton 
-        position={layout[device].title.about.position} 
-        rotation={layout[device].title.about.rotation}
-        scale={layout[device].title.about.scale}
-      /> */}
+      />}
       <HowToPlayButton
         position={layout[device].title.howToPlay.position} 
         rotation={layout[device].title.howToPlay.rotation}
@@ -494,11 +518,13 @@ export default function Home2() {
     </group>
     <group>
       { display === 'board' && <group position={layout[device].title.board.position} 
-          scale={layout[device].title.board.scale}>
-        <Board 
-          showStart={true} 
-          interactive={false}/>
-        <Pieces/>
+        scale={layout[device].title.board.scale}>
+        <animated.group scale={titleBoardScale}>
+          <Board 
+            showStart={true} 
+            interactive={false}/>
+          <Pieces/>
+        </animated.group>
       </group> }
       { display === 'about' && <About 
         device={device}
@@ -507,13 +533,15 @@ export default function Home2() {
         scale={layout[device].about.scale}
       />}
       <Physics>
-        { display === 'howToPlay' && <HowToPlay 
-          device={device}
-          position={layout[device].howToPlay.position}
-          rotation={[0,0,0]}
-          scale={layout[device].howToPlay.scale}
-          tabOrientation='right'
-        />}
+        { display === 'howToPlay' && <animated.group scale={howToPlayScale}>
+          <HowToPlay 
+            device={device}
+            position={layout[device].howToPlay.position}
+            rotation={[0,0,0]}
+            scale={layout[device].howToPlay.scale}
+            tabOrientation='right'
+          />
+        </animated.group> }
       </Physics>
     </group>
     <MeteorsRealShader/>

@@ -50,6 +50,6 @@ export default function Title({ position, rotation, scale, setDisplay }) {
       <boxGeometry args={[1.5, 1, 0.1]}/>
       <meshStandardMaterial color="grey" transparent opacity={0}/>
     </mesh>
-    <TitleStarsShader texturePath={'textures/particles/6.png'}/>
+    {/* <TitleStarsShader texturePath={'textures/particles/6.png'}/> */}
   </group>
 }

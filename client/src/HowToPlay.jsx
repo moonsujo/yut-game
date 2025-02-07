@@ -3,30 +3,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
 import { useFrame, useLoader } from '@react-three/fiber';
 import Cursor from './meshes/Cursor';
-import Earth from './meshes/Earth';
 import Mars from './meshes/Mars';
-import Saturn from './meshes/Saturn';
-import Neptune from './meshes/Neptune';
-import Moon from './meshes/Moon';
 import Star from './meshes/Star';
 import layout from './layout';
 import Rocket from './meshes/Rocket';
 import Pointer from './meshes/Pointer';
 import { useSpring, animated } from '@react-spring/three';
-import Cursor2 from './meshes/Cursor2';
-import Check from './meshes/Check';
 import * as THREE from 'three';
 import Ufo from './meshes/Ufo';
-import ArrowBlender from './meshes/ArrowBlender';
 import YootSet from './meshes/YootSet';
 import GulToken from './moveTokens/GulToken';
 import GeToken from './moveTokens/GeToken';
-import YootToken from './moveTokens/YootToken';
-import YootMesh from './meshes/YootMesh';
-import YootRhino from './meshes/YootRhino';
 import Board from './Board';
 import YootDisplay from './YootDisplay';
-import Tile from './components/Tile';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { useShootingStarShader } from './shader/shootingStar/ShootingStarShader';
@@ -75,42 +64,28 @@ export default function HowToPlay({
     } else if (page === 5) { // Read the Yut
       const page6Timeout = setTimeout(() => {
         setPage(6)
-      }, 11500000)
+      }, 11500)
       setPageTimeout(page6Timeout)
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
         setPage(0)
-      }, 12000)
+      }, 12000000)
       setPageTimeout(page7Timeout)
     }
   }, [page])
   
   function ThrowTheYutPage() {
 
-    const [startTime, setStartTime] = useState(0)
-    const textRef = useRef()
-    const [textVisible, setTextVisible] = useState(false)
     const [yootButtonTurnedOn, setYootButtonTurnedOn] = useState(true)
-    const restTime = 2 // time: 0 - 2
-    const throwTime = restTime + 3 // time: 2 - 5
-    const lieTime = throwTime + 1 // time: 5 - 7
-    const highlightYoot0Time = lieTime + 0.5 // time: 7 - 7.5
-    const highlightYoot1Time = highlightYoot0Time + 0.5 // time: 7.5 - 8
-    const highlightYoot2Time = highlightYoot1Time + 0.5 // time: 8 - 8.5
-    const recordTime = highlightYoot2Time + 0.5 // time: 8.5 - 9
-    const loopTime = recordTime + 2 // time: 9 - 11
     const [animation, setAnimation] = useState(null)
-    const initialYutPosition = [-5.5,8,9]
-    const initialYutRotation = [Math.PI/16,Math.PI/2+Math.PI/32,-Math.PI/2]
-    const [yutPosition, setYutPosition] = useState(initialYutPosition)
-    const [yutRotation, setYutRotation] = useState(initialYutRotation)
+    const [yutPosition, setYutPosition] = useState(layout[device].howToPlay.throwingTheDicePage.yut.initialYutPosition)
+    const [yutRotation, setYutRotation] = useState(layout[device].howToPlay.throwingTheDicePage.yut.initialYutRotation)
 
     useEffect(() => {
       const animationTimeout = setTimeout(() => {
-
         setYootButtonTurnedOn(false)
-        setYutPosition([-2,0,-3])
-        setYutRotation([0,0,0])
+        setYutPosition(layout[device].howToPlay.throwingTheDicePage.yut.animationYutPosition)
+        setYutRotation(layout[device].howToPlay.throwingTheDicePage.yut.animationYutRotation)
         setAnimation(17)
       }, 2000)
 
@@ -211,7 +186,7 @@ export default function HowToPlay({
         size={layout[device].howToPlay.throwingTheDicePage.text.size}
         height={layout[device].howToPlay.throwingTheDicePage.text.height}
       >
-        {`THROW THE YUT (DICE) TO DETERMINE HOW\nMANY STARS TO JUMP. EACH FLAT SIDE IS\nONE STAR.`}
+        {`THROW THE YUT TO DETERMINE HOW MANY\nSTARS TO JUMP. EACH FLAT SIDE IS ONE STAR.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       <animated.group
@@ -267,213 +242,6 @@ export default function HowToPlay({
     </group>
   }
 
-  function MovingPiecesPage() {
-    const springs = useSpring({
-      from: {
-        cursorPos: layout[device].howToPlay.movingPiecesPage.cursorPos0,
-        rocket3Scale: 1.5,
-        cursorEffectOpacity: 0,
-        legalTileScale: 0.5,
-        pointerOpacity: 0,
-        rocket3Pos: layout[device].howToPlay.movingPiecesPage.rocket3Pos0,
-        moveTokenScale: 0,
-        moveToken1Scale: 1
-      },
-      to: [
-        {
-          cursorPos: layout[device].howToPlay.movingPiecesPage.cursorPos1,
-          delay: 100000
-        },
-        {
-          rocket3Scale: 2.5,
-          cursorEffectOpacity: 1,
-          legalTileScale: 0.8,
-          pointerOpacity: 1,
-          moveTokenScale: 0.7,
-          delay: 500,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          cursorEffectOpacity: 0,
-          delay: 200,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          cursorPos: layout[device].howToPlay.movingPiecesPage.cursorPos2,
-          delay: 800,
-        },
-        {
-          cursorEffectOpacity: 1,
-          rocket3Pos: layout[device].howToPlay.movingPiecesPage.rocket3Pos1,
-          moveTokenScale: 0,
-          moveToken1Scale: 0,
-          rocket3Scale: 1.5,
-          legalTileScale: 0.5,
-          pointerOpacity: 0,
-          delay: 1000,
-          config: {
-            tension: 0,
-            friction: 1
-          }
-        },
-        {
-          cursorEffectOpacity: 0,
-          delay: 200,
-          config: {
-            tension: 0,
-          }
-        },
-        {
-          rocket3Pos: layout[device].howToPlay.movingPiecesPage.rocket3Pos2,
-          delay: 100,
-          config: {
-            tension: 170,
-            friction: 26
-          }
-        },
-        {
-          rocket3Pos: layout[device].howToPlay.movingPiecesPage.rocket3Pos3,
-          delay: 100,
-          config: {
-            tension: 170,
-            friction: 26
-          }
-        },
-        {
-          rocket3Pos: layout[device].howToPlay.movingPiecesPage.rocket3Pos4,
-          delay: 100,
-          config: {
-            tension: 170,
-            friction: 26
-          }
-        },
-        {
-          delay: 5000,
-        },
-      ],
-      loop: true,
-      delay: 500
-    })
-    
-    function FirstCornerTiles({ position }) {
-      let tiles = [];
-
-      //circle
-      const NUM_STARS = 20
-      const TILE_RADIUS = 5;
-      for (let i = 0; i < 6; i++) {
-        let position = [
-          -Math.cos(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-          0,
-          Math.sin(((i+5) * (Math.PI * 2)) / NUM_STARS) * TILE_RADIUS,
-        ];``
-        if (i == 0) {
-          tiles.push(<Earth position={position} key={i} scale={0.4}/>);
-        } else {
-          if (i === 3) {
-            tiles.push(
-              <group 
-                position={position}
-                key={i}
-              >
-                <Star
-                  tile={i}
-                  scale={springs.legalTileScale}
-                  device={device}
-                />
-                <Pointer color='red' position={[0,1.7,0]} scale={2.5} opacity={springs.pointerOpacity}/>
-              </group>
-            )
-          } else {            
-            tiles.push(
-              <Star
-                position={position}
-                tile={i}
-                key={i}
-                scale={layout[device].howToPlay.star.scale}
-                device={device}
-              />
-            )
-          }
-        }
-      }
-  
-      return <group position={position}>
-        { tiles }
-        <animated.group position={[5,0,2.5]} rotation={[0, Math.PI/2, 0]} scale={springs.moveTokenScale}>
-          <GulToken />
-        </animated.group>
-      </group>;
-    }
-    
-    const rocket0 = useRef()
-    const rocket1 = useRef()
-    const rocket2 = useRef()
-    const rocket3 = useRef()
-    const cursorRef = useRef()
-    function HomePieces({ position }) {
-      return <group position={position}>
-        <group name='rocket-0' ref={rocket0}>
-          <Rocket position={[-0.4,-0.5,-0.5]} scale={1.5}/>
-        </group>
-        <group name='rocket-1' ref={rocket1}>
-          <Rocket position={[0.8,-0.5,-0.5]} scale={1.5}/>
-        </group>
-        <group name='rocket-2' ref={rocket2}>
-          <Rocket position={[-0.4,-0.5,0.7]} scale={1.5}/>
-        </group>
-        <animated.group name='rocket-3' ref={rocket3} position={springs.rocket3Pos} scale={springs.rocket3Scale}>
-          <Rocket />
-        </animated.group>
-      </group>
-    }
-
-    function MoveDisplay({ position }) {
-      return <group position={position}>
-        <Text3D
-          rotation={[-Math.PI/2,0,0]}
-          font="fonts/Luckiest Guy_Regular.json" 
-          size={0.4} 
-          height={0.01}
-        >
-          MOVES:
-          <meshStandardMaterial color={ "limegreen" }/>
-        </Text3D>
-        <animated.group position={[2.4, 0, -0.2]} rotation={[0, Math.PI/2, 0]} scale={springs.moveToken1Scale}>
-          <GulToken/>
-        </animated.group>
-      </group>
-    }
-
-    return <group name='moving-pieces-page'>
-      <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
-        position={layout[device].howToPlay.movingPiecesPage.text.position}
-        rotation={layout[device].howToPlay.movingPiecesPage.text.rotation}
-        size={layout[device].howToPlay.movingPiecesPage.text.size}
-        height={0.01}
-      >
-        {'1. START YOUR TOKENS FROM\nEARTH.'}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
-      <FirstCornerTiles position={layout[device].howToPlay.movingPiecesPage.firstCornerTiles.position}/>
-      <HomePieces position={layout[device].howToPlay.movingPiecesPage.homePieces.position}/>
-      <MoveDisplay position={layout[device].howToPlay.movingPiecesPage.moveDisplay.position}/>
-      <group ref={cursorRef}>
-        <Cursor
-          position={springs.cursorPos}
-          scale={[3, 3, 0.1]}
-          effectOpacity={springs.cursorEffectOpacity}
-          effect={true}
-        />
-      </group>
-    </group>
-  }
-
   function ScorePage() {
 
     const [CreateFirework] = useFireworksShader();
@@ -489,11 +257,18 @@ export default function HowToPlay({
       const fireworkTimeout0 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
-        const position = new THREE.Vector3(2,2,-4)
+        let position, size, radius
+        if (device === 'portrait') {
+          position = new THREE.Vector3(3,2,-6)
+          size = 0.08 + Math.random() * 0.1
+          radius = 0.9 + Math.random() * 0.1
+        } else {
+          position = new THREE.Vector3(2,2,-4)
+          size = 0.25 + Math.random() * 0.1
+          radius = 0.6 + Math.random() * 0.1
+        }
 
-        const size = 0.25 + Math.random() * 0.1
         const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
-        const radius = 0.6 + Math.random() * 0.1
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
@@ -503,11 +278,18 @@ export default function HowToPlay({
       const fireworkTimeout1 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
-        const position = new THREE.Vector3(2.5,2,-3)
+        let position, size, radius
+        if (device === 'portrait') {
+          position = new THREE.Vector3(1,2,-5.5)
+          size = 0.08 + Math.random() * 0.1
+          radius = 0.9 + Math.random() * 0.1
+        } else {
+          position = new THREE.Vector3(2.5,2,-3)
+          size = 0.25 + Math.random() * 0.1
+          radius = 0.6 + Math.random() * 0.1
+        }
 
-        const size = 0.25 + Math.random() * 0.1
         const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
-        const radius = 0.6 + Math.random() * 0.1
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
@@ -517,31 +299,45 @@ export default function HowToPlay({
       const fireworkTimeout2 = setTimeout(() => {
         // firework 1 - left
         const count = Math.round(500 + Math.random() * 400);
-        const position = new THREE.Vector3(1,2,-3)
+        let position, size, radius
+        if (device === 'portrait') {
+          position = new THREE.Vector3(-0.5,2,-5.1)
+          size = 0.08 + Math.random() * 0.1
+          radius = 0.9 + Math.random() * 0.1
+        } else {
+          position = new THREE.Vector3(1,2,-3)
+          size = 0.25 + Math.random() * 0.1
+          radius = 0.6 + Math.random() * 0.1
+        }
 
-        const size = 0.25 + Math.random() * 0.1
         const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
-        const radius = 0.6 + Math.random() * 0.1
+        const color = new THREE.Color();
+        const hue = 140/360
+        color.setHSL(hue, 1, 0.6)
+        
+        CreateFirework({ count, position, size, texture, radius, color });
+      }, 4900) // When 'welcome home!' displays
+      const fireworkTimeout3 = setTimeout(() => {
+        // firework 1 - left
+        const count = Math.round(500 + Math.random() * 400);
+        let position, size, radius
+        if (device === 'portrait') {
+          position = new THREE.Vector3(-2,2,-4.6)
+          size = 0.08 + Math.random() * 0.1
+          radius = 0.9 + Math.random() * 0.1
+        } else {
+          position = new THREE.Vector3(-0.5,2,-2.3)
+          size = 0.25 + Math.random() * 0.1
+          radius = 0.6 + Math.random() * 0.1
+        }
+
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
         
         CreateFirework({ count, position, size, texture, radius, color });
       }, 5100) // When 'welcome home!' displays
-      const fireworkTimeout3 = setTimeout(() => {
-        // firework 1 - left
-        const count = Math.round(500 + Math.random() * 400);
-        const position = new THREE.Vector3(-0.5,2,-2.3)
-
-        const size = 0.25 + Math.random() * 0.1
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
-        const radius = 0.6 + Math.random() * 0.1
-        const color = new THREE.Color();
-        const hue = 140/360
-        color.setHSL(hue, 1, 0.6)
-        
-        CreateFirework({ count, position, size, texture, radius, color });
-      }, 5500) // When 'welcome home!' displays
       return () => {
         clearTimeout(fireworkTimeout0)
         clearTimeout(fireworkTimeout1)
@@ -764,13 +560,11 @@ export default function HowToPlay({
       </animated.group>
     }
 
-    return <group 
-      name='scoring-page' 
-    >
+    return <group name='score-page'>
       <group 
       name='board'
-      position={layout[device].howToPlay.scoringPage.position}
-      scale={layout[device].howToPlay.scoringPage.scale}>
+      position={layout[device].howToPlay.scoringPage.board.position}
+      scale={layout[device].howToPlay.scoringPage.board.scale}>
         <Board
         constellations={false}
         omit
@@ -786,8 +580,9 @@ export default function HowToPlay({
           <Rocket onBoard/>
         </animated.group>
       </group>
-      
-      <group name='rocket-home' position={[-0.5, 0, 2.5]} scale={1.2}>
+      <group name='rocket-home' 
+      position={layout[device].howToPlay.scoringPage.rocketHome.position} 
+      scale={layout[device].howToPlay.scoringPage.rocketHome.scale}>
         <mesh position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
           <meshStandardMaterial color='red' transparent opacity={0.1}/>
@@ -818,13 +613,10 @@ export default function HowToPlay({
     </group>
   }
 
-  // capture
   function CatchEnemiesPage() {
     const springs = useSpring({
       from: {
-        cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[0],
         rocketScale: 1.5,
-        cursorEffectOpacity: 0,
         legalTileScale: 0.4,
         pointerOpacity: 0,
         rocketPos: layout[device].howToPlay.catchingPiecesPage.rocketPos[0],
@@ -838,12 +630,7 @@ export default function HowToPlay({
         catchTokenHomeScale: 0
       },
       to: [
-        // {
-        //   cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[1],
-        //   delay: 1000
-        // },
         {
-          // cursorEffectOpacity: 1,
           moveToken1Scale: 1,
           rocketScale: 2.1,
           pointerOpacity: 1,
@@ -853,26 +640,7 @@ export default function HowToPlay({
             friction: 26
           }
         },
-        // {
-        //   cursorEffectOpacity: 0,
-        //   delay: 200,
-        // },
-        // {
-        //   cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[2],
-        //   delay: 1000,
-        // },
         {
-          // cursorEffectOpacity: 1,
-          // rocketScale: 1.5,
-          // pointerOpacity: 0,
-          // ufoScale: 1.5,
-          // config: {
-          //   tension: 0,
-          // }
-        },
-        {
-          cursorEffectOpacity: 0,
-          cursorPos: layout[device].howToPlay.catchingPiecesPage.cursorPos[3],
           delay: 200,
           config: {
             tension: 0,
@@ -914,7 +682,7 @@ export default function HowToPlay({
           catchTokenHomeScale: 1,
           moveTextScale: 0,
           bonusAlertScale: 1,
-          yootButtonScale: 1,
+          yootButtonScale: layout[device].howToPlay.catchingPiecesPage.yootButtonModel.scale,
           config: {
             tension: 170,
             friction: 26
@@ -1075,10 +843,14 @@ export default function HowToPlay({
     }
 
     // ufo is flipped over, moved to a corner and scaled to 0. show sparkle
-    return <group name='catching-pieces-page'>
-      <FirstCornerTiles position={[0,0,-6.5]} scale={1.3}/>
-      <group name='ufo-home' position={[0.3, 0, 3]} scale={1.2}>
-        <mesh position={[0, -0.5, -0.2]}>
+    return <group name='catch-enemies-page'>
+      <FirstCornerTiles 
+      position={layout[device].howToPlay.catchingPiecesPage.firstCornerTiles.position} 
+      scale={layout[device].howToPlay.catchingPiecesPage.firstCornerTiles.scale}/>
+      <group name='ufo-home' 
+      position={layout[device].howToPlay.catchingPiecesPage.ufoHome.position} 
+      scale={layout[device].howToPlay.catchingPiecesPage.ufoHome.scale}>
+        <mesh name='base' position={[0, -0.5, -0.2]}>
           <cylinderGeometry args={[1.4, 1.4, 0.01, 32]}/>
           <meshStandardMaterial color='turquoise' transparent opacity={0.05}/>
         </mesh>
@@ -1089,38 +861,14 @@ export default function HowToPlay({
           <Ufo position={[0.5,0,0.4]}/>
         </animated.group>
       </group>
-      {/* <animated.group scale={springs.moveTextScale}>
-        <Text3D
-          position={layout[device].howToPlay.catchingPiecesPage.moveText.position}
-          rotation={[-Math.PI/2,0,0]}
-          font="fonts/Luckiest Guy_Regular.json" 
-          size={0.5} 
-          height={0.01}
-        >
-          MOVE:
-          <meshStandardMaterial color={ "limegreen" }/>
-        </Text3D>
-        <animated.group scale={springs.moveTokenScale}>
-          <GulToken 
-            position={layout[device].howToPlay.catchingPiecesPage.gulToken.position} 
-            rotation={layout[device].howToPlay.catchingPiecesPage.gulToken.rotation}
-          />
-        </animated.group>
-      </animated.group> */}
-      {/* <group>
-        <Cursor
-          position={springs.cursorPos}
-          rotation={[0,0,0]}
-          scale={[3, 3, 0.1]}
-          effectOpacity={springs.cursorEffectOpacity}
-          effect={true}
-        />
-      </group> */}
-      {/* <Float> */}
-        <YootButtonModel scale={springs.yootButtonScale} rotation={[Math.PI/16, Math.PI/2, 0]} position={layout[device].howToPlay.catchingPiecesPage.yootButtonModel.position} turnedOn={true}/>
-
-      {/* </Float> */}
-      <BonusAlert position={[6.7, 0, 3]} scale={springs.bonusAlertScale}/>
+      <YootButtonModel 
+      scale={springs.yootButtonScale} 
+      rotation={[Math.PI/16, Math.PI/2, 0]} 
+      position={layout[device].howToPlay.catchingPiecesPage.yootButtonModel.position} 
+      turnedOn={true}/>
+      <BonusAlert 
+      position={layout[device].howToPlay.catchingPiecesPage.bonusAlert.position} 
+      scale={springs.bonusAlertScale}/>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.catchingPiecesPage.text.position}
@@ -1138,10 +886,8 @@ export default function HowToPlay({
   function PiggybackPage() {    
     const springs = useSpring({
       from: {
-        cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[0],
         rocket0Scale: 1.2,
         rocket1Scale: 1.2,
-        cursorEffectOpacity: 0,
         legalTile0Scale: 0.4,
         legalTile1Scale: 0.4,
         pointer0Opacity: 0,
@@ -1150,7 +896,6 @@ export default function HowToPlay({
         rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[0],
         moveText0Scale: 1,
         moveText1Scale: 0,
-        bonusTurnScale: 0,
         yootButtonScale: 0,
         moveTokenScale: 0,
         moveToken1Scale: 0,
@@ -1158,39 +903,14 @@ export default function HowToPlay({
         geTokenScale: 1
       },
       to: [
-        // {
-        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[1],
-        //   delay: 1000
-        // },
         {
-          // cursorEffectOpacity: 1,
           rocket0Scale: 1.6,
           rocket1Scale: 1.6,
           legalTile0Scale: 0.6,
           pointer0Opacity: 1,
           moveTokenScale: 1,
-          // delay: 500,
         },
-        // {
-        //   cursorEffectOpacity: 0,
-        //   delay: 200,
-        // },
-        // {
-        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[2],
-        //   delay: 1000,
-        // },
-        // {
-        //   cursorEffectOpacity: 1,
-        //   moveTokenScale: 0,
-        //   rocket0Scale: 1.2,
-        //   rocket1Scale: 1.2,
-        //   legalTile0Scale: 0.4,
-        //   gulTokenScale: 0,
-        //   pointer0Opacity: 0,
-        //   delay: 1000,
-        // },
         {
-          cursorEffectOpacity: 0,
           delay: 200,
           config: {
             tension: 0,
@@ -1213,7 +933,6 @@ export default function HowToPlay({
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[3],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[1],
-          // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[3],
           legalTile0Scale: 0.4,
           gulTokenScale: 0,
           moveTokenScale: 0,
@@ -1225,44 +944,6 @@ export default function HowToPlay({
             friction: 26
           }
         },
-        // {
-        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[4],
-        //   delay: 1000
-        // },
-        // {
-        //   cursorEffectOpacity: 1,
-        //   rocket0Scale: 1.6,
-        //   rocket1Scale: 1.6,
-        //   config: {
-        //     tension: 0,
-        //   }
-        // },
-        // {
-        //   cursorEffectOpacity: 0,
-        //   delay: 200,
-        // },
-        // {
-        //   cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[5],
-        //   delay: 1000
-        // },
-        {
-          // cursorEffectOpacity: 1,
-          // rocket0Scale: 1.2,
-          // rocket1Scale: 1.2,
-          // pointer1Opacity: 0,
-          // delay: 500,
-          // config: {
-          //   tension: 0,
-          // }
-        },
-        // {
-          // cursorEffectOpacity: 0,
-          // cursorPos: layout[device].howToPlay.combiningPiecesPage.cursorPos[6],
-          // delay: 200,
-          // config: {
-          //   tension: 0,
-          // }
-        // },
         {
           rocket0Pos: layout[device].howToPlay.combiningPiecesPage.rocket0Pos[4],
           rocket1Pos: layout[device].howToPlay.combiningPiecesPage.rocket1Pos[2],
@@ -1310,7 +991,6 @@ export default function HowToPlay({
               key={i}
             >
               <Star scale={springs.legalTile0Scale}/>
-              <Pointer color='red' position={layout[device].howToPlay.combiningPiecesPage.pointer0.position} scale={2} opacity={springs.pointer0Opacity}/>
             </group>
           )
         } else if (i === 4) {
@@ -1322,7 +1002,6 @@ export default function HowToPlay({
               <Mars
                 scale={springs.legalTile1Scale}
               />
-              <Pointer color='red' position={layout[device].howToPlay.combiningPiecesPage.pointer1.position} scale={2.3} opacity={springs.pointer1Opacity}/>
             </group>
           )
         } else {            
@@ -1344,13 +1023,6 @@ export default function HowToPlay({
         <animated.group name='rocket-1' position={springs.rocket1Pos} scale={springs.rocket1Scale} >
           <Rocket onBoard/>
         </animated.group>
-        {/* <Cursor
-          position={springs.cursorPos}
-          rotation={[0,0,0]}
-          scale={[3, 3, 0.1]}
-          effectOpacity={springs.cursorEffectOpacity}
-          effect={true}
-        /> */}
         <animated.group>
           <GulToken scale={springs.moveTokenScale} position={[4,0,5]} rotation={[0, Math.PI/2, 0]}/>
         </animated.group>
@@ -1624,61 +1296,7 @@ export default function HowToPlay({
     }
     // #endregion
 
-    const textures = [
-      useLoader(TextureLoader, 'textures/particles/3.png'),
-      // useLoader(TextureLoader, 'textures/particles/4.png'),
-      // useLoader(TextureLoader, 'textures/particles/5.png'),
-      // useLoader(TextureLoader, 'textures/particles/6.png'),
-      // useLoader(TextureLoader, 'textures/particles/8.png'),
-    ]
-
-    const [CreateShootingStar] = useShootingStarShader();
-    /*
-    useEffect(() => {
-      const shootingStar0Timeout = setTimeout(() => {
-        const color = new THREE.Color();
-        color.setHSL(55/360, 0.68, 0.55)
-
-        CreateShootingStar({
-          count: 600,
-          position: new THREE.Vector3(1.5, 1, -2.9),
-          fallDirection: new THREE.Vector3(-0.01, 0, 0),
-          size: 0.8,
-          texture: textures[Math.floor(Math.random() * textures.length)],
-          radius: 0.2 + Math.random() * 0.3,
-          color,
-          duration: 3,
-          cutOff: 0.8,
-          trailXRange: [0.5, 0.5],
-          trailZRange: [0, 0.1]
-        })
-      }, 700)
-      const shootingStar1Timeout = setTimeout(() => {
-        const color = new THREE.Color();
-        color.setHSL(55/360, 0.68, 0.55)
-
-        CreateShootingStar({
-          count: 600,
-          position: new THREE.Vector3(-1.3, 1, -5.9),
-          fallDirection: new THREE.Vector3(0, 0, 0.01),
-          size: 0.8,
-          texture: textures[Math.floor(Math.random() * textures.length)],
-          radius: 0.24 + Math.random() * 0.3,
-          color,
-          duration: 3,
-          cutOff: 0.8,
-          trailXRange: [0, 0.1],
-          trailZRange: [-0.5, 0.1]
-        })
-      }, 3000)
-
-      return () => {
-        clearTimeout(shootingStar0Timeout)
-        clearTimeout(shootingStar1Timeout)
-      }
-    }, [])*/
-
-    return <group name='shortcuts-page'>
+    return <group name='shortcut-page'>
       <animated.group name='text'>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -1692,10 +1310,12 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </animated.group>
-      <group position={[2.8, 0, -0.5]} scale={0.9}>
+      <group 
+      position={layout[device].howToPlay.shortcutsPage.board.position} 
+      scale={layout[device].howToPlay.shortcutsPage.board.scale}>
         <Board showArrows={false} starColor='#44442B' highlightShortcuts/>
-        <group position={[-0.4, 0.5, 0.2]}>
-          <animated.mesh name='mars-left' scale={springsArrow0.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+        <group name='mars-left' position={[-0.4, 0.5, 0.2]}>
+          <animated.mesh scale={springsArrow0.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
             <coneGeometry args={[0.15, 0.4, 32]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
@@ -1725,25 +1345,25 @@ export default function HowToPlay({
           </animated.mesh>
         })}
         {dotSpringsVerticalHalf.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[0, 0.5, 1 + 0.4*index]}>
+          return <animated.mesh scale={value.scale} position={[0, 0.5, 0.7 + 0.4*index]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         })}
-        <group position={[-5.45, 0.5, 0.2]}>
-          <animated.mesh name='moon-left' scale={springsArrow1.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+        <group name='moon-left' position={[-5.45, 0.5, 0.2]}>
+          <animated.mesh scale={springsArrow1.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
             <coneGeometry args={[0.15, 0.4, 32]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         </group>
-        <group position={[-4, 0.5, -3.3]}>
-          <animated.mesh name='saturn-bottom' scale={springsArrow2.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+        <group name='saturn-bottom' position={[-4, 0.5, -3.3]}>
+          <animated.mesh scale={springsArrow2.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
             <coneGeometry args={[0.15, 0.4, 32]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         </group>
-        <group position={[-4, 0.5, 1.8]}>
-          <animated.mesh name='moon-bottom' scale={springsArrow3.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
+        <group name='moon-bottom' position={[-4, 0.5, 1.8]}>
+          <animated.mesh scale={springsArrow3.scale} position={[4, 0, 0]} rotation={[Math.PI/2, 0, 0]}>
             <coneGeometry args={[0.15, 0.4, 32]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
@@ -2472,7 +2092,7 @@ export default function HowToPlay({
     function handlePageLeft() {
       setPage(page => {
         if (page === 0) {
-          return 7
+          return 6
         } else {
           return page-1
         }
@@ -2481,7 +2101,7 @@ export default function HowToPlay({
 
     function handlePageRight() {
       setPage(page => {
-        if (page === 7) {
+        if (page === 6) {
           return 0
         } else {
           return page+1
@@ -2509,9 +2129,6 @@ export default function HowToPlay({
     }
     function handlePage6() {
       setPage(6)
-    }
-    function handlePage7() {
-      setPage(7)
     }
 
     const space = layout[device].howToPlay.pagination.elementSpace
@@ -2549,11 +2166,7 @@ export default function HowToPlay({
         <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
         <meshStandardMaterial color={ page === 6 ? "green" : "yellow" }/>
       </mesh>
-      <mesh position={[startX + space*8, 0, 6]} onPointerUp={handlePage7}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 7 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*9, 0, 6]} rotation={[0, 0, -Math.PI/2]} onPointerUp={handlePageRight}>
+      <mesh position={[startX + space*8, 0, 6]} rotation={[0, 0, -Math.PI/2]} onPointerUp={handlePageRight}>
         <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, layout[device].howToPlay.pagination.arrowHeight, 3]}/>
         <meshStandardMaterial color="yellow"/>
       </mesh>
@@ -3230,7 +2843,7 @@ export default function HowToPlay({
       rotation={layout[device].game.whoGoesFirst.title.rotation}
       size={0.4}
       height={layout[device].game.whoGoesFirst.title.height}>
-        {`TWO TEAMS MOVE SHIPS AROUND THE STARS\nFROM START TO FINISH. FINISH 4 SHIPS FIRST\nTO WIN!`}
+        {`TWO TEAMS MOVE THEIR SHIPS FROM START\nTO FINISH. FINISH 4 SHIPS FIRST TO WIN!`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
     </group>
