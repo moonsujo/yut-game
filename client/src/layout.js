@@ -1650,17 +1650,17 @@ export default {
         position: [0,0,0],
         scale: 1,
         rocketHome0: {
-          position: [5.3,2,4],
+          position: [-4.7,2,5.6],
           rotation: [-Math.PI/8, 0, 0],
-          scale: 1.2
+          scale: 1
         },
         rocketHome1: {
-          position: [6.3,2,4],
+          position: [-4.1,2,6.2],
           rotation: [-Math.PI/8, 0, 0],
-          scale: 1.2
+          scale: 1
         },
         ufoHome: {
-          position: [4.8, 0, 4.9],
+          position: [4.2, 0, 4.9],
           rotation: [-Math.PI/16,0,0],
           scale: 1.2
         }
@@ -1671,7 +1671,7 @@ export default {
         scale: 0.37
       },
       board: {
-        position: [0, 0, 0],
+        position: [0, 0, -0.6],
         scale: 1
       },
       milkyWay: {
@@ -1734,9 +1734,9 @@ export default {
       }
     },
     howToPlay: {
-      position: [-1,0,-2],
+      position: [-1.9,0,-1],
       rotation: [0,Math.PI/32,Math.PI/64],
-      scale: 0.6,
+      scale: 0.8,
       pickingTheTeamsPage: {
         cursorPos: [
           [4,0,0],
@@ -2150,7 +2150,7 @@ export default {
       },
       combiningPiecesPage: {
         text: {
-          position: [-2.5,0,5],
+          position: [-2.5,0,6],
           rotation: [-Math.PI/2, 0, 0],
           size: 0.4,
           height: 0.01,
@@ -2226,10 +2226,10 @@ export default {
           position: [-0.3,1.7,0]
         },
         firstCornerTiles: {
-          position: [1, 0, -6]
+          position: [1, 0, -5]
         },
         moveText0: {
-          position: [-2.5, 0, 3],
+          position: [-2.5, 0, 4],
           rotation: [-Math.PI/2,0,0],
           size: 0.5,
           height: 0.01,
@@ -2243,15 +2243,15 @@ export default {
           lineHeight: 0.9
         },
         gulToken: {
-          position: [1.3, 0, 2.7],
+          position: [1.3, 0, 3.7],
           rotation: [0, Math.PI/2, 0],
         },
         geToken0: {
-          position: [0.4, 0, 2.7],
+          position: [0.4, 0, 3.7],
           rotation: [0, Math.PI/2, 0]
         },
         geToken1: {
-          position: [3, 0, 2.7],
+          position: [3, 0, 3.7],
           rotation: [0, Math.PI/2, 0]
         }
       },
@@ -2489,8 +2489,8 @@ export default {
           height: 0.01,
         },
         do: {
-          position: [-2.7, 0, -2.7],
-          scale: 0.9,
+          position: [-2.4, 0, -2.7],
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2512,7 +2512,7 @@ export default {
         },
         ge: {
           position: [1.7, 0, -2.7],
-          scale: 0.9,
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2533,8 +2533,8 @@ export default {
           }
         },
         gul: {
-          position: [6.1, 0,  -2.7],
-          scale: 0.9,
+          position: [5.8, 0,  -2.7],
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-2.7],
@@ -2555,8 +2555,8 @@ export default {
           }
         },
         yoot: {
-          position: [-2.7, 0, 4.2],
-          scale: 0.9,
+          position: [-2.4, 0, 4],
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-3.5],
@@ -2583,8 +2583,8 @@ export default {
           }
         },
         mo: {
-          position: [1.7, 0, 4.2],
-          scale: 0.9,
+          position: [1.7, 0, 4],
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-3.5],
@@ -2611,8 +2611,8 @@ export default {
           }
         },
         backdo: {
-          position: [6.1, 0, 4.2],
-          scale: 0.9,
+          position: [5.7, 0, 4],
+          scale: 0.8,
           text: {
             line0: {
               position: [-0.2,0,-3.5],

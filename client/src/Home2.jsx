@@ -59,12 +59,20 @@ export default function Home2() {
         rotation={layout[device].title.pieces.rocketHome1.rotation} 
         scale={layout[device].title.pieces.rocketHome1.scale}
       />
+      <mesh name='rocket-home' scale={[1.2, 0.01, 1.2]} position={[-4.3,0,5.2]}>
+        <cylinderGeometry args={[1, 1, 1]}/>
+        <meshStandardMaterial color='red' transparent opacity={0.1}/>
+      </mesh>
       {/* ufo home piece */}
       <Ufo 
         rotation={layout[device].title.pieces.ufoHome.rotation} 
         position={layout[device].title.pieces.ufoHome.position} 
         scale={layout[device].title.pieces.ufoHome.scale}
       />
+      <mesh name='ufo-home' scale={[1.2, 0.01, 1.2]} position={[4.5,0,5.2]}>
+        <cylinderGeometry args={[1, 1, 1]}/>
+        <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+      </mesh>
       {/* ufo on mars */}
       <Float 
         rotationIntensity={0.05} 
@@ -504,6 +512,7 @@ export default function Home2() {
           position={layout[device].howToPlay.position}
           rotation={[0,0,0]}
           scale={layout[device].howToPlay.scale}
+          tabOrientation='right'
         />}
       </Physics>
     </group>

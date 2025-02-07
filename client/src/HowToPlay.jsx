@@ -38,7 +38,8 @@ export default function HowToPlay({
   rotation=[0,0,0], 
   scale=1,
   closeButton=false,
-  setShowRulebook=null
+  setShowRulebook=null,
+  tabOrientation='bottom'
 }) {
   
   const [page, setPage] = useState(0)
@@ -64,17 +65,17 @@ export default function HowToPlay({
     } else if (page === 3) { // Piggyback
       const page4Timeout = setTimeout(() => {
         setPage(4)
-      }, 7500)
+      }, 5700)
       setPageTimeout(page4Timeout)
     } else if (page === 4) { // Score
       const page5Timeout = setTimeout(() => {
         setPage(5)
-      }, 10100)
+      }, 9000)
       setPageTimeout(page5Timeout)
-    } else if (page === 5) { // Read the dice
+    } else if (page === 5) { // Read the Yut
       const page6Timeout = setTimeout(() => {
         setPage(6)
-      }, 11500)
+      }, 11500000)
       setPageTimeout(page6Timeout)
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
@@ -129,7 +130,7 @@ export default function HowToPlay({
             tension: 180,
             friction: 15
           },
-          delay: 6700
+          delay: 6500
         }
       ],
     })
@@ -138,7 +139,7 @@ export default function HowToPlay({
     useFrame((state) => {
       const time = state.clock.elapsedTime
       if (!animation) {
-        yutNewGroup.current.position.y = Math.sin(time * 2) * 1.1
+        yutNewGroup.current.position.y = Math.sin(time * 2) * 0.8 + 0.2
         yutNewGroup.current.rotation.y = Math.sin(time * 2) * 0.03
       } else {
         yutNewGroup.current.position.y = 0
@@ -1119,7 +1120,7 @@ export default function HowToPlay({
         <YootButtonModel scale={springs.yootButtonScale} rotation={[Math.PI/16, Math.PI/2, 0]} position={layout[device].howToPlay.catchingPiecesPage.yootButtonModel.position} turnedOn={true}/>
 
       {/* </Float> */}
-      <BonusAlert position={[7, 0, 3]} scale={springs.bonusAlertScale}/>
+      <BonusAlert position={[6.7, 0, 3]} scale={springs.bonusAlertScale}/>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.catchingPiecesPage.text.position}
@@ -1978,7 +1979,7 @@ export default function HowToPlay({
     </group>
   }
 
-  function Tabs({ position=[0,0,0], scale=1 }) {
+  function Tabs({ position=[0,0,0], scale=1, orientation='bottom' }) {
     const [overviewHover, setOverviewHover] = useState(false)
     const [throwTheYutHover, setThrowTheYutHover] = useState(false)
     const [catchEnemiesHover, setCatchEnemiesHover] = useState(false)
@@ -2051,211 +2052,419 @@ export default function HowToPlay({
       setShortcutHover(false)
     }
 
-    return <group name='tabs' position={position} scale={scale}>
-      <group name='tab-0' position={[0,0,0]} scale={0.8}>
-        <mesh position={[1.55, -0.1, -0.2]}>
-          <boxGeometry args={[3.4, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.55, -0.1, -0.2]}>
-          <boxGeometry args={[3.5, 0.04, 0.85]}/>
-          <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-0-wrapper' 
-          position={[1.55, -0.1, -0.2]}
-          onClick={handleOverviewClick}
-          onPointerEnter={handleOverviewPointerEnter}
-          onPointerLeave={handleOverviewPointerLeave}
-        >
-          <boxGeometry args={[3.5, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          1. OVERVIEW
-          <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
-        </Text3D>
+    if (orientation === 'bottom') {
+      return <group name='tabs' position={position} scale={scale}>
+        <group name='tab-0' position={[0,0,0]} scale={0.8}>
+          <mesh position={[1.55, -0.1, -0.2]}>
+            <boxGeometry args={[3.4, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.55, -0.1, -0.2]}>
+            <boxGeometry args={[3.5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-0-wrapper' 
+            position={[1.55, -0.1, -0.2]}
+            onClick={handleOverviewClick}
+            onPointerEnter={handleOverviewPointerEnter}
+            onPointerLeave={handleOverviewPointerLeave}
+          >
+            <boxGeometry args={[3.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            1. OVERVIEW
+            <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-1' position={[2.9,0,0]} scale={0.8}>
+          <mesh position={[2.3, -0.1, -0.2]}>
+            <boxGeometry args={[4.9, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.3, -0.1, -0.2]}>
+            <boxGeometry args={[5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-1-wrapper' 
+            position={[2.3, -0.1, -0.2]}
+            onClick={handleThrowTheYutClick}
+            onPointerEnter={handleThrowTheYutPointerEnter}
+            onPointerLeave={handleThrowTheYutPointerLeave}
+          >
+            <boxGeometry args={[5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            2. THROW THE YUT
+            <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-2' position={[7,0,0]} scale={0.8}>
+          <mesh position={[2.15, -0.1, -0.2]}>
+            <boxGeometry args={[4.6, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.15, -0.1, -0.2]}>
+            <boxGeometry args={[4.7, 0.04, 0.85]}/>
+            <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-2-wrapper' 
+            position={[2.15, -0.1, -0.2]}
+            onClick={handleCatchEnemiesClick}
+            onPointerEnter={handleCatchEnemiesPointerEnter}
+            onPointerLeave={handleCatchEnemiesPointerLeave}
+          >
+            <boxGeometry args={[4.7, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            3. CATCH ENEMIES
+            <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-3' position={[0,0,0.8]} scale={0.8}>
+          <mesh position={[1.75, -0.1, -0.2]}>
+            <boxGeometry args={[3.8, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.75, -0.1, -0.2]}>
+            <boxGeometry args={[3.9, 0.04, 0.85]}/>
+            <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-3-wrapper' 
+            position={[1.7, -0.1, -0.2]}
+            onClick={handlePiggybackClick}
+            onPointerEnter={handlePiggybackPointerEnter}
+            onPointerLeave={handlePiggybackPointerLeave}
+          >
+            <boxGeometry args={[3.8, 0.1, 0.7]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            4. PIGGYBACK
+            <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-4' position={[3.2,0,0.8]} scale={0.8}>
+          <mesh position={[1.1, -0.1, -0.2]}>
+            <boxGeometry args={[2.45, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.1, -0.1, -0.2]}>
+            <boxGeometry args={[2.55, 0.04, 0.85]}/>
+            <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-4-wrapper' 
+            position={[1.1, -0.1, -0.2]} 
+            onClick={handleScoreClick}
+            onPointerEnter={handleScorePointerEnter}
+            onPointerLeave={handleScorePointerLeave}
+          >
+            <boxGeometry args={[2.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            5. SCORE
+            <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-5' position={[5.35,0,0.8]} scale={0.8}>
+          <mesh position={[2.05, -0.1, -0.2]}>
+            <boxGeometry args={[4.4, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.05, -0.1, -0.2]}>
+            <boxGeometry args={[4.5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-5-wrapper' 
+            position={[2.05, -0.1, -0.2]}
+            onClick={handleReadTheDiceClick}
+            onPointerEnter={handleReadTheDicePointerEnter}
+            onPointerLeave={handleReadTheDicePointerLeave}
+          >
+            <boxGeometry args={[4.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            6. READ THE YUT
+            <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-6' position={[0,0,1.6]} scale={0.8}>
+          <mesh position={[1.6, -0.1, -0.2]}>
+            <boxGeometry args={[3.5, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.6, -0.1, -0.2]}>
+            <boxGeometry args={[3.6, 0.04, 0.85]}/>
+            <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-6-wrapper' 
+            position={[1.6, -0.1, -0.2]}
+            onClick={handleShortcutClick}
+            onPointerEnter={handleShortcutPointerEnter}
+            onPointerLeave={handleShortcutPointerLeave}
+          >
+            <boxGeometry args={[3.6, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            7. SHORTCUT
+            <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
       </group>
-      <group name='tab-1' position={[2.9,0,0]} scale={0.8}>
-        <mesh position={[2.3, -0.1, -0.2]}>
-          <boxGeometry args={[4.9, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[2.3, -0.1, -0.2]}>
-          <boxGeometry args={[5, 0.04, 0.85]}/>
-          <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-1-wrapper' 
-          position={[2.3, -0.1, -0.2]}
-          onClick={handleThrowTheYutClick}
-          onPointerEnter={handleThrowTheYutPointerEnter}
-          onPointerLeave={handleThrowTheYutPointerLeave}
-        >
-          <boxGeometry args={[5, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          2. THROW THE YUT
-          <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
-        </Text3D>
+    } else {
+      return <group name='tabs' position={position} scale={scale}>
+        <group name='tab-0' position={[0,0,0]} scale={0.8}>
+          <mesh position={[1.55, -0.1, -0.2]}>
+            <boxGeometry args={[3.4, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.55, -0.1, -0.2]}>
+            <boxGeometry args={[3.5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-0-wrapper' 
+            position={[1.55, -0.1, -0.2]}
+            onClick={handleOverviewClick}
+            onPointerEnter={handleOverviewPointerEnter}
+            onPointerLeave={handleOverviewPointerLeave}
+          >
+            <boxGeometry args={[3.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            1. OVERVIEW
+            <meshStandardMaterial color={overviewHover || page === 0 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-1' position={[0,0,0.8]} scale={0.8}>
+          <mesh position={[2.3, -0.1, -0.2]}>
+            <boxGeometry args={[4.9, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.3, -0.1, -0.2]}>
+            <boxGeometry args={[5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-1-wrapper' 
+            position={[2.3, -0.1, -0.2]}
+            onClick={handleThrowTheYutClick}
+            onPointerEnter={handleThrowTheYutPointerEnter}
+            onPointerLeave={handleThrowTheYutPointerLeave}
+          >
+            <boxGeometry args={[5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            2. THROW THE YUT
+            <meshStandardMaterial color={throwTheYutHover || page === 1 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-2' position={[0,0,1.6]} scale={0.8}>
+          <mesh position={[2.15, -0.1, -0.2]}>
+            <boxGeometry args={[4.6, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.15, -0.1, -0.2]}>
+            <boxGeometry args={[4.7, 0.04, 0.85]}/>
+            <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-2-wrapper' 
+            position={[2.15, -0.1, -0.2]}
+            onClick={handleCatchEnemiesClick}
+            onPointerEnter={handleCatchEnemiesPointerEnter}
+            onPointerLeave={handleCatchEnemiesPointerLeave}
+          >
+            <boxGeometry args={[4.7, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            3. CATCH ENEMIES
+            <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-3' position={[0,0,2.4]} scale={0.8}>
+          <mesh position={[1.75, -0.1, -0.2]}>
+            <boxGeometry args={[3.8, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.75, -0.1, -0.2]}>
+            <boxGeometry args={[3.9, 0.04, 0.85]}/>
+            <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-3-wrapper' 
+            position={[1.7, -0.1, -0.2]}
+            onClick={handlePiggybackClick}
+            onPointerEnter={handlePiggybackPointerEnter}
+            onPointerLeave={handlePiggybackPointerLeave}
+          >
+            <boxGeometry args={[3.8, 0.1, 0.7]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            4. PIGGYBACK
+            <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-4' position={[0,0,3.2]} scale={0.8}>
+          <mesh position={[1.1, -0.1, -0.2]}>
+            <boxGeometry args={[2.45, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.1, -0.1, -0.2]}>
+            <boxGeometry args={[2.55, 0.04, 0.85]}/>
+            <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-4-wrapper' 
+            position={[1.1, -0.1, -0.2]} 
+            onClick={handleScoreClick}
+            onPointerEnter={handleScorePointerEnter}
+            onPointerLeave={handleScorePointerLeave}
+          >
+            <boxGeometry args={[2.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            5. SCORE
+            <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-5' position={[0,0,4]} scale={0.8}>
+          <mesh position={[2.05, -0.1, -0.2]}>
+            <boxGeometry args={[4.4, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[2.05, -0.1, -0.2]}>
+            <boxGeometry args={[4.5, 0.04, 0.85]}/>
+            <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-5-wrapper' 
+            position={[2.05, -0.1, -0.2]}
+            onClick={handleReadTheDiceClick}
+            onPointerEnter={handleReadTheDicePointerEnter}
+            onPointerLeave={handleReadTheDicePointerLeave}
+          >
+            <boxGeometry args={[4.5, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            6. READ THE YUT
+            <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
+        <group name='tab-6' position={[0,0,4.8]} scale={0.8}>
+          <mesh position={[1.6, -0.1, -0.2]}>
+            <boxGeometry args={[3.5, 0.05, 0.75]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh position={[1.6, -0.1, -0.2]}>
+            <boxGeometry args={[3.6, 0.04, 0.85]}/>
+            <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
+          </mesh>
+          <mesh 
+            name='tab-6-wrapper' 
+            position={[1.6, -0.1, -0.2]}
+            onClick={handleShortcutClick}
+            onPointerEnter={handleShortcutPointerEnter}
+            onPointerLeave={handleShortcutPointerLeave}
+          >
+            <boxGeometry args={[3.6, 0.1, 0.85]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            7. SHORTCUT
+            <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
+          </Text3D>
+        </group>
       </group>
-      <group name='tab-2' position={[7,0,0]} scale={0.8}>
-        <mesh position={[2.15, -0.1, -0.2]}>
-          <boxGeometry args={[4.6, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[2.15, -0.1, -0.2]}>
-          <boxGeometry args={[4.7, 0.04, 0.85]}/>
-          <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-2-wrapper' 
-          position={[2.15, -0.1, -0.2]}
-          onClick={handleCatchEnemiesClick}
-          onPointerEnter={handleCatchEnemiesPointerEnter}
-          onPointerLeave={handleCatchEnemiesPointerLeave}
-        >
-          <boxGeometry args={[4.7, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          3. CATCH ENEMIES
-          <meshStandardMaterial color={catchEnemiesHover || page === 2 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-3' position={[0,0,0.8]} scale={0.8}>
-        <mesh position={[1.75, -0.1, -0.2]}>
-          <boxGeometry args={[3.8, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.75, -0.1, -0.2]}>
-          <boxGeometry args={[3.9, 0.04, 0.85]}/>
-          <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-3-wrapper' 
-          position={[1.7, -0.1, -0.2]}
-          onClick={handlePiggybackClick}
-          onPointerEnter={handlePiggybackPointerEnter}
-          onPointerLeave={handlePiggybackPointerLeave}
-        >
-          <boxGeometry args={[3.8, 0.1, 0.7]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          4. PIGGYBACK
-          <meshStandardMaterial color={piggybackHover || page === 3 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-4' position={[3.2,0,0.8]} scale={0.8}>
-        <mesh position={[1.1, -0.1, -0.2]}>
-          <boxGeometry args={[2.45, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.1, -0.1, -0.2]}>
-          <boxGeometry args={[2.55, 0.04, 0.85]}/>
-          <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-4-wrapper' 
-          position={[1.1, -0.1, -0.2]} 
-          onClick={handleScoreClick}
-          onPointerEnter={handleScorePointerEnter}
-          onPointerLeave={handleScorePointerLeave}
-        >
-          <boxGeometry args={[2.5, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          5. SCORE
-          <meshStandardMaterial color={scoreHover || page === 4 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-5' position={[5.35,0,0.8]} scale={0.8}>
-        <mesh position={[2.05, -0.1, -0.2]}>
-          <boxGeometry args={[4.4, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[2.05, -0.1, -0.2]}>
-          <boxGeometry args={[4.5, 0.04, 0.85]}/>
-          <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-5-wrapper' 
-          position={[2.05, -0.1, -0.2]}
-          onClick={handleReadTheDiceClick}
-          onPointerEnter={handleReadTheDicePointerEnter}
-          onPointerLeave={handleReadTheDicePointerLeave}
-        >
-          <boxGeometry args={[4.5, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          6. READ THE YUT
-          <meshStandardMaterial color={readTheDiceHover || page === 5 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-      <group name='tab-6' position={[0,0,1.6]} scale={0.8}>
-        <mesh position={[1.6, -0.1, -0.2]}>
-          <boxGeometry args={[3.5, 0.05, 0.75]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh position={[1.6, -0.1, -0.2]}>
-          <boxGeometry args={[3.6, 0.04, 0.85]}/>
-          <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
-        </mesh>
-        <mesh 
-          name='tab-6-wrapper' 
-          position={[1.6, -0.1, -0.2]}
-          onClick={handleShortcutClick}
-          onPointerEnter={handleShortcutPointerEnter}
-          onPointerLeave={handleShortcutPointerLeave}
-        >
-          <boxGeometry args={[3.6, 0.1, 0.85]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-        >
-          7. SHORTCUT
-          <meshStandardMaterial color={shortcutHover || page === 6 ? 'green' : 'yellow'}/>
-        </Text3D>
-      </group>
-    </group>
+    }
   }
 
   function Pagination({ position, scale }) {
@@ -3017,11 +3226,11 @@ export default function HowToPlay({
       <Text3D 
       name='goal'
       font="fonts/Luckiest Guy_Regular.json"
-      position={[-2.5, 0, 8]}
+      position={[-2.5, 0, 7.5]}
       rotation={layout[device].game.whoGoesFirst.title.rotation}
       size={0.4}
       height={layout[device].game.whoGoesFirst.title.height}>
-        {`MOVE SHIPS AROUND THE STARS FROM START\nTO FINISH. FINISH 4 SHIPS FIRST TO WIN!`}
+        {`TWO TEAMS MOVE SHIPS AROUND THE STARS\nFROM START TO FINISH. FINISH 4 SHIPS FIRST\nTO WIN!`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
     </group>
@@ -3035,7 +3244,8 @@ export default function HowToPlay({
       position={layout[device].howToPlay.pagination.position}
       scale={layout[device].howToPlay.pagination.scale}
     /> }
-    { device === 'landscapeDesktop' && <Tabs position={[-2.3, 0, 10]}/> }
+    { device === 'landscapeDesktop' && tabOrientation === 'bottom' && <Tabs position={[-2.3, 0, 10]} orientation={tabOrientation} scale={1}/> }
+    { device === 'landscapeDesktop' && tabOrientation === 'right' && <Tabs position={[9.2, 0, -2]} orientation={tabOrientation} scale={0.9}/> }
     { closeButton && <CloseButton
       position={layout[device].game.rulebook.closeButton.position} 
       scale={layout[device].game.rulebook.closeButton.scale
