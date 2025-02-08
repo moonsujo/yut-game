@@ -964,6 +964,38 @@ export default {
         size: 0.6
       }
     },
+    lobby: {
+      readyTextRocket: {
+        position: [1.7, 0, 0],
+        scale: 2,
+        background: {
+          opacity: 0.2
+        }
+      },
+      readyTextUfo: {
+        position: [1.5, 0, 0],
+        scale: 2,
+        background: {
+          opacity: 0.1
+        }
+      },
+      joinTeamButtonRocket: {
+        position: [1.7, 0, 0],
+        scale: 1.8
+      },
+      joinTeamButtonUfo: {
+        position: [1.5,0,0],
+        scale: 1.8
+      },
+      teamSwitchButtonRocket: {
+        position: [1.7,0,0],
+        scale: 2
+      },
+      teamSwitchButtonUfo: {
+        position: [1.5,0,0],
+        scale: 2
+      }
+    },
     game: {
       letsPlayButton: {
         position: [3.9,0,7.2],
@@ -1036,8 +1068,8 @@ export default {
         height: 0.01
       },
       team0: {
-        position: [-5.3, 0, -10],
-        scale: 1.2,
+        position: [-5,0,-7.2],
+        scale: 1.3,
         title: {
           position: [0,0,0],
           rotation: [-Math.PI / 2, 0, 0],
@@ -1076,8 +1108,8 @@ export default {
         }
       },
       team1: {
-        scale: 1.2,
-        position: [0.1, 0, -10],
+        position: [0.5,0,-7.2],
+        scale: 1.3,
         title: {
           position: [0,0,0],
           rotation: [-Math.PI / 2, 0, 0],
@@ -2488,6 +2520,38 @@ export default {
         ufoScale: 0.3,
       },
     },
+    lobby: {
+      readyTextRocket: {
+        position: [1.7, 0, 0],
+        scale: 2,
+        background: {
+          opacity: 0.1
+        }
+      },
+      readyTextUfo: {
+        position: [1.7, 0, 0],
+        scale: 2,
+        background: {
+          opacity: 0.1
+        }
+      },
+      joinTeamButtonRocket: {
+        position: [1.7, 0, 0],
+        scale: 1.8
+      },
+      joinTeamButtonUfo: {
+        position: [1.7,0,0],
+        scale: 1.8
+      },
+      teamSwitchButtonRocket: {
+        position: [1.7,0,0],
+        scale: 2
+      },
+      teamSwitchButtonUfo: {
+        position: [1.7,0,0],
+        scale: 2
+      }
+    },
     game: {
       letsPlayButton: {
         position: [-7.8,0,5.3],
@@ -2560,7 +2624,7 @@ export default {
         height: 0.01
       },
       team0: {
-        position: [-11, 0, -5.2],
+        position: [-12,0,-4],
         scale: 1,
         title: {
           position: [0,0,0],
@@ -2601,7 +2665,7 @@ export default {
       },
       team1: {
         scale: 1,
-        position: [-11, 0, -1],
+        position: [-7.5,0,-4],
         title: {
           position: [0,0,0],
           rotation: [-Math.PI / 2, 0, 0],

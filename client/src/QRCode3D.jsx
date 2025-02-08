@@ -1,16 +1,12 @@
-import { useLoader } from "@react-three/fiber";
 import QRCodeStyling from "qr-code-styling";
 import { useEffect, useState } from "react";
 import { TextureLoader } from "three";
-import Star from "./meshes/Star";
 
 export default function QrCode3d({ text, position, scale, rotation }) {
-  console.log('[QrCode3d]')
   const [texture, setTexture] = useState(null)
 
   // Generate the QR code as an image
   useEffect(() => {
-    console.log('[useEffect]')
     const qrCode = new QRCodeStyling({
       width: 256,
       height: 256,
@@ -76,7 +72,6 @@ export default function QrCode3d({ text, position, scale, rotation }) {
         // }
       }
     });
-    console.log('[useEffect] qrCode', qrCode)
 
     // Generate the blob and set the texture
     qrCode.getRawData('png').then((blob) => {
