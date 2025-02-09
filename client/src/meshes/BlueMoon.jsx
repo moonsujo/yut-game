@@ -8,14 +8,14 @@ import FragmentShader from '../shader/blueMoon/fragment.glsl'
 import VertexShader from '../shader/blueMoon/vertex.glsl'
 import { useFrame } from "@react-three/fiber";
 
-export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
+export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1, rotationSpeed=0.1 }) {
   const textureLoader = new THREE.TextureLoader()
   const moonTexture = textureLoader.load("textures/moon/moon-color.jpg") // must use absolute path - string starts with a slash
   moonTexture.colorSpace = THREE.SRGBColorSpace
 
   const moon = useRef();
   useFrame((state) => {
-    moon.current.rotation.y = state.clock.elapsedTime * 0.02;
+    moon.current.rotation.y = -state.clock.elapsedTime * rotationSpeed;
   });
 
   return (

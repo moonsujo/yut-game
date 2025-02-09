@@ -376,9 +376,10 @@ export default function Lobby() {
 
   function FirstSectionNew({ position }) {
     return <group position={position}>
-      <group name='title' position={[-3.3,0,-5.3]}>
+      <group name='title'>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
+          position={[-12,0,-5.3]}
           rotation={[-Math.PI/2,0,0]}
           size={0.6}
           height={0.01}
@@ -388,7 +389,7 @@ export default function Lobby() {
         </Text3D>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
-          position={[4.5,0,0]}
+          position={[-7,0,-5.3]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
           height={0.01}
@@ -397,13 +398,13 @@ export default function Lobby() {
           <meshStandardMaterial color="yellow"/>
         </Text3D>
       </group>
-      <PlayersParty scale={0.5}/>
+      <PlayersParty position={[-8, 0, 0]} scale={0.6}/>
     </group>
   }
 
   // Rulebook
-  function SecondSection({ position }) {
-    return <group name='rulebook' position={position}>
+  function SecondSection() {
+    return <group name='rulebook'>
       {/* <mesh name='background-panel' position={[0.7, -0.5, 0]}>
         <boxGeometry args={[8.4, 0.01, 14]}/>
         <meshStandardMaterial color='black' transparent opacity={0.5}/>
@@ -1432,8 +1433,8 @@ export default function Lobby() {
   return <animated.group>
     <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     { device === 'landscapeDesktop' && <group>
-      <FirstSectionNew position={[0, 0, 0]} />
-      <SecondSection position={[-9, 0, 0]}/>
+      <FirstSectionNew/>
+      <SecondSection/>
       <ThirdSection/>
     </group> }
     { device === 'portrait' && <group>
