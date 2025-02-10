@@ -62,6 +62,7 @@ export default function JoinTeamModal({ position, rotation, scale, teams }) {
     setName('')
     setJoinTeam(null);
     setAlert('');
+    setCancelHover(false)
     return false;
   }
 

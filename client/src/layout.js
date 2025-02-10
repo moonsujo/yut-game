@@ -965,6 +965,11 @@ export default {
       }
     },
     lobby: {
+      joinTeamModal: {
+        position: [-4.5, 0, -3],
+        rotation: [-Math.PI/2, 0, 0],
+        scale: 2
+      },
       readyTextRocket: {
         position: [1.7, 0, 0],
         scale: 2,
@@ -2521,6 +2526,11 @@ export default {
       },
     },
     lobby: {
+      joinTeamModal: {
+        position: [-2.9, 0, -1.7],
+        rotation: [-Math.PI/2, 0, 0],
+        scale: [1.3, 1.3, 1.3]
+      },
       readyTextRocket: {
         position: [1.7, 0, 0],
         scale: 2,

@@ -1,6 +1,6 @@
 // js
 import React, { useEffect, useRef, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import layout from "./layout.js";
 import { useSpring, animated } from '@react-spring/three';
 
@@ -85,6 +85,13 @@ export default function Lobby() {
   const params = useParams();
   
   function PlayersParty({ position=[0,0,0], scale=0.7 }) {
+    const host = useAtomValue(hostAtom)
+    const client = useAtomValue(clientAtom)
+    const isHost = client.socketId === host.socketId
+    const teams = useAtomValue(teamsAtom)
+    const [seatClickedIndex, setSeatClickedIndex] = useState(0)
+    const [joinTeamModalPosition, setJoinTeamModalPosition] = useState([0,0,0])
+
     const partyRef = useRef()
     const rocket0 = useRef()
     const rocket1 = useRef()
@@ -122,18 +129,172 @@ export default function Lobby() {
     useFrame((state) => {
       const time = state.clock.elapsedTime
       // partyRef.current.rotation.y = -time / 4;
-      if (shipRefs[0].current) 
-      shipRefs.forEach((value, index) => {
-        if (value.current) {
-          value.current.position.x = Math.cos(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2
-          value.current.position.y = 5
-          value.current.position.z = Math.sin(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2 + 2
-        }
-      })
+      if (shipRefs[0].current) {
+        shipRefs.forEach((value, index) => {
+          if (value.current) {
+            if (device === 'portrait') {
+              value.current.position.x = Math.cos(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2
+              value.current.position.y = 5
+              value.current.position.z = Math.sin(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2 + 2
+            } else {
+              value.current.position.x = Math.cos((Math.PI * 2 / shipRefs.length * (index-1.5))) * radius2
+              value.current.position.y = 5
+              value.current.position.z = Math.sin((Math.PI * 2 / shipRefs.length * (index-1.5))) * radius2 + 2
+            }
+          }
+        })
+      }
     })
+
+    {/* landing page: Take a seat */}
+    {/* no more seats: Full capacity (grey button) */}
+    {/* joined UFO: 'Prepare for contact' */}
+    {/* joined Rocket: 'Ready to launch', 'Clear for takeoff' */}
+    function SeatStatus({ position, scale }) {
+      const teams = useAtomValue(teamsAtom)
+      const client = useAtomValue(clientAtom)
+      function TakeASeat({ position, scale }) {
+        return <group
+          name='take-a-seat-message'
+          position={position}
+          scale={scale}
+        >
+          <mesh
+            name='background-inner'
+            scale={[1.3, 1, 0.42]}
+          >
+            <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-0.95, 0.025, 0.12]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.25}
+            height={0.01}
+            lineHeight={0.7}
+          >
+            {`TAKE A SEAT`}
+            <meshStandardMaterial color={ 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+      function FullCapacity({ position, scale }) {
+        return <group
+          name='full-capacity-message'
+          position={position}
+          scale={scale}
+        >
+          <mesh
+            name='background-inner'
+            scale={[1.6, 1, 0.42]}
+          >
+            <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-1.1, 0.025, 0.12]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.25}
+            height={0.01}
+            lineHeight={0.7}
+          >
+            {`FULL CAPACITY`}
+            <meshStandardMaterial color={ 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+      function RocketJoined({ position, scale }) {
+        return <group
+          name='rocket-joined-message'
+          position={position}
+          scale={scale}
+        >
+          <mesh
+            name='background-inner'
+            scale={[1.3, 1, 0.6]}
+          >
+            <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-0.8, 0.025, -0.03]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.25}
+            height={0.01}
+            lineHeight={0.7}
+          >
+            {`CLEAR FOR\n  TAKEOFF`}
+            <meshStandardMaterial color={ 'red' }/>
+          </Text3D>
+        </group>
+      }
+      function UfoJoined({ position, scale }) {
+        return <group
+          name='ufo-joined-message'
+          position={position}
+          scale={scale}
+        >
+          <mesh
+            name='background-inner'
+            scale={[1.5, 1, 0.6]}
+          >
+            <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <Text3D
+            font="fonts/Luckiest Guy_Regular.json"
+            position={[-1, 0.025, -0.03]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.25}
+            height={0.01}
+            lineHeight={0.7}
+          >
+            {`PREPARE FOR\n    CONTACT`}
+            <meshStandardMaterial color={ 'turquoise' }/>
+          </Text3D>
+        </group>
+      }
+      if (teams[0].players.length < 4 || teams[1].players.length < 4) {
+        return <TakeASeat position={[0,5,7.3]} scale={1.9}/>
+      } else if (teams[0].players.length >= 4 && teams[1].players.length >= 4) {
+        return <FullCapacity position={[0,5,7.3]} scale={1.9}/>
+      } else if (client.team === 0) {
+        return <RocketJoined position={[0,5,7.3]} scale={1.9}/>
+      } else if (client.team === 1) {
+        return <UfoJoined position={[0,5,7.3]} scale={1.9}/>
+      }
+    }
+    function handleSeatPointerEnter(e) {
+      e.stopPropagation()
+    }
+    function handleSeatPointerLeave(e) {
+      e.stopPropagation()
+    }
+    const setJoinTeam = useSetAtom(joinTeamAtom)
+    function handleSeatPointerUp(e, team, seatIndex) {
+      e.stopPropagation()
+      setJoinTeam(team)
+      setSeatClickedIndex(seatIndex)
+    }
+
+    useEffect(() => {
+      if (seatClickedIndex === 6 || seatClickedIndex === 5) {
+        setJoinTeamModalPosition([0, 0, 1.5])
+      } else if (seatClickedIndex === 4 || seatClickedIndex === 7) {
+        setJoinTeamModalPosition([0, 0, 3])
+      } else if (seatClickedIndex === 3 || seatClickedIndex === 0) {
+        setJoinTeamModalPosition([0, 0, 5.5])
+      } else if (seatClickedIndex === 2 || seatClickedIndex === 1) {
+        setJoinTeamModalPosition([0, 0, 7])
+      }
+    }, [seatClickedIndex])
+
     return <group scale={scale} position={position}>
       <BlueMoon scale={2.7} rotationSpeed={-0.2}/>
-      <group ref={partyRef} scale={1.4} position={[0, 2, 4]}>
+      <group ref={partyRef} scale={1.5} position={[0, 2, 4.3]}>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
           position={[-2.3,5,-3.2]}
@@ -158,7 +319,11 @@ export default function Lobby() {
         </Text3D>
         <YootDisplay scale={spring.boomScaleYut} position={[-0.1, 5, 0]} rotation={[0, Math.PI/2, 0]} />
         { [...Array(8)].map((value, index) => {
-          return (index-2 < 4 && index-2 >= 0 ? <animated.group key={index} scale={spring.boomScale} position={[Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius, 5, Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius]} >
+          return (index-2 < 4 && index-2 >= 0 ? <animated.group 
+          name='rocket-seat'
+          key={index} 
+          scale={spring.boomScale} 
+          position={[Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius, 5, Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius]} >
             <Star scale={0.6} color='red' onBoard offset={0.2}/>
             {/* Host indicator */}
             {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
@@ -173,8 +338,23 @@ export default function Lobby() {
               {`SEAT ${index+1}`}
               <meshStandardMaterial color={ 'red' }/>
             </Text3D>
+            <mesh 
+            name='wrapper' 
+            position={[-1.6, 0, 0]} 
+            scale={[5, 0.01, 1.5]}
+            onPointerEnter={e => handleSeatPointerEnter(e)}
+            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerUp={e => handleSeatPointerUp(e, 0, index)}
+            >
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial color='black' transparent opacity={0}/>
+            </mesh>
           </animated.group> :
-          <animated.group scale={spring.boomScale} position={[Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius, 5, Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius]}>
+          <animated.group 
+          name='ufo-seat'
+          key={index} 
+          scale={spring.boomScale} 
+          position={[Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius, 5, Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius]}>
             <Star key={index} scale={0.6}  color='turquoise' onBoard offset={0.2}/>
             <Text3D
               font="fonts/Luckiest Guy_Regular.json"
@@ -187,59 +367,35 @@ export default function Lobby() {
               {`SEAT ${index+1}`}
               <meshStandardMaterial color={ 'turquoise' }/>
             </Text3D>
+            <mesh 
+            name='wrapper' 
+            position={[1.6, 0, 0]} 
+            scale={[5, 0.01, 1.5]}
+            onPointerEnter={e => handleSeatPointerEnter(e)}
+            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerUp={e => handleSeatPointerUp(e, 1, index)}
+            >
+              <boxGeometry args={[1, 1, 1]}/>
+              <meshStandardMaterial color='black' transparent opacity={0}/>
+            </mesh>
           </animated.group>
         ) })}
       </group>
-      { shipRefs.map((value, index) => {
+      { device === 'portrait' && shipRefs.map((value, index) => {
         return (index < 4 ? <group ref={value}>
           <Rocket scale={1.1}/>
         </group> : <group ref={value}>
           <Ufo scale={1.1}/>
         </group>)
       })}
-      {/* Guest landing page: Take a seat */}
-      {/* Guest no more seats: Full capacity (grey button) */}
-      {/* Host landing page: Waiting for crew */}
-      {/* Host, ready: 'Start game!' */}
-      {/* Guest joined UFO: 'Prepare for contact' */}
-      {/* Guest joined Rocket: 'Ready to launch', 'Clear for takeoff' */}
-      <group
-        name='start-game-button'
-        position={[0,5,7.2]}
-        scale={1.7}
-      >
-        <mesh
-          name='background-outer'
-          scale={[1.3, 1, 0.45]}
-        >
-          <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-          <meshStandardMaterial color={ 'yellow' }/>
-        </mesh>
-        <mesh
-          name='background-inner'
-          scale={[1.3, 1, 0.42]}
-        >
-          <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh 
-          name='wrapper' 
-          scale={[1.3, 1, 0.45]}
-        >
-          <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-1.02, 0.025, 0.12]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.25}
-          height={0.01}
-          lineHeight={0.7}
-        >
-          {`START GAME!`}
-          <meshStandardMaterial color={ 'yellow' }/>
-        </Text3D>
+      <SeatStatus/>
+      <group position={joinTeamModalPosition}>
+        <JoinTeamModal 
+          position={layout[device].lobby.joinTeamModal.position}
+          rotation={layout[device].lobby.joinTeamModal.rotation}
+          scale={layout[device].lobby.joinTeamModal.scale}
+          teams={teams}
+        />
       </group>
     </group>
   }
@@ -1426,6 +1582,68 @@ export default function Lobby() {
 
   function ActionSection({ position }) {
     return <group position={position}>
+      <group name='shake-to-throw-button' position={[0,0,0]}>
+        <mesh scale={[11.4, 0.01, 1.3]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh scale={[11.3, 0.02, 1.2]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-4,0.02,0.23]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.5}
+          height={0.01}
+          lineHeight={0.7}>
+          ENABLE SHAKE TO THROW
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      <group name='share-this-lobby-button' position={[0,0,1.5]}>
+        <mesh scale={[11.4, 0.01, 1.3]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh scale={[11.3, 0.02, 1.2]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-3,0.02,0.23]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.5}
+          height={0.01}
+          lineHeight={0.7}>
+          SHARE THIS LOBBY
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* For guest: 'Host will start */}
+      {/* For host: 'waiting for crew', 'start game!' */}
+      <group name='share-this-lobby-button' position={[0,0,3]}>
+        <mesh scale={[11.4, 0.01, 1.3]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh scale={[11.3, 0.02, 1.2]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-2.2,0.02,0.23]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.5}
+          height={0.01}
+          lineHeight={0.7}>
+          START GAME!
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
     </group>
   }
   
@@ -1439,7 +1657,7 @@ export default function Lobby() {
     { device === 'portrait' && <group>
       <TopSection position={[-2.3, 0, -9.7]}/>
       <BodySection position={[0, 0, 0]}/>
-      <ActionSection position={[0, 0, 5]}/>
+      <ActionSection position={[0, 0, 7]}/>
     </group>}
     <MeteorsRealShader/>
   </animated.group>

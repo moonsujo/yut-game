@@ -69,7 +69,7 @@ export default function HowToPlay({
     } else if (page === 6) { // Shortcut
       const page7Timeout = setTimeout(() => {
         setPage(0)
-      }, 12000000)
+      }, 12000)
       setPageTimeout(page7Timeout)
     }
   }, [page])
