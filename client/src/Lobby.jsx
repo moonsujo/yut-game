@@ -697,8 +697,12 @@ export default function Lobby() {
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius
         ]}>
           <Star scale={0.4} color='red' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[0].players[0] && host.socketId === teams[0].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[0].players[0] && client.socketId === teams[0].players[0].socketId && <group>
+            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
+            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
+            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
@@ -749,8 +753,12 @@ export default function Lobby() {
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.1
         ]}>
           <Star scale={0.4} color='red' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[0].players[1] && host.socketId === teams[0].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[0].players[1] && client.socketId === teams[0].players[1].socketId && <group>
+            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
+            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
+            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
@@ -801,8 +809,12 @@ export default function Lobby() {
           -Math.sin(0 - Math.PI/8) * radius - 0.1
         ]}>
           <Star scale={0.4} color='red' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[0].players[2] && host.socketId === teams[0].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[0].players[2] && client.socketId === teams[0].players[2].socketId && <group>
+            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
+            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
+            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
@@ -853,8 +865,12 @@ export default function Lobby() {
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
           <Star scale={0.4} color='red' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[0].players[3] && host.socketId === teams[0].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[0].players[3] && client.socketId === teams[0].players[3].socketId && <group>
+            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
+            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
+            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
@@ -905,8 +921,12 @@ export default function Lobby() {
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius
         ]}>
           <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[1].players[0] && host.socketId === teams[1].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[1].players[0] && client.socketId === teams[1].players[0].socketId && <group>
+            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
+            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
+            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
@@ -957,8 +977,12 @@ export default function Lobby() {
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.1
         ]}>
           <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[1].players[1] && host.socketId === teams[1].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[1].players[1] && client.socketId === teams[1].players[1].socketId && <group>
+            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
+            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
+            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
@@ -1009,8 +1033,12 @@ export default function Lobby() {
           -Math.sin(0 - Math.PI/8) * radius - 0.1
         ]}>
           <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[1].players[2] && host.socketId === teams[1].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[1].players[2] && client.socketId === teams[1].players[2].socketId && <group>
+            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
+            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
+            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
@@ -1061,8 +1089,12 @@ export default function Lobby() {
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
           <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
-          {/* Host indicator */}
-          {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
+          { teams[1].players[3] && host.socketId === teams[1].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
+          { teams[1].players[3] && client.socketId === teams[1].players[3].socketId && <group>
+            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
+            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
+            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
+          </group>}
           <Text3D
             font="fonts/Luckiest Guy_Regular.json"
             position={[0.7, 0.02, 0.3]}
