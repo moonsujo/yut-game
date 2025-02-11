@@ -2337,35 +2337,53 @@ export default function Lobby() {
   }
 
   function ActionSection({ position }) {
-    return <group position={position}>
-      <group name='shake-to-throw-button' position={[0,0,0]}>
-        <mesh scale={[11.4, 0.01, 1.3]}>
+    const readyToStart = useAtomValue(readyToStartAtom)
+    const host = useAtomValue(hostAtom)
+    const client = useAtomValue(clientAtom)
+    const isHost = client.socketId === host.socketId
+
+    function ShareThisLobbyButton({ position }) {
+      function handleSharePointerEnter(e) {
+        e.stopPropagation()
+      }
+      function handleSharePointerLeave(e) {
+        e.stopPropagation()
+      }
+      async function handleSharePointerUp(e) {
+        e.stopPropagation()
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'Yut Nori',
+              text: "Let's play Yut Nori!",
+              url: window.location.href
+            })
+          } catch (err) {
+            console.error('Error sharing:', err)
+          }
+        } else {
+          alert('Web Share API is not supported. Copy the URL to share.')
+        }
+      }
+
+      return <group name='share-this-lobby-button' position={position}>
+        <mesh scale={[11.4, 0.01, 1.8]}>
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='yellow'/>
         </mesh>
-        <mesh scale={[11.3, 0.02, 1.2]}>
+        <mesh scale={[11.3, 0.02, 1.7]}>
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-4,0.02,0.23]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.5}
-          height={0.01}
-          lineHeight={0.7}>
-          ENABLE SHAKE TO THROW
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <group name='share-this-lobby-button' position={[0,0,1.5]}>
-        <mesh scale={[11.4, 0.01, 1.3]}>
+        <mesh 
+        name='wrapper' 
+        scale={[11.4, 0.02, 1.8]}
+        onPointerEnter={e => handleSharePointerEnter(e)}
+        onPointerLeave={e => handleSharePointerLeave(e)}
+        onPointerUp={e => handleSharePointerUp(e)}
+        >
           <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh scale={[11.3, 0.02, 1.2]}>
-          <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='black'/>
+          <meshStandardMaterial color='black' transparent opacity={0}/>
         </mesh>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -2378,16 +2396,26 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
-      {/* For guest: 'Host will start */}
-      {/* For host: 'waiting for crew', 'start game!' */}
-      <group name='share-this-lobby-button' position={[0,0,3]}>
-        <mesh scale={[11.4, 0.01, 1.3]}>
+    }
+
+    function GuestStartButton({ position }) {
+      // looks like the StartGame button but only displays text.
+      // thought: pop messages: 'let's go!' for host to see
+      return <group name='host-will-start' position={position}>
+        <mesh scale={[11.4, 0.01, 1.8]}>
           <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial color='grey'/>
         </mesh>
-        <mesh scale={[11.3, 0.02, 1.2]}>
+        <mesh scale={[11.3, 0.02, 1.7]}>
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh 
+        name='wrapper' 
+        scale={[11.4, 0.02, 1.8]}
+        onPointerUp={e => handleStartPointerUp(e)}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='grey' transparent opacity={0}/>
         </mesh>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
@@ -2396,10 +2424,54 @@ export default function Lobby() {
           size={0.5}
           height={0.01}
           lineHeight={0.7}>
-          START GAME!
+          HOST WILL START
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
+    }
+
+    {/* For guest: 'Host will start */}
+    {/* For host: 'waiting for crew', 'start game!' */}
+    function StartGameButton({ position }) {
+      async function handleStartPointerUp(e) {
+        e.stopPropagation()
+        if (isHost && readyToStart) {
+          socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
+        }
+      }
+      return <group name='start-game-button' position={position}>
+        <mesh scale={[11.4, 0.01, 1.8]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={ readyToStart ? 'yellow' : 'grey' }/>
+        </mesh>
+        <mesh scale={[11.3, 0.02, 1.7]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh 
+        name='wrapper' 
+        scale={[11.4, 0.02, 1.8]}
+        onPointerUp={e => handleStartPointerUp(e)}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black' transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[ (readyToStart ? -2.2 : -3.2) ,0.02, 0.23]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.5}
+          height={0.01}
+          lineHeight={0.7}>
+          { readyToStart ? `START GAME!` : `WAITING FOR CREW` }
+          <meshStandardMaterial color={ readyToStart ? 'yellow' : 'grey' }/>
+        </Text3D>
+      </group>
+    }
+
+    return <group position={position}>
+      <ShareThisLobbyButton position={[0,0,0.6]}/>
+      { !isHost && <GuestStartButton position={[0,0,2.6]}/> }
+      { isHost && <StartGameButton position={[0,0,2.6]}/> } 
     </group>
   }
   
