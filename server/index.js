@@ -621,7 +621,7 @@ io.on("connect", async (socket) => {
         }
         user.name = makeId(5);
         user.team = -1
-        user.save();
+        await user.save();
       }
       await Room.findOneAndUpdate( { shortId: roomId }, operation )
     } catch (err) {
@@ -640,7 +640,7 @@ io.on("connect", async (socket) => {
       }
       if (room.host === null) {
         room.host = user._id
-        room.save()
+        await room.save()
       }
     } catch (err) {
       console.log(`[joinRoom] error adding user as host`, err)
@@ -651,9 +651,14 @@ io.on("connect", async (socket) => {
     console.log(`[joinTeam]`)
     let player;
     try {
-      player = await User.findOneAndUpdate({ 'socketId': socket.id }, { team, name }).exec()
-      player.save()
-      console.log('[joinTeam] player', player)
+      player = await User.findOne({ 'socketId': socket.id })
+      if (!player) {
+        throw new Error(`player with name ${name} not found`)
+      }
+      player.team = team
+      player.name = name
+      await player.save()
+      console.log('[joinTeam] new player', player)
 
       let operation = {}
       operation['$pullAll'] = { 
