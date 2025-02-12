@@ -2166,7 +2166,7 @@ export default function Lobby() {
   }
 
   function BodySection({ position, scale }) {
-    const [selection, setSelection] = useState('players')
+    const [selection, setSelection] = useState('rulebook')
     function SettingsButton({ position, scale }) {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
@@ -2330,9 +2330,9 @@ export default function Lobby() {
       <PlayersButton position={[0,0,-7]} scale={1.3}/>
       <RulebookButton position={[3.9,0,-7]} scale={1.3}/>
       {/* { selection === 'players' && <Players/> } */}
-      { selection === 'players' && <PlayersParty/> }
+      { selection === 'players' && <PlayersParty position={[0, 0, 0.5]}/> }
       {/* { selection === 'settings' && <Settings/> } */}
-      {/* { selection === 'rulebook' && <Rulebook/> } */}
+      { selection === 'rulebook' && <HowToPlay device={device} scale={0.8} position={[-2.3, 0, -1.4]}/> }
     </group>
   }
 
@@ -2469,9 +2469,9 @@ export default function Lobby() {
     }
 
     return <group position={position}>
-      <ShareThisLobbyButton position={[0,0,0.6]}/>
-      { !isHost && <GuestStartButton position={[0,0,2.6]}/> }
-      { isHost && <StartGameButton position={[0,0,2.6]}/> } 
+      <ShareThisLobbyButton position={[0,0,1.4]}/>
+      { !isHost && <GuestStartButton position={[0,0,3.4]}/> }
+      { isHost && <StartGameButton position={[0,0,3.4]}/> } 
     </group>
   }
   

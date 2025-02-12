@@ -681,8 +681,8 @@ io.on("connect", async (socket) => {
     return callback({ player })
   })
 
-  function getHostTurn(room) {
-    const host = room.host
+  async function getHostTurn(room) {
+    const host = await User.findById(room.host)
     console.log('[getHostTurn] host', host)
     let turn;
     room.teams[host.team].players.forEach(function (player, i) {
@@ -815,7 +815,7 @@ io.on("connect", async (socket) => {
           players: [0, 0]
         }
       } else {
-        newTurn = getHostTurn(room)
+        newTurn = await getHostTurn(room)
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
