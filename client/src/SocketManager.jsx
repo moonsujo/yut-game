@@ -151,16 +151,32 @@ export const SocketManager = () => {
       setDisconnect(true) 
     })
 
-    function findAndStoreClient(spectators, teams) {
-      // Find client from users
-      let users = teams[0].players.concat(teams[1].players.concat(spectators))
+    // Set client info in global store and local storage
+    function findAndStoreClient(spectators, playersTeam0, playersTeam1) {
 
-      // Set it in global store and local storage
-      for (const user of users) {
-        if (user.socketId === socket.id) {
-          setClient(user)
+      for (const spectator of spectators) {
+        if (spectator.socketId === socket.id) {
+          setClient(spectator)
           localStorage.setItem('yootGame', JSON.stringify({
-            ...user
+            ...spectator
+          }))
+        }
+      }
+
+      for (const player of playersTeam0) {
+        if (player.socketId === socket.id) {
+          setClient(player)
+          localStorage.setItem('yootGame', JSON.stringify({
+            ...player
+          }))
+        }
+      }
+
+      for (const player of playersTeam1) {
+        if (player.socketId === socket.id) {
+          setClient(player)
+          localStorage.setItem('yootGame', JSON.stringify({
+            ...player
           }))
         }
       }
@@ -185,7 +201,7 @@ export const SocketManager = () => {
         setHost(room.host)
       }
 
-      findAndStoreClient(room.spectators, room.teams);
+      findAndStoreClient(room.spectators, room.teams[0].players, room.teams[1].players);
 
       setGamePhase((lastPhase) => {
         return room.gamePhase
@@ -208,7 +224,7 @@ export const SocketManager = () => {
       if (room.gamePhase === 'lobby' && 
       room.teams[0].players.length > 0 && 
       room.teams[1].players.length > 0 &&
-      allPlayersConnected(room.teams)) {
+      allPlayersConnected(room.teams[0].players, room.teams[1].players)) {
         setReadyToStart(true)
       } else {
         setReadyToStart(false)
@@ -709,38 +725,44 @@ export const SocketManager = () => {
       setHelperTiles(helperTiles)
     })
 
-    // emitted to other clients when a client joins
+    // Emitted to other clients when a client joins
+    // refactor: only players arrays from teams
     socket.on("joinRoom", ({ spectators, teams, host, gamePhase }) => {
       setSpectators(spectators);
       setTeams(teams);
       setHost(host);
 
-      findAndStoreClient(spectators, teams)
+      findAndStoreClient(spectators, teams[0].players, teams[1].players)
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
         teams[1].players.length > 0 &&
-        allPlayersConnected(teams)) {
+        allPlayersConnected(teams[0].players, teams[1].players)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
         }
     })
     
-    socket.on("joinTeam", ({ spectators, teams, gamePhase, host, turn }) => {
+    socket.on("joinTeam", ({ spectators, playersTeam0, playersTeam1, teams, gamePhase, host, turn }) => {
       setSpectators(spectators)
-      setTeams(teams);
+      setTeams((teams) => {
+        let newTeams = [...teams]
+        newTeams[0].players = [...playersTeam0]
+        newTeams[1].players = [...playersTeam1]
+        return newTeams
+      });
       setHost(host);
       if (gamePhase === 'pregame' || gamePhase === 'game') {
         setThrowCount(teams[turn.team].throws)
       }
       
-      findAndStoreClient(spectators, teams)
+      findAndStoreClient(spectators, playersTeam0, playersTeam1)
       
       if (gamePhase === 'lobby' && 
-        teams[0].players.length > 0 && 
-        teams[1].players.length > 0 &&
-        allPlayersConnected(teams)) {
+        playersTeam0.length > 0 && 
+        playersTeam1.length > 0 &&
+        allPlayersConnected(playersTeam0, playersTeam1)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -765,9 +787,10 @@ export const SocketManager = () => {
         newTeams[1].moves = JSON.parse(JSON.stringify(initialState.initialTeams[1].moves)),
         newTeams[1].pregameRoll = null
         
+        // use previous teams state because it's not updated
         if (teams[0].players.length > 0 && 
           teams[1].players.length > 0 &&
-          allPlayersConnected(teams)) {
+          allPlayersConnected(teams[0].players, teams[1].players)) {
             setReadyToStart(true)
           } else {
             setReadyToStart(false)
@@ -908,6 +931,7 @@ export const SocketManager = () => {
       setRemainingTime(turnExpireTime - Date.now())
     })
 
+    // refactor: only use players arrays from teams
     socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
       setSpectators(spectators)
       setTeams(teams);
@@ -915,8 +939,8 @@ export const SocketManager = () => {
       
       if (gamePhase === 'lobby' && 
         teams[0].players.length > 0 && 
-        teams[1].players.length > 0&&
-        allPlayersConnected(teams)) {
+        teams[1].players.length > 0 &&
+        allPlayersConnected(teams[0].players, teams[1].players)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
@@ -993,16 +1017,20 @@ export const SocketManager = () => {
 
 /**
  * 
- * @param {object} teams 
+ * @param {array} players in team 0
+ * @param {array} players in team 1
  * @returns boolean indicating whether all players are connected to the room
  */
-function allPlayersConnected(teams) {
+function allPlayersConnected(playersTeam0, playersTeam1) {
   let flag = true;
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < teams[i].players.length; j++) {
-      if (!teams[i].players[j].connectedToRoom) {
-        flag = false
-      }
+  for (const player of playersTeam0) {
+    if (player.connectedToRoom) {
+      flag = false
+    }
+  }
+  for (const player of playersTeam1) {
+    if (player.connectedToRoom) {
+      flag = false
     }
   }
   return flag

@@ -318,11 +318,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
                 gamePhase: roomPopulated.gamePhase
               })
             }
-          } else if (serverEvent === "joinTeam") {
+          } else if (serverEvent.name === "joinTeam") {
             io.to(userSocketId).emit("joinTeam", { 
               spectators: roomPopulated.spectators,
-              // pick out which array was updated by serverEvent.content
-              teams: roomPopulated.teams,
+              playersTeam0: roomPopulated.teams[0].players,
+              playersTeam1: roomPopulated.teams[1].players,
               gamePhase: roomPopulated.gamePhase,
               host: roomPopulated.host,
               turn: roomPopulated.turn // to set the throw count for the current team
@@ -660,19 +660,39 @@ io.on("connect", async (socket) => {
       await player.save()
       console.log('[joinTeam] new player', player)
 
-      let operation = {}
-      operation['$pullAll'] = { 
-        'spectators': [{ _id: player._id }], // Remove the user from the spectator list
-        [`teams.${team === 0 ? 1 : 0}.players`]: [{ _id: player._id }] 
-      }
-      operation['$addToSet'] = { [`teams.${team}.players`]: player._id }
-      operation['$set'] = { 'serverEvent': 'joinTeam' }
+      // let operation = {}
+      // operation['$pullAll'] = { 
+      //   'spectators': [{ _id: player._id }], // Remove the user from the spectator list
+      //   [`teams[1].players`]: [{ _id: player._id }],
+      //   [`teams[0].players`]: [{ _id: player._id }] 
+      // }
+      // operation['$addToSet'] = { [`teams.${team}.players`]: player._id }
+      // operation['$set'] = { 'serverEvent': 'joinTeam' }
       
-      // Add to the team's players array
-      await Room.findOneAndUpdate(
-        { shortId: player.roomId }, 
-        operation
-      ).exec()
+      const room = await Room.findOne({ shortId: player.roomId })
+
+      // Remove user from spectator, team0 and team1 arrays
+      let userIndex;
+      userIndex = room.spectators.indexOf(player._id)
+      if (userIndex > -1) {
+        room.spectators.splice(userIndex, 1)
+      }
+      userIndex = room.teams[0].players.indexOf(player._id)
+      if (userIndex > -1) {
+        room.teams[0].players.splice(userIndex, 1)
+      }
+      userIndex = room.teams[1].players.indexOf(player._id)
+      if (userIndex > -1) {
+        room.teams[1].players.splice(userIndex, 1)
+      }
+      
+      // Add user to team
+      room.teams[team].players.push(player._id)
+      room.serverEvent = {
+        name: 'joinTeam',
+        content: {}
+      }
+      await room.save()
     } catch (err) {
       console.log(`[joinTeam] error joining team`, err)
       return callback()
