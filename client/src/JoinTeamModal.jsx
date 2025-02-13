@@ -28,7 +28,7 @@ export default function JoinTeamModal({ position, rotation, scale, teams }) {
   function isUniqueName(name, teams) {
     for (let j = 0; j < teams.length; j++) {
       for (let i = 0; i < teams[j].players.length; i++) {
-        if (teams[j].players[i].name === name) {
+        if (teams[j].players[i].name.toUpperCase() === name.toUpperCase()) {
           return false;
         }
       }
