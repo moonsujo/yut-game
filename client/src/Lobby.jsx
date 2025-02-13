@@ -460,9 +460,8 @@ export default function Lobby() {
     const client = useAtomValue(clientAtom)
     const isHost = client.socketId === host.socketId
     const teams = useAtomValue(teamsAtom)
-    const [seatClickedIndex, setSeatClickedIndex] = useState(0)
-    const [joinTeamModalPosition, setJoinTeamModalPosition] = useState([0,0,0])
 
+    // #region animation
     const partyRef = useRef()
     const rocket0 = useRef()
     const rocket1 = useRef()
@@ -516,6 +515,7 @@ export default function Lobby() {
         })
       }
     })
+    // #endregion
 
     {/* landing page: Take a seat */}
     {/* no more seats: Full capacity (grey button) */}
@@ -628,7 +628,7 @@ export default function Lobby() {
           </Text3D>
         </group>
       }
-      if (teams[0].players.length < 4 || teams[1].players.length < 4) {
+      if (client.team === -1 && (teams[0].players.length < 4 || teams[1].players.length < 4)) {
         return <TakeASeat position={[0,5,7.3]} scale={1.9}/>
       } else if (teams[0].players.length >= 4 && teams[1].players.length >= 4) {
         return <FullCapacity position={[0,5,7.3]} scale={1.9}/>
@@ -649,18 +649,6 @@ export default function Lobby() {
       e.stopPropagation()
       setJoinTeam(team)
     }
-
-    useEffect(() => {
-      if (seatClickedIndex === 6 || seatClickedIndex === 5) {
-        setJoinTeamModalPosition([0, 0, 1.5])
-      } else if (seatClickedIndex === 4 || seatClickedIndex === 7) {
-        setJoinTeamModalPosition([0, 0, 3])
-      } else if (seatClickedIndex === 3 || seatClickedIndex === 0) {
-        setJoinTeamModalPosition([0, 0, 5.5])
-      } else if (seatClickedIndex === 2 || seatClickedIndex === 1) {
-        setJoinTeamModalPosition([0, 0, 7])
-      }
-    }, [seatClickedIndex])
 
     return <group scale={scale} position={position}>
       <BlueMoon scale={3} rotationSpeed={-0.2}/>
@@ -1145,14 +1133,12 @@ export default function Lobby() {
         </group>)
       })}
       <SeatStatus/>
-      <group position={joinTeamModalPosition}>
-        <JoinTeamModal 
-          position={layout[device].lobby.joinTeamModal.position}
-          rotation={layout[device].lobby.joinTeamModal.rotation}
-          scale={layout[device].lobby.joinTeamModal.scale}
-          teams={teams}
-        />
-      </group>
+      <JoinTeamModal 
+        position={layout[device].lobby.joinTeamModal.position}
+        rotation={layout[device].lobby.joinTeamModal.rotation}
+        scale={layout[device].lobby.joinTeamModal.scale}
+        teams={teams}
+      />
     </group>
   }
 
@@ -2138,12 +2124,20 @@ export default function Lobby() {
     </group>
   }
 
-  // Layer buttons on top
-  // Refactor TeamLobbies into a component
-  // Refactor Rulebook into a component
-  // Refactor Settings into a component
-  // Reuse here
   function TopSection({ position }) {
+    const host = useAtomValue(hostAtom)
+    const client = useAtomValue(clientAtom)
+    const isHost = client.socketId === host.socketId
+    
+    const roomIdRef = useRef(null)
+    const roomIdContainerRef = useRef(null)
+
+    useFrame(() => {
+      if (roomIdRef.current && roomIdRef.current.geometry.boundingSphere) {
+        const centerX = roomIdRef.current.geometry.boundingSphere.center.x
+        roomIdContainerRef.current.position.x = -centerX
+      }
+    })
     return <group position={position}>
       <Text3D
       font="fonts/Luckiest Guy_Regular.json"
@@ -2155,16 +2149,20 @@ export default function Lobby() {
         YUT NORI
         <meshStandardMaterial color='yellow'/>
       </Text3D>
-      <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
-      position={[-0.35,0,1.2]}
-      rotation={[-Math.PI/2, 0, 0]}
-      size={0.6}
-      height={0.01}
-      lineHeight={0.7}>
-        {`ROOM ID: ${params.id}`}
-        <meshStandardMaterial color='yellow'/>
-      </Text3D>
+      <group ref={roomIdContainerRef}>
+        <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={[2.4,0,1.4]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.6}
+        height={0.01}
+        lineHeight={0.7}
+        ref={roomIdRef}>
+          {/* {`moonsu is the host`} */}
+          {`ROOM ID: ${params.id}${isHost ? ' (HOST)' : ''}`}
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
     </group>
   }
 
@@ -2321,7 +2319,7 @@ export default function Lobby() {
           buttonPosition={[0.2, 0, 5]}
         />
         <JoinTeamModal 
-          position={[-3, 0, 1]}
+          position={[0, 0, 0]}
           rotation={layout[device].game.joinTeamModal.rotation}
           scale={layout[device].game.joinTeamModal.scale}
           teams={teams}
