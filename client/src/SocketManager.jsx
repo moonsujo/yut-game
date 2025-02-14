@@ -744,12 +744,22 @@ export const SocketManager = () => {
         }
     })
     
-    socket.on("joinTeam", ({ spectators, playersTeam0, playersTeam1, teams, gamePhase, host, turn }) => {
+    socket.on("joinTeam", ({ spectators, playersTeam0, playersTeam1, gamePhase, host, turn }) => {
       setSpectators(spectators)
       setTeams((teams) => {
         let newTeams = [...teams]
-        newTeams[0].players = [...playersTeam0]
-        newTeams[1].players = [...playersTeam1]
+        newTeams[0].players = []
+        for (const player of playersTeam0) {
+          newTeams[0].players.push({
+            ...player
+          })
+        }
+        newTeams[1].players = []
+        for (const player of playersTeam1) {
+          newTeams[1].players.push({
+            ...player
+          })
+        }
         return newTeams
       });
       setHost(host);

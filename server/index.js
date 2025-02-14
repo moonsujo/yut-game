@@ -659,15 +659,6 @@ io.on("connect", async (socket) => {
       player.name = name
       await player.save()
       console.log('[joinTeam] new player', player)
-
-      // let operation = {}
-      // operation['$pullAll'] = { 
-      //   'spectators': [{ _id: player._id }], // Remove the user from the spectator list
-      //   [`teams[1].players`]: [{ _id: player._id }],
-      //   [`teams[0].players`]: [{ _id: player._id }] 
-      // }
-      // operation['$addToSet'] = { [`teams.${team}.players`]: player._id }
-      // operation['$set'] = { 'serverEvent': 'joinTeam' }
       
       const room = await Room.findOne({ shortId: player.roomId })
 

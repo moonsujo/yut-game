@@ -11,7 +11,7 @@ export default function JoinTeamModal({ position, rotation, scale }) {
   const [submitHover, setSubmitHover] = useState(false)
   const [cancelHover, setCancelHover] = useState(false)
   const [joinTeam, setJoinTeam] = useAtom(joinTeamAtom)
-  const [teams] = useAtomValue(teamsAtom)
+  const teams = useAtomValue(teamsAtom)
   
   function isAlphaNumeric(str) {
     for (let i = 0; i < str.length; i++) {

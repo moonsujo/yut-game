@@ -267,20 +267,105 @@ export default function Lobby() {
         return <UfoJoined position={[0,5,7.3]} scale={1.9}/>
       }
     }
-    function handleSeatPointerEnter(e) {
-      e.stopPropagation()
-    }
-    function handleSeatPointerLeave(e) {
-      e.stopPropagation()
-    }
     const setJoinTeam = useSetAtom(joinTeamAtom)
     function handleSeatPointerUp(e, team) {
       e.stopPropagation()
-      setJoinTeam(team)
+      if (client.team !== team) {
+        setJoinTeam(team)
+      }
     }
 
     function Seats() {
       const teams = useAtomValue(teamsAtom)
+      // #region Seat hover
+      const [seat1Team0Hover, setSeat1Team0Hover] = useState(false)
+      const [seat2Team0Hover, setSeat2Team0Hover] = useState(false)
+      const [seat3Team0Hover, setSeat3Team0Hover] = useState(false)
+      const [seat4Team0Hover, setSeat4Team0Hover] = useState(false)
+      const [seat1Team1Hover, setSeat1Team1Hover] = useState(false)
+      const [seat2Team1Hover, setSeat2Team1Hover] = useState(false)
+      const [seat3Team1Hover, setSeat3Team1Hover] = useState(false)
+      const [seat4Team1Hover, setSeat4Team1Hover] = useState(false)
+      function handleSeat1Team0PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat1Team0Hover(true)
+      }
+      function handleSeat1Team0PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat1Team0Hover(false)
+      }
+      function handleSeat2Team0PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat2Team0Hover(true)
+      }
+      function handleSeat2Team0PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat2Team0Hover(false)
+      }
+      function handleSeat3Team0PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat3Team0Hover(true)
+      }
+      function handleSeat3Team0PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat3Team0Hover(false)
+      }
+      function handleSeat4Team0PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat4Team0Hover(true)
+      }
+      function handleSeat4Team0PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat4Team0Hover(false)
+      }
+      function handleSeat1Team1PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat1Team1Hover(true)
+      }
+      function handleSeat1Team1PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat1Team1Hover(false)
+      }
+      function handleSeat2Team1PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat2Team1Hover(true)
+      }
+      function handleSeat2Team1PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat2Team1Hover(false)
+      }
+      function handleSeat3Team1PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat3Team1Hover(true)
+      }
+      function handleSeat3Team1PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat3Team1Hover(false)
+      }
+      function handleSeat4Team1PointerEnter(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'pointer'
+        setSeat4Team1Hover(true)
+      }
+      function handleSeat4Team1PointerLeave(e) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        setSeat4Team1Hover(false)
+      }
 
       return <group>
         <animated.group 
@@ -291,7 +376,7 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color='red' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat1Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[0] && host.socketId === teams[0].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[0] && client.socketId === teams[0].players[0].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -307,7 +392,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[0] ? formatName(teams[0].players[0].name, 8) : `SEAT 1`}
-            <meshStandardMaterial color={ 'red' }/>
+            <meshStandardMaterial color={ seat1Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -316,7 +401,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='red' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat1Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -330,8 +415,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[-2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat1Team0PointerEnter(e)}
+            onPointerLeave={e => handleSeat1Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -347,7 +432,7 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.1
         ]}>
-          <Star scale={0.4} color='red' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat2Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[1] && host.socketId === teams[0].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[1] && client.socketId === teams[0].players[1].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -363,7 +448,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[1] ? formatName(teams[0].players[1].name, 8) : `SEAT 2`}
-            <meshStandardMaterial color={ 'red' }/>
+            <meshStandardMaterial color={ seat2Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -372,7 +457,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='red' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat2Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -386,8 +471,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[-2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat2Team0PointerEnter(e)}
+            onPointerLeave={e => handleSeat2Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -403,7 +488,7 @@ export default function Lobby() {
           5, 
           -Math.sin(0 - Math.PI/8) * radius - 0.1
         ]}>
-          <Star scale={0.4} color='red' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat3Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[2] && host.socketId === teams[0].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[2] && client.socketId === teams[0].players[2].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -419,7 +504,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[2] ? formatName(teams[0].players[2].name, 8) : `SEAT 3`}
-            <meshStandardMaterial color={ 'red' }/>
+            <meshStandardMaterial color={ seat3Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -428,7 +513,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='red' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat3Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -442,8 +527,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[-2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat3Team0PointerEnter(e)}
+            onPointerLeave={e => handleSeat3Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -459,7 +544,7 @@ export default function Lobby() {
           5, 
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color='red' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat4Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[3] && host.socketId === teams[0].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[3] && client.socketId === teams[0].players[3].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -475,7 +560,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[3] ? formatName(teams[0].players[3].name, 8) : `SEAT 4`}
-            <meshStandardMaterial color={ 'red' }/>
+            <meshStandardMaterial color={ seat4Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -484,7 +569,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='red' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat4Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -498,8 +583,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[-2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat4Team0PointerEnter(e)}
+            onPointerLeave={e => handleSeat4Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -515,7 +600,7 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat1Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[0] && host.socketId === teams[1].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[0] && client.socketId === teams[1].players[0].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -531,7 +616,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[0] ? formatName(teams[1].players[0].name, 8) : `SEAT 1`}
-            <meshStandardMaterial color={ 'turquoise' }/>
+            <meshStandardMaterial color={ seat1Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -540,7 +625,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat1Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -554,8 +639,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat1Team1PointerEnter(e)}
+            onPointerLeave={e => handleSeat1Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -571,7 +656,7 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.1
         ]}>
-          <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat2Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[1] && host.socketId === teams[1].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[1] && client.socketId === teams[1].players[1].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -587,7 +672,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[1] ? formatName(teams[1].players[1].name, 8) : `SEAT 2`}
-            <meshStandardMaterial color={ 'turquoise' }/>
+            <meshStandardMaterial color={ seat2Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -596,7 +681,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat2Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -610,8 +695,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat2Team1PointerEnter(e)}
+            onPointerLeave={e => handleSeat2Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -627,7 +712,7 @@ export default function Lobby() {
           5, 
           -Math.sin(0 - Math.PI/8) * radius - 0.1
         ]}>
-          <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat3Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[2] && host.socketId === teams[1].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[2] && client.socketId === teams[1].players[2].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -643,7 +728,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[2] ? formatName(teams[1].players[2].name, 8) : `SEAT 3`}
-            <meshStandardMaterial color={ 'turquoise' }/>
+            <meshStandardMaterial color={ seat3Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -652,7 +737,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat3Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -666,8 +751,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat3Team1PointerEnter(e)}
+            onPointerLeave={e => handleSeat3Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -683,7 +768,7 @@ export default function Lobby() {
           5, 
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color='turquoise' onBoard offset={0.2}/>
+          <Star scale={0.4} color={ seat4Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[3] && host.socketId === teams[1].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[3] && client.socketId === teams[1].players[3].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -699,7 +784,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[3] ? formatName(teams[1].players[3].name, 8) : `SEAT 4`}
-            <meshStandardMaterial color={ 'turquoise' }/>
+            <meshStandardMaterial color={ seat4Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -708,7 +793,7 @@ export default function Lobby() {
             scale={[5.8, 0.01, 1.3]}
             >
               <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
+              <meshStandardMaterial color={ seat4Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
             </mesh>
             <mesh 
             name='background-inner' 
@@ -722,8 +807,8 @@ export default function Lobby() {
             name='wrapper' 
             position={[2.2, 0, 0]} 
             scale={[5.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeatPointerEnter(e)}
-            onPointerLeave={e => handleSeatPointerLeave(e)}
+            onPointerEnter={e => handleSeat4Team1PointerEnter(e)}
+            onPointerLeave={e => handleSeat4Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
@@ -779,6 +864,102 @@ export default function Lobby() {
   }
 
   function FirstSectionNew({ position }) {
+    const readyToStart = useAtomValue(readyToStartAtom)
+    const host = useAtomValue(hostAtom)
+    const client = useAtomValue(clientAtom)
+    const isHost = client.socketId === host.socketId
+
+    function StartGameButton({ position }) {
+      const [hover, setHover] = useState(false)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        setHover(false)
+        if (isHost && readyToStart) {
+          socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
+        }
+      }
+      return <group name='start-game-button' position={position}>
+        <mesh name='background-outer' scale={[4.5, 0.01, 0.9]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </mesh> 
+        <mesh name='background-inner' scale={[4.45, 0.02, 0.85]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color={MeshColors.spaceDark}/>
+        </mesh>
+        <mesh 
+        name='wrapper' 
+        scale={[4.5, 0.02, 0.9]}
+        onPointerEnter={e => handlePointerEnter(e)}
+        onPointerLeave={e => handlePointerLeave(e)}
+        onPointerUp={e => handlePointerUp(e)}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='yellow' transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-1.6, 0.02, 0.19]}
+        >
+          START GAME!
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    function WaitingForCrewSign({ position, scale }) {
+      return <group name='waiting-for-crew-sign' position={position} scale={scale}>
+        <mesh name='background-outer' scale={[5.5, 0.01, 0.9]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='grey'/>
+        </mesh> 
+        <mesh name='background-inner' scale={[5.45, 0.02, 0.85]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-2.4, 0.02, 0.19]}
+        >
+          WAITING FOR CREW
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+      </group>
+    }
+    function HostWillStartSign({ position, scale }) {
+      return <group name='host-will-start-sign' position={position} scale={scale}>
+        <mesh name='background-outer' scale={[5.1, 0.01, 0.9]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='grey'/>
+        </mesh> 
+        <mesh name='background-inner' scale={[5.05, 0.02, 0.85]}>
+          <boxGeometry args={[1, 1, 1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          size={0.4}
+          height={0.01}
+          rotation={[-Math.PI/2, 0, 0]}
+          position={[-2.1, 0.02, 0.19]}
+        >
+          HOST WILL START
+          <meshStandardMaterial color='grey'/>
+        </Text3D>
+      </group>
+    }
     return <group position={position}>
       <group name='title' position={[-3.3,0,-5.3]}>
         <Text3D
@@ -797,11 +978,14 @@ export default function Lobby() {
           size={0.4}
           height={0.01}
         >
-          {`ID: ${params.id}`}
+          {`ID: ${params.id}${isHost ? '  (HOST)' : ''}`}
           <meshStandardMaterial color="yellow"/>
         </Text3D>
       </group>
-      <PlayersParty position={[1, 0, 0]} scale={0.6}/>
+      <PlayersParty position={[1, 0, -0.2]} scale={0.55}/>
+      { isHost && readyToStart && <StartGameButton position={[0.9, 0, 5]}/> }
+      { isHost && !readyToStart && <WaitingForCrewSign position={[0.9,0,5]} scale={0.8}/> }
+      { !isHost && <HostWillStartSign position={[0.9,0,5]} scale={0.8}/> }
     </group>
   }
 
@@ -1403,10 +1587,12 @@ export default function Lobby() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'pointer'
         setHover(true)
       }
       function handlePointerLeave(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'default'
         setHover(false)
       }
       function handlePointerUp(e) {
@@ -1449,10 +1635,12 @@ export default function Lobby() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'pointer'
         setHover(true)
       }
       function handlePointerLeave(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'default'
         setHover(false)
       }
       function handlePointerUp(e) {
@@ -1496,10 +1684,12 @@ export default function Lobby() {
         const [hover, setHover] = useState(false)
         function handlePointerEnter(e) {
           e.stopPropagation()
+          document.body.style.cursor = 'pointer'
           setHover(true)
         }
         function handlePointerLeave(e) {
           e.stopPropagation()
+          document.body.style.cursor = 'default'
           setHover(false)
         }
         function copyURLToClipboard() {
@@ -1563,7 +1753,7 @@ export default function Lobby() {
           </mesh>
           <mesh 
           name='wrapper' 
-          scale={[2.7, 0.02, 0.75]}
+          scale={[3, 0.02, 0.75]}
           onPointerEnter={e => handlePointerEnter(e)}
           onPointerLeave={e => handlePointerLeave(e)}
           onPointerUp={e => handlePointerUp(e)}>
@@ -1911,7 +2101,6 @@ export default function Lobby() {
       </group>
     }
 
-    {/* For guest: 'Host will start */}
     {/* For host: 'waiting for crew', 'start game!' */}
     function StartGameButton({ position }) {
       async function handleStartPointerUp(e) {

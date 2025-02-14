@@ -1610,65 +1610,86 @@ export default function HowToPlay({
 
     function handleOverviewClick() {
       setPage(0)
+      setOverviewHover(false)
     }
     function handleOverviewPointerEnter() {
+      document.body.style.cursor = 'pointer'
       setOverviewHover(true)
     }
     function handleOverviewPointerLeave() {
+      document.body.style.cursor = 'default'
       setOverviewHover(false)
     }
     function handleThrowTheYutClick() {
       setPage(1)
+      setThrowTheYutHover(false)
     }
     function handleThrowTheYutPointerEnter() {
+      document.body.style.cursor = 'pointer'
       setThrowTheYutHover(true)
     }
     function handleThrowTheYutPointerLeave() {
+      document.body.style.cursor = 'default'
       setThrowTheYutHover(false)
     }
     function handleCatchEnemiesClick() {
       setPage(2)
+      setCatchEnemiesHover(false)
     }
     function handleCatchEnemiesPointerEnter() {
+      document.body.style.cursor = 'pointer'
       setCatchEnemiesHover(true)
     }
     function handleCatchEnemiesPointerLeave() {
+      document.body.style.cursor = 'default'
       setCatchEnemiesHover(false)
     }
     function handlePiggybackClick() {
       setPage(3)
+      setPiggybackHover(false)
     }
     function handlePiggybackPointerEnter() {
+      document.body.style.cursor = 'pointer'
       setPiggybackHover(true)
     }
     function handlePiggybackPointerLeave() {
+      document.body.style.cursor = 'default'
       setPiggybackHover(false)
     }
     function handleScoreClick() {
       setPage(4)
+      setScoreHover(false)
     }
     function handleScorePointerEnter() {
+      document.body.style.cursor = 'pointer'
       setScoreHover(true)
     }
     function handleScorePointerLeave() {
+      document.body.style.cursor = 'default'
       setScoreHover(false)
     }
     function handleReadTheDiceClick() {
       setPage(5)
+      setReadTheDiceHover(false)
     }
     function handleReadTheDicePointerEnter() {
+      document.body.style.cursor = 'pointer'
       setReadTheDiceHover(true)
     }
     function handleReadTheDicePointerLeave() {
+      document.body.style.cursor = 'default'
       setReadTheDiceHover(false)
     }
     function handleShortcutClick() {
       setPage(6)
+      setShortcutHover(false)
     }
     function handleShortcutPointerEnter() {
+      document.body.style.cursor = 'pointer'
       setShortcutHover(true)
     }
     function handleShortcutPointerLeave() {
+      document.body.style.cursor = 'default'
       setShortcutHover(false)
     }
 
