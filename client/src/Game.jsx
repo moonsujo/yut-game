@@ -1126,7 +1126,6 @@ export default function Game() {
             position={[-11.5, 0, -3]}
             rotation={layout[device].game.joinTeamModal.rotation}
             scale={layout[device].game.joinTeamModal.scale}
-            teams={teams}
           />
           { client._id === host._id && <StartGameButton
             position={layout[device].game.letsPlayButton.position}
@@ -1187,12 +1186,6 @@ export default function Game() {
           device={device}
           team={1} 
         />
-        {/* <JoinTeamModal 
-          position={layout[device].game.joinTeamModal.position}
-          rotation={layout[device].game.joinTeamModal.rotation}
-          scale={layout[device].game.joinTeamModal.scale}
-          teams={teams}
-        /> */}
         { !disconnect && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}

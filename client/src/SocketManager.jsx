@@ -1024,12 +1024,12 @@ export const SocketManager = () => {
 function allPlayersConnected(playersTeam0, playersTeam1) {
   let flag = true;
   for (const player of playersTeam0) {
-    if (player.connectedToRoom) {
+    if (!player.connectedToRoom) {
       flag = false
     }
   }
   for (const player of playersTeam1) {
-    if (player.connectedToRoom) {
+    if (!player.connectedToRoom) {
       flag = false
     }
   }

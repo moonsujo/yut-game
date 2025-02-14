@@ -2527,9 +2527,9 @@ export default {
     },
     lobby: {
       joinTeamModal: {
-        position: [-2.9, 0, -1.7],
+        position: [-4, 0, -2.5],
         rotation: [-Math.PI/2, 0, 0],
-        scale: [1.3, 1.3, 1.3]
+        scale: [1.8, 1.8, 1.8]
       },
       readyTextRocket: {
         position: [1.7, 0, 0],

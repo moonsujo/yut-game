@@ -84,382 +84,11 @@ export default function Lobby() {
 
   // For network calls
   const params = useParams();
-  
-  // function PlayersParty({ position=[0,0,0], scale=0.7 }) {
-  //   const host = useAtomValue(hostAtom)
-  //   const client = useAtomValue(clientAtom)
-  //   const isHost = client.socketId === host.socketId
-  //   const teams = useAtomValue(teamsAtom)
-  //   const [seatClickedIndex, setSeatClickedIndex] = useState(0)
-  //   const [joinTeamModalPosition, setJoinTeamModalPosition] = useState([0,0,0])
-
-  //   const partyRef = useRef()
-  //   const rocket0 = useRef()
-  //   const rocket1 = useRef()
-  //   const rocket2 = useRef()
-  //   const rocket3 = useRef()
-  //   const ufo0 = useRef()
-  //   const ufo1 = useRef()
-  //   const ufo2 = useRef()
-  //   const ufo3 = useRef()
-  //   const shipRefs = [rocket0, rocket1, rocket2, rocket3, ufo0, ufo1, ufo2, ufo3]
-  //   const radius = 1.6
-  //   const radius2 = 8.3
-  //   const spring = useSpring({
-  //     from: {
-  //       boomScale: 0.6,
-  //       boomScaleYut: 0.15
-  //     },
-  //     to: [
-  //       {
-  //         boomScale: 0.603,
-  //         boomScaleYut: 0.155,
-  //         config: {
-  //           tension: 500,
-  //           clamp: true
-  //         }
-  //       },
-  //       {
-  //         boomScale: 0.6,
-  //         boomScaleYut: 0.15,
-  //       },
-  //     ],
-  //     loop: true,
-  //     delay: 234
-  //   })
-  //   useFrame((state) => {
-  //     const time = state.clock.elapsedTime
-  //     // partyRef.current.rotation.y = -time / 4;
-  //     if (shipRefs[0].current) {
-  //       shipRefs.forEach((value, index) => {
-  //         if (value.current) {
-  //           if (device === 'portrait') {
-  //             value.current.position.x = Math.cos(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2
-  //             value.current.position.y = 5
-  //             value.current.position.z = Math.sin(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2 + 2
-  //           } else {
-  //             value.current.position.x = Math.cos((Math.PI * 2 / shipRefs.length * (index-1.5))) * radius2
-  //             value.current.position.y = 5
-  //             value.current.position.z = Math.sin((Math.PI * 2 / shipRefs.length * (index-1.5))) * radius2 + 2
-  //           }
-  //         }
-  //       })
-  //     }
-  //   })
-
-  //   {/* landing page: Take a seat */}
-  //   {/* no more seats: Full capacity (grey button) */}
-  //   {/* joined UFO: 'Prepare for contact' */}
-  //   {/* joined Rocket: 'Ready to launch', 'Clear for takeoff' */}
-  //   function SeatStatus({ position, scale }) {
-  //     const teams = useAtomValue(teamsAtom)
-  //     const client = useAtomValue(clientAtom)
-  //     function TakeASeat({ position, scale }) {
-  //       return <group
-  //         name='take-a-seat-message'
-  //         position={position}
-  //         scale={scale}
-  //       >
-  //         <mesh
-  //           name='background-inner'
-  //           scale={[1.3, 1, 0.42]}
-  //         >
-  //           <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-  //           <meshStandardMaterial color='black'/>
-  //         </mesh>
-  //         <Text3D
-  //           font="fonts/Luckiest Guy_Regular.json"
-  //           position={[-0.95, 0.025, 0.12]}
-  //           rotation={[-Math.PI/2, 0, 0]}
-  //           size={0.25}
-  //           height={0.01}
-  //           lineHeight={0.7}
-  //         >
-  //           {`TAKE A SEAT`}
-  //           <meshStandardMaterial color={ 'yellow' }/>
-  //         </Text3D>
-  //       </group>
-  //     }
-  //     function FullCapacity({ position, scale }) {
-  //       return <group
-  //         name='full-capacity-message'
-  //         position={position}
-  //         scale={scale}
-  //       >
-  //         <mesh
-  //           name='background-inner'
-  //           scale={[1.6, 1, 0.42]}
-  //         >
-  //           <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-  //           <meshStandardMaterial color='black'/>
-  //         </mesh>
-  //         <Text3D
-  //           font="fonts/Luckiest Guy_Regular.json"
-  //           position={[-1.1, 0.025, 0.12]}
-  //           rotation={[-Math.PI/2, 0, 0]}
-  //           size={0.25}
-  //           height={0.01}
-  //           lineHeight={0.7}
-  //         >
-  //           {`FULL CAPACITY`}
-  //           <meshStandardMaterial color={ 'yellow' }/>
-  //         </Text3D>
-  //       </group>
-  //     }
-  //     function RocketJoined({ position, scale }) {
-  //       return <group
-  //         name='rocket-joined-message'
-  //         position={position}
-  //         scale={scale}
-  //       >
-  //         <mesh
-  //           name='background-inner'
-  //           scale={[1.3, 1, 0.6]}
-  //         >
-  //           <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-  //           <meshStandardMaterial color='black'/>
-  //         </mesh>
-  //         <Text3D
-  //           font="fonts/Luckiest Guy_Regular.json"
-  //           position={[-0.8, 0.025, -0.03]}
-  //           rotation={[-Math.PI/2, 0, 0]}
-  //           size={0.25}
-  //           height={0.01}
-  //           lineHeight={0.7}
-  //         >
-  //           {`CLEAR FOR\n  TAKEOFF`}
-  //           <meshStandardMaterial color={ 'red' }/>
-  //         </Text3D>
-  //       </group>
-  //     }
-  //     function UfoJoined({ position, scale }) {
-  //       return <group
-  //         name='ufo-joined-message'
-  //         position={position}
-  //         scale={scale}
-  //       >
-  //         <mesh
-  //           name='background-inner'
-  //           scale={[1.5, 1, 0.6]}
-  //         >
-  //           <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-  //           <meshStandardMaterial color='black'/>
-  //         </mesh>
-  //         <Text3D
-  //           font="fonts/Luckiest Guy_Regular.json"
-  //           position={[-1, 0.025, -0.03]}
-  //           rotation={[-Math.PI/2, 0, 0]}
-  //           size={0.25}
-  //           height={0.01}
-  //           lineHeight={0.7}
-  //         >
-  //           {`PREPARE FOR\n    CONTACT`}
-  //           <meshStandardMaterial color={ 'turquoise' }/>
-  //         </Text3D>
-  //       </group>
-  //     }
-  //     if (teams[0].players.length < 4 || teams[1].players.length < 4) {
-  //       return <TakeASeat position={[0,5,7.3]} scale={1.9}/>
-  //     } else if (teams[0].players.length >= 4 && teams[1].players.length >= 4) {
-  //       return <FullCapacity position={[0,5,7.3]} scale={1.9}/>
-  //     } else if (client.team === 0) {
-  //       return <RocketJoined position={[0,5,7.3]} scale={1.9}/>
-  //     } else if (client.team === 1) {
-  //       return <UfoJoined position={[0,5,7.3]} scale={1.9}/>
-  //     }
-  //   }
-  //   function handleSeatPointerEnter(e) {
-  //     e.stopPropagation()
-  //   }
-  //   function handleSeatPointerLeave(e) {
-  //     e.stopPropagation()
-  //   }
-  //   const setJoinTeam = useSetAtom(joinTeamAtom)
-  //   function handleSeatPointerUp(e, team, seatIndex) {
-  //     e.stopPropagation()
-  //     setJoinTeam(team)
-  //     setSeatClickedIndex(seatIndex)
-  //   }
-
-  //   useEffect(() => {
-  //     if (seatClickedIndex === 6 || seatClickedIndex === 5) {
-  //       setJoinTeamModalPosition([0, 0, 1.5])
-  //     } else if (seatClickedIndex === 4 || seatClickedIndex === 7) {
-  //       setJoinTeamModalPosition([0, 0, 3])
-  //     } else if (seatClickedIndex === 3 || seatClickedIndex === 0) {
-  //       setJoinTeamModalPosition([0, 0, 5.5])
-  //     } else if (seatClickedIndex === 2 || seatClickedIndex === 1) {
-  //       setJoinTeamModalPosition([0, 0, 7])
-  //     }
-  //   }, [seatClickedIndex])
-
-  //   return <group scale={scale} position={position}>
-  //     <BlueMoon scale={3} rotationSpeed={-0.2}/>
-  //     <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
-  //       <Text3D
-  //         font="fonts/Luckiest Guy_Regular.json"
-  //         position={[-2.3,5,-3.2]}
-  //         rotation={[-Math.PI/2, 0, 0]}
-  //         size={0.4}
-  //         height={0.01}
-  //         lineHeight={0.7}
-  //       >
-  //         {`TEAM\nROCKET`}
-  //         <meshStandardMaterial color={ 'red' }/>
-  //       </Text3D>
-  //       <Text3D
-  //         font="fonts/Luckiest Guy_Regular.json"
-  //         position={[0.5,5,-3.2]}
-  //         rotation={[-Math.PI/2, 0, 0]}
-  //         size={0.4}
-  //         height={0.01}
-  //         lineHeight={0.7}
-  //       >
-  //         {`TEAM\nUFO`}
-  //         <meshStandardMaterial color={ 'turquoise' }/>
-  //       </Text3D>
-  //       <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]} />
-  //       { [...Array(8)].map((value, index) => {
-  //         return ((index-2 < 4 && index-2 >= 0) ? <animated.group 
-  //         name='rocket-seat'
-  //         key={index} 
-  //         scale={spring.boomScale} 
-  //         position={[
-  //           Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius + ((index-2 === 1 || index-2 === 2) ? 0.3 : 0), 
-  //           5, 
-  //           Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius
-  //         ]}>
-  //           <Star scale={0.4} color='red' onBoard offset={0.2}/>
-  //           {/* Host indicator */}
-  //           {/* { index === 2 && <Star key={index} scale={0.3} position={[0.4, 0, -0.6]} color='red' onBoard offset={0.2} material={<meshStandardMaterial color='yellow' transparent opacity={1}/>}/> } */}
-  //           <Text3D
-  //             font="fonts/Luckiest Guy_Regular.json"
-  //             position={[ -4.7, 0.02, 0.3]}
-  //             rotation={[-Math.PI/2, 0, 0]}
-  //             size={0.6}
-  //             height={0.01}
-  //             lineHeight={0.7}
-  //           >
-  //             {teams[0].players[index-2] ? formatName(teams[0].players[index-2].name, 8) : `SEAT ${(-index+6) % 8}`}
-  //             <meshStandardMaterial color={ 'red' }/>
-  //           </Text3D>
-  //           <group name='background'>
-  //             <mesh 
-  //             name='background-outer' 
-  //             position={[-2.2, 0, 0]} 
-  //             scale={[5.8, 0.01, 1.3]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             onPointerUp={e => handleSeatPointerUp(e, 0, index)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='red' transparent opacity={0.1}/>
-  //             </mesh>
-  //             <mesh 
-  //             name='background-inner' 
-  //             position={[-2.2, 0, 0]} 
-  //             scale={[5.7, 0.02, 1.2]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             onPointerUp={e => handleSeatPointerUp(e, 0, index)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='black' transparent opacity={0.3}/>
-  //             </mesh>
-  //             <mesh 
-  //             name='wrapper' 
-  //             position={[-2.2, 0, 0]} 
-  //             scale={[5.8, 0.02, 1.3]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             onPointerUp={e => handleSeatPointerUp(e, 0, index)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='black' transparent opacity={0}/>
-  //             </mesh>
-  //           </group>
-  //         </animated.group> :
-  //         <animated.group 
-  //         name='ufo-seat'
-  //         key={index} 
-  //         scale={spring.boomScale} 
-  //         position={[
-  //           Math.cos(Math.PI * 2 / 8 * index + Math.PI/8) * radius + ((index-2 === 5 || index-2 === -2) ? -0.3 : 0), 
-  //           5, 
-  //           Math.sin(Math.PI * 2 / 8 * index + Math.PI/8) * radius
-  //         ]}>
-  //           <Star key={index} scale={0.4}  color='turquoise' onBoard offset={0.2}/>
-  //           <Text3D
-  //             font="fonts/Luckiest Guy_Regular.json"
-  //             position={[ (index === 2 || index === 4) ? -3.5 : 0.6, 0.02, 0.3]}
-  //             rotation={[-Math.PI/2, 0, 0]}
-  //             size={0.6}
-  //             height={0.01}
-  //             lineHeight={0.7}
-  //           >
-  //             {teams[1].players[index-6] ? formatName(teams[1].players[index-6].name) : `SEAT ${(index+3) % 8}`}
-  //             <meshStandardMaterial color={ 'turquoise' }/>
-  //           </Text3D>
-  //           <group name='background'>
-  //             <mesh 
-  //             name='background-outer' 
-  //             position={[2.2, 0, 0]} 
-  //             scale={[5.8, 0.01, 1.3]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='turquoise' transparent opacity={0.1}/>
-  //             </mesh>
-  //             <mesh 
-  //             name='background-inner' 
-  //             position={[2.2, 0, 0]} 
-  //             scale={[5.7, 0.02, 1.2]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='black' transparent opacity={0.3}/>
-  //             </mesh>
-  //             <mesh 
-  //             name='wrapper' 
-  //             position={[2.2, 0, 0]} 
-  //             scale={[5.8, 0.02, 1.3]}
-  //             onPointerEnter={e => handleSeatPointerEnter(e)}
-  //             onPointerLeave={e => handleSeatPointerLeave(e)}
-  //             onPointerUp={e => handleSeatPointerUp(e, 1, index)}
-  //             >
-  //               <boxGeometry args={[1, 1, 1]}/>
-  //               <meshStandardMaterial color='black' transparent opacity={0}/>
-  //             </mesh>
-  //           </group>
-  //         </animated.group>
-  //       ) })}
-  //     </group>
-  //     { device === 'portrait' && shipRefs.map((value, index) => {
-  //       return (index < 4 ? <group ref={value} key={index}>
-  //         <Rocket scale={1}/>
-  //       </group> : <group ref={value} key={index}>
-  //         <Ufo scale={1}/>
-  //       </group>)
-  //     })}
-  //     <SeatStatus/>
-  //     <group position={joinTeamModalPosition}>
-  //       <JoinTeamModal 
-  //         position={layout[device].lobby.joinTeamModal.position}
-  //         rotation={layout[device].lobby.joinTeamModal.rotation}
-  //         scale={layout[device].lobby.joinTeamModal.scale}
-  //         teams={teams}
-  //       />
-  //     </group>
-  //   </group>
-  // }
 
   function PlayersParty({ position=[0,0,0], scale=0.7 }) {
     const host = useAtomValue(hostAtom)
     const client = useAtomValue(clientAtom)
     const isHost = client.socketId === host.socketId
-    const teams = useAtomValue(teamsAtom)
 
     // #region animation
     const partyRef = useRef()
@@ -650,35 +279,13 @@ export default function Lobby() {
       setJoinTeam(team)
     }
 
-    return <group scale={scale} position={position}>
-      <BlueMoon scale={3} rotationSpeed={-0.2}/>
-      <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-2.3,5,-3.2]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-          lineHeight={0.7}
-        >
-          {`TEAM\nROCKET`}
-          <meshStandardMaterial color={ 'red' }/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[0.5,5,-3.2]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
-          height={0.01}
-          lineHeight={0.7}
-        >
-          {`TEAM\nUFO`}
-          <meshStandardMaterial color={ 'turquoise' }/>
-        </Text3D>
-        <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/>
+    function Seats() {
+      const teams = useAtomValue(teamsAtom)
+
+      return <group>
         <animated.group 
         name='rocket-seat-1'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           -Math.cos(Math.PI * 2 / 8 + Math.PI/8) * radius, 
           5, 
@@ -734,7 +341,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='rocket-seat-2'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           -Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.3, 
           5, 
@@ -790,7 +397,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='rocket-seat-3'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           -Math.cos(0 - Math.PI/8) * radius + 0.3, 
           5, 
@@ -846,7 +453,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='rocket-seat-4'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           -Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius, 
           5, 
@@ -902,7 +509,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='ufo-seat-1'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           Math.cos(Math.PI * 2 / 8 + Math.PI/8) * radius, 
           5, 
@@ -958,7 +565,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='ufo-seat-2'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius - 0.3, 
           5, 
@@ -1014,7 +621,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='ufo-seat-3'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           Math.cos(0 - Math.PI/8) * radius - 0.3, 
           5, 
@@ -1070,7 +677,7 @@ export default function Lobby() {
         </animated.group>
         <animated.group 
         name='ufo-seat-4'
-        scale={spring.boomScale} 
+        scale={0.6} 
         position={[
           Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius, 
           5, 
@@ -1125,6 +732,36 @@ export default function Lobby() {
           </group>
         </animated.group>
       </group>
+    }
+
+    return <group scale={scale} position={position}>
+      <BlueMoon scale={3} rotationSpeed={-0.2}/>
+      <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[-2.3,5,-3.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.4}
+          height={0.01}
+          lineHeight={0.7}
+        >
+          {`TEAM\nROCKET`}
+          <meshStandardMaterial color={ 'red' }/>
+        </Text3D>
+        <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={[0.5,5,-3.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.4}
+          height={0.01}
+          lineHeight={0.7}
+        >
+          {`TEAM\nUFO`}
+          <meshStandardMaterial color={ 'turquoise' }/>
+        </Text3D>
+        <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/>
+        <Seats/>
+      </group>
       { device === 'portrait' && shipRefs.map((value, index) => {
         return (index < 4 ? <group ref={value} key={index}>
           <Rocket scale={1}/>
@@ -1137,138 +774,7 @@ export default function Lobby() {
         position={layout[device].lobby.joinTeamModal.position}
         rotation={layout[device].lobby.joinTeamModal.rotation}
         scale={layout[device].lobby.joinTeamModal.scale}
-        teams={teams}
       />
-    </group>
-  }
-
-  function FirstSection() {
-    const readyToStart = useAtomValue(readyToStartAtom)
-    const host = useAtomValue(hostAtom)
-    const client = useAtomValue(clientAtom)
-    const isHost = client.socketId === host.socketId
-    const teams = useAtomValue(teamsAtom)
-
-    function StartGameButton({ position }) {
-
-      const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
-
-      const [hover, setHover] = useState(false);
-
-      function handlePointerEnter(e) {
-        e.stopPropagation();
-        setHover(true)
-      }
-
-      function handlePointerLeave(e) {
-        e.stopPropagation();
-        setHover(false)
-      }
-
-      function handlePointerUp(e) {
-        // const audio = new Audio('sounds/effects/join.wav');
-        // audio.volume=0.3;
-        // audio.play();
-        e.stopPropagation();
-        setHover(false)
-        if (readyToStart) {
-          socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
-        }
-      }
-
-      return <group
-        position={position}
-        scale={2}
-      >
-        <mesh
-          name='background-outer'
-          scale={[1.3, 1, 0.45]}
-        >
-          <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-          <meshStandardMaterial color={ !readyToStart ? 'grey' : hover ? 'green' : 'yellow' }/>
-        </mesh>
-        <mesh
-          name='background-inner'
-          scale={[1.3, 1, 0.42]}
-        >
-          <cylinderGeometry args={[0.97, 0.95, 0.02, 32]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh 
-          name='wrapper' 
-          scale={[1.3, 1, 0.45]}
-          onPointerEnter={e => handlePointerEnter(e)}
-          onPointerLeave={e => handlePointerLeave(e)}
-          onPointerDown={e => handlePointerUp(e)}
-        >
-          <cylinderGeometry args={[1, 1, 0.01, 32]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-1.02, 0.025, 0.12]}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.25}
-          height={0.01}
-          lineHeight={0.7}
-        >
-          {`START GAME!`}
-          <meshStandardMaterial color={ !readyToStart ? 'grey' : hover ? 'green' : 'yellow' }/>
-        </Text3D>
-      </group>
-    }
-
-    return <group>
-      {/* <mesh name='background-panel' position={[-8.2, 0, 0]}>
-        <boxGeometry args={[9, 0.01, 14]}/>
-        <meshStandardMaterial color='black' transparent opacity={0.5}/>
-      </mesh> */}
-      <group name='title'>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-12,0,-5.3]}
-          rotation={[-Math.PI/2,0,0]}
-          size={0.6}
-          height={0.01}
-        >
-          YUT NORI!
-          <meshStandardMaterial color="yellow"/>
-        </Text3D>
-        <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-7,0,-5.3]}
-          rotation={[-Math.PI/2,0,0]}
-          size={0.4}
-          height={0.01}
-        >
-          {`ID: ${params.id}`}
-          <meshStandardMaterial color="yellow"/>
-        </Text3D>
-      </group>
-      <group name='players'>
-        <TeamLobby
-          position={layout[device].game.team0.position}
-          scale={layout[device].game.team0.scale}
-          device={device}
-          team={0} 
-        />
-        <TeamLobby
-          position={layout[device].game.team1.position}
-          scale={layout[device].game.team1.scale}
-          device={device}
-          team={1} 
-        />
-        <JoinTeamModal 
-          position={[-11.5, 0, -3]}
-          rotation={layout[device].game.joinTeamModal.rotation}
-          scale={layout[device].game.joinTeamModal.scale}
-          teams={teams}
-        />
-        { isHost && <StartGameButton
-          position={layout[device].game.letsPlayButton.position}
-          rotation={layout[device].game.letsPlayButton.rotation}
-        /> }
-      </group>
     </group>
   }
 
@@ -2298,32 +1804,6 @@ export default function Lobby() {
           RULEBOOK
           <meshStandardMaterial color={ (hover || selection === 'rulebook') ? 'green' : 'yellow' }/>
         </Text3D>
-      </group>
-    }
-    function Players(props) {
-      const teams = useAtomValue(teamsAtom)
-
-      return <group {...props}>
-        <TeamLobby
-          position={layout[device].game.team0.position}
-          scale={layout[device].game.team0.scale}
-          device={device}
-          team={0}
-          buttonPosition={[0, 0, 5]}
-        />
-        <TeamLobby
-          position={layout[device].game.team1.position}
-          scale={layout[device].game.team1.scale}
-          device={device}
-          team={1} 
-          buttonPosition={[0.2, 0, 5]}
-        />
-        <JoinTeamModal 
-          position={[0, 0, 0]}
-          rotation={layout[device].game.joinTeamModal.rotation}
-          scale={layout[device].game.joinTeamModal.scale}
-          teams={teams}
-        />
       </group>
     }
     return <group position={position} scale={scale}>
