@@ -181,7 +181,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       { teams[team].pregameRoll === 0 ? <group>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.9, 0.025, 0.15]}
+          position={[-1, 0.025, 0.15]}
           rotation={[-Math.PI/2, 0, 0]}
           size={layout[device].game[`team${team}`].pregameRoll.size}
           height={layout[device].game[`team${team}`].pregameRoll.height}
@@ -201,7 +201,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         </Text3D>
       </group> : <Text3D
         font="fonts/Luckiest Guy_Regular.json"
-        position={[-0.9, 0.025, 0.15]}
+        position={[-1, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={layout[device].game[`team${team}`].pregameRoll.size}
         height={layout[device].game[`team${team}`].pregameRoll.height}

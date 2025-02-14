@@ -75,6 +75,7 @@ export default function Game() {
   
   useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
+  console.log('[Game] device', device)
   const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
   const [gamePhase] = useAtom(gamePhaseAtom)
@@ -1086,93 +1087,6 @@ export default function Game() {
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
       <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
-      { gamePhase === 'lobby' && <animated.group scale={lobbyScale}>
-        <group name='title'>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-12,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.6}
-            height={0.01}
-          >
-            YUT NORI!
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-          <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
-            position={[-7,0,-5.3]}
-            rotation={[-Math.PI/2,0,0]}
-            size={0.4}
-            height={0.01}
-          >
-            {`ID: ${params.id}`}
-            <meshStandardMaterial color="yellow"/>
-          </Text3D>
-        </group>
-        <group name='players'>
-          <TeamLobby
-            position={[-12,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={0} 
-          />
-          <TeamLobby
-            position={[-7.5,0,-4]}
-            scale={layout[device].game.team0.scale}
-            device={device}
-            team={1} 
-          />
-          <JoinTeamModal 
-            position={[-11.5, 0, -3]}
-            rotation={layout[device].game.joinTeamModal.rotation}
-            scale={layout[device].game.joinTeamModal.scale}
-          />
-          { client._id === host._id && <StartGameButton
-            position={layout[device].game.letsPlayButton.position}
-            rotation={layout[device].game.letsPlayButton.rotation}
-          /> }
-        </group>
-        <group name='rulebook'>
-          <group name='rulebook-label' position={[1, 0, -5.6]}>
-            <mesh name='background-outer' scale={[3.0, 0.01, 0.75]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color='yellow'/>
-            </mesh> 
-            <mesh name='background-inner' scale={[2.95, 0.02, 0.7]} position={[0,0,0]}>
-              <boxGeometry args={[1, 1, 1]}/>
-              <meshStandardMaterial color={MeshColors.spaceDark}/>
-            </mesh>
-            <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
-              size={0.4}
-              height={0.01}
-              rotation={[-Math.PI/2, 0, 0]}
-              position={[-1.3, 0.02, 0.19]}
-            >
-              RULEBOOK
-              <meshStandardMaterial color='yellow'/>
-            </Text3D>
-          </group>
-          <HowToPlay 
-            device={device} 
-            position={[-1,0,-1]} 
-            scale={0.6}
-            closeButton={false}
-            setShowRulebook={setShowRulebook}
-          />
-          <Text3D 
-          name='goal'
-          font="fonts/Luckiest Guy_Regular.json"
-          position={[-2.5, 0, 4]}
-          rotation={layout[device].game.whoGoesFirst.title.rotation}
-          size={0.3}
-          height={layout[device].game.whoGoesFirst.title.height}>
-            {`GOAL: MOVE FOUR SHIPS AROUND\nTHE STARS FROM START TO FINISH!`}
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-        </group>
-        <ThirdSection/>
-      </animated.group> }
       { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
         <Team 
           position={layout[device].game.team0.position}

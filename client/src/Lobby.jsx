@@ -873,10 +873,12 @@ export default function Lobby() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'pointer'
         setHover(true)
       }
       function handlePointerLeave(e) {
         e.stopPropagation()
+        document.body.style.cursor = 'default'
         setHover(false)
       }
       function handlePointerUp(e) {

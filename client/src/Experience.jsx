@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { connectedToServerAtom, gamePhaseAtom } from "./GlobalState.jsx";
 import { useAtomValue } from "jotai";
 import GameExperience from "./GameExperience.jsx";
-import LobbyExperience from "./LobbyExperience.jsx";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
+import Lobby from "./Lobby.jsx";
 
 export default function Experience() {
 
@@ -21,7 +21,7 @@ export default function Experience() {
   }, [connectedToServer])
 
   return <>
-    { gamePhase === 'lobby' && <LobbyExperience/> }
+    { gamePhase === 'lobby' && <Lobby/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <GameExperience/> }
     {/* win screen experience */}
     {/* { gamePhase === 'finished' && <GameExperience/> } */}
