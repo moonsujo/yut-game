@@ -1321,31 +1321,31 @@ export default function HowToPlay({
           </animated.mesh>
         </group>
         {dotSpringsMiddle.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[3 - 0.4*index, 0.5, 0.2]}>
+          return <animated.mesh key={index} scale={value.scale} position={[3 - 0.4*index, 0.5, 0.2]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         })}
         {dotSpringsCorner.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[5 * Math.cos(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32)), 0.5, 0.2 - 5 * Math.sin(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32))]}>
+          return <animated.mesh key={index} scale={value.scale} position={[5 * Math.cos(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32)), 0.5, 0.2 - 5 * Math.sin(Math.PI + ((index) / dotSpringsCorner.length) * (Math.PI/2 - Math.PI/32))]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         })}
         {dotSpringsVertical.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[0, 0.5, -4.5 + 0.4*index]}>
+          return <animated.mesh key={index} scale={value.scale} position={[0, 0.5, -4.5 + 0.4*index]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         })}
         {dotSpringsMiddleHalf.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[3.5 - 0.4*index, 0.5, 0.2]}>
+          return <animated.mesh key={index} scale={value.scale} position={[3.5 - 0.4*index, 0.5, 0.2]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
         })}
         {dotSpringsVerticalHalf.map((value, index) => {
-          return <animated.mesh scale={value.scale} position={[0, 0.5, 0.7 + 0.4*index]}>
+          return <animated.mesh key={index} scale={value.scale} position={[0, 0.5, 0.7 + 0.4*index]}>
             <sphereGeometry args={[1, 32, 16]}/>
             <meshBasicMaterial color='#ffff33'/>
           </animated.mesh>
@@ -2130,25 +2130,32 @@ export default function HowToPlay({
       })
     }
     
-    function handlePage0() {
+    function handlePage0(e) {
+      e.stopPropagation()
       setPage(0)
     }
-    function handlePage1() {
+    function handlePage1(e) {
+      e.stopPropagation()
       setPage(1)
     }
-    function handlePage2() {
+    function handlePage2(e) {
+      e.stopPropagation()
       setPage(2)
     }
-    function handlePage3() {
+    function handlePage3(e) {
+      e.stopPropagation()
       setPage(3)
     }
-    function handlePage4() {
+    function handlePage4(e) {
+      e.stopPropagation()
       setPage(4)
     }
-    function handlePage5() {
+    function handlePage5(e) {
+      e.stopPropagation()
       setPage(5)
     }
-    function handlePage6() {
+    function handlePage6(e) {
+      e.stopPropagation()
       setPage(6)
     }
 
@@ -2159,34 +2166,153 @@ export default function HowToPlay({
         <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, layout[device].howToPlay.pagination.arrowHeight, 3]}/>
         <meshStandardMaterial color="yellow"/>
       </mesh>
-      <mesh position={[startX + space*1, 0, 6]} onPointerUp={handlePage0}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 0 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*2, 0, 6]} onPointerUp={handlePage1}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 1 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*3, 0, 6]} onPointerUp={handlePage2}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 2 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*4, 0, 6]} onPointerUp={handlePage3}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 3 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*5, 0, 6]} onPointerUp={handlePage4}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 4 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*6, 0, 6]} onPointerUp={handlePage5}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 5 ? "green" : "yellow" }/>
-      </mesh>
-      <mesh position={[startX + space*7, 0, 6]} onPointerUp={handlePage6}>
-        <sphereGeometry args={[layout[device].howToPlay.pagination.pageRadius, 32, 16]}/>
-        <meshStandardMaterial color={ page === 6 ? "green" : "yellow" }/>
-      </mesh>
+      <group name='page-0-button'>
+        <mesh 
+        position={[startX + space*1, 0, 6]} 
+        onPointerUp={e=>handlePage0(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 0 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*1, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*1, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 0 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-1-button'>
+        <mesh 
+        position={[startX + space*2, 0, 6]} 
+        onPointerUp={e=>handlePage1(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 1 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*2, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*2, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 1 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-2-button'>
+        <mesh 
+        position={[startX + space*3, 0, 6]} 
+        onPointerUp={e=>handlePage2(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 2 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*3, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*3, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 2 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-3-button'>
+        <mesh 
+        position={[startX + space*4, 0, 6]} 
+        onPointerUp={e=>handlePage3(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 3 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*4, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*4, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 3 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-4-button'>
+        <mesh 
+        position={[startX + space*5, 0, 6]} 
+        onPointerUp={e=>handlePage4(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 4 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*5, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*5, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 4 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-5-button'>
+        <mesh 
+        position={[startX + space*6, 0, 6]} 
+        onPointerUp={e=>handlePage5(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 5 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*6, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*6, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 5 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
+      <group name='page-6-button'>
+        <mesh 
+        position={[startX + space*7, 0, 6]} 
+        onPointerUp={e=>handlePage6(e)}
+        scale={[0.6, 0.01, 0.6]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 6 ? "green" : "yellow" }/>
+        </mesh>
+        <mesh 
+        position={[startX + space*7, 0, 6]} 
+        scale={[0.5, 0.02, 0.5]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color='black' transparent opacity={1}/>
+        </mesh>
+        <mesh 
+        position={[startX + space*7, 0, 6]} 
+        scale={[0.2, 0.03, 0.2]}>
+          <cylinderGeometry args={[1, 1, 1, 32]}/>
+          <meshStandardMaterial color={ page === 6 ? "green" : "yellow" }/>
+        </mesh>
+      </group>
       <mesh position={[startX + space*8, 0, 6]} rotation={[0, 0, -Math.PI/2]} onPointerUp={handlePageRight}>
         <coneGeometry args={[layout[device].howToPlay.pagination.arrowRadius, layout[device].howToPlay.pagination.arrowHeight, 3]}/>
         <meshStandardMaterial color="yellow"/>

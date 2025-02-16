@@ -6,7 +6,6 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { makeId } from './helpers.js';
 import initialState from './initialState.js';
-import { getLegalTiles } from './rules/legalTiles.js'
 import { tileType } from './rules/rulesHelpers.js'
 
 const app = express();

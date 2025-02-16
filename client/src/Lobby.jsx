@@ -268,12 +268,6 @@ export default function Lobby() {
       }
     }
     const setJoinTeam = useSetAtom(joinTeamAtom)
-    function handleSeatPointerUp(e, team) {
-      e.stopPropagation()
-      if (client.team !== team) {
-        setJoinTeam(team)
-      }
-    }
 
     function Seats() {
       const teams = useAtomValue(teamsAtom)
@@ -366,6 +360,14 @@ export default function Lobby() {
         document.body.style.cursor = 'default'
         setSeat4Team1Hover(false)
       }
+      // #endregion
+      
+      function handleSeatPointerUp(e, team, seatIndex) {
+        e.stopPropagation()
+        if (client.team !== team && !teams[team].players[seatIndex]) {
+          setJoinTeam(team)
+        }
+      }
 
       return <group>
         <animated.group 
@@ -417,7 +419,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat1Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat1Team0PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 0)}
+            onPointerUp={e => handleSeatPointerUp(e, 0, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -473,7 +475,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat2Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat2Team0PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 0)}
+            onPointerUp={e => handleSeatPointerUp(e, 0, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -529,7 +531,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat3Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat3Team0PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 0)}
+            onPointerUp={e => handleSeatPointerUp(e, 0, 2)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -585,7 +587,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat4Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat4Team0PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 0)}
+            onPointerUp={e => handleSeatPointerUp(e, 0, 3)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -641,7 +643,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat1Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat1Team1PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 1)}
+            onPointerUp={e => handleSeatPointerUp(e, 1, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -697,7 +699,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat2Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat2Team1PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 1)}
+            onPointerUp={e => handleSeatPointerUp(e, 1, 1)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -753,7 +755,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat3Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat3Team1PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 1)}
+            onPointerUp={e => handleSeatPointerUp(e, 1, 2)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -809,7 +811,7 @@ export default function Lobby() {
             scale={[5.8, 0.02, 1.3]}
             onPointerEnter={e => handleSeat4Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat4Team1PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 1)}
+            onPointerUp={e => handleSeatPointerUp(e, 1, 3)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -844,7 +846,8 @@ export default function Lobby() {
           {`TEAM\nUFO`}
           <meshStandardMaterial color={ 'turquoise' }/>
         </Text3D>
-        <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/>
+        <YootDisplay scale={0.14} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/>
+        {/* <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/> */}
         <Seats/>
       </group>
       { device === 'portrait' && shipRefs.map((value, index) => {

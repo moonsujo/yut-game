@@ -1189,17 +1189,33 @@ export default function Game() {
           gamePhase={gamePhase}
         /> }
         <DisplayHostAndSpectating/>
-        { showRulebook && <group>
-          <mesh name='blocker' position={layout[device].game.rulebook.blocker.position}>
-            <boxGeometry args={layout[device].game.rulebook.blocker.args}/>
-            <meshStandardMaterial color='black' transparent opacity={0.95}/>
-          </mesh>
+        { showRulebook && <group 
+        position={layout[device].game.rulebook.position}
+        scale={layout[device].game.rulebook.scale}>
+          <group position={layout[device].game.rulebook.blocker.position}>
+            <mesh name='blocker-inner' scale={layout[device].game.rulebook.blocker.innerScale}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='black'/>
+            </mesh>
+            <mesh name='blocker-outer' scale={layout[device].game.rulebook.blocker.outerScale}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='yellow'/>
+            </mesh>
+          </group>
+          <Text3D
+          font="fonts/Luckiest Guy_Regular.json"
+          position={layout[device].game.rulebook.title.position}
+          rotation={layout[device].game.rulebook.title.rotation}
+          size={layout[device].game.rulebook.title.size}
+          height={layout[device].game.rulebook.title.height}>
+            RULEBOOK
+            <meshStandardMaterial color='yellow'/>
+          </Text3D>
           <HowToPlay 
-            device={device} 
-            position={layout[device].game.rulebook.position} 
-            scale={layout[device].game.rulebook.scale}
+            device={device}
             closeButton={true}
             setShowRulebook={setShowRulebook}
+            position={layout[device].game.rulebook.content.position}
           />
         </group> }
         { timer && !animationPlaying && <Timer 

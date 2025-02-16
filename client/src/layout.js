@@ -1292,15 +1292,25 @@ export default {
         scale: 1.1,
       },
       rulebook: {
-        position: [0, 9, 3],
-        scale: 0.8,
+        position: [-2, 5, 0.5],
+        scale: 0.75,
+        content: {
+          position: [0, 0, 0.2]
+        },
         blocker: {
-          args: [11, 0.1, 10],
-          position: [0,8,3]
+          innerScale: [13.5, 0.02, 18],
+          outerScale: [13.6, 0.01, 18.1],
+          position: [2.8, -1.5, 1.2]
         },
         closeButton: {
-          position: [5.7,0,-5],
+          position: [9,0,-6.8],
           scale: 1
+        },
+        title: {
+          position: [-3.6, 9.1, -2.6],
+          rotation: [-Math.PI/2, 0, 0],
+          size: 0.5,
+          height: 0.01
         }
       },
       piecesSection: {
@@ -2852,15 +2862,25 @@ export default {
         scale: 1,
       },
       rulebook: {
-        position: [-1.5, 9, 3],
-        scale: 0.8,
+        position: [6.9, 3, -0.3],
+        scale: 0.6,
+        content: {
+          position: [0, 0, 0.2]
+        },
         blocker: {
-          args: [12, 0.1, 9],
-          position: [0.5,8,3]
+          innerScale: [13.5, 0.02, 20],
+          outerScale: [13.6, 0.01, 20.1],
+          position: [2.8, -1.5, 2.2]
         },
         closeButton: {
-          position: [9,0,5.3],
+          position: [9,0,-6.8],
           scale: 1
+        },
+        title: {
+          position: [-3.6, 9.1, -2.6],
+          rotation: [-Math.PI/2, 0, 0],
+          size: 0.5,
+          height: 0.01
         }
       },
       piecesSection: {
