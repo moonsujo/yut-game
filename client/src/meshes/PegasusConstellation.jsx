@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function PegasusConstellation(props) {
-  const { nodes, materials } = useGLTF('models/pegasus-constellation.glb')
+  const { nodes, materials } = useGLTF('/models/pegasus-constellation.glb')
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -52,4 +52,4 @@ export function PegasusConstellation(props) {
   )
 }
 
-useGLTF.preload('models/pegasus-constellation.glb')
+useGLTF.preload('/models/pegasus-constellation.glb')

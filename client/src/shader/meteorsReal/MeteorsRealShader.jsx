@@ -94,8 +94,8 @@ export default function MeteorsRealShader() {
     }
 
     const meteorTextures = [
-        useLoader(TextureLoader, 'textures/particles/3.png'),
-        useLoader(TextureLoader, 'textures/particles/7.png'), // heart
+        useLoader(TextureLoader, '/textures/particles/3.png'),
+        useLoader(TextureLoader, '/textures/particles/7.png'), // heart
     ] 
 
     // falling meteor background

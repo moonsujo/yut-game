@@ -243,7 +243,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -285,7 +285,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -327,7 +327,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           { !pauseGame && <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -337,7 +337,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color={ pauseGameHover ? 'green' : 'yellow' }/>
           </Text3D>}
           { pauseGame && <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -379,7 +379,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -421,7 +421,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}
@@ -463,7 +463,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0.02,0.15]}
             rotation={[-Math.PI/2,0,0]}
             size={0.3}
@@ -505,7 +505,7 @@ export default function SettingsPlayer(props) {
             <meshStandardMaterial color='white' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.7,0,0.15]}
             rotation={[-Math.PI/4,0,0]}
             size={0.3}

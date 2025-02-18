@@ -5,7 +5,7 @@ export default function MoToken(props) {
   return <group {...props}>
     <group name='move-token'>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.2,-0.01,-0.14]}
         size={0.4}

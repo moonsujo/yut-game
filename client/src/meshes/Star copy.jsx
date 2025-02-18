@@ -8,7 +8,7 @@ import { animated } from "@react-spring/three";
 
 export default function Star({ position, tile, device, scale }) {
   const { scene, materials } = useGLTF(
-    "models/star.glb"
+    "/models/star.glb"
   );
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);

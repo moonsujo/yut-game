@@ -172,7 +172,7 @@ export default function Game() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-1.02, 0.025, 0.12]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.25}
@@ -231,7 +231,7 @@ export default function Game() {
           </mesh>
         </group>
         <Text3D name='guide-text'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-2,0.03,-1.5]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
@@ -259,7 +259,7 @@ export default function Game() {
             <meshStandardMaterial transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.4,0.03,-0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.5}
@@ -288,7 +288,7 @@ export default function Game() {
             <meshStandardMaterial transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.4,0.03,-0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.5}
@@ -351,7 +351,7 @@ export default function Game() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.77, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={layout[device].game.discord.size}
@@ -417,7 +417,7 @@ export default function Game() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].game.settings.mainButton.text.position}
         rotation={layout[device].game.settings.mainButton.text.rotation}
         size={layout[device].game.settings.mainButton.text.size}
@@ -476,7 +476,7 @@ export default function Game() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.6,0.02,0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.3}
@@ -493,7 +493,7 @@ export default function Game() {
     const Spectating = () => {
       return <Text3D 
         name='spectating-text'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].game.spectating.position}
         rotation={layout[device].game.spectating.rotation}
         size={layout[device].game.spectating.size}
@@ -509,7 +509,7 @@ export default function Game() {
       return <group>
         <Text3D 
           name='spectating-text'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.spectatingAndHosting.line0Pos}
           rotation={layout[device].game.spectatingAndHosting.rotation}
           size={layout[device].game.spectatingAndHosting.size}
@@ -520,7 +520,7 @@ export default function Game() {
         </Text3D>
         <Text3D 
           name='host-text'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.spectatingAndHosting.line1Pos}
           rotation={layout[device].game.spectatingAndHosting.rotation}
           size={layout[device].game.spectatingAndHosting.size}
@@ -536,7 +536,7 @@ export default function Game() {
     const Hosting = () => {
       return <Text3D 
         name='host-text'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].game.hosting.position}
         rotation={layout[device].game.hosting.rotation}
         size={layout[device].game.hosting.size}
@@ -598,7 +598,7 @@ export default function Game() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -644,7 +644,7 @@ export default function Game() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -735,7 +735,7 @@ export default function Game() {
             <meshStandardMaterial color='yellow' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             size={0.4}
             height={0.01}
             rotation={[-Math.PI/2, 0, 0]}
@@ -746,7 +746,7 @@ export default function Game() {
           </Text3D>
           <Text3D 
             name='copied-tooltip'
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1,0,-0.6]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.4}
@@ -769,7 +769,7 @@ export default function Game() {
       return <group>
         <QrCode3d text={window.location.href} position={[8.5,0,-2]} scale={0.8} rotation={[-Math.PI/2,0,0]}/>
         <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[5,0,1.5]}
         rotation={[-Math.PI/2,0,0]}
         size={0.4}
@@ -890,7 +890,7 @@ export default function Game() {
           </group>
           <Text3D 
           name='setting-0-title'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-0.1,0.02,-0.8]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
@@ -948,7 +948,7 @@ export default function Game() {
           </group> }
           <Text3D 
           name='setting-0-description'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-0.1,0.02,-0.2]}
           rotation={[-Math.PI/2,0,0]}
           size={0.3}
@@ -992,7 +992,7 @@ export default function Game() {
           </group>
           <Text3D
           name='setting-1-title'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-0.1,0.02,-0.8]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
@@ -1052,7 +1052,7 @@ export default function Game() {
         <group>
           <Text3D
           name='setting-2-title'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-12,0,-5.3]}
           rotation={[-Math.PI/2,0,0]}
           size={0.6}
@@ -1063,7 +1063,7 @@ export default function Game() {
         <group>
           <Text3D
           name='setting-3-title'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-12,0,-5.3]}
           rotation={[-Math.PI/2,0,0]}
           size={0.6}
@@ -1127,7 +1127,7 @@ export default function Game() {
         {/* Who Goes First components */}
         { gamePhase === "pregame" && <group>
           <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.whoGoesFirst.title.position}
           rotation={layout[device].game.whoGoesFirst.title.rotation}
           size={layout[device].game.whoGoesFirst.title.size}
@@ -1137,7 +1137,7 @@ export default function Game() {
             <meshStandardMaterial color="limegreen"/>
           </Text3D>
           <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.whoGoesFirst.description.position}
           rotation={layout[device].game.whoGoesFirst.description.rotation}
           size={layout[device].game.whoGoesFirst.description.size}
@@ -1203,7 +1203,7 @@ export default function Game() {
             </mesh>
           </group>
           <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].game.rulebook.title.position}
           rotation={layout[device].game.rulebook.title.rotation}
           size={layout[device].game.rulebook.title.size}

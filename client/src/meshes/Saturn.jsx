@@ -6,34 +6,34 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 // import HelperArrow from "./HelperArrow";
 
 export default function Saturn({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
-  const { nodes, materials } = useGLTF("models/Saturn 3.glb");
+  const { nodes, materials } = useGLTF("/models/Saturn 3.glb");
   const satelliteTexture1 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-1.jpg"
+    "/textures/saturn-satellite-texture-map-1.jpg"
   );
   const satelliteTexture2 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-2.jpg"
+    "/textures/saturn-satellite-texture-map-2.jpg"
   );
   // const satelliteTexture3 = useLoader(
   //   TextureLoader,
-  //   "textures/saturn-satellite-texture-map-3.jpg"
+  //   "/textures/saturn-satellite-texture-map-3.jpg"
   // );
   const satelliteTexture4 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-4.jpg"
+    "/textures/saturn-satellite-texture-map-4.jpg"
   );
   const satelliteTexture5 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-5.jpg"
+    "/textures/saturn-satellite-texture-map-5.jpg"
   );
   const satelliteTexture6 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-6.jpg"
+    "/textures/saturn-satellite-texture-map-6.jpg"
   );
   const satelliteTexture7 = useLoader(
     TextureLoader,
-    "textures/saturn-satellite-texture-map-7.jpg"
+    "/textures/saturn-satellite-texture-map-7.jpg"
   );
 
   const satellitesRef = useRef();
@@ -164,5 +164,3 @@ export default function Saturn({ position=[0,0,0], rotation=[0,0,0], scale=1 }) 
     </animated.group>
   );
 }
-
-useGLTF.preload("models/Saturn 3.glb");

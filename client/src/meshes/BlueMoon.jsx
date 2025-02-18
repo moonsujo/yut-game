@@ -10,7 +10,7 @@ import { useFrame } from "@react-three/fiber";
 
 export default function BlueMoon({ position=[0,0,0], rotation=[0,0,0], scale=1, rotationSpeed=0.1 }) {
   const textureLoader = new THREE.TextureLoader()
-  const moonTexture = textureLoader.load("textures/moon/moon-color.jpg") // must use absolute path - string starts with a slash
+  const moonTexture = textureLoader.load("/textures/moon/moon-color.jpg") // must use absolute path - string starts with a slash
   moonTexture.colorSpace = THREE.SRGBColorSpace
 
   const moon = useRef();

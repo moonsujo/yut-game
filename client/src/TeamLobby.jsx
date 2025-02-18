@@ -108,7 +108,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.67, 0.025, 0.02]}
         rotation={layout[device].game[`team${team}`].join.rotation}
         size={0.2}
@@ -209,7 +209,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.67, 0.025, 0.02]}
         rotation={layout[device].game[`team${team}`].join.rotation}
         size={0.2}
@@ -281,7 +281,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
       }
       return <group key={index} position={[0, -index * 0.8, 0]}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={layout[device].game[`team${team}`].names.size}
           height={layout[device].game[`team${team}`].names.height}
           ref={(ref => refElem = ref)}
@@ -355,7 +355,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         </mesh>
         <group ref={seatTextContainer}>
           <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[0, 0, 0.2]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.4}
@@ -395,7 +395,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         opacity={layout[device].lobby.readyTextRocket.background.opacity}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.6, 0.025, 0]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.2}
@@ -424,7 +424,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         opacity={layout[device].lobby.readyTextUfo.background.opacity}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.79, 0.025, 0]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.2}
@@ -526,7 +526,7 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.48, 0.025, 0]}
         rotation={layout[device].game[`team${team}`].join.rotation}
         size={0.2}

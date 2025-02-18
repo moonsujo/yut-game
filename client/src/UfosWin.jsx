@@ -26,10 +26,10 @@ export default function UfosWin({}) {
   const [CreateFirework] = useFireworksShader();
   const [CreateBeamDust] = useBeamDustShader();
   const fireworkTextures = [
-    useLoader(TextureLoader, 'textures/particles/3.png'),
-    useLoader(TextureLoader, 'textures/particles/5.png'),
-    useLoader(TextureLoader, 'textures/particles/6.png'),
-    useLoader(TextureLoader, 'textures/particles/8.png'),
+    useLoader(TextureLoader, '/textures/particles/3.png'),
+    useLoader(TextureLoader, '/textures/particles/5.png'),
+    useLoader(TextureLoader, '/textures/particles/6.png'),
+    useLoader(TextureLoader, '/textures/particles/8.png'),
   ]
   const params = useParams()
   const textMaterialRef = useRef();

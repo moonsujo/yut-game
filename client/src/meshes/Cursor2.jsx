@@ -11,7 +11,7 @@ export default function Cursor2({
   effectOpacity=0,
   effect=false
 }) {
-  const { nodes } = useGLTF("models/cursor.glb");
+  const { nodes } = useGLTF("/models/cursor.glb");
 
   return (
     <animated.group
@@ -55,4 +55,4 @@ export default function Cursor2({
   );
 }
 
-useGLTF.preload("models/cursor.glb");
+useGLTF.preload("/models/cursor.glb");

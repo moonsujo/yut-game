@@ -81,9 +81,17 @@ export default function Lobby() {
   useResponsiveSetting();
   const device = useAtomValue(deviceAtom)
   const disconnect = useAtomValue(disconnectAtom)
-
-  // For network calls
+  const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams();
+
+  useEffect(() => {
+    if (connectedToServer) {
+      socket.emit('addUser', {}, () => {
+        socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
+      })
+    }
+  }, [connectedToServer])
+
 
   function PlayersParty({ position=[0,0,0], scale=0.7 }) {
     const host = useAtomValue(hostAtom)
@@ -167,7 +175,7 @@ export default function Lobby() {
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-0.95, 0.025, 0.12]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.25}
@@ -193,7 +201,7 @@ export default function Lobby() {
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1.1, 0.025, 0.12]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.25}
@@ -219,7 +227,7 @@ export default function Lobby() {
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-0.8, 0.025, -0.03]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.25}
@@ -245,7 +253,7 @@ export default function Lobby() {
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1, 0.025, -0.03]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.25}
@@ -386,7 +394,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -442,7 +450,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -498,7 +506,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -554,7 +562,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ -4.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -610,7 +618,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -666,7 +674,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -722,7 +730,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[ 0.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -778,7 +786,7 @@ export default function Lobby() {
             <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
           </group>}
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[0.7, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
@@ -825,7 +833,7 @@ export default function Lobby() {
       <BlueMoon scale={3} rotationSpeed={-0.2}/>
       <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-2.3,5,-3.2]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.4}
@@ -836,7 +844,7 @@ export default function Lobby() {
           <meshStandardMaterial color={ 'red' }/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[0.5,5,-3.2]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.4}
@@ -910,7 +918,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -932,7 +940,7 @@ export default function Lobby() {
           <meshStandardMaterial color='black'/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -954,7 +962,7 @@ export default function Lobby() {
           <meshStandardMaterial color='black'/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -968,7 +976,7 @@ export default function Lobby() {
     return <group position={position}>
       <group name='title' position={[-3.3,0,-5.3]}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2,0,0]}
           size={0.6}
           height={0.01}
@@ -977,7 +985,7 @@ export default function Lobby() {
           <meshStandardMaterial color="yellow"/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[4.5,0,0]}
           rotation={[-Math.PI/2,0,0]}
           size={0.4}
@@ -1011,7 +1019,7 @@ export default function Lobby() {
           <meshStandardMaterial color={MeshColors.spaceDark}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -1206,7 +1214,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-0-title'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,-0.8]}
         rotation={[-Math.PI/2,0,0]}
         size={0.4}
@@ -1264,7 +1272,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-0-description'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,-0.2]}
         rotation={[-Math.PI/2,0,0]}
         size={0.3}
@@ -1308,7 +1316,7 @@ export default function Lobby() {
         </group>
         <Text3D
         name='setting-1-title'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,-0.1]}
         rotation={[-Math.PI/2,0,0]}
         size={0.4}
@@ -1366,7 +1374,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-1-description'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,0.5]}
         rotation={[-Math.PI/2,0,0]}
         size={0.3}
@@ -1410,7 +1418,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-2-title'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,-0.35]}
         rotation={[-Math.PI/2,0,0]}
         size={0.4}
@@ -1468,7 +1476,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-2-description'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,0.25]}
         rotation={[-Math.PI/2,0,0]}
         size={0.3}
@@ -1512,7 +1520,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-3-title'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,-0.35]}
         rotation={[-Math.PI/2,0,0]}
         size={0.4}
@@ -1570,7 +1578,7 @@ export default function Lobby() {
         </group>
         <Text3D 
         name='setting-3-description'
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.1,0.1,0.25]}
         rotation={[-Math.PI/2,0,0]}
         size={0.3}
@@ -1625,7 +1633,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -1673,7 +1681,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -1766,7 +1774,7 @@ export default function Lobby() {
             <meshStandardMaterial color='yellow' transparent opacity={0}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             size={0.4}
             height={0.01}
             rotation={[-Math.PI/2, 0, 0]}
@@ -1777,7 +1785,7 @@ export default function Lobby() {
           </Text3D>
           <Text3D 
             name='copied-tooltip'
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-1,0,-0.6]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.4}
@@ -1800,7 +1808,7 @@ export default function Lobby() {
       return <group>
         <QrCode3d text={window.location.href} position={[8.8,0.02,-2]} scale={0.8} rotation={[-Math.PI/2,0,0]}/>
         <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[5.6,0,1.5]}
         rotation={[-Math.PI/2,0,0]}
         size={0.35}
@@ -1841,7 +1849,7 @@ export default function Lobby() {
     })
     return <group position={position}>
       <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       position={[0,0,0]}
       rotation={[-Math.PI/2, 0, 0]}
       size={0.8}
@@ -1852,7 +1860,7 @@ export default function Lobby() {
       </Text3D>
       <group ref={roomIdContainerRef}>
         <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[2.4,0,1.4]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.6}
@@ -1902,7 +1910,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -1946,7 +1954,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -1990,7 +1998,7 @@ export default function Lobby() {
           <meshStandardMaterial color='yellow' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           size={0.4}
           height={0.01}
           rotation={[-Math.PI/2, 0, 0]}
@@ -2062,7 +2070,7 @@ export default function Lobby() {
           <meshStandardMaterial color='black' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-3,0.02,0.23]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
@@ -2094,7 +2102,7 @@ export default function Lobby() {
           <meshStandardMaterial color='grey' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-2.8,0.02,0.23]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
@@ -2131,7 +2139,7 @@ export default function Lobby() {
           <meshStandardMaterial color='black' transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[ (readyToStart ? -2.2 : -3.2) ,0.02, 0.23]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}

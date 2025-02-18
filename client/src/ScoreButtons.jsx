@@ -206,7 +206,7 @@ export default function ScoreButtons({ device, legalTiles, hasTurn }) {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-1, -0.05, 0.05]}
         rotation={[Math.PI/2, 0, 0]}
         size={layout[device].game.scoreButtons.single.size}

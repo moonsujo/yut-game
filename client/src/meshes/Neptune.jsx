@@ -4,7 +4,7 @@ import { useGLTF } from "@react-three/drei";
 import NeptuneParticles from "./NeptuneParticles";
 
 export default function Neptune({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
-  const { nodes, materials } = useGLTF("models/neptune.glb");
+  const { nodes, materials } = useGLTF("/models/neptune.glb");
   const neptune = useRef();
 
   useFrame((state, delta) => {
@@ -26,5 +26,3 @@ export default function Neptune({ position=[0,0,0], rotation=[0,0,0], scale=1 })
     </group>
   );
 }
-
-useGLTF.preload("models/neptune.glb");

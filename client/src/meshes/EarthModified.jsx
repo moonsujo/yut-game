@@ -10,7 +10,7 @@ export default function EarthModified({
   scale=0.4,
   rotate=true
 }) {
-  const { nodes, materials } = useGLTF("models/earth-modified.glb");
+  const { nodes, materials } = useGLTF("/models/earth-modified.glb");
 
   const earth = useRef();
 

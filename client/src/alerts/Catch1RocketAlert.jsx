@@ -76,7 +76,7 @@ export default function Catch1RocketAlert({ position, rotation }) {
   }
 
   function BamImage({position, rotation, scale, color}) {
-    const { nodes, materials } = useGLTF('models/bam-emoji.glb')
+    const { nodes, materials } = useGLTF('/models/bam-emoji.glb')
     return (
       <group position={position} rotation={rotation} scale={scale} dispose={null}>
         <mesh
@@ -134,7 +134,7 @@ export default function Catch1RocketAlert({ position, rotation }) {
       </group>
     </group>
     <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       rotation={[Math.PI/2, Math.PI, Math.PI/2]}
       position={[-0.5, 0, -1.5]}
       size={0.7}
@@ -144,7 +144,7 @@ export default function Catch1RocketAlert({ position, rotation }) {
       <meshStandardMaterial color='turquoise'/>
     </Text3D>
     <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       rotation={[Math.PI/2, Math.PI, Math.PI/2]}
       position={[-1.2, 0, -1.6]}
       size={0.35}
@@ -176,5 +176,3 @@ export default function Catch1RocketAlert({ position, rotation }) {
     </group>
   </animated.group>
 }
-
-useGLTF.preload('models/bam-emoji.glb')

@@ -5,7 +5,7 @@ import { animated } from "@react-spring/three";
 import NeptuneParticles from "./NeptuneParticles";
 
 export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
-  const { nodes, materials } = useGLTF("models/earth-round.glb");
+  const { nodes, materials } = useGLTF("/models/earth-round.glb");
 
   const earth = useRef();
 
@@ -60,5 +60,3 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
     </animated.group>
   );
 }
-
-useGLTF.preload("models/earth-round.glb");

@@ -87,7 +87,7 @@ export default function TurnAlert({position, rotation}) {
       </mesh>
       <group ref={nameContainerRef}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[Math.PI/2, Math.PI, Math.PI/2]}
           position={[0,0,0]}
           size={0.6}
@@ -99,7 +99,7 @@ export default function TurnAlert({position, rotation}) {
         </Text3D>
       </group>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.7, 0, -1.5]}
         size={0.4}

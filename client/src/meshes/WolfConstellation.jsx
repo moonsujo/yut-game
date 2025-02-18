@@ -3,7 +3,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 
 export function WolfConstellation(props) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/wolf-constellation-dhazele-2-new-mat.glb')
+  const { nodes, materials, animations } = useGLTF('/models/wolf-constellation-dhazele-2-new-mat.glb')
   const { actions } = useAnimations(animations, group)
   return (
     <group ref={group} {...props} dispose={null}>
@@ -21,5 +21,3 @@ export function WolfConstellation(props) {
     </group>
   )
 }
-
-useGLTF.preload('models/wolf-constellation-dhazele-2-new-mat.glb')

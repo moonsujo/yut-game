@@ -14,7 +14,7 @@ export default function OutAlert({ position, rotation, scale }) {
         <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.28, 0.1, -2.7]}
         size={0.5}

@@ -84,9 +84,9 @@ function MilkyWay(props) {
     const thirdMeshRef = useRef();
     
     const loader = new THREE.TextureLoader();
-    const sky = loader.load('./textures/star.jpg');
-    const sky2 = loader.load('./textures/Marbles.jpg');
-    const sky3 = loader.load('./textures/Marbles.jpg');
+    const sky = loader.load('/textures/star.jpg');
+    const sky2 = loader.load('/textures/Marbles.jpg');
+    const sky3 = loader.load('/textures/Marbles.jpg');
 
     sky.wrapS = THREE.RepeatWrapping;
     sky.wrapT = THREE.RepeatWrapping;

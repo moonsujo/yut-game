@@ -7,7 +7,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 
 export function TaurusConstellation(props) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/taurus-constellation-dhazele-2.glb')
+  const { nodes, materials, animations } = useGLTF('/models/taurus-constellation-dhazele-2.glb')
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -25,5 +25,3 @@ export function TaurusConstellation(props) {
     </group>
   )
 }
-
-useGLTF.preload('models/taurus-constellation-dhazele-2.glb')

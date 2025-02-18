@@ -158,65 +158,65 @@ export default function GameLog({ position, rotation, scale }) {
     }
     if (log.logType === 'gameStart') {
       // content: text
-      return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         {log.content.text}
       </p>
     } else if (log.logType === 'throw') {
       // content: playerName, team, move, bonus
-      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.playerName}</span> threw {moveToHtml(log.content.move)} {log.content.bonus && <BonusThrow/>}
       </p>
     } else if (log.logType === 'pregameResult') {
       // content: team
       if (log.content.team === -1) {
-        return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+        return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
           <span>Toss for order tied</span>
         </p>
       } else if (log.content.team === 0 || log.content.team === 1) {
-        return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+        return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
           <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
           {log.content.team === 0 ? 'Rockets' : 'UFOs'}</span> go first
         </p>
       }
     } else if (log.logType === 'move') {
       // content: playerName, team, tile, numPieces, starting
-      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.playerName}</span> {log.content.starting ? 'launched' : 'moved'} {piecesToHtml(log.content.team, log.content.numPieces)} to {tileToHtml(log.content.tile)}
       </p>
     } else if (log.logType === 'catch') {
       // content: playerName, team, caughtTeam, numPiecesCaught
-      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.playerName}</span> kicked {piecesToHtml(log.content.caughtTeam, log.content.numPiecesCaught)} back home <BonusThrow/>
       </p>
     } else if (log.logType === 'join') {
       // content: playerName, team, numPiecesCombined
-      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.playerName}</span> combined {piecesToHtml(log.content.team, log.content.numPiecesCombined)}
       </p>
     } else if (log.logType === 'score') {
       // content: playerName, team, numPiecesCombined
-      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: '#e0e0e0', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.playerName}</span> scored {piecesToHtml(log.content.team, log.content.numPiecesScored)}
       </p>
     } else if (log.logType === 'finish') {
       // content: winningTeam, matchNum
-      return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.winningTeam === 0 ? 'Rockets' : 'UFOs'}</span> won match {log.content.matchNum}!
       </p>
     } else if (log.logType === 'timesUp') {
-      return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+      return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
         <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
         {log.content.team === 0 ? 'Rockets' : 'UFOs'}</span> ran out of time!
       </p>
     // } else if (log.logType === 'passTurn') {
     //   // content: team, playerName
-    //   return <p style={{color: 'lightgreen', margin: 0, fontFamily: 'Luckiest Guy', padding: '3px' }} key={index}>
+    //   return <p style={{color: 'lightgreen', margin: 0, fontFamily: '/Luckiest Guy', padding: '3px' }} key={index}>
     //     <span style={{color: log.content.team === 0 ? '#FF3D1D' : '#88D8D0'}}>
     //     {log.content.playerName}</span>'s turn
     //   </p>

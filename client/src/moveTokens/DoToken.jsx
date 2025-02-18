@@ -5,7 +5,7 @@ export default function DoToken(props) {
   return <group {...props}>
     <group name='move-token'>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.17,-0.01,-0.1]}
         size={0.4}

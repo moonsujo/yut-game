@@ -1768,7 +1768,7 @@
             "skeleton": 2
         }
     ],
-    "textures": [
+    "/textures": [
         {
             "sampler": 0,
             "source": 0

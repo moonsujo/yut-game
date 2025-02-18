@@ -165,7 +165,7 @@ export default function About(props) {
 
   return <group {...props}>
     <Text3D 
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[props.device].about.mainDescription.line0Position}
         size={layout[props.device].about.mainDescription.size}
         height={0.01}
@@ -175,7 +175,7 @@ export default function About(props) {
     </Text3D>
     <group>
       <Text3D 
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[props.device].about.board.text.position}
         size={layout[props.device].about.board.text.size}
         height={0.01}
@@ -193,7 +193,7 @@ export default function About(props) {
         showStart={true}/>
       </Float>
       <Text3D 
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[props.device].about.pieces.position}
           size={layout[props.device].about.pieces.size}
           height={0.01}
@@ -208,7 +208,7 @@ export default function About(props) {
         <Ufos position={layout[props.device].about.pieces.ufos.position} rotation={[Math.PI/2, 0, 0]}/>
       </Float>
       <Text3D 
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[props.device].about.yoot.text.position}
         size={layout[props.device].about.yoot.text.size}
         height={0.01}
@@ -224,7 +224,7 @@ export default function About(props) {
         />
       </Float>
       <Text3D 
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[props.device].about.playersText.position}
           size={layout[props.device].about.playersText.size}
           height={0.01}

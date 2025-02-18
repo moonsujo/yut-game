@@ -10,7 +10,7 @@ export default function YootRhino({
   scale=1
 }) {
   const { scene, materials } = useGLTF(
-    "models/yoot-v2-backdo.glb"
+    "/models/yoot-v2-backdo.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);

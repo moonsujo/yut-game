@@ -11,7 +11,7 @@ export default function Cursor({
   effectOpacity=0,
   effect=false
 }) {
-  const { nodes } = useGLTF("models/cursor.glb");
+  const { nodes } = useGLTF("/models/cursor.glb");
   let scaleArray;
   let scaleArrayOuter;
   if (Array.isArray(scale)) {
@@ -70,5 +70,3 @@ export default function Cursor({
     </animated.group>
   );
 }
-
-useGLTF.preload("models/cursor.glb");

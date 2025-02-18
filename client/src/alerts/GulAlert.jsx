@@ -13,7 +13,7 @@ export default function GulAlert({ position, rotation, scale }) {
         <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.2, 0, -1.1]}
         size={0.5}
@@ -24,7 +24,7 @@ export default function GulAlert({ position, rotation, scale }) {
       </Text3D>
       <group name='move-token' position={[0, 0.09, 0.7]}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[Math.PI/2, Math.PI, Math.PI/2]}
           position={[-0.17,-0.01,-0.13]}
           size={0.4}

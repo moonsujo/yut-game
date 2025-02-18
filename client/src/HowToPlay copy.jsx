@@ -204,7 +204,7 @@ export default function HowToPlay({
     })
     return <group scale={layout[device].howToPlay.pickingTheTeamsPage.scale}>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.pickingTheTeamsPage.text.position}
         rotation={layout[device].howToPlay.pickingTheTeamsPage.text.rotation}
         size={layout[device].howToPlay.pickingTheTeamsPage.text.size}
@@ -215,7 +215,7 @@ export default function HowToPlay({
       </Text3D>
       <group name='rockets' position={layout[device].howToPlay.pickingTheTeamsPage.rockets.position}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.rockets.text.size}
@@ -230,7 +230,7 @@ export default function HowToPlay({
         <Rocket position={layout[device].howToPlay.pickingTheTeamsPage.rockets.piece3.position}/>
         <group name='rockets-join-button' position={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.position}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.position}
             rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.rotation}
             size={layout[device].howToPlay.pickingTheTeamsPage.rockets.joinButton.text.size}
@@ -249,7 +249,7 @@ export default function HowToPlay({
           </mesh>
         </group>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[0].size}
@@ -259,7 +259,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[1].size}
@@ -269,7 +269,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[2].size}
@@ -279,7 +279,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[3].size}
@@ -290,7 +290,7 @@ export default function HowToPlay({
         </Text3D>
         <animated.group scale={springs.rhinoTextScale}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].position}
             rotation={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].rotation}
             size={layout[device].howToPlay.pickingTheTeamsPage.rockets.names[4].size}
@@ -303,7 +303,7 @@ export default function HowToPlay({
       </group>
       <group name='ufos' position={layout[device].howToPlay.pickingTheTeamsPage.ufos.position}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.text.size}
@@ -318,7 +318,7 @@ export default function HowToPlay({
         <Ufo position={layout[device].howToPlay.pickingTheTeamsPage.ufos.piece3.position}/>
         <group name='ufos-join-button' position={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.position}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.position}
             rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.rotation}
             size={layout[device].howToPlay.pickingTheTeamsPage.ufos.joinButton.text.size}
@@ -337,7 +337,7 @@ export default function HowToPlay({
           </mesh>
         </group>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[0].size}
@@ -347,7 +347,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[1].size}
@@ -357,7 +357,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[2].size}
@@ -367,7 +367,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[3].size}
@@ -377,7 +377,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[4].size}
@@ -387,7 +387,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[5].size}
@@ -397,7 +397,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].position}
           rotation={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].rotation}
           size={layout[device].howToPlay.pickingTheTeamsPage.ufos.names[6].size}
@@ -424,7 +424,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='black'/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-2.4, 0.02, -0.9]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.35}
@@ -434,7 +434,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-0.45, 0.02, -0.9]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.35}
@@ -444,7 +444,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='red'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[1.65, 0.02, -0.9]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.35}
@@ -464,7 +464,7 @@ export default function HowToPlay({
           </mesh>
           <animated.group scale={springs.placeholderScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-1.95, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -476,7 +476,7 @@ export default function HowToPlay({
           </animated.group>
           <animated.group scale={springs.letterRScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-1.95, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -488,7 +488,7 @@ export default function HowToPlay({
           </animated.group>
           <animated.group scale={springs.letterHScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-1.68, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -500,7 +500,7 @@ export default function HowToPlay({
           </animated.group>
           <animated.group scale={springs.letterIScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-1.39, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -512,7 +512,7 @@ export default function HowToPlay({
           </animated.group>
           <animated.group scale={springs.letterNScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-1.25, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -524,7 +524,7 @@ export default function HowToPlay({
           </animated.group>
           <animated.group scale={springs.letterOScale}>
             <Text3D
-              font="fonts/Luckiest Guy_Regular.json"
+              font="/fonts/Luckiest Guy_Regular.json"
               position={[-0.94, 0.02, 0.15]}
               rotation={[-Math.PI/2, 0, 0]}
               size={0.3}
@@ -545,7 +545,7 @@ export default function HowToPlay({
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-0.7, 0.02, 0.15]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.3}
@@ -565,7 +565,7 @@ export default function HowToPlay({
             <meshStandardMaterial color='black'/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={[-0.4, 0.02, 0.15]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.3}
@@ -810,7 +810,7 @@ export default function HowToPlay({
 
     return <group name='how-to-play-page-0' scale={layout[device].howToPlay.throwingTheDicePage.scale}>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.throwingTheDicePage.text.position}
         rotation={layout[device].howToPlay.throwingTheDicePage.text.rotation}
         size={layout[device].howToPlay.throwingTheDicePage.text.size}
@@ -939,7 +939,7 @@ export default function HowToPlay({
       >
         <Text3D
           rotation={[-Math.PI/2,0,0]}
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           size={layout[device].howToPlay.throwingTheDicePage.moveText.size} 
           height={0.01}
         >
@@ -1134,7 +1134,7 @@ export default function HowToPlay({
       return <group position={position}>
         <Text3D
           rotation={[-Math.PI/2,0,0]}
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           size={0.4} 
           height={0.01}
         >
@@ -1149,7 +1149,7 @@ export default function HowToPlay({
 
     return <group name='moving-pieces-page'>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.movingPiecesPage.text.position}
         rotation={layout[device].howToPlay.movingPiecesPage.text.rotation}
         size={layout[device].howToPlay.movingPiecesPage.text.size}
@@ -1223,7 +1223,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='black' transparent opacity={0.9}/>
         </mesh>
         <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
+            font="/fonts/Luckiest Guy_Regular.json" 
             position={[-1.2, 0.1, -0.1]}
             rotation={[-Math.PI/2, 0, 0]}
             height={0.01}
@@ -1498,7 +1498,7 @@ export default function HowToPlay({
         </group>
         <animated.group scale={springs.moveScale}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             position={layout[device].howToPlay.scoringPage.moveText.position}
             rotation={layout[device].howToPlay.scoringPage.moveText.rotation}
             size={0.4}
@@ -1510,7 +1510,7 @@ export default function HowToPlay({
         </animated.group>
         <animated.group scale={springs.scoreScale}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
+            font="/fonts/Luckiest Guy_Regular.json" 
             position={layout[device].howToPlay.scoringPage.scoreText.position}
             rotation={layout[device].howToPlay.scoringPage.scoreText.rotation}
             size={layout[device].howToPlay.scoringPage.scoreText.size} 
@@ -1542,7 +1542,7 @@ export default function HowToPlay({
       scale={layout[device].howToPlay.scoringPage.scale}
     >
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.scoringPage.text.position}
         rotation={layout[device].howToPlay.scoringPage.text.rotation}
         size={layout[device].howToPlay.scoringPage.text.size}
@@ -1719,7 +1719,7 @@ export default function HowToPlay({
     // ufo is flipped over, moved to a corner and scaled to 0. show sparkle
     return <group name='catching-pieces-page'>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.catchingPiecesPage.text.position}
           rotation={layout[device].howToPlay.catchingPiecesPage.text.rotation}
           size={layout[device].howToPlay.catchingPiecesPage.text.size}
@@ -1734,7 +1734,7 @@ export default function HowToPlay({
         <Text3D
           position={layout[device].howToPlay.catchingPiecesPage.moveText.position}
           rotation={[-Math.PI/2,0,0]}
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           size={0.5} 
           height={0.01}
         >
@@ -1998,7 +1998,7 @@ export default function HowToPlay({
     // ufo is flipped over, moved to a corner and scaled to 0. show sparkle
     return <group>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].howToPlay.combiningPiecesPage.text.position}
         rotation={layout[device].howToPlay.combiningPiecesPage.text.rotation}
         size={layout[device].howToPlay.combiningPiecesPage.text.size}
@@ -2011,7 +2011,7 @@ export default function HowToPlay({
       <FirstCornerTiles position={layout[device].howToPlay.combiningPiecesPage.firstCornerTiles.position}/>
       <animated.group scale={springs.moveText0Scale}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           position={layout[device].howToPlay.combiningPiecesPage.moveText0.position}
           rotation={layout[device].howToPlay.combiningPiecesPage.moveText0.rotation}
           size={layout[device].howToPlay.combiningPiecesPage.moveText0.size} 
@@ -2032,7 +2032,7 @@ export default function HowToPlay({
       </animated.group>
       <animated.group scale={springs.moveText1Scale}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           position={layout[device].howToPlay.combiningPiecesPage.moveText1.position}
           rotation={layout[device].howToPlay.combiningPiecesPage.moveText1.rotation}
           size={layout[device].howToPlay.combiningPiecesPage.moveText1.size} 
@@ -2477,7 +2477,7 @@ export default function HowToPlay({
         </animated.group>
         <animated.group scale={springs.scoreScale}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
+            font="/fonts/Luckiest Guy_Regular.json" 
             size={0.5} 
             height={0.01}
             position={layout[device].howToPlay.shortcutsPage.scoreText.position}
@@ -2495,7 +2495,7 @@ export default function HowToPlay({
         scale={springs.ruleTextScale}
       >
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.shortcutsPage.text.position} 
           rotation={layout[device].howToPlay.shortcutsPage.text.rotation}
           size={layout[device].howToPlay.shortcutsPage.text.size}
@@ -2512,7 +2512,7 @@ export default function HowToPlay({
       rotation={layout[device].howToPlay.shortcutsPage.noteText.rotation} 
       scale={springs.noteTextScale}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[0,0,0]}
           rotation={[0, 0, 0]}
           size={0.4}
@@ -2528,7 +2528,7 @@ export default function HowToPlay({
         rotation={layout[device].howToPlay.shortcutsPage.moveText.rotation}
         scale={springs.moveTextScale}>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json" 
+          font="/fonts/Luckiest Guy_Regular.json" 
           size={0.5} 
           height={0.01}
         >
@@ -2562,7 +2562,7 @@ export default function HowToPlay({
     return <group scale={1}>
       <animated.group name='text'>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.text.position}
           rotation={layout[device].howToPlay.readingTheDicePage.text.rotation}
           size={layout[device].howToPlay.readingTheDicePage.text.size}
@@ -2576,7 +2576,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.do.position} 
       scale={layout[device].howToPlay.readingTheDicePage.do.scale}>     
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.do.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.do.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.do.text.line0.size}
@@ -2586,7 +2586,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.do.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.do.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.do.text.line1.size}
@@ -2606,7 +2606,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.ge.position} 
       scale={layout[device].howToPlay.readingTheDicePage.ge.scale}>        
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.ge.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.ge.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.ge.text.line0.size}
@@ -2616,7 +2616,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.ge.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.ge.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.ge.text.line1.size}
@@ -2636,7 +2636,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.gul.position} 
       scale={layout[device].howToPlay.readingTheDicePage.gul.scale}>        
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.gul.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.gul.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.gul.text.line0.size}
@@ -2646,7 +2646,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.gul.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.gul.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.gul.text.line1.size}
@@ -2666,7 +2666,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.yoot.position} 
       scale={layout[device].howToPlay.readingTheDicePage.yoot.scale}>            
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.yoot.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.yoot.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line0.size}
@@ -2676,7 +2676,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.size}
@@ -2686,7 +2686,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.yoot.text.line2.position}
           rotation={layout[device].howToPlay.readingTheDicePage.yoot.text.line2.rotation}
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line2.size}
@@ -2706,7 +2706,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.mo.position} 
       scale={layout[device].howToPlay.readingTheDicePage.mo.scale}>   
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.mo.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.mo.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line0.size}
@@ -2716,7 +2716,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.mo.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.mo.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line1.size}
@@ -2726,7 +2726,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.mo.text.line2.position}
           rotation={layout[device].howToPlay.readingTheDicePage.mo.text.line2.rotation}
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line2.size}
@@ -2746,7 +2746,7 @@ export default function HowToPlay({
       position={layout[device].howToPlay.readingTheDicePage.backdo.position} 
       scale={layout[device].howToPlay.readingTheDicePage.backdo.scale}>       
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.backdo.text.line0.position}
           rotation={layout[device].howToPlay.readingTheDicePage.backdo.text.line0.rotation}
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line0.size}
@@ -2756,7 +2756,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>         
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.position}
           rotation={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.rotation}
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.size}
@@ -2766,7 +2766,7 @@ export default function HowToPlay({
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.backdo.text.line2.position}
           rotation={layout[device].howToPlay.readingTheDicePage.backdo.text.line2.rotation}
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line2.size}
@@ -2896,7 +2896,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -2925,7 +2925,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -2954,7 +2954,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -2983,7 +2983,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -3012,7 +3012,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -3041,7 +3041,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}
@@ -3070,7 +3070,7 @@ export default function HowToPlay({
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.3}
           height={0.01}

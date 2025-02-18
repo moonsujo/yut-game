@@ -27,7 +27,7 @@ function generateRandomNumberInRange(num, plusMinus) {
 }
 
 export default function Meteors() {
-  const map = new THREE.TextureLoader().load("textures/dot.png")
+  const map = new THREE.TextureLoader().load("/textures/dot.png")
   const material = new THREE.SpriteMaterial({
     map: map,
     color: new THREE.Color("#FF2727"),

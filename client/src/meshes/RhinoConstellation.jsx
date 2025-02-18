@@ -4,7 +4,7 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 
 export function RhinoConstellation(props) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/rhino-constellation-dhazele-2.glb')
+  const { nodes, materials, animations } = useGLTF('/models/rhino-constellation-dhazele-2.glb')
   const { actions } = useAnimations(animations, group)
   return (
     <group ref={group} {...props} dispose={null}>
@@ -22,5 +22,3 @@ export function RhinoConstellation(props) {
     </group>
   )
 }
-
-useGLTF.preload('models/rhino-constellation-dhazele-2.glb')

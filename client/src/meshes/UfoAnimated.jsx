@@ -10,7 +10,7 @@ export default function UfoAnimated({
   rotation=[0,0,0],
   scale=1
 }) {
-  const { scene, materials } = useGLTF("models/ufo.glb");
+  const { scene, materials } = useGLTF("/models/ufo.glb");
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);

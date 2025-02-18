@@ -6,7 +6,7 @@ export default function GulToken(props) {
   return <animated.group {...props}>
   <group name='move-token' >
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.17,-0.01,-0.13]}
         size={0.4}

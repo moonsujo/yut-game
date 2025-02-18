@@ -353,7 +353,7 @@ export default function Board({
         <meshStandardMaterial color='limegreen'/>
       </mesh >
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].board.finish.text.position}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.25}
@@ -392,7 +392,7 @@ export default function Board({
       position={layout[device].board.startEarth.position} 
       scale={1.67}>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={layout[device].board.startEarth.text.position}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.25}

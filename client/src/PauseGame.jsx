@@ -73,7 +73,7 @@ export default function PauseGame({ position }) {
     </mesh>
     <group>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={ isHost ? [0, 0.05, -1.65] : [-0.75, 1, -1.6] }
         size={0.7}
@@ -94,7 +94,7 @@ export default function PauseGame({ position }) {
           <meshStandardMaterial color={MeshColors.spaceDark}/>
         </mesh>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[Math.PI/2, Math.PI, Math.PI/2]}
           position={[-1.2,0.06,-1.17]}
           size={0.4}

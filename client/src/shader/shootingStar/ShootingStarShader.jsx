@@ -25,14 +25,14 @@ export function useShootingStarShader() {
     })
 
     const textures = [
-        useLoader(TextureLoader, 'textures/particles/1.png'),
-        useLoader(TextureLoader, 'textures/particles/2.png'),
-        useLoader(TextureLoader, 'textures/particles/3.png'),
-        useLoader(TextureLoader, 'textures/particles/4.png'),
-        useLoader(TextureLoader, 'textures/particles/5.png'),
-        useLoader(TextureLoader, 'textures/particles/6.png'),
-        useLoader(TextureLoader, 'textures/particles/7.png'),
-        useLoader(TextureLoader, 'textures/particles/8.png'),
+        useLoader(TextureLoader, '/textures/particles/1.png'),
+        useLoader(TextureLoader, '/textures/particles/2.png'),
+        useLoader(TextureLoader, '/textures/particles/3.png'),
+        useLoader(TextureLoader, '/textures/particles/4.png'),
+        useLoader(TextureLoader, '/textures/particles/5.png'),
+        useLoader(TextureLoader, '/textures/particles/6.png'),
+        useLoader(TextureLoader, '/textures/particles/7.png'),
+        useLoader(TextureLoader, '/textures/particles/8.png'),
     ]
 
     function generateRandomNumberInRange(num, plusMinus) {

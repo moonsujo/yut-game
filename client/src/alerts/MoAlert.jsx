@@ -87,7 +87,7 @@ export default function MoAlert({ position, rotation }) {
     </mesh>
     <group name="text" position={[0, -0.15, -0.36]} scale={1.2}>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.4, 0, -0.85]}
         size={0.95}
@@ -96,7 +96,7 @@ export default function MoAlert({ position, rotation }) {
         <meshStandardMaterial color="yellow"/>
       </Text3D>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-1.1, 0, -1.1]}
         size={0.3}

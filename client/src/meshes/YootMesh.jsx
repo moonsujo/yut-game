@@ -12,14 +12,14 @@ export default function YootMesh({
 }) {
 
   const { scene, materials } = useGLTF(
-    "models/yoot-v2-regular.glb"
+    "/models/yoot-v2-regular.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);
 
   // can't assign two materials to one mesh.
   // assign the other material to another mesh and export it
-  const modelDisabled = useGLTF('models/yoot-v2-regular-disabled.glb')
+  const modelDisabled = useGLTF('/models/yoot-v2-regular-disabled.glb')
   const sceneDisabled = modelDisabled.scene
   const materialDisabled = modelDisabled.materials
   const cloneDisabled = useMemo(() => SkeletonUtils.clone(sceneDisabled), [sceneDisabled]);
@@ -50,5 +50,3 @@ export default function YootMesh({
     </group>
   );
 }
-
-useGLTF.preload("models/yoot.glb")

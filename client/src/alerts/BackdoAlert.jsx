@@ -14,7 +14,7 @@ export default function BackdoAlert({ position, rotation, scale }) {
         <meshStandardMaterial color='black' opacity={0.9} transparent/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.2, 0, -1.6]}
         size={0.45}

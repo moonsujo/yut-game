@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei';
 import React from 'react';
 
 export default function ArrowBlender({position, rotation, scale, color}) {
-    const { nodes } = useGLTF("models/arrow.glb");
+    const { nodes } = useGLTF("/models/arrow.glb");
     return (
       <group position={position} rotation={rotation} scale={scale} dispose={null}>
         <mesh
@@ -16,4 +16,4 @@ export default function ArrowBlender({position, rotation, scale, color}) {
       </group>
     );
 }
-useGLTF.preload('models/arrow.glb')
+useGLTF.preload('/models/arrow.glb')

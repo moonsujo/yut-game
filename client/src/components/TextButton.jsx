@@ -12,7 +12,7 @@ export default function TextButton({
   color="yellow",
   size=0.3
 }) {
-  const { nodes, materials } = useGLTF("models/square.glb");
+  const { nodes, materials } = useGLTF("/models/square.glb");
   const scaleOuter = [0.6 * boxWidth, 0.2, 0.7 * boxHeight]
   const scaleInner = [scaleOuter[0]*0.99, scaleOuter[1]*0.9, scaleOuter[2]*0.97]
 

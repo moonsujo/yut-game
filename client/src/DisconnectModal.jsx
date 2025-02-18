@@ -41,7 +41,7 @@ export default function DisconnectModal({ position=[0,0,0], rotation=[0,0,0] }) 
       <meshStandardMaterial color='grey' opacity={0} transparent/>
     </mesh>
     <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       rotation={[Math.PI/2, Math.PI, Math.PI]}
       position={[-2.5,0.02,-0.9]}
       size={0.3}
@@ -63,7 +63,7 @@ export default function DisconnectModal({ position=[0,0,0], rotation=[0,0,0] }) 
         <meshStandardMaterial color='grey' opacity={0} transparent/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI]}
         position={[-0.85,0.02,0.13]}
         size={0.3}

@@ -12,7 +12,7 @@ export default function RocketAnimated({
   scale=0.8
 }) {
   const { scene, materials } = useGLTF(
-    "models/rocket.glb"
+    "/models/rocket.glb"
   );
   
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);

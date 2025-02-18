@@ -4,7 +4,7 @@ import { Float, Text3D, useGLTF } from '@react-three/drei';
 import React, { useEffect, useState } from 'react';
 
 export default function BonusTurn(props) {
-  const { nodes, materials } = useGLTF("models/boom-wrap.glb");
+  const { nodes, materials } = useGLTF("/models/boom-wrap.glb");
 
   return <animated.group {...props} dispose={null}>
     <mesh
@@ -28,7 +28,7 @@ export default function BonusTurn(props) {
     </mesh>
     <group name="text" position={[0, 0.1, -0.36]} scale={[1.2, 0.1, 1.2]}>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[0, 0, 0]}
         size={0.15}
@@ -37,7 +37,7 @@ export default function BonusTurn(props) {
         <meshStandardMaterial color="yellow"/>
       </Text3D>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         rotation={[Math.PI/2, Math.PI, Math.PI/2]}
         position={[-0.2, 0,0]}
         size={0.15}
@@ -48,4 +48,4 @@ export default function BonusTurn(props) {
     </group>
   </animated.group>
 }
-useGLTF.preload('models/boom-wrap.glb')
+useGLTF.preload('/models/boom-wrap.glb')

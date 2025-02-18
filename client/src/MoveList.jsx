@@ -31,7 +31,7 @@ export default function MoveList({ position, rotation, tokenScale, tokenPosition
     
     return <group position={position}>
       <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       rotation={rotation} 
       size={size}
       height={0.03}>
@@ -51,7 +51,7 @@ export default function MoveList({ position, rotation, tokenScale, tokenPosition
         </group>
       )}
       { gamePhase === 'pregame' && <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[0, 0, 0.7]}
         rotation={[-Math.PI/2, 0, 0]}
         size={size}

@@ -50,6 +50,7 @@ import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import initialState from "../initialState.js";
+import { useLocation, useParams } from "wouter";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -121,8 +122,8 @@ export const SocketManager = () => {
   const [_catchPath, setCatchPath] = useAtom(catchPathAtom);
   const [CreateMeteor] = useMeteorsShader();
   const meteorTextures = [
-    useLoader(TextureLoader, 'textures/particles/3.png'),
-    useLoader(TextureLoader, 'textures/particles/7.png'), // heart
+    useLoader(TextureLoader, '/textures/particles/3.png'),
+    useLoader(TextureLoader, '/textures/particles/7.png'), // heart
   ] 
 
   const setConnectedToServer = useSetAtom(connectedToServerAtom)
@@ -136,6 +137,7 @@ export const SocketManager = () => {
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
   const setRemainingTime = useSetAtom(remainingTimeAtom)
   const [results, setResults] = useAtom(resultsAtom)
+  const [_location, setLocation] = useLocation();
 
   useEffect(() => {
 
@@ -319,7 +321,7 @@ export const SocketManager = () => {
       // audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog, roomId }) => {
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -339,6 +341,7 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
+      setLocation(`/${roomId}/game`)
     })
 
     // if pregame, could end in a pass, tie or win

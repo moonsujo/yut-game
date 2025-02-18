@@ -95,7 +95,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-0.45, 0.025, 0.15]}
         rotation={layout[device].game[`team${team}`].join.rotation}
         size={layout[device].game[`team${team}`].join.size}
@@ -180,7 +180,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
     return <group position={layout[device].game[`team${team}`].pregameRoll.position}>
       { teams[team].pregameRoll === 0 ? <group>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[-1, 0.025, 0.15]}
           rotation={[-Math.PI/2, 0, 0]}
           size={layout[device].game[`team${team}`].pregameRoll.size}
@@ -190,7 +190,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
           <meshStandardMaterial color='yellow'/>
         </Text3D>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[0.35, 0.025, 0.15]}
           rotation={[-Math.PI/2, 0, 0]}
           size={layout[device].game[`team${team}`].pregameRoll.size}
@@ -200,7 +200,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
           <meshStandardMaterial color='grey'/>
         </Text3D>
       </group> : <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[-1, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={layout[device].game[`team${team}`].pregameRoll.size}
@@ -237,7 +237,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       {teams[team].players.map((value, index) => (
         index < 5 && <group key={index}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             size={layout[device].game[`team${team}`].names.size}
             height={layout[device].game[`team${team}`].names.height}
             position={[0, -index * 0.5, 0]}
@@ -346,7 +346,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
         </mesh>
       </group>
       <Text3D
-        font="fonts/Luckiest Guy_Regular.json"
+        font="/fonts/Luckiest Guy_Regular.json"
         position={[0,0,-0.08]}
         rotation={[0, 0, 0]}
         size={0.35}
@@ -358,7 +358,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       <group name='copied-alert' position={[0, 0.7, 0.5]}>
         <Text3D 
           name='copied-tooltip'
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           position={[0,0,0]}
           rotation={[0, 0, 0]}
           size={layout[device].game.invite.size}
@@ -393,7 +393,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
   >
     {/* team name */}
     <Text3D
-      font="fonts/Luckiest Guy_Regular.json"
+      font="/fonts/Luckiest Guy_Regular.json"
       position={layout[device].game[`team${team}`].title.position}
       rotation={layout[device].game[`team${team}`].title.rotation}
       size={layout[device].game[`team${team}`].title.size}

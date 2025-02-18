@@ -42,12 +42,12 @@ export default function Alert({ position, rotation }) {
 
     // adding it in useEffect throws uncaught Promise
     const fireworkTextures = [
-      useLoader(TextureLoader, 'textures/particles/3.png'),
-      useLoader(TextureLoader, 'textures/particles/5.png'),
-      useLoader(TextureLoader, 'textures/particles/6.png'),
-      useLoader(TextureLoader, 'textures/particles/8.png'),
+      useLoader(TextureLoader, '/textures/particles/3.png'),
+      useLoader(TextureLoader, '/textures/particles/5.png'),
+      useLoader(TextureLoader, '/textures/particles/6.png'),
+      useLoader(TextureLoader, '/textures/particles/8.png'),
     ]
-    const sparkTexture = useLoader(TextureLoader, 'textures/particles/6.png')
+    const sparkTexture = useLoader(TextureLoader, '/textures/particles/6.png')
 
     const [springs, api] = useSpring(() => ({
       from: {
@@ -732,7 +732,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group ref={nameContainerRef}>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[0,0,0]}
             size={0.6}
@@ -744,7 +744,7 @@ export default function Alert({ position, rotation }) {
           </Text3D>
         </group>
         <Text3D
-          font="fonts/Luckiest Guy_Regular.json"
+          font="/fonts/Luckiest Guy_Regular.json"
           rotation={[Math.PI/2, Math.PI, Math.PI/2]}
           position={[-0.7, 0, -1.5]}
           size={0.4}
@@ -863,7 +863,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[0.2,0,-1.5]}
             size={0.7}
@@ -950,7 +950,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[-0.1,0,-1.35]}
             size={1.2}
@@ -961,7 +961,7 @@ export default function Alert({ position, rotation }) {
             <meshStandardMaterial color='limegreen'/>
           </Text3D>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[-1,0,-1.5]}
             size={0.5}
@@ -1048,7 +1048,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[0.1,0,-1.6]}
             size={0.55}
@@ -1142,7 +1142,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[0.2,0,-1.7]}
             size={0.6}
@@ -1293,7 +1293,7 @@ export default function Alert({ position, rotation }) {
               <meshStandardMaterial color='black' transparent opacity={0.9}/>
           </mesh>
           <Text3D
-              font="fonts/Luckiest Guy_Regular.json" 
+              font="/fonts/Luckiest Guy_Regular.json" 
               position={[-1.4, 0.1, -0.1]}
               rotation={[-Math.PI/2, 0, 0]}
               height={0.01}
@@ -1386,7 +1386,7 @@ export default function Alert({ position, rotation }) {
             <meshStandardMaterial color='black' transparent opacity={0.9}/>
           </mesh>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json" 
+            font="/fonts/Luckiest Guy_Regular.json" 
             position={[-1.27, 0.1, 0.2]}
             rotation={[-Math.PI/2, 0, 0]}
             height={0.01}
@@ -1432,7 +1432,7 @@ export default function Alert({ position, rotation }) {
         </mesh>
         <group>
           <Text3D
-            font="fonts/Luckiest Guy_Regular.json"
+            font="/fonts/Luckiest Guy_Regular.json"
             rotation={[Math.PI/2, Math.PI, Math.PI/2]}
             position={[0,0,-1.4]}
             size={0.7}
