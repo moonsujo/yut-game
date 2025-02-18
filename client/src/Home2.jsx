@@ -129,7 +129,7 @@ export default function Home2() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
+        font="fonts/Luckiest Guy_Regular.json"
         position={[-0.65, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.3}
@@ -178,7 +178,7 @@ export default function Home2() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
+        font="fonts/Luckiest Guy_Regular.json"
         position={[-1.27, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.3}
@@ -206,7 +206,7 @@ export default function Home2() {
     function handlePointerUp(e) {
       e.stopPropagation();
       socket.emit('createRoom', { hostId: client._id }, ({ shortId }) => {
-        setLocation(`/${shortId}/lobby`)
+        setLocation(`/${shortId}`)
       })
 
       const audio = new Audio('sounds/effects/boot-up.mp3');
@@ -233,7 +233,7 @@ export default function Home2() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
+        font="fonts/Luckiest Guy_Regular.json"
         position={[-1.27, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.3}
@@ -290,7 +290,7 @@ export default function Home2() {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
+        font="fonts/Luckiest Guy_Regular.json"
         position={[-1.22, 0.025, 0.15]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.3}
@@ -371,7 +371,7 @@ export default function Home2() {
               padding: '10px'
             }}>
               <p style={{
-                fontFamily: '/Luckiest Guy',
+                fontFamily: 'Luckiest Guy',
                 color: '#F1EE92',
                 fontSize: '15px',
                 padding: '5px',
@@ -386,7 +386,7 @@ export default function Home2() {
                   width: `142px`,
                   background: 'none',
                   border: 'none',
-                  fontFamily: '/Luckiest Guy',
+                  fontFamily: 'Luckiest Guy',
                   fontSize: `15px`,
                   color: '#F1EE92',
                   padding: '5px',
@@ -395,7 +395,7 @@ export default function Home2() {
                 onChange={e => setRoomId(e.target.value)}
                 placeholder="here..."/>
               <div>
-                <p style={{ margin: '5px', color: 'red', fontFamily: '/Luckiest Guy', fontSize: '10px' }}>
+                <p style={{ margin: '5px', color: 'red', fontFamily: 'Luckiest Guy', fontSize: '10px' }}>
                   {alert}
                 </p>
               </div>
@@ -407,7 +407,7 @@ export default function Home2() {
                 <button 
                   id='join-team-submit-button'
                   style={{
-                    fontFamily: '/Luckiest Guy',
+                    fontFamily: 'Luckiest Guy',
                     fontSize: `15px`,
                     background: 'none',
                     border: `2px solid ${submitHover ? 'white' : '#F1EE92'}`,
@@ -426,7 +426,7 @@ export default function Home2() {
                 <button 
                   id='join-team-cancel-button'
                   style={{
-                    fontFamily: '/Luckiest Guy',
+                    fontFamily: 'Luckiest Guy',
                     fontSize: `15px`,
                     background: 'none',
                     border: `2px solid ${cancelHover ? 'white' : 'red'}`,

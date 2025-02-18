@@ -205,7 +205,7 @@ async function addUser(socket, name) {
 
 // Room stream listener
 Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
-  console.log(`[Room.watch]`)
+  console.log(`***********************[Room.watch]`)
   // console.log(`[Room.watch] data`, data)
   if (data.operationType === 'insert' || data.operationType === 'update') {
     // Emit document to all clients in the room
@@ -235,8 +235,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               throwCount: room.teams[room.turn.team].throws,
               turnStartTime: room.turnStartTime,
               turnExpireTime: room.turnExpireTime,
-              newGameLog: serverEvent.content.gameLog,
-              roomId: room.shortId
+              newGameLog: serverEvent.content.gameLog
             })
             // separating it into two events lags the client
           } else if (serverEvent.name === 'passTurn') {

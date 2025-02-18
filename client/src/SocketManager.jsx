@@ -50,7 +50,6 @@ import * as THREE from 'three';
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from 'three'
 import initialState from "../initialState.js";
-import { useLocation, useParams } from "wouter";
 
 const ENDPOINT = 'localhost:5000';
 
@@ -137,7 +136,6 @@ export const SocketManager = () => {
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
   const setRemainingTime = useSetAtom(remainingTimeAtom)
   const [results, setResults] = useAtom(resultsAtom)
-  const [_location, setLocation] = useLocation();
 
   useEffect(() => {
 
@@ -300,6 +298,7 @@ export const SocketManager = () => {
       setYutMoCatch(room.rules.yutMoCatch)
       setTurnStartTime(room.turnStartTime)
       setTurnExpireTime(room.turnExpireTime)
+      console.log('[room] setting alerts to empty')
       setAlerts([])
       if (room.paused) {
         setRemainingTime(room.turnExpireTime - room.pauseTime)
@@ -321,7 +320,7 @@ export const SocketManager = () => {
       // audio.play();
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog, roomId }) => {
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -341,7 +340,6 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
-      setLocation(`/${roomId}/game`)
     })
 
     // if pregame, could end in a pass, tie or win

@@ -5,6 +5,7 @@ import GameExperience from "./GameExperience.jsx";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
 import Lobby from "./Lobby.jsx";
+import Game from "./Game.jsx";
 
 export default function Experience() {
 
@@ -22,7 +23,7 @@ export default function Experience() {
 
   return <>
     { gamePhase === 'lobby' && <Lobby/> }
-    { (gamePhase === 'pregame' || gamePhase === 'game') && <GameExperience/> }
+    { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
     {/* { gamePhase === 'finished' && <GameExperience/> } */}
     {/* <GameExperience/> */}

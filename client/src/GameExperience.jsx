@@ -7,6 +7,5 @@ import * as THREE from 'three';
 export default function GameExperience() {
   return <>
     <Game/>
-    <Alert position={[0,2,0.5]} rotation={[0,0,0]}/>
   </>
 }

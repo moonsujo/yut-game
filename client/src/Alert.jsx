@@ -40,6 +40,11 @@ export default function Alert({ position, rotation }) {
     const [CreateFirework] = useFireworksShader();
     const [CreateSpark] = useSparkShader();
 
+    
+  useEffect(() => {
+    console.log('[Alert] alerts', alerts)
+  }, [alerts])
+
     // adding it in useEffect throws uncaught Promise
     const fireworkTextures = [
       useLoader(TextureLoader, '/textures/particles/3.png'),

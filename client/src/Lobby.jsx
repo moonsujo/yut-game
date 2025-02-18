@@ -84,15 +84,6 @@ export default function Lobby() {
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams();
 
-  useEffect(() => {
-    if (connectedToServer) {
-      socket.emit('addUser', {}, () => {
-        socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
-      })
-    }
-  }, [connectedToServer])
-
-
   function PlayersParty({ position=[0,0,0], scale=0.7 }) {
     const host = useAtomValue(hostAtom)
     const client = useAtomValue(clientAtom)
