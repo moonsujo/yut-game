@@ -6,6 +6,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { makeId } from './helpers.js';
 import initialState from './initialState.js';
+import { getLegalTiles } from './rules/legalTiles.js'
 import { tileType } from './rules/rulesHelpers.js'
 
 const app = express();
@@ -205,7 +206,6 @@ async function addUser(socket, name) {
 
 // Room stream listener
 Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
-  console.log(`***********************[Room.watch]`)
   // console.log(`[Room.watch] data`, data)
   if (data.operationType === 'insert' || data.operationType === 'update') {
     // Emit document to all clients in the room
@@ -221,6 +221,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     .exec()
     let room = data.fullDocument;
     const serverEvent = data.fullDocument.serverEvent
+    console.log(`*******************[Room.watch] serverEvent`, serverEvent.name)
     for (const user of users) {
       try {
         let userFound = await User.findById(user, 'socketId connectedToRoom roomId name').exec()
@@ -328,7 +329,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             })
           } else if (serverEvent === "reset") {
             io.to(userSocketId).emit("reset");
-          } else if (serverEvent === "userDisconnect") {
+          } else if (serverEvent.name === "userDisconnect") {
             io.to(userSocketId).emit("userDisconnect", { 
               spectators: roomPopulated.spectators,
               teams: roomPopulated.teams,
@@ -529,7 +530,9 @@ io.on("connect", async (socket) => {
           ],
         },
         $set: {
-          'serverEvent': 'userDisconnect'
+          'serverEvent': {
+            name: 'userDisconnect'
+          }
         }
       }
     } else if (user.team === 0) {
@@ -540,7 +543,9 @@ io.on("connect", async (socket) => {
           ],
         },
         $set: {
-          'serverEvent': 'userDisconnect'
+          'serverEvent': {
+            name: 'userDisconnect'
+          }
         }
       }
     } else if (user.team === 1) {
@@ -551,7 +556,9 @@ io.on("connect", async (socket) => {
           ],
         },
         $set: {
-          'serverEvent': 'userDisconnect'
+          'serverEvent': {
+            name: 'userDisconnect'
+          }
         }
       }
     }
@@ -1704,7 +1711,9 @@ io.on("connect", async (socket) => {
         }, 
         {
           $set: {
-            'serverEvent': 'userDisconnect'
+            'serverEvent': {
+              name: 'userDisconnect'
+            }
           } 
         }
       )
@@ -1730,7 +1739,9 @@ io.on("connect", async (socket) => {
         }, 
         {
           $set: {
-            'serverEvent': 'userDisconnect'
+            'serverEvent': {
+              name: 'userDisconnect'
+            }
           } 
         }
       )

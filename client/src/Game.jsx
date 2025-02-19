@@ -108,14 +108,6 @@ export default function Game() {
     })
   }, [])
 
-  useEffect(() => {
-    if (connectedToServer) {
-      socket.emit('addUser', {}, () => {
-        socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
-      })
-    }
-  }, [connectedToServer])
-
   function StartGameButton({ position }) {
 
     const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
