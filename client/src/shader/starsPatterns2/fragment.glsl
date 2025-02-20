@@ -39,7 +39,7 @@ void main()
   float finalAlpha;
   if (vIsRainbowFlag == 1.0) {
     float timeColor = mod(vTime, 360.0);
-    float speedColor = 50.0;
+    float speedColor = 20.0;
     // float hue = mod(time * speed, 1.0);
     float hue = mod(timeColor * speedColor, 1.0);
     vec3 hsvColor = vec3(hue, 1.0, 1.0);  // HSV (Hue, Saturation, Value)

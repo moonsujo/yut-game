@@ -17,7 +17,6 @@ import GeToken from './moveTokens/GeToken';
 import Board from './Board';
 import YootDisplay from './YootDisplay';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
-import { useShootingStarShader } from './shader/shootingStar/ShootingStarShader';
 import YootNew from './YootNew';
 
 export default function HowToPlay({ 
@@ -31,45 +30,48 @@ export default function HowToPlay({
 }) {
   
   const [page, setPage] = useState(0)
-
   const [pageTimeout, setPageTimeout] = useState(null)
+  const [tabClicked, setTabClicked] = useState(false)
+
   useEffect(() => {
     clearTimeout(pageTimeout)
-    if (page === 0) { // Overview
-      const page1Timeout = setTimeout(() => {
-        setPage(1)
-      }, 23000)
-      setPageTimeout(page1Timeout)
-    } else if (page === 1) { // Throw the dice
-      const page2Timeout = setTimeout(() => {
-        setPage(2)
-      }, 10700)
-      setPageTimeout(page2Timeout)
-    } else if (page === 2) { // Catch enemies
-      const page3Timeout = setTimeout(() => {
-        setPage(3)
-      }, 8500)
-      setPageTimeout(page3Timeout)
-    } else if (page === 3) { // Piggyback
-      const page4Timeout = setTimeout(() => {
-        setPage(4)
-      }, 5700)
-      setPageTimeout(page4Timeout)
-    } else if (page === 4) { // Score
-      const page5Timeout = setTimeout(() => {
-        setPage(5)
-      }, 9000)
-      setPageTimeout(page5Timeout)
-    } else if (page === 5) { // Read the Yut
-      const page6Timeout = setTimeout(() => {
-        setPage(6)
-      }, 11500)
-      setPageTimeout(page6Timeout)
-    } else if (page === 6) { // Shortcut
-      const page7Timeout = setTimeout(() => {
-        setPage(0)
-      }, 12000)
-      setPageTimeout(page7Timeout)
+    if (!tabClicked) {
+      if (page === 0) { // Overview
+        const page1Timeout = setTimeout(() => {
+          setPage(1)
+        }, 23000)
+        setPageTimeout(page1Timeout)
+      } else if (page === 1) { // Throw the dice
+        const page2Timeout = setTimeout(() => {
+          setPage(2)
+        }, 10700)
+        setPageTimeout(page2Timeout)
+      } else if (page === 2) { // Catch enemies
+        const page3Timeout = setTimeout(() => {
+          setPage(3)
+        }, 8500)
+        setPageTimeout(page3Timeout)
+      } else if (page === 3) { // Piggyback
+        const page4Timeout = setTimeout(() => {
+          setPage(4)
+        }, 5700)
+        setPageTimeout(page4Timeout)
+      } else if (page === 4) { // Score
+        const page5Timeout = setTimeout(() => {
+          setPage(5)
+        }, 9000)
+        setPageTimeout(page5Timeout)
+      } else if (page === 5) { // Read the Yut
+        const page6Timeout = setTimeout(() => {
+          setPage(6)
+        }, 11500)
+        setPageTimeout(page6Timeout)
+      } else if (page === 6) { // Shortcut
+        const page7Timeout = setTimeout(() => {
+          setPage(0)
+        }, 12000)
+        setPageTimeout(page7Timeout)
+      }
     }
   }, [page])
   
@@ -1596,6 +1598,7 @@ export default function HowToPlay({
     function handleOverviewClick() {
       setPage(0)
       setOverviewHover(false)
+      setTabClicked(true)
     }
     function handleOverviewPointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1608,6 +1611,7 @@ export default function HowToPlay({
     function handleThrowTheYutClick() {
       setPage(1)
       setThrowTheYutHover(false)
+      setTabClicked(true)
     }
     function handleThrowTheYutPointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1620,6 +1624,7 @@ export default function HowToPlay({
     function handleCatchEnemiesClick() {
       setPage(2)
       setCatchEnemiesHover(false)
+      setTabClicked(true)
     }
     function handleCatchEnemiesPointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1632,6 +1637,7 @@ export default function HowToPlay({
     function handlePiggybackClick() {
       setPage(3)
       setPiggybackHover(false)
+      clearTimeout(pageTimeout)
     }
     function handlePiggybackPointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1644,6 +1650,7 @@ export default function HowToPlay({
     function handleScoreClick() {
       setPage(4)
       setScoreHover(false)
+      clearTimeout(pageTimeout)
     }
     function handleScorePointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1656,6 +1663,7 @@ export default function HowToPlay({
     function handleReadTheDiceClick() {
       setPage(5)
       setReadTheDiceHover(false)
+      setTabClicked(true)
     }
     function handleReadTheDicePointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -1668,6 +1676,7 @@ export default function HowToPlay({
     function handleShortcutClick() {
       setPage(6)
       setShortcutHover(false)
+      setTabClicked(true)
     }
     function handleShortcutPointerEnter() {
       document.body.style.cursor = 'pointer'
@@ -2118,30 +2127,37 @@ export default function HowToPlay({
     function handlePage0(e) {
       e.stopPropagation()
       setPage(0)
+      setTabClicked(true)
     }
     function handlePage1(e) {
       e.stopPropagation()
       setPage(1)
+      setTabClicked(true)
     }
     function handlePage2(e) {
       e.stopPropagation()
       setPage(2)
+      setTabClicked(true)
     }
     function handlePage3(e) {
       e.stopPropagation()
       setPage(3)
+      setTabClicked(true)
     }
     function handlePage4(e) {
       e.stopPropagation()
       setPage(4)
+      setTabClicked(true)
     }
     function handlePage5(e) {
       e.stopPropagation()
       setPage(5)
+      setTabClicked(true)
     }
     function handlePage6(e) {
       e.stopPropagation()
       setPage(6)
+      setTabClicked(true)
     }
 
     const space = layout[device].howToPlay.pagination.elementSpace
