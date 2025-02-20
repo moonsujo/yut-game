@@ -1359,7 +1359,7 @@ export default function HowToPlay({
 
   function ReadTheYutPage() {
     return <group>
-      <animated.group name='text'>
+      <group name='text'>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.text.position}
@@ -1370,7 +1370,7 @@ export default function HowToPlay({
           {'EACH FLAT SIDE IS 1 STAR. IF YOU THROW A\nYUT OR MO, YOU GET ANOTHER TURN!'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-      </animated.group>
+      </group>
       <group 
       position={layout[device].howToPlay.readingTheDicePage.do.position} 
       scale={layout[device].howToPlay.readingTheDicePage.do.scale}>     

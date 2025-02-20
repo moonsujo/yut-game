@@ -6,7 +6,7 @@ import { Route } from "wouter"
 import ParticleSystem from './particles/ParticleSystem';
 import Home2Experience from './Home2Experience';
 import LoadingScreen from './LoadingScreen';
-import { Loader, useGLTF } from '@react-three/drei';
+import { Loader } from '@react-three/drei';
 import MilkyWay from './shader/MilkyWay';
 import StarsPatterns2Shader from './shader/starsPatterns2/StarsPatterns2Shader';
 import * as THREE from 'three';
@@ -58,22 +58,3 @@ export default function App () {
     <Loader/>
   </>)
 }
-
-useGLTF.preload("/models/yoot.glb")
-useGLTF.preload("/models/rounded-rectangle.glb")
-useGLTF.preload("/models/yoot-for-button.glb")
-useGLTF.preload("/models/star.glb");
-useGLTF.preload("/models/earth-round.glb");
-useGLTF.preload("/models/Mars 4.glb");
-useGLTF.preload("/models/neptune.glb");
-useGLTF.preload("/models/Saturn 3.glb");
-useGLTF.preload('/models/wolf-constellation-dhazele-2-new-mat.glb')
-useGLTF.preload('/models/rhino-constellation-dhazele-2.glb')
-useGLTF.preload('/models/taurus-constellation-dhazele-2.glb')
-useGLTF.preload("/models/rocket.glb")
-useGLTF.preload("/models/ufo.glb")
-useGLTF.preload("/models/yoot.glb")
-useGLTF.preload("/models/cursor.glb");
-useGLTF.preload('/models/yoot-animation-2.glb')
-useGLTF.preload('/models/bam-emoji.glb')
-useGLTF.preload('/models/bam-emoji.glb')
