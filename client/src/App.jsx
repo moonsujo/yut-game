@@ -14,6 +14,7 @@ import Lobby from './Lobby';
 import Game from './Game';
 import GameExperience from './GameExperience';
 import Alert from './Alert';
+import AssetLoader from './AssetLoader';
 
 export default function App () {
 
@@ -33,6 +34,7 @@ export default function App () {
         <ambientLight intensity={ 1.5 } />
         <ParticleSystem/>
         <SocketManager/>
+        <AssetLoader/>
         <Route path="/">
           <Home2Experience/>
         </Route>

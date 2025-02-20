@@ -81,8 +81,6 @@ export default function QrCode3d({ text, position, scale, rotation }) {
         URL.revokeObjectURL(url); // Cleanup the object URL
       });
     });
-
-    console.log('[useEffect] finish')
   }, []);
 
   if (!texture) return null; // Wait for the texture to load

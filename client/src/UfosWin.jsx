@@ -17,7 +17,6 @@ import { socket } from './SocketManager';
 import EarthModified from './meshes/EarthModified';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
 import { useBeamDustShader } from './shader/beamDust/BeamDustShader';
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { generateRandomNumberInRange } from './helpers/helpers';
 
 export default function UfosWin({}) {
@@ -25,12 +24,6 @@ export default function UfosWin({}) {
   const [device] = useAtom(deviceAtom)
   const [CreateFirework] = useFireworksShader();
   const [CreateBeamDust] = useBeamDustShader();
-  const fireworkTextures = [
-    useLoader(TextureLoader, '/textures/particles/3.png'),
-    useLoader(TextureLoader, '/textures/particles/5.png'),
-    useLoader(TextureLoader, '/textures/particles/6.png'),
-    useLoader(TextureLoader, '/textures/particles/8.png'),
-  ]
   const params = useParams()
   const textMaterialRef = useRef();
   const ufo0 = useRef();
@@ -98,12 +91,10 @@ export default function UfosWin({}) {
           size = 0.3 + Math.random() * 0.3
           radius = 2.0 + Math.random() * 1.0
         }
-  
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         color.setHSL(Math.random(), 0.7, 0.4)
   
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }
     }, 300)
     const intervalBeamDust = setInterval(() => {

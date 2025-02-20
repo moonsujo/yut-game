@@ -40,18 +40,6 @@ export default function Alert({ position, rotation }) {
     const [CreateFirework] = useFireworksShader();
     const [CreateSpark] = useSparkShader();
 
-    
-  useEffect(() => {
-    console.log('[Alert] alerts', alerts)
-  }, [alerts])
-
-    // adding it in useEffect throws uncaught Promise
-    const fireworkTextures = [
-      useLoader(TextureLoader, '/textures/particles/3.png'),
-      useLoader(TextureLoader, '/textures/particles/5.png'),
-      useLoader(TextureLoader, '/textures/particles/6.png'),
-      useLoader(TextureLoader, '/textures/particles/8.png'),
-    ]
     const sparkTexture = useLoader(TextureLoader, '/textures/particles/6.png')
 
     const [springs, api] = useSpring(() => ({
@@ -390,12 +378,11 @@ export default function Alert({ position, rotation }) {
         )
 
         const size = 0.25 + Math.random() * 0.1
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const radius = 1.0 + Math.random() * 0.2
         const color = new THREE.Color();
         color.setHSL(hue, 1, 0.6)
 
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
 
         // firework 2 - right
         setTimeout(() => {
@@ -407,11 +394,10 @@ export default function Alert({ position, rotation }) {
               -0.9 + Math.random()*0.2, 
           )
           const size = 0.3 + Math.random() * 0.09
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.6)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 220)
 
         // firework 3 - middle
@@ -423,11 +409,10 @@ export default function Alert({ position, rotation }) {
               -1.9 + Math.random() * 0.1, 
           )
           const size = 0.25 + Math.random() * 0.08
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.2 + Math.random() * 0.4
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.6)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 500)
 
         // firework 4 - upper left
@@ -439,11 +424,10 @@ export default function Alert({ position, rotation }) {
               -1.9 + Math.random() * 0.1, 
           )
           const size = 0.3 + Math.random() * 0.1
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.3 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.55)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 900)
 
         // firework 5 - upper right
@@ -455,11 +439,10 @@ export default function Alert({ position, rotation }) {
               -2.7 + Math.random() * 0.1, 
           )
           const size = 0.2 + Math.random() * 0.08
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.53)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1000)
 
         // firework 6 - upper upper left
@@ -471,11 +454,10 @@ export default function Alert({ position, rotation }) {
               -1.0 + Math.random() * 0.3, 
           )
           const size = 0.15 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 0.4, 0.58)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1210)
 
         // firework 7 
@@ -487,11 +469,10 @@ export default function Alert({ position, rotation }) {
               -1.0 + Math.random() * 0.3, 
           )
           const size = 0.23 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 0.8 + Math.random() * 0.4
           const color = new THREE.Color();
           color.setHSL(hue, 0.8, 0.59)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1500)
 
         // firework 8
@@ -503,11 +484,10 @@ export default function Alert({ position, rotation }) {
               -1.0 + Math.random() * 0.3, 
           )
           const size = 0.27 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
           const radius = 1.1 + Math.random() * 0.4
           const color = new THREE.Color();
           color.setHSL(hue, 1.0, 0.56)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1650)
       } else if (numScored === 2) {
         // firework 1 - left
@@ -519,12 +499,12 @@ export default function Alert({ position, rotation }) {
         )
 
         const size = 0.24 + Math.random() * 0.04
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        
         const radius = 1.0 + Math.random() * 0.2
         const color = new THREE.Color();
         color.setHSL(hue, 1, 0.59)
 
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
 
         // firework 2 - right
         setTimeout(() => {
@@ -536,11 +516,11 @@ export default function Alert({ position, rotation }) {
               -0.9 + Math.random()*0.2, 
           )
           const size = 0.29 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.57)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 200)
 
         // firework 3 - middle
@@ -552,11 +532,11 @@ export default function Alert({ position, rotation }) {
               -1.9 + Math.random() * 0.1, 
           )
           const size = 0.25 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.58)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 500)
 
         // firework 4 - upper left
@@ -568,11 +548,11 @@ export default function Alert({ position, rotation }) {
               -2.5 + Math.random() * 0.2, 
           )
           const size = 0.25 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.59)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 900)
         
         // firework 5 - upper right
@@ -584,11 +564,11 @@ export default function Alert({ position, rotation }) {
               2.5 + Math.random() * 0.2, 
           )
           const size = 0.25 + Math.random() * 0.04
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.0 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.53)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1100)
       } else if (numScored === 1) {
         // firework 1 - left
@@ -600,12 +580,12 @@ export default function Alert({ position, rotation }) {
         )
 
         const size = 0.27 + Math.random() * 0.07
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+        
         const radius = 1.0 + Math.random() * 0.2
         const color = new THREE.Color();
         color.setHSL(hue, 1, 0.6)
 
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
 
         // firework 2 - right
         setTimeout(() => {
@@ -617,11 +597,11 @@ export default function Alert({ position, rotation }) {
               -0.9 + Math.random()*0.2, 
           )
           const size = 0.3 + Math.random() * 0.07
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.2 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.6)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 500)
 
         // firework 3 - middle
@@ -633,11 +613,11 @@ export default function Alert({ position, rotation }) {
               -1.9 + Math.random() * 0.1, 
           )
           const size = 0.26 + Math.random() * 0.07
-          const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
+          
           const radius = 1.4 + Math.random() * 0.2
           const color = new THREE.Color();
           color.setHSL(hue, 1, 0.6)
-          CreateFirework({ count, position, size, texture, radius, color });
+          CreateFirework({ count, position, size, radius, color });
         }, 1000)
       }
     }

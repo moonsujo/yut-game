@@ -102,7 +102,7 @@ export const turnStartTimeAtom = atom(null);
 export const turnExpireTimeAtom = atom(null);
 export const remainingTimeAtom = atom(100000);
 export const resultsAtom = atom([])
-
+export const fireworkTexturesAtom = atom([])
 
 const deepPieceEquals = (prev, next) => {
   let result;

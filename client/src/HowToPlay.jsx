@@ -17,7 +17,6 @@ import GeToken from './moveTokens/GeToken';
 import Board from './Board';
 import YootDisplay from './YootDisplay';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { useShootingStarShader } from './shader/shootingStar/ShootingStarShader';
 import YootNew from './YootNew';
 
@@ -245,12 +244,6 @@ export default function HowToPlay({
   function ScorePage() {
 
     const [CreateFirework] = useFireworksShader();
-    const fireworkTextures = [
-      useLoader(TextureLoader, '/textures/particles/3.png'),
-      useLoader(TextureLoader, '/textures/particles/5.png'),
-      useLoader(TextureLoader, '/textures/particles/6.png'),
-      useLoader(TextureLoader, '/textures/particles/8.png'),
-    ]
 
     useEffect(() => {
       // When 'welcome home!' displays
@@ -267,13 +260,11 @@ export default function HowToPlay({
           size = 0.25 + Math.random() * 0.1
           radius = 0.6 + Math.random() * 0.1
         }
-
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
         
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }, 4500) 
       const fireworkTimeout1 = setTimeout(() => {
         // firework 1 - left
@@ -289,12 +280,11 @@ export default function HowToPlay({
           radius = 0.6 + Math.random() * 0.1
         }
 
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
         
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }, 4700) // When 'welcome home!' displays
       const fireworkTimeout2 = setTimeout(() => {
         // firework 1 - left
@@ -310,12 +300,11 @@ export default function HowToPlay({
           radius = 0.6 + Math.random() * 0.1
         }
 
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
         
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }, 4900) // When 'welcome home!' displays
       const fireworkTimeout3 = setTimeout(() => {
         // firework 1 - left
@@ -331,12 +320,11 @@ export default function HowToPlay({
           radius = 0.6 + Math.random() * 0.1
         }
 
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         const hue = 140/360
         color.setHSL(hue, 1, 0.6)
         
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }, 5100) // When 'welcome home!' displays
       return () => {
         clearTimeout(fireworkTimeout0)
@@ -345,6 +333,7 @@ export default function HowToPlay({
         clearTimeout(fireworkTimeout3)
       }
     }, [])
+
     const TILE_RADIUS = 5
     const homeTokenShift = [-5, 0, 0]
     const springs = useSpring({
@@ -571,12 +560,10 @@ export default function HowToPlay({
         showTiles={[0, 15, 16, 17, 18, 19, 29]}
         showArrows={false}
         />
-        {/* Piggyback token */}
-        <animated.group scale={springs.piggybackTokenScale} position={springs.piggybackTokenPosition}>
+        <animated.group name='piggyback-token' scale={springs.piggybackTokenScale} position={springs.piggybackTokenPosition}>
           <Rocket onBoard/>
         </animated.group>
-        {/* Moving token */}
-        <animated.group scale={springs.movingTokenScale} position={springs.movingTokenPosition}>
+        <animated.group name='moving -token' scale={springs.movingTokenScale} position={springs.movingTokenPosition}>
           <Rocket onBoard/>
         </animated.group>
       </group>
@@ -589,8 +576,6 @@ export default function HowToPlay({
         </mesh>
         <Rocket position={[-0.6,0,-0.5]}/>
         <Rocket position={[0.4,0,-0.5]}/>
-        {/* Moving token */}
-        {/* Add hologram Rocket */}
         <animated.group name='scored-indicator-0' position={[-0.5, 0, 0.5]} scale={springs.scoredIndicator0Scale}>
           <Star color='red'/>
         </animated.group>

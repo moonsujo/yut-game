@@ -12,18 +12,11 @@ import { deviceAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from 'wouter';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 export default function RocketsWin() {
 
   const [device] = useAtom(deviceAtom)
   const [CreateFirework] = useFireworksShader();
-  const fireworkTextures = [
-    useLoader(TextureLoader, '/textures/particles/3.png'),
-    useLoader(TextureLoader, '/textures/particles/5.png'),
-    useLoader(TextureLoader, '/textures/particles/6.png'),
-    useLoader(TextureLoader, '/textures/particles/8.png'),
-  ]
   const params = useParams()
 
   const rockets = useRef();
@@ -60,11 +53,10 @@ export default function RocketsWin() {
           radius = 2.0 + Math.random() * 1.0
         }
   
-        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const color = new THREE.Color();
         color.setHSL(Math.random(), 1, 0.6)
   
-        CreateFirework({ count, position, size, texture, radius, color });
+        CreateFirework({ count, position, size, radius, color });
       }
     }, 300)
     return (() => {

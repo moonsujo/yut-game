@@ -298,7 +298,6 @@ export const SocketManager = () => {
       setYutMoCatch(room.rules.yutMoCatch)
       setTurnStartTime(room.turnStartTime)
       setTurnExpireTime(room.turnExpireTime)
-      console.log('[room] setting alerts to empty')
       setAlerts([])
       if (room.paused) {
         setRemainingTime(room.turnExpireTime - room.pauseTime)

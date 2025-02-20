@@ -3,6 +3,8 @@ import fireworkFragmentShader from './fragment.glsl';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
+import { fireworkTexturesAtom } from '../../GlobalState';
+import { useAtomValue } from 'jotai';
 
 export function useFireworksShader() {
 
@@ -21,8 +23,10 @@ export function useFireworksShader() {
         sizes.pixelRatio = Math.min(window.devicePixelRatio, 2)
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
     })
+    const fireworkTextures = useAtomValue(fireworkTexturesAtom)
 
-    function CreateFirework({count, position, size, texture, radius, color}) {
+    function CreateFirework({count, position, size, radius, color}) {
+        const texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
         const positionsArray = new Float32Array(count * 3)
         const sizesArray = new Float32Array(count)
         const timeMultipliersArray = new Float32Array(count)
