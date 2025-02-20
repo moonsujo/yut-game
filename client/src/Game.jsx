@@ -1149,7 +1149,7 @@ export default function Game() {
           position={layout[device].game.yootButton.position}
           rotation={layout[device].game.yootButton.rotation}
           scale={layout[device].game.yootButton.scale}
-          hasThrow={teams[turn.team].throws > 0}
+          hasThrow={client.team === turn.team && teams[turn.team].throws > 0}
           device={device}
         /> }
         <SettingsButton 

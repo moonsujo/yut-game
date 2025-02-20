@@ -1,6 +1,6 @@
 import { useFrame, useLoader } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
-import { useGLTF, Text3D } from "@react-three/drei";
+import { Text3D } from "@react-three/drei";
 import Rocket from "./meshes/Rocket";
 import Ufo from "./meshes/Ufo";
 import { animated, useSpring } from "@react-spring/three";
@@ -656,7 +656,14 @@ export default function Alert({ position, rotation }) {
           },
           to: toAnimations,
           loop: false,
-          onRest: () => setAnimationPlaying(false),
+          onStart: () => {
+            console.log('[Alert] start')
+            setAnimationPlaying(true)
+          },
+          onRest: () => {
+            console.log('[Alert] rest') // plays twice when browser is not in focus
+            setAnimationPlaying(false)
+          }
         })
         
         // if I add it in 'onStart' it will trigger on every element of the 'to' array

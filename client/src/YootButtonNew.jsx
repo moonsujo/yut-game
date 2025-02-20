@@ -17,8 +17,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
-  const [enabledLocal, setEnabledLocal] = useState(false);
-  const enabled = enabledLocal && !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
+  const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
   const paused = useAtomValue(pauseGameAtom)
   const throwCount = useAtomValue(throwCountAtom)
 
@@ -42,12 +41,6 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     }
   })
 
-  useEffect(() => {
-    if (!animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow) {
-      setEnabledLocal(true);
-    }
-  }, [hasTurn, hasThrow, animationPlaying, pieceAnimationPlaying])
-
   function handlePointerEnter() {
     document.body.style.cursor = "pointer";
   }
@@ -58,7 +51,6 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     e.stopPropagation();
 
     if (enabled && !paused) {
-      setEnabledLocal(false)
       setAnimationPlaying(true)
       socket.emit('throwYut', { roomId: params.id.toUpperCase() })
     }
