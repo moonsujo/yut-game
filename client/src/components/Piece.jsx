@@ -5,7 +5,7 @@ import React, { useRef } from "react";
 import { getLegalTiles } from "../helpers/legalTiles";
 import Rocket from "../meshes/Rocket.jsx";
 import Ufo from "../meshes/Ufo.jsx";
-import { teamsAtom, gamePhaseAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom, backdoLaunchAtom } from "../GlobalState.jsx";
+import { teamsAtom, gamePhaseAtom, selectionAtom, tilesAtom, legalTilesAtom, hasTurnAtom, clientAtom, animationPlayingAtom, pauseGameAtom, backdoLaunchAtom, yootAnimationPlayingAtom } from "../GlobalState.jsx";
 import { useParams } from "wouter";
 import { tileType } from "../helpers/helpers.js";
 import { animated } from "@react-spring/three";
@@ -28,7 +28,8 @@ export default function Piece ({
   const [gamePhase] = useAtom(gamePhaseAtom)
   const [tiles] = useAtom(tilesAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
-  const [animationPlaying] = useAtom(animationPlayingAtom)
+  // const [animationPlaying] = useAtom(animationPlayingAtom)
+  const yootAnimationPlaying = useAtomValue(yootAnimationPlayingAtom)
   const params = useParams()
   const paused = useAtomValue(pauseGameAtom)
   const backdoLaunch = useAtomValue(backdoLaunchAtom)
@@ -52,7 +53,7 @@ export default function Piece ({
   // Piece selected: bulge
   // rocket shaking on selected
   function handlePointerDown(event) {
-    if (gamePhase === "game" && hasTurn && client.team === team && !animationPlaying && !paused) {
+    if (gamePhase === "game" && hasTurn && client.team === team && !yootAnimationPlaying && !paused) {
       event.stopPropagation();
       if (selection === null) {
         let pieces;
@@ -128,12 +129,12 @@ export default function Piece ({
         />
       </mesh>
       { team === 0 ? <Rocket 
-      animationPlaying={animationPlaying}
+      animationPlaying={yootAnimationPlaying}
       selected={selected}
       onBoard={onBoard}
       selectable={selectable}
       selection={selection}/> : <Ufo 
-      animationPlaying={animationPlaying}
+      animationPlaying={yootAnimationPlaying}
       selected={selected}
       onBoard={onBoard}
       selectable={selectable}

@@ -72,240 +72,269 @@ export default function Alert({ position, rotation }) {
             gameStartAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             gameStartAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'turn') {
           animations.push({
             turnAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             turnAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'yootOutcome1') {
           animations.push({
             yootOutcome1AlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome1AlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 500
           })
         } else if (alerts[i] === 'yootOutcome2') {
           animations.push({
             yootOutcome2AlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome2AlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 500
           })
         } else if (alerts[i] === 'yootOutcome3') {
           animations.push({
             yootOutcome3AlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome3AlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 500
           })
         } else if (alerts[i] === 'yootOutcome4Pregame') {
           animations.push({
             yootOutcome4PregameAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome4PregameAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 500
           })
         } else if (alerts[i] === 'yootOutcome5Pregame') {
           animations.push({
             yootOutcome5PregameAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome5PregameAlertScale: 0,
             config: {
-                tension: 170,
+                tension: 300,
                 friction: 26
             },
-            delay: 1000
+            delay: 500
           })
         } else if (alerts[i] === 'yootOutcome4') {
           animations.push({
             yootOutcome4AlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome4AlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1300
+            delay: 1000
           })
         } else if (alerts[i] === 'yootOutcome5') {
           animations.push({
             yootOutcome5AlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcome5AlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1300
+            delay: 1000
           })
         } else if (alerts[i] === 'yootOutcome0') {
           animations.push({
             yootOutcomeOutAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcomeOutAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'yootOutcome-1') {
           animations.push({
             yootOutcomeBackdoAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             yootOutcomeBackdoAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'pregameTie') {
           animations.push({
             pregameTieAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             pregameTieAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'pregameUfosWin') {
           animations.push({
             pregameUfosWinAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             pregameUfosWinAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'pregameRocketsWin') {
           animations.push({
             pregameRocketsWinAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             pregameRocketsWinAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i].includes('catch')) {
           const numCaught = parseInt(alerts[0][6]);
-          const delay = 1800 + (numCaught > 2 ? 500 : 0)
+          const delay = 1000 + (numCaught > 2 ? 500 : 0)
           animations.push({
             catchAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             catchAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
             delay: delay
           })
@@ -315,32 +344,36 @@ export default function Alert({ position, rotation }) {
             scoreAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             scoreAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1200 + 350 * numScored
+            delay: 800 + 350 * numScored
           })
         } else if (alerts[i].includes('join')) {
           animations.push({
             joinAlertScale: 1,
             config: {
                 tension: 170,
-                friction: 26
+                friction: 26,
+                clamp: true
             },
           })
           animations.push({
             joinAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         } else if (alerts[i] === 'timesUp') {
           animations.push({
@@ -353,10 +386,11 @@ export default function Alert({ position, rotation }) {
           animations.push({
             timesUpAlertScale: 0,
             config: {
-                tension: 170,
-                friction: 26
+                tension: 300,
+                friction: 26,
+                clamp: true
             },
-            delay: 1000
+            delay: 700
           })
         }
       }

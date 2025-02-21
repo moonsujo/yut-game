@@ -42,7 +42,8 @@ import {
   turnExpireTimeAtom,
   resultsAtom,
   turnStartTimeAtom,
-  remainingTimeAtom
+  remainingTimeAtom,
+  yootAnimationPlayingAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -117,6 +118,7 @@ export const SocketManager = () => {
   const [_alerts, setAlerts] = useAtom(alertsAtom)
   const [_catchOutcome] = useAtom(catchOutcomeAtom)
   const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
+  const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
   const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
   const [_catchPath, setCatchPath] = useAtom(catchPathAtom);
   const [CreateMeteor] = useMeteorsShader();
@@ -492,6 +494,7 @@ export const SocketManager = () => {
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setAnimationPlaying(true)
+      setYootAnimationPlaying(false)
       setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])

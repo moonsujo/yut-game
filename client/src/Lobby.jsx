@@ -38,7 +38,6 @@ import {
   connectedToServerAtom,
   pauseGameAtom,
   timerAtom,
-  animationPlayingAtom,
   turnExpireTimeAtom,
   backdoLaunchAtom,
   nakAtom,

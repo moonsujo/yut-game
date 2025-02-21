@@ -72,6 +72,7 @@ export const throwResultAtom = atom({
   num: -2,
   time: 0
 })
+export const yootAnimationPlayingAtom = atom(false)
 export const animationPlayingAtom = atom(false)
 export const pieceAnimationPlayingAtom = atom(false)
 export const legalTilesAtom = atom({})

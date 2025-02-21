@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
 import React, { useRef } from 'react';
-import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, teamsAtom, throwCountAtom, turnAtom } from './GlobalState';
+import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, teamsAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
@@ -14,10 +14,12 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   let buttonRef = useRef();
   const params = useParams();
 
-  const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
+  const [yootAnimationPlaying, setYootAnimationPlaying] = useAtom(yootAnimationPlayingAtom)
+  // const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
   const [hasTurn] = useAtom(hasTurnAtom)
-  const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
+  const enabled = !yootAnimationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
+  // const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
   const paused = useAtomValue(pauseGameAtom)
   const throwCount = useAtomValue(throwCountAtom)
 
@@ -51,7 +53,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     e.stopPropagation();
 
     if (enabled && !paused) {
-      setAnimationPlaying(true)
+      setYootAnimationPlaying(true)
       socket.emit('throwYut', { roomId: params.id.toUpperCase() })
     }
   }
