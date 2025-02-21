@@ -17,7 +17,7 @@ function atomWithCompare(initialValue, areEqual) {
 
 export const joinTeamAtom = atom(null)
 export const disconnectAtom = atom(false)
-export const gamePhaseAtom = atom('lobby'); // lobby, pregame, game, winner
+export const gamePhaseAtom = atom(''); // lobby, pregame, game, winner, '' (room state not loaded yet)
 export const readyToStartAtom = atom(false);
 export const currentPlayerAtom = atom(false)
 export const turnAtom = atom(JSON.parse(JSON.stringify(initialState.initialTurn)));
