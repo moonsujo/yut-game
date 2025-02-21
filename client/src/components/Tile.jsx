@@ -34,6 +34,7 @@ export default function Tile({
   const [turn] = useAtom(turnAtom)
   const [gamePhase] = useAtom(gamePhaseAtom)
   const yootAnimationPlaying = useAtomValue(yootAnimationPlayingAtom)
+  // const animationPlaying = useAnimationPlayingCheck()
   // const [animationPlaying] = useAtom(animationPlayingAtom)
   const params = useParams()
   const paused = useAtomValue(pauseGameAtom)

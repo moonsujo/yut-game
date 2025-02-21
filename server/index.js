@@ -975,20 +975,20 @@ io.on("connect", async (socket) => {
         room.turnsSkipped = 0
         let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        // if (room.gamePhase === 'pregame') {
-        //   if (room.turn.team === 1) {
-        //     outcome = 5
-        //   } else {
-        //     outcome = 4
-        //   }
-        // } else if (room.gamePhase === 'game') {
-        //   if (room.turn.team === 0) {
-        //     outcome = Math.random() > 0.5 ? 5 : 4
-        //   } else {
-        //     outcome = 1
-        //   }
-        //   outcome = 1
-        // }
+        if (room.gamePhase === 'pregame') {
+          if (room.turn.team === 1) {
+            outcome = 5
+          } else {
+            outcome = 4
+          }
+        } else if (room.gamePhase === 'game') {
+          // if (room.turn.team === 0) {
+          //   outcome = Math.random() > 0.5 ? 5 : 4
+          // } else {
+          //   outcome = 1
+          // }
+          outcome = 4
+        }
         const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;
         room.yootAnimation = animation
@@ -1112,7 +1112,6 @@ io.on("connect", async (socket) => {
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
               } else {
-                room.teams[user.team].moves[outcome] = 1
                 turnStartTimeDelay += 1 * ALERT_TIME
               }
             }
