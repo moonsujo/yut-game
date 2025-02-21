@@ -25,12 +25,11 @@ import {
   pieceTeam1Id3Atom, 
   readyToStartAtom, 
   roomAtom, 
-  selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, animationPlayingAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
+  selectionAtom, spectatorsAtom, teamsAtom, tilesAtom, turnAtom, winnerAtom, yootActiveAtom, yootThrowValuesAtom, yootThrownAtom, moveResultAtom, throwResultAtom, throwAlertAtom, turnAlertActiveAtom, throwCountAtom, gameLogsAtom, yootAnimationAtom, 
   yootOutcomeAtom,
   currentPlayerNameAtom,
   alertsAtom,
   catchOutcomeAtom,
-  pieceAnimationPlayingAtom,
   catchPathAtom,
   connectedToServerAtom,
   settingsOpenAtom,
@@ -43,7 +42,15 @@ import {
   resultsAtom,
   turnStartTimeAtom,
   remainingTimeAtom,
-  yootAnimationPlayingAtom
+  yootAnimationPlayingAtom,
+  pieceTeam0Id0AnimationPlayingAtom,
+  pieceTeam0Id1AnimationPlayingAtom,
+  pieceTeam0Id2AnimationPlayingAtom,
+  pieceTeam0Id3AnimationPlayingAtom,
+  pieceTeam1Id0AnimationPlayingAtom,
+  pieceTeam1Id1AnimationPlayingAtom,
+  pieceTeam1Id2AnimationPlayingAtom,
+  pieceTeam1Id3AnimationPlayingAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -106,6 +113,15 @@ export const SocketManager = () => {
   const [_pieceTeam1Id1, setPieceTeam1Id1] = useAtom(pieceTeam1Id1Atom)
   const [_pieceTeam1Id2, setPieceTeam1Id2] = useAtom(pieceTeam1Id2Atom)
   const [_pieceTeam1Id3, setPieceTeam1Id3] = useAtom(pieceTeam1Id3Atom)
+  
+  const setPieceTeam0Id0AnimationPlaying = useSetAtom(pieceTeam0Id0AnimationPlayingAtom)
+  const setPieceTeam0Id1AnimationPlaying = useSetAtom(pieceTeam0Id1AnimationPlayingAtom)
+  const setPieceTeam0Id2AnimationPlaying = useSetAtom(pieceTeam0Id2AnimationPlayingAtom)
+  const setPieceTeam0Id3AnimationPlaying = useSetAtom(pieceTeam0Id3AnimationPlayingAtom)
+  const setPieceTeam1Id0AnimationPlaying = useSetAtom(pieceTeam1Id0AnimationPlayingAtom)
+  const setPieceTeam1Id1AnimationPlaying = useSetAtom(pieceTeam1Id1AnimationPlayingAtom)
+  const setPieceTeam1Id2AnimationPlaying = useSetAtom(pieceTeam1Id2AnimationPlayingAtom)
+  const setPieceTeam1Id3AnimationPlaying = useSetAtom(pieceTeam1Id3AnimationPlayingAtom)
   const [_throwCount, setThrowCount] = useAtom(throwCountAtom)
   const [_winner, setWinner] = useAtom(winnerAtom)
   // UI
@@ -117,9 +133,7 @@ export const SocketManager = () => {
   const [_currentPlayerName, setCurrentPlayerName] = useAtom(currentPlayerNameAtom)
   const [_alerts, setAlerts] = useAtom(alertsAtom)
   const [_catchOutcome] = useAtom(catchOutcomeAtom)
-  const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
   const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
-  const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
   const [_catchPath, setCatchPath] = useAtom(catchPathAtom);
   const [CreateMeteor] = useMeteorsShader();
   const meteorTextures = [
@@ -336,7 +350,6 @@ export const SocketManager = () => {
       })
       setThrowCount(throwCount)
       setAlerts(['gameStart', 'turn'])
-      setAnimationPlaying(true);
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
@@ -388,7 +401,6 @@ export const SocketManager = () => {
       if (!paused) {
         alerts.push('turn')
         setAlerts(alerts)
-        setAnimationPlaying(true);
       }
       setGamePhase(gamePhase)
       setThrowCount(throwCount)
@@ -493,7 +505,6 @@ export const SocketManager = () => {
 
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
-      setAnimationPlaying(true)
       setYootAnimationPlaying(false)
       setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
@@ -524,22 +535,38 @@ export const SocketManager = () => {
           teams[piece.team].pieces[piece.id] = piece
           teams[piece.team].pieces[piece.id].history = [...piece.history]
           teams[piece.team].pieces[piece.id].lastPath = [...piece.lastPath]
-          if (piece.team === 0 && piece.id === 0)
+          if (piece.team === 0 && piece.id === 0) {
             setPieceTeam0Id0(piece)
-          else if (piece.team === 0 && piece.id === 1)
+            setPieceTeam0Id0AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 1) {
             setPieceTeam0Id1(piece)
-          else if (piece.team === 0 && piece.id === 2)
+            setPieceTeam0Id1AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 2) {
             setPieceTeam0Id2(piece)
-          else if (piece.team === 0 && piece.id === 3)
+            setPieceTeam0Id2AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 3) {
             setPieceTeam0Id3(piece)
-          else if (piece.team === 1 && piece.id === 0)
+            setPieceTeam0Id3AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 0) {
             setPieceTeam1Id0(piece)
-          else if (piece.team === 1 && piece.id === 1)
+            setPieceTeam1Id0AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 1) {
             setPieceTeam1Id1(piece)
-          else if (piece.team === 1 && piece.id === 2)
+            setPieceTeam1Id1AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 2) {
             setPieceTeam1Id2(piece)
-          else if (piece.team === 1 && piece.id === 3)
+            setPieceTeam1Id2AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 3) {
             setPieceTeam1Id3(piece)
+            setPieceTeam1Id3AnimationPlaying(true)
+          }
 
           // for catch
           if (newTeam === prevTeam) {
@@ -614,8 +641,6 @@ export const SocketManager = () => {
       })
 
       setAlerts(alerts)
-      setAnimationPlaying(true)
-      setPieceAnimationPlaying(true)
       // Turn could have changed
       setHasTurn(clientHasTurn(socket.id, teams, newTeam, newPlayer))
       setLegalTiles({})
@@ -633,24 +658,39 @@ export const SocketManager = () => {
           teams[piece.team].pieces[piece.id] = piece
           teams[piece.team].pieces[piece.id].history = [...piece.history]
           teams[piece.team].pieces[piece.id].lastPath = [...piece.lastPath]
-          if (piece.team === 0 && piece.id === 0)
+          if (piece.team === 0 && piece.id === 0) {
             setPieceTeam0Id0(piece)
-          else if (piece.team === 0 && piece.id === 1)
+            setPieceTeam0Id0AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 1) {
             setPieceTeam0Id1(piece)
-          else if (piece.team === 0 && piece.id === 2)
+            setPieceTeam0Id1AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 2) {
             setPieceTeam0Id2(piece)
-          else if (piece.team === 0 && piece.id === 3)
+            setPieceTeam0Id2AnimationPlaying(true)
+          }
+          else if (piece.team === 0 && piece.id === 3) {
             setPieceTeam0Id3(piece)
-          else if (piece.team === 1 && piece.id === 0)
+            setPieceTeam0Id3AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 0) {
             setPieceTeam1Id0(piece)
-          else if (piece.team === 1 && piece.id === 1)
+            setPieceTeam1Id0AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 1) {
             setPieceTeam1Id1(piece)
-          else if (piece.team === 1 && piece.id === 2)
+            setPieceTeam1Id1AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 2) {
             setPieceTeam1Id2(piece)
-          else if (piece.team === 1 && piece.id === 3)
+            setPieceTeam1Id2AnimationPlaying(true)
+          }
+          else if (piece.team === 1 && piece.id === 3) {
             setPieceTeam1Id3(piece)
+            setPieceTeam1Id3AnimationPlaying(true)
+          }
         }
-        setPieceAnimationPlaying(true)
 
         // Update throws
         teams[newTeam].throws = throws
@@ -694,7 +734,6 @@ export const SocketManager = () => {
         }
         
         setAlerts(alerts)
-        setAnimationPlaying(true)
       } else if (gamePhase === 'finished') {
         setResults(results => [ ...results, winner ])
       }

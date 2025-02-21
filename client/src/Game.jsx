@@ -38,7 +38,6 @@ import {
   connectedToServerAtom,
   pauseGameAtom,
   timerAtom,
-  animationPlayingAtom,
   turnExpireTimeAtom,
   backdoLaunchAtom,
   nakAtom,
@@ -65,10 +64,9 @@ import SettingsHtml from "./SettingsHtml.jsx";
 import PauseGame from "./PauseGame.jsx";
 import Timer from "./Timer.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
-import TeamLobby from "./TeamLobby.jsx";
 import MeshColors from "./MeshColors.jsx";
-import QRCodeStyling from "qr-code-styling";
 import QrCode3d from "./QRCode3D.jsx";
+import { useAnimationPlaying } from "./hooks/useAnimationPlaying.jsx";
 
 // There should be no state
 export default function Game() {
@@ -94,7 +92,7 @@ export default function Game() {
   const [yootAnimation] = useAtom(yootAnimationAtom);
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
-  const animationPlaying = useAtomValue(animationPlayingAtom)
+  const animationPlaying = useAnimationPlaying()
   const [playMusic] = useMusicPlayer();
   
   const params = useParams();
@@ -833,14 +831,11 @@ export default function Game() {
         setSetting1Hover(false)
       }
       function handleSetting1PointerUp(e) {
-        console.log('[handleSetting1PointerUp]')
         e.stopPropagation()
         if (!timer) {
-          console.log('[handleSetting1PointerUp] enable timer')
           socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: true }))
         }
         else {
-          console.log('[handleSetting1PointerUp] disable timer')
           socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: false }))
         }
       }

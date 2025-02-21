@@ -74,7 +74,6 @@ export const throwResultAtom = atom({
 })
 export const yootAnimationPlayingAtom = atom(false)
 export const animationPlayingAtom = atom(false)
-export const pieceAnimationPlayingAtom = atom(false)
 export const legalTilesAtom = atom({})
 export const helperTilesAtom = atom({})
 export const winnerAtom = atom(-1)
@@ -104,6 +103,14 @@ export const turnExpireTimeAtom = atom(null);
 export const remainingTimeAtom = atom(100000);
 export const resultsAtom = atom([])
 export const fireworkTexturesAtom = atom([])
+export const pieceTeam0Id0AnimationPlayingAtom = atom(false)
+export const pieceTeam0Id1AnimationPlayingAtom = atom(false)
+export const pieceTeam0Id2AnimationPlayingAtom = atom(false)
+export const pieceTeam0Id3AnimationPlayingAtom = atom(false)
+export const pieceTeam1Id0AnimationPlayingAtom = atom(false)
+export const pieceTeam1Id1AnimationPlayingAtom = atom(false)
+export const pieceTeam1Id2AnimationPlayingAtom = atom(false)
+export const pieceTeam1Id3AnimationPlayingAtom = atom(false)
 
 const deepPieceEquals = (prev, next) => {
   let result;

@@ -1,6 +1,6 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useEffect, useRef } from 'react';
-import { catchPathAtom, gamePhaseAtom, hasTurnAtom, pieceAnimationPlayingAtom, pieceTeam0Id0Atom, pieceTeam0Id1Atom, pieceTeam0Id2Atom, pieceTeam0Id3Atom, pieceTeam1Id0Atom, pieceTeam1Id1Atom, pieceTeam1Id2Atom, pieceTeam1Id3Atom, selectionAtom, teamsAtom } from './GlobalState';
+import { catchPathAtom, gamePhaseAtom, hasTurnAtom, pieceTeam0Id0AnimationPlayingAtom, pieceTeam0Id0Atom, pieceTeam0Id1AnimationPlayingAtom, pieceTeam0Id1Atom, pieceTeam0Id2AnimationPlayingAtom, pieceTeam0Id2Atom, pieceTeam0Id3AnimationPlayingAtom, pieceTeam0Id3Atom, pieceTeam1Id0AnimationPlayingAtom, pieceTeam1Id0Atom, pieceTeam1Id1AnimationPlayingAtom, pieceTeam1Id1Atom, pieceTeam1Id2AnimationPlayingAtom, pieceTeam1Id2Atom, pieceTeam1Id3AnimationPlayingAtom, pieceTeam1Id3Atom, selectionAtom, teamsAtom } from './GlobalState';
 import tilePositions from './tilePositions';
 import { useSpring } from '@react-spring/three';
 import Piece from './components/Piece';
@@ -17,7 +17,14 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
     const [pieceTeam1Id3] = useAtom(pieceTeam1Id3Atom)
     const catchPath = useAtomValue(catchPathAtom)
     
-    const [_pieceAnimationPlaying, setPieceAnimationPlaying] = useAtom(pieceAnimationPlayingAtom)
+    const setPieceTeam0Id0AnimationPlaying = useSetAtom(pieceTeam0Id0AnimationPlayingAtom)
+    const setPieceTeam0Id1AnimationPlaying = useSetAtom(pieceTeam0Id1AnimationPlayingAtom)
+    const setPieceTeam0Id2AnimationPlaying = useSetAtom(pieceTeam0Id2AnimationPlayingAtom)
+    const setPieceTeam0Id3AnimationPlaying = useSetAtom(pieceTeam0Id3AnimationPlayingAtom)
+    const setPieceTeam1Id0AnimationPlaying = useSetAtom(pieceTeam1Id0AnimationPlayingAtom)
+    const setPieceTeam1Id1AnimationPlaying = useSetAtom(pieceTeam1Id1AnimationPlayingAtom)
+    const setPieceTeam1Id2AnimationPlaying = useSetAtom(pieceTeam1Id2AnimationPlayingAtom)
+    const setPieceTeam1Id3AnimationPlaying = useSetAtom(pieceTeam1Id3AnimationPlayingAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
     const responsiveScale = 1.0
     const idOffsets = [
@@ -171,7 +178,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id0AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id0.tile)) {
                 api0_0.start({
@@ -188,7 +200,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam0Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id0AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam0Id0.tile, pieceTeam0Id0.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -209,7 +227,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id0AnimationPlaying(false)
+                    }
                 })
             } else {
                 // save last move's path in piece
@@ -231,7 +254,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id0AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -242,7 +270,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam0Id0AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam0Id0AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam0Id0])
@@ -288,7 +321,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id1AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id1.tile)) {
                 api0_1.start({
@@ -305,7 +343,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam0Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id1AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam0Id1.tile, pieceTeam0Id1.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -326,7 +370,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id1AnimationPlaying(false)
+                    }
                 })
             } else {
                 const toAnimations = path.map((value) => {
@@ -347,7 +396,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id1AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -358,7 +412,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam0Id1AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam0Id1AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam0Id1])
@@ -404,7 +463,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id2AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id2.tile)) {
                 api0_2.start({
@@ -421,7 +485,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam0Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id2AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam0Id2.tile, pieceTeam0Id2.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -442,7 +512,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id2AnimationPlaying(false)
+                    }
                 })
             } else {
                 const toAnimations = path.map((value) => (
@@ -463,7 +538,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id2AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -474,7 +554,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam0Id2AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam0Id2AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam0Id2])
@@ -520,7 +605,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id3AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam0Id3.tile)) {
                 api0_3.start({
@@ -537,7 +627,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam0Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id3AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam0Id3.tile, pieceTeam0Id3.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -558,7 +654,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id3AnimationPlaying(false)
+                    }
                 })
             } else {
                 const toAnimations = path.map((value) => {
@@ -579,7 +680,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam0Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam0Id3AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -590,7 +696,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam0Id3AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam0Id3AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam0Id3])
@@ -636,7 +747,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id0AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id0.tile)) {
                 api1_0.start({
@@ -653,7 +769,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam1Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id0AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam1Id0.tile, pieceTeam1Id0.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -674,7 +796,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id0AnimationPlaying(false)
+                    }
                 })
             } else {
                 // save last move's path in piece
@@ -696,7 +823,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id0AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id0AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -707,7 +839,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam1Id0AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam1Id0AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam1Id0])
@@ -753,7 +890,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id1AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id1.tile)) {
                 api1_1.start({
@@ -770,7 +912,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam1Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id1AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam1Id1.tile, pieceTeam1Id1.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -791,7 +939,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id1AnimationPlaying(false)
+                    }
                 })
             } else {
                 // save last move's path in piece
@@ -813,7 +966,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id1AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id1AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -824,7 +982,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam1Id1AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam1Id1AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam1Id1])
@@ -870,7 +1033,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id2AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id2.tile)) {
                 api1_2.start({
@@ -887,7 +1055,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam1Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id2AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam1Id2.tile, pieceTeam1Id2.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -908,7 +1082,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id2AnimationPlaying(false)
+                    }
                 })
             } else {
                 const toAnimations = path.map((value) => {
@@ -929,7 +1108,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id2AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id2AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -940,7 +1124,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam1Id2AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam1Id2AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam1Id2])
@@ -986,7 +1175,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: animations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id3AnimationPlaying(false)
+                    }
                 })
             } else if (caughtCheck(gamePhase, pieceTeam1Id3.tile)) {
                 api1_3.start({
@@ -1003,7 +1197,13 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                         }
                     ],
                     loop: false,
-                    delay: catchPath ? calculateCatchDelay(catchPath) : 0
+                    delay: catchPath ? calculateCatchDelay(catchPath) : 0,
+                    onStart: () => {
+                        setPieceTeam1Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id3AnimationPlaying(false)
+                    }
                 })
             } else if (startCheck(pieceTeam1Id3.tile, pieceTeam1Id3.lastPath)) {
                 const toAnimations = path.map((value) => {
@@ -1024,7 +1224,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id3AnimationPlaying(false)
+                    }
                 })
             } else {
                 const toAnimations13 = path.map((value) => {
@@ -1045,7 +1250,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                     },
                     to: toAnimations13,
                     loop: false,
-                    onRest: () => setPieceAnimationPlaying(false),
+                    onStart: () => {
+                        setPieceTeam1Id3AnimationPlaying(true)
+                    },
+                    onRest: () => {
+                        setPieceTeam1Id3AnimationPlaying(false)
+                    }
                 })
             }
         } else {
@@ -1056,7 +1266,12 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
                 },
                 to: [],
                 loop: false,
-                onRest: () => setPieceAnimationPlaying(false),
+                onStart: () => {
+                    setPieceTeam1Id3AnimationPlaying(true)
+                },
+                onRest: () => {
+                    setPieceTeam1Id3AnimationPlaying(false)
+                }
             })
         }
     }, [pieceTeam1Id3])

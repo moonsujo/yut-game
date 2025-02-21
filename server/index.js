@@ -976,7 +976,7 @@ io.on("connect", async (socket) => {
         let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
         if (room.gamePhase === 'pregame') {
-          if (room.turn.team === 1) {
+          if (room.turn.team === 0) {
             outcome = 5
           } else {
             outcome = 4
@@ -987,7 +987,7 @@ io.on("connect", async (socket) => {
           // } else {
           //   outcome = 1
           // }
-          outcome = 4
+          outcome = 1
         }
         const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;

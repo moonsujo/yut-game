@@ -1,25 +1,24 @@
 import { Text3D, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useAtom, useAtomValue } from 'jotai';
-import { useState, useEffect } from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useRef } from 'react';
-import { animationPlayingAtom, clientAtom, hasTurnAtom, pauseGameAtom, pieceAnimationPlayingAtom, teamsAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
+import { clientAtom, hasTurnAtom, pauseGameAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
 import YootMesh from './meshes/YootMesh';
+import { useAnimationPlaying } from './hooks/useAnimationPlaying';
 
 export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
   const { nodes } = useGLTF("/models/rounded-rectangle.glb");
   let buttonRef = useRef();
   const params = useParams();
 
-  const [yootAnimationPlaying, setYootAnimationPlaying] = useAtom(yootAnimationPlayingAtom)
-  // const [animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
-  const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
+  const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
+  const animationPlaying = useAnimationPlaying()
+
   const [hasTurn] = useAtom(hasTurnAtom)
-  const enabled = !yootAnimationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
-  // const enabled = !animationPlaying && !pieceAnimationPlaying && hasTurn && hasThrow
+  const enabled = !animationPlaying && hasTurn && hasThrow
   const paused = useAtomValue(pauseGameAtom)
   const throwCount = useAtomValue(throwCountAtom)
 

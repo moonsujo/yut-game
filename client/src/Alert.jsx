@@ -7,7 +7,7 @@ import { animated, useSpring } from "@react-spring/three";
 import Star from "./meshes/Star";
 import { useAtom, useAtomValue } from "jotai";
 import * as THREE from 'three';
-import { alertsAtom, animationPlayingAtom, currentPlayerNameAtom, gamePhaseAtom, pieceAnimationPlayingAtom, turnAtom } from "./GlobalState";
+import { alertsAtom, currentPlayerNameAtom, gamePhaseAtom, turnAtom } from "./GlobalState";
 import { formatName } from "./helpers/helpers";
 import DoAlert from "./alerts/DoAlert";
 import GeAlert from "./alerts/GeAlert";
@@ -30,13 +30,13 @@ import { useFireworksShader } from "./shader/fireworks/FireworksShader";
 import { useSparkShader } from "./shader/spark/SparkShader";
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import tilePositions from './tilePositions';
+import { useAnimationPlaying } from "./hooks/useAnimationPlaying";
 
 export default function Alert({ position, rotation }) {
     
     const alerts = useAtomValue(alertsAtom)
     const [gamePhase] = useAtom(gamePhaseAtom)
-    const [_animationPlaying, setAnimationPlaying] = useAtom(animationPlayingAtom)
-    const pieceAnimationPlaying = useAtomValue(pieceAnimationPlayingAtom)
+    const animationPlaying = useAnimationPlaying()
     const [CreateFirework] = useFireworksShader();
     const [CreateSpark] = useSparkShader();
 
@@ -667,7 +667,7 @@ export default function Alert({ position, rotation }) {
 
     useEffect(() => {
       const toAnimations = transformAlertsToAnimations(alerts)
-      if (!pieceAnimationPlaying) {
+      if (!animationPlaying) {
         api.start({
           from: {
             turnAlertScale: 0,
@@ -690,14 +690,8 @@ export default function Alert({ position, rotation }) {
           },
           to: toAnimations,
           loop: false,
-          onStart: () => {
-            console.log('[Alert] start')
-            setAnimationPlaying(true)
-          },
-          onRest: () => {
-            console.log('[Alert] rest') // plays twice when browser is not in focus
-            setAnimationPlaying(false)
-          }
+          onStart: () => { console.log('[Alert] start') },
+          onRest: () => { console.log('[Alert] rest') } // plays twice when browser is not in focus
         })
         
         // if I add it in 'onStart' it will trigger on every element of the 'to' array
@@ -708,7 +702,7 @@ export default function Alert({ position, rotation }) {
         } else if (alerts[0] && alerts[0].includes('join')) {
         }
       }
-    }, [alerts, pieceAnimationPlaying])
+    }, [alerts, animationPlaying])
 
     function TurnAlert() {
       const [currentPlayerName] = useAtom(currentPlayerNameAtom)
