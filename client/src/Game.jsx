@@ -90,7 +90,7 @@ export default function Game() {
   const [host] = useAtom(hostAtom)
   const [showRulebook, setShowRulebook] = useState(false);
   const [client] = useAtom(clientAtom)
-  const [teams] = useAtom(teamsAtom)
+  const teams = useAtomValue(teamsAtom)
   const [yootAnimation] = useAtom(yootAnimationAtom);
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
@@ -1169,7 +1169,9 @@ export default function Game() {
           legalTiles={legalTiles}
           hasTurn={hasTurn}
         /> }
-        <PiecesOnBoard/>
+        <PiecesOnBoard 
+        currentMoves={teams[turn.team].moves} 
+        boardOffset={layout[device].game.board['game'].position[2]}/>
         { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}
