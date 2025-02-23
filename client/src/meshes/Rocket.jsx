@@ -45,15 +45,15 @@ export default function Rocket({
         // rocket.current.position.x = position[0] + Math.random() * 0.009
         // rocket.current.position.y = position[1] + Math.random() * 0.009
         // rocket.current.position.z = position[2] + Math.random() * 0.009
-        if (Math.floor(state.clock.elapsedTime) % 2 == 0) {
+        if (Math.floor(state.clock.elapsedTime*2) % 2 == 0) {
           redMat.color = new THREE.Color('red')
           whiteMat.color = new THREE.Color('white')
         } else {
-          redMat.color = new THREE.Color(0xFFB067)
-          // whiteMat.color = new THREE.Color(0xffbabc)
-          whiteMat.color.r = 0.8
-          whiteMat.color.g = 0.3
-          whiteMat.color.b = 0
+          redMat.color = new THREE.Color(0x800004)
+          whiteMat.color = new THREE.Color(0x9B9B9B)
+          // whiteMat.color.r = 0.8
+          // whiteMat.color.g = 0.3
+          // whiteMat.color.b = 0
         }
       } else {
         rocket.current.scale.x = scale

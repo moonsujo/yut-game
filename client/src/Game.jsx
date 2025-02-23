@@ -293,12 +293,11 @@ export default function Game() {
   }
 
   // Animations
-  const { boardScale, boardPosition, gameScale, winScreenScale, lobbyScale } = useSpring({
+  const { boardScale, boardPosition, gameScale, winScreenScale } = useSpring({
     boardScale: layout[device].game.board[gamePhase].scale,
     boardPosition: layout[device].game.board[gamePhase].position,
     gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
     winScreenScale: gamePhase === 'finished' ? 1 : 0,
-    lobbyScale: gamePhase === 'lobby' ? 1 : 0,
     config: {
       tension: 170,
       friction: 26
@@ -1181,7 +1180,11 @@ export default function Game() {
         { showRulebook && <group 
         position={layout[device].game.rulebook.position}
         scale={layout[device].game.rulebook.scale}>
-          <group position={layout[device].game.rulebook.blocker.position}>
+          <group 
+          position={layout[device].game.rulebook.blocker.position} 
+          onPointerDown={e=>e.stopPropagation()}
+          onPointerUp={e=>e.stopPropagation()}
+          >
             <mesh name='blocker-inner' scale={layout[device].game.rulebook.blocker.innerScale}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color='black'/>

@@ -1292,7 +1292,7 @@ export default {
         scale: 1.1,
       },
       rulebook: {
-        position: [-2, 5, 0.5],
+        position: [-2, 10, 2.3],
         scale: 0.75,
         content: {
           position: [0, 0, 0.2]

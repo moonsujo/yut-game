@@ -61,7 +61,7 @@ export default function Ufo({
         ufo.current.scale.y = scale + Math.cos(state.clock.elapsedTime * 2.1) * 0.2 + 0.1
         ufo.current.scale.z = scale + Math.cos(state.clock.elapsedTime * 2.1) * 0.2 + 0.1
         balls.current.rotation.y = state.clock.elapsedTime * 1.3;
-        if (Math.floor(state.clock.elapsedTime) % 2 == 0) {
+        if (Math.floor(state.clock.elapsedTime*2) % 2 == 0) {
           frontBackPanelCircleMat.current.color = new THREE.Color('white')
           leftRightPanelCircleMat.current.color = new THREE.Color('purple')
           ballFrontRightMatRef.current.color = new THREE.Color('purple')
