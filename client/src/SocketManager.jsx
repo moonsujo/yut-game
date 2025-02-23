@@ -1039,32 +1039,12 @@ export const SocketManager = () => {
   }, [])
 
   useEffect(() => {
-    if (turn.team !== -1) {
+    if (turn.team !== -1 && teams[0].players.length > 0 && teams[1].players.length > 0) {
       const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
       setCurrentPlayerName(currentPlayerName)
-      setHasTurn(client.team === turn.team)
-    }
-  }, [turn])
-
-  // use this to watch for updates from no-dependency useEffect
-  // yut button didn't activate on gameStart
-  // start timer
-  useEffect(() => {
-    // console.log('[useEffect] turn', turn, 'client', client)
-    if (turn && turn.team !== -1 && client) {
-      if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
-        setHasTurn(true)
-      }
+      setHasTurn(teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId)
     }
   }, [turn, teams, client])
-  // useEffect(() => {
-  //   console.log('[useEffect] turn', turn, 'client', client)
-  //   if (turn && turn.team !== -1 && client) {
-  //     if (teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId) {
-  //       setHasTurn(true)
-  //     }
-  //   }
-  // }, [turn, client])
 };
 
 /**

@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useGraph } from "@react-three/fiber";
 import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
@@ -15,6 +15,8 @@ import GeToken from "../moveTokens/GeToken";
 import DoToken from "../moveTokens/DoToken";
 import { animated, useSpring } from "@react-spring/three";
 import { useAnimationPlaying } from "../hooks/useAnimationPlaying";
+import { useGLTF } from "@react-three/drei";
+import { SkeletonUtils } from "three-stdlib";
 
 export default function Tile({ 
   position=[0,0,0], 
@@ -148,6 +150,22 @@ export default function Tile({
     </>
   }
 
+  function Pointer({ position, rotation, scale, team }) {
+    const pointer = useRef()
+    useFrame((state) => {
+      const time = state.clock.elapsedTime
+      if (pointer.current) {
+        pointer.current.rotation.y = time
+      }
+    })
+    return <group position={position} rotation={rotation} scale={scale}>
+      <mesh ref={pointer}>
+        <coneGeometry args={[1, 1, 3]}/>
+        <meshStandardMaterial color={ team === 0 ? 'red' : 'turquoise' }/>
+      </mesh>
+    </group>
+  }
+
   return <group position={position} rotation={rotation} scale={scale}>
     <group ref={group}>
       <animated.group scale={wrapperScale}>
@@ -170,6 +188,11 @@ export default function Tile({
       {mesh}
       {/* path num */}
       { pathNum && <PathNumHelper pathNum={pathNum}/> }
+      { (pathNum || hasMovablePiece) && <Pointer 
+      team={turn.team} 
+      position={[0, 2, -0.3]}
+      rotation={[Math.PI/2, 0, 0]}
+      scale={[0.2, 0.4, 0.2]}/> }
     </group>
   </group>
 }

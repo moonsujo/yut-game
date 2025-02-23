@@ -975,20 +975,20 @@ io.on("connect", async (socket) => {
         room.turnsSkipped = 0
         let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        if (room.gamePhase === 'pregame') {
-          if (room.turn.team === 0) {
-            outcome = 5
-          } else {
-            outcome = 4
-          }
-        } else if (room.gamePhase === 'game') {
-          // if (room.turn.team === 0) {
-          //   outcome = Math.random() > 0.5 ? 5 : 4
-          // } else {
-          //   outcome = 1
-          // }
-          outcome = 1
-        }
+        // if (room.gamePhase === 'pregame') {
+        //   if (room.turn.team === 0) {
+        //     outcome = 5
+        //   } else {
+        //     outcome = 4
+        //   }
+        // } else if (room.gamePhase === 'game') {
+        //   // if (room.turn.team === 0) {
+        //   //   outcome = Math.random() > 0.5 ? 5 : 4
+        //   // } else {
+        //   //   outcome = 1
+        //   // }
+        //   // outcome = 1
+        // }
         const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;
         room.yootAnimation = animation
