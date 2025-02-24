@@ -67,6 +67,7 @@ import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import MeshColors from "./MeshColors.jsx";
 import QrCode3d from "./QRCode3D.jsx";
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying.jsx";
+import Settings from "./Settings.jsx";
 
 // There should be no state
 export default function Game() {
@@ -402,7 +403,7 @@ export default function Game() {
         onPointerDown={e => handlePointerDown(e)}
         onPointerMove={e => handlePointerMove(e)}
       >
-        <boxGeometry args={[1.2, 0.1, 0.6]}/>
+        <boxGeometry args={[2.1, 0.04, 0.55]}/>
         <meshStandardMaterial transparent opacity={0}/>
       </mesh>
       <Text3D
@@ -415,9 +416,13 @@ export default function Game() {
         <meshStandardMaterial color={hover? 'green' : 'yellow'}/>
         Settings
       </Text3D>
-      {/* display different panes based on user state (spectator/player) */}
-      { open && <SettingsHtml
+      {/* { open && <SettingsHtml
         position={[-3.5,3,3.5]}
+        rotation={[0,0,0]}
+        scale={[1,1,1]}
+      /> } */}
+      { open && <Settings
+        position={[-4.7,3,5.1]}
         rotation={[0,0,0]}
         scale={[1,1,1]}
       /> }
@@ -1091,10 +1096,11 @@ export default function Game() {
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
-        { disconnect && <DisconnectModal
+        {/* temporarily to develop Settings panel */}
+        {/* { disconnect && <DisconnectModal
           position={layout[device].game.disconnectModal.position}
           rotation={layout[device].game.disconnectModal.rotation}
-        /> }
+        /> } */}
         { pauseGame && <PauseGame
           position={[0, 5, 2]}
         />}
