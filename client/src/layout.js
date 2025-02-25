@@ -1254,8 +1254,7 @@ export default {
           }
         },
         mainMenu: {
-          position: [-3.3, 3, -0.8],
-          rotation: [-Math.PI/2, 0, 0]
+          position: [0.5, 0, 1],
         },
         editGuests: {
           position: [-5.5, 0, -1.0],
@@ -2824,8 +2823,7 @@ export default {
           }
         },
         mainMenu: {
-          position: [-4.5, 3, -1.3],
-          rotation: [-Math.PI/2, 0, 0]
+          position: [0, 0, -0.6],
         },
         editGuests: {
           position: [-7.5, 0, -2.5],
