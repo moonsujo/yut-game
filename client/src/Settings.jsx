@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { clientAtom, deviceAtom, gamePhaseAtom, hostAtom, languageAtom, pauseGameAtom, settingsOpenAtom } from "./GlobalState"
+import { clientAtom, deviceAtom, gamePhaseAtom, hostAtom, languageAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom } from "./GlobalState"
 import { useParams } from "wouter"
 import { useEffect, useState } from "react"
 import { Text3D } from "@react-three/drei"
@@ -15,9 +15,11 @@ export default function Settings({ position, rotation, scale }) {
   const pauseGame = useAtomValue(pauseGameAtom)
   const params = useParams()
 
+  // const [mainMenuOpen, setMainMenuOpen] = useState(false)
   const [mainMenuOpen, setMainMenuOpen] = useState(true)
   const setSettingsOpen = useSetAtom(settingsOpenAtom)
   // edit players
+  // const [editGuestsOpen, setEditGuestsOpen] = useState(true)
   const [editGuestsOpen, setEditGuestsOpen] = useState(false)
   const [guestBeingEditted, setGuestBeingEditted] = useState(null)
   const [editAGuestOpen, setEditAGuestOpen] = useState(false)
@@ -61,9 +63,9 @@ export default function Settings({ position, rotation, scale }) {
         </mesh>
         <mesh name='background-wrapper' 
         scale={[1.55, 0.02, 0.55]}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onPointerUp={handlePointerUp}>
+        onPointerEnter={e=>handlePointerEnter(e)}
+        onPointerLeave={e=>handlePointerLeave(e)}
+        onPointerUp={e=>handlePointerUp(e)}>
           <boxGeometry args={[1,1,1]}/>
           <meshStandardMaterial transparent opacity={0}/>
         </mesh>
@@ -77,6 +79,82 @@ export default function Settings({ position, rotation, scale }) {
         height={0.01}
       >
         X CLOSE
+        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+      </Text3D>
+    </group>
+  }
+  function BackButton({ position, rotation, scale }) {
+    const [hover, setHover] = useState(false)
+
+    function handlePointerEnter(e) {
+      e.stopPropagation()
+      setHover(true)
+    }
+    function handlePointerLeave(e) {
+      e.stopPropagation()
+      setHover(false)
+    }
+    function handlePointerUp(e) {
+      e.stopPropagation()
+      if (editGuestsOpen) {
+        setEditGuestsOpen(false)
+        setMainMenuOpen(true)
+      } else if (editAGuestOpen) {
+        setEditAGuestOpen(false)
+        setEditGuestsOpen(true)
+      } else if (resetGameOpen) {
+        setResetGameOpen(false)
+        setMainMenuOpen(true)
+      } else if (setGameRulesOpen) {
+        setSetGameRulesOpen(false)
+        setMainMenuOpen(true)
+      } else if (viewGuestsOpen) {
+        setViewGuestsOpen(false)
+        setMainMenuOpen(true)
+      } else if (viewGameRulesOpen) {
+        setViewGameRulesOpen(false)
+        setMainMenuOpen(true)
+      } else if (audioOpen) {
+        setAudioOpen(false)
+        setMainMenuOpen(true)
+      } else if (languageOpen) {
+        setLanguageOpen(false)
+        setMainMenuOpen(true)
+      } else if (inviteFriendsOpen) {
+        setInviteFriendsOpen(false)
+        setMainMenuOpen(true)
+      }
+    }
+
+    return <group position={position} rotation={rotation} scale={scale}>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[1.55, 0.01, 0.55]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </mesh>
+        <mesh name='background-inner' scale={[1.45, 0.02, 0.45]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh name='background-wrapper' 
+        scale={[1.55, 0.02, 0.55]}
+        onPointerEnter={e=>handlePointerEnter(e)}
+        onPointerLeave={e=>handlePointerLeave(e)}
+        onPointerUp={e=>handlePointerUp(e)}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial transparent opacity={0}/>
+        </mesh>
+      </group>
+      {/* text */}
+      <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[-0.63,0.02,0.14]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.26}
+        height={0.01}
+      >
+        {`<< BACK`}
         <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
       </Text3D>
     </group>
@@ -587,8 +665,135 @@ export default function Settings({ position, rotation, scale }) {
     </group>
   }
 
-  function EditGuests() {
-    return 
+  function guestList() {
+    const teams = useAtomValue(teamsAtom)
+    const spectators = useAtomValue(spectatorsAtom)
+    const guests = [] // includes host (and you)
+
+    // -1 team: spectator
+    function formatGuest({ name, connectionState, isHost, isYou, team, status, _id }) {
+      return { name, connectionState, isHost, isYou, team, status, _id }
+    }
+    // you first, host, team rockets, team ufos, and spectators
+    if (client.socketId === host.socketId) {
+      guests.push(formatGuest({ 
+        name: client.name,
+        connectionState: client.connectedToRoom,
+        isYou: true,
+        isHost: true,
+        team: client.team,
+        status: client.status,
+        _id: client._id
+      })) // 'host, you'
+    } else {
+      guests.push(formatGuest({
+        name: client.name,
+        connectionState: client.connectedToRoom,
+        isYou: true,
+        isHost: false,
+        team: client.team,
+        status: client.status,
+        _id: client._id
+      })) // 'you'
+      guests.push(formatGuest({
+        name: host.name,
+        connectionState: host.connectedToRoom,
+        isYou: false,
+        isHost: true,
+        team: host.team,
+        status: host.status,
+        _id: host._id
+      })) // 'host'
+    }
+    for (let teamId = 0; teamId < 2; teamId++) {
+      for (const player of teams[teamId].players) {
+        if (player.socketId !== client.socketId && player.socketId !== host.socketId) {
+          guests.push(formatGuest({
+            name: player.name,
+            connectionState: player.connectedToRoom,
+            isYou: false,
+            isHost: false,
+            team: player.team,
+            status: player.status,
+            _id: player._id
+          }))
+        }
+      }
+    }
+    for (const spectator of spectators) {
+      if (spectator.socketId !== client.socketId && spectator.socketId !== host.socketId) {
+        guests.push(formatGuest({
+          name: spectator.name,
+          connectionState: spectator.connectedToRoom,
+          isYou: false,
+          isHost: false,
+          team: spectator.team,
+          status: spectator.status,
+          _id: spectator._id
+        }))
+      }
+    }
+    return guests
+  }
+  function mapTeamToBackgroundColor(team) {
+    if (team === -1) {
+      return '#313131'
+    } else if (team === 0) {
+      return '#3A0404'
+    } else if (team === 1) {
+      return '#04363A'
+    }
+  }
+  function mapTeamToPlayerColor(team) {
+    if (team === -1) {
+      return '#9F9F9F'
+    } else if (team === 0) {
+      return '#FF3A27'
+    } else if (team === 1) {
+      return '#A0E1DA'
+    }
+  }
+  function EditGuests({ position }) {
+    return <group position={position}>
+      {/* background */}
+      <group name='background' position={[0, 0, -2 + (0.55)*(guestList().length)]}>
+        {/* height: title + x * numGuests */}
+        <mesh name='background-outer' scale={[10, 0.01, 1 + (1 + 0.1) * guestList().length]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[9.9, 0.02, 0.9 + (1 + 0.1) * guestList().length]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[-4.75,0.02,-1.8]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.45}
+        height={0.01}
+      >
+        EDIT GUESTS
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+      {/* navigation buttons */}
+      <BackButton position={[2.4, 0.02, -2.025]}/>
+      <CloseButton position={[4, 0.02, -2.025]} rotation={[0,0,0]}/>
+      {/* players */}
+      { guestList().map((value, index) => {
+        return <group name='guest'>
+          {/* background */}
+          <mesh name='background' position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * index]} scale={[9.6, 0.01, 1]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={mapTeamToBackgroundColor(value.team)}/>
+          </mesh>
+          {/* name */}
+          {/* actions / host-you indicator */}
+        </group>
+      })}
+    </group>
   }
 
   function EditOneGuest() {
@@ -621,7 +826,7 @@ export default function Settings({ position, rotation, scale }) {
 
   return <group position={position} rotation={rotation} scale={scale}>
     { mainMenuOpen && <MainMenu position={layout[device].game.settings.mainMenu.position}/> }
-    { editGuestsOpen && <EditGuests/> }
+    { editGuestsOpen && <EditGuests position={layout[device].game.settings.editGuests.position}/> }
     { editAGuestOpen && <EditOneGuest/> }
     { resetGameOpen && <ResetGame/> }
     { setGameRulesOpen && <SetGameRules/> }

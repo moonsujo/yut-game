@@ -2826,7 +2826,7 @@ export default {
           position: [0, 0, -0.6],
         },
         editGuests: {
-          position: [-7.5, 0, -2.5],
+          position: [-2.5, 0, -1.6],
           rotation: [-Math.PI/2, 0, 0],
           containerWidth: '350px'
         },
