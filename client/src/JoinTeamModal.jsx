@@ -51,6 +51,9 @@ export default function JoinTeamModal({ position, rotation, scale }) {
       setAlert("")
       socket.emit("joinTeam", { team: joinTeam, name: name.toUpperCase() }, ({ player }) => {
         if (player) { // refactor into mongodb stream
+          const audio = new Audio('sounds/effects/join.wav');
+          audio.volume = 0.3;
+          audio.play();
           setName('')
           setJoinTeam(null);
         }
