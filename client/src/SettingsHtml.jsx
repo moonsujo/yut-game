@@ -353,7 +353,7 @@ export default function SettingsHtml(props) {
               }}>
                 HOST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; YOU
               </p>}
-              { !value.isYou && !value.isHost && <ActionsButton guestInfo={value}/>}
+              { !value.isYou && !value.isHost && <ActionsButton guestInfo={value}/> }
             </div>
           })}
         </div>

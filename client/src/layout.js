@@ -1261,7 +1261,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           containerWidth: '350px'
         },
-        editAGuest: {
+        editOneGuest: {
           position: [-5.5, 0, -1.0],
           rotation: [-Math.PI/2, 0, 0]
         },
@@ -2830,8 +2830,8 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           containerWidth: '350px'
         },
-        editAGuest: {
-          position: [-7.5, 0, -2.5],
+        editOneGuest: {
+          position: [-2, 0, -2.7],
           rotation: [-Math.PI/2, 0, 0]
         },
         resetGame: {

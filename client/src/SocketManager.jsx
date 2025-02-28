@@ -467,11 +467,6 @@ export const SocketManager = () => {
           setAlerts([yootOutcomeAlertName, 'turn']) // add 'no available moves' alert
           // server determines if turn was skipped
         } else {
-          if (yootOutcome === 4) {
-            const audio = new Audio('sounds/effects/yut.wav');
-            audio.volume=0.3;
-            audio.play();
-          }
           setAlerts([yootOutcomeAlertName])
         }
         setThrowCount(teams[turnUpdate.team].throws)
@@ -500,6 +495,31 @@ export const SocketManager = () => {
               })
             }, i * 300)
           }
+        }
+
+        // sounds
+        if (yootOutcome === 0) {
+          const audio = new Audio('sounds/effects/yut-0.wav');
+          audio.volume=0.5;
+          audio.play();
+        } else if (yootOutcome === 1) {
+            
+        } else if (yootOutcome === 2) {
+
+        } else if (yootOutcome === 3) {
+
+        } else if (yootOutcome === 4) {
+          const audio = new Audio('sounds/effects/yut.wav');
+          audio.volume=0.5;
+          audio.play();
+        } else if (yootOutcome === 5) {
+          const audio = new Audio('sounds/effects/mo.wav');
+          audio.volume=0.5;
+          audio.play();
+        } else if (yootOutcome === -1) {
+          const audio = new Audio('sounds/effects/backdo.wav');
+          audio.volume=0.5;
+          audio.play();
         }
       }
 
@@ -639,6 +659,11 @@ export const SocketManager = () => {
         newTurn.players[newTeam] = newPlayer
         return newTurn
       })
+
+      // Sound for Start
+      // Sound for Move
+      // Sound for Catch
+      // Sound for Piggyback
 
       setAlerts(alerts)
       // Turn could have changed

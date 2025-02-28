@@ -837,8 +837,8 @@ io.on("connect", async (socket) => {
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
-      room.gamePhase = "game" // testing
-      // room.gamePhase = "pregame"
+      // room.gamePhase = "game" // testing
+      room.gamePhase = "pregame"
       
       // Game logs
       let gameLog = {
