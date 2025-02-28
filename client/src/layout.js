@@ -2823,7 +2823,7 @@ export default {
           }
         },
         mainMenu: {
-          position: [0, 0, -0.6],
+          position: [-0.5, 0, -0.55],
         },
         editGuests: {
           position: [-2.5, 0, -1.6],
@@ -2831,7 +2831,7 @@ export default {
           containerWidth: '350px'
         },
         editOneGuest: {
-          position: [-2, 0, -2.7],
+          position: [-2, 0, -1.4],
           rotation: [-Math.PI/2, 0, 0]
         },
         resetGame: {

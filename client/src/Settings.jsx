@@ -866,7 +866,7 @@ export default function Settings({ position, rotation, scale }) {
       <CloseButton position={[4, 0.02, -2.025]} rotation={[0,0,0]}/>
       {/* players */}
       { guestList().map((value, index) => {
-        return <group name='guest' position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * index]}>
+        return <group name='guest' key={index} position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * index]}>
           {/* background */}
           <mesh name='background' scale={[9.6, 0.01, 1]}>
             <boxGeometry args={[1, 1, 1]}/>
@@ -901,6 +901,8 @@ export default function Settings({ position, rotation, scale }) {
   }
 
   function EditOneGuest({ position=[0,0,0], scale=1 }) {
+    const numButtonsHost = 4
+    const numButtonsGuest = 4
     function SetTeamToRocketsButton({ position=[0,0,0] }) {
       const [hover, setHover] = useState(false);
       function handlePointerEnter(e) {
@@ -961,10 +963,116 @@ export default function Settings({ position, rotation, scale }) {
 
     }
     function AssignHostButton({ position=[0,0,0] }) {
-
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('assignHost', { 
+          roomId: params.id.toUpperCase(),
+          clientId: client._id,
+          userId: guestBeingEditted._id,
+          team: guestBeingEditted.team,
+          name: guestBeingEditted.name
+        })
+      }
+      return <group name='assign-host-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[2.6,0.02,0.8]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.05,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          ASSIGN HOST
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
     }
     function KickButton({ position=[0,0,0] }) {
-
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('assignHost', { 
+          roomId: params.id.toUpperCase(),
+          clientId: client._id,
+          userId: guestBeingEditted._id,
+          team: guestBeingEditted.team,
+          name: guestBeingEditted.name
+        })
+      }
+      return <group name='kick-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[2.6,0.02,0.8]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.05,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          KICK
+          <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
+        </Text3D>
+      </group>
     }
     function SetAwayHostButton({ position=[0,0,0] }) {
       const [hover, setHover] = useState(false);
@@ -992,11 +1100,11 @@ export default function Settings({ position, rotation, scale }) {
       return <group name='set-away-host-button' position={position}>
         {/* background */}
         <group name='background'>
-          <mesh name='background-outer' scale={[8.5, 0.01, 0.8]}>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
           </mesh>
-          <mesh name='background-inner' scale={[8.4, 0.02, 0.7]}>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -1015,7 +1123,7 @@ export default function Settings({ position, rotation, scale }) {
           font="/fonts/Luckiest Guy_Regular.json"
           position={[-4.05,0.02,0.2]}
           rotation={[-Math.PI/2, 0, 0]}
-          size={0.42}
+          size={0.45}
           height={0.01}
         >
           SET AWAY
@@ -1049,11 +1157,11 @@ export default function Settings({ position, rotation, scale }) {
       return <group name='set-spectator-button' position={position}>
         {/* background */}
         <group name='background'>
-          <mesh name='background-outer' scale={[8.5, 0.01, 0.8]}>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
           </mesh>
-          <mesh name='background-inner' scale={[8.4, 0.02, 0.7]}>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -1072,7 +1180,7 @@ export default function Settings({ position, rotation, scale }) {
           font="/fonts/Luckiest Guy_Regular.json"
           position={[-4.05,0.02,0.2]}
           rotation={[-Math.PI/2, 0, 0]}
-          size={0.42}
+          size={0.45}
           height={0.01}
         >
           SET SPECTATOR
@@ -1083,17 +1191,17 @@ export default function Settings({ position, rotation, scale }) {
     return <group position={position} scale={scale}>
       {/* background */}
       <group name='background'>
-        <mesh name='background-outer' scale={[9, 0.01, 4.8]}>
+        <mesh name='background-outer' scale={[9, 0.01, 5.4]}>
           <boxGeometry args={[1,1,1]}/>
           <meshStandardMaterial color='yellow'/>
         </mesh>
-        <mesh name='background-inner' scale={[8.9, 0.02, 4.7]}>
+        <mesh name='background-inner' scale={[8.9, 0.02, 5.3]}>
           <boxGeometry args={[1,1,1]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
       </group>
       {/* title */}
-      <group name='title' position={[0.34, 0.02, -0.9]}>
+      <group name='title' position={[0.34, 0.02, -2.2]}>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={[-4.6,0,0.2]}
@@ -1116,8 +1224,8 @@ export default function Settings({ position, rotation, scale }) {
         </Text3D>
       </group>
       {/* navigation */}
-      <BackButton position={[1.9, 0.02, -0.925]}/>
-      <CloseButton position={[3.5, 0.02, -0.925]}/>
+      <BackButton position={[1.9, 0.02, -2.225]}/>
+      <CloseButton position={[3.5, 0.02, -2.225]}/>
       {/* action buttons */}
       { guestBeingEditted.team === -1 ? <group name='spectator-buttons'>
         <SetTeamToRocketsButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 0]}/>
@@ -1125,10 +1233,10 @@ export default function Settings({ position, rotation, scale }) {
         <AssignHostButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 2]}/>
         <KickButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 3]}/>
       </group> : <group name='player-buttons'>
-        <SetAwayHostButton position={[0, 0.02, (0-0.1) + (0.8 + 0.1) * 0]}/>
-        <SetSpectatorButton position={[0, 0.02, (0-0.1) + (0.8 + 0.1) * 1]}/>
-        <AssignHostButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 2]}/>
-        <KickButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 3]}/>
+        <SetAwayHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
+        <SetSpectatorButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
+        <AssignHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 2]}/>
+        <KickButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 3]}/>
       </group> }
     </group>
   }
