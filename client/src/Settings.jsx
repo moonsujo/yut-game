@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { clientAtom, deviceAtom, gamePhaseAtom, hostAtom, languageAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom } from "./GlobalState"
+import { clientAtom, deviceAtom, editGuestsOpenAtom, editOneGuestOpenAtom, gamePhaseAtom, guestBeingEdittedAtom, hostAtom, languageAtom, mainMenuOpenAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom } from "./GlobalState"
 import { useParams } from "wouter"
 import { useEffect, useState } from "react"
 import { Text3D } from "@react-three/drei"
@@ -16,14 +16,12 @@ export default function Settings({ position, rotation, scale }) {
   const pauseGame = useAtomValue(pauseGameAtom)
   const params = useParams()
 
-  // const [mainMenuOpen, setMainMenuOpen] = useState(false)
-  const [mainMenuOpen, setMainMenuOpen] = useState(true)
+  const [mainMenuOpen, setMainMenuOpen] = useAtom(mainMenuOpenAtom)
   const setSettingsOpen = useSetAtom(settingsOpenAtom)
   // edit players
-  // const [editGuestsOpen, setEditGuestsOpen] = useState(true)
-  const [editGuestsOpen, setEditGuestsOpen] = useState(false)
-  const [guestBeingEditted, setGuestBeingEditted] = useState(null)
-  const [editOneGuestOpen, setEditOneGuestOpen] = useState(false)
+  const [editGuestsOpen, setEditGuestsOpen] = useAtom(editGuestsOpenAtom)
+  const [guestBeingEditted, setGuestBeingEditted] = useAtom(guestBeingEdittedAtom)
+  const [editOneGuestOpen, setEditOneGuestOpen] = useAtom(editOneGuestOpenAtom)
   // the rest
   const [resetGameOpen, setResetGameOpen] = useState(false)
   const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
@@ -686,15 +684,16 @@ export default function Settings({ position, rotation, scale }) {
     </group>
   }
 
+  // -1 team: spectator
+  function formatGuest({ name, connectionState, isHost, isYou, team, status, _id }) {
+    return { name, connectionState, isHost, isYou, team, status, _id }
+  }
+
   function guestList() {
     const teams = useAtomValue(teamsAtom)
     const spectators = useAtomValue(spectatorsAtom)
     const guests = [] // includes host (and you)
 
-    // -1 team: spectator
-    function formatGuest({ name, connectionState, isHost, isYou, team, status, _id }) {
-      return { name, connectionState, isHost, isYou, team, status, _id }
-    }
     // you first, host, team rockets, team ufos, and spectators
     if (client.socketId === host.socketId) {
       guests.push(formatGuest({ 
@@ -999,7 +998,7 @@ export default function Settings({ position, rotation, scale }) {
             onPointerEnter={e => handlePointerEnter(e)}
             onPointerLeave={e => handlePointerLeave(e)}
             onPointerUp={e => handlePointerUp(e)}
-            scale={[2.6,0.02,0.8]}
+            scale={[8.5, 0.02, 1]}
           >
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -1055,7 +1054,7 @@ export default function Settings({ position, rotation, scale }) {
             onPointerEnter={e => handlePointerEnter(e)}
             onPointerLeave={e => handlePointerLeave(e)}
             onPointerUp={e => handlePointerUp(e)}
-            scale={[2.6,0.02,0.8]}
+            scale={[8.5, 0.02, 1]}
           >
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -1095,6 +1094,13 @@ export default function Settings({ position, rotation, scale }) {
           name: guestBeingEditted.name, 
           team: guestBeingEditted.team, 
           status: guestBeingEditted.status === 'away' ? 'playing' : 'away' 
+        }, (status) => {
+          setGuestBeingEditted((guest) => {
+            return {
+              ...guest,
+              status
+            }
+          })
         });
       }
       return <group name='set-away-host-button' position={position}>
@@ -1112,7 +1118,7 @@ export default function Settings({ position, rotation, scale }) {
             onPointerEnter={e => handlePointerEnter(e)}
             onPointerLeave={e => handlePointerLeave(e)}
             onPointerUp={e => handlePointerUp(e)}
-            scale={[2.6,0.02,0.8]}
+            scale={[8.5, 0.02, 1]}
           >
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -1126,7 +1132,7 @@ export default function Settings({ position, rotation, scale }) {
           size={0.45}
           height={0.01}
         >
-          SET AWAY
+          { guestBeingEditted.status === 'away' ? 'SET RETURNED' : 'SET AWAY' }
           <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
         </Text3D>
       </group>
@@ -1169,7 +1175,7 @@ export default function Settings({ position, rotation, scale }) {
             onPointerEnter={e => handlePointerEnter(e)}
             onPointerLeave={e => handlePointerLeave(e)}
             onPointerUp={e => handlePointerUp(e)}
-            scale={[2.6,0.02,0.8]}
+            scale={[8.5, 0.02, 1]}
           >
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black' transparent opacity={0}/>

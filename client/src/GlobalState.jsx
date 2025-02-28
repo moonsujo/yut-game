@@ -92,7 +92,6 @@ export const timerAtom = atom(true)
 export const nakAtom = atom(true)
 export const yutMoCatchAtom = atom(true)
 
-export const settingsOpenAtom = atom(false)
 export const connectedToServerAtom = atom(false)
 export const pauseGameAtom = atom(false)
 export const languageAtom = atom('english')
@@ -111,6 +110,13 @@ export const pieceTeam1Id0AnimationPlayingAtom = atom(false)
 export const pieceTeam1Id1AnimationPlayingAtom = atom(false)
 export const pieceTeam1Id2AnimationPlayingAtom = atom(false)
 export const pieceTeam1Id3AnimationPlayingAtom = atom(false)
+
+// Settings
+export const settingsOpenAtom = atom(false)
+export const mainMenuOpenAtom = atom(true)
+export const editGuestsOpenAtom = atom(false)
+export const guestBeingEdittedAtom = atom(null)
+export const editOneGuestOpenAtom = atom(false)
 
 const deepPieceEquals = (prev, next) => {
   let result;

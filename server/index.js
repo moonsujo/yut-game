@@ -1757,7 +1757,7 @@ io.on("connect", async (socket) => {
   // pass in client id from the client
   // check if it matches the hostId in the room
   // don't store objectId in the client
-  socket.on("setAway", async ({ roomId, clientId, name, team, status }) => {
+  socket.on("setAway", async ({ roomId, clientId, name, team, status }, callback) => {
     
     console.log('[setAway] status', status)
     try {
@@ -1767,7 +1767,6 @@ io.on("connect", async (socket) => {
       } else if (team !== 0 && team !== 1) {
         throw new Error('cannot set away for spectator')
       }
-
 
       if (room.host._id.valueOf() !== clientId) {
         const result = await User.findOneAndUpdate({ _id: clientId, roomId }, { status })
@@ -1782,32 +1781,24 @@ io.on("connect", async (socket) => {
         }
       }
 
-      await Room.updateOne(
-        { 
-          shortId: roomId
-        }, 
-        {
-          $set: {
-            'serverEvent': {
-              'name': 'setAway',
-              'content': {
-                'team': team, // 0 or 1, can only be a player
-                'name': name,
-                'status': status // playing, or away
-              }
-            }
-          } 
+      room.serverEvent = {
+        'name': 'setAway',
+        'content': {
+          'team': team, // 0 or 1, can only be a player
+          'name': name,
+          'status': status // playing, or away
         }
-      )
-      
+      }
+      await room.save()
+      return callback(status)
     } catch (err) {
       console.log(`[setAway] error setting away for player from host`, err)
     }
   })
 
-  socket.on("setAway", async ({ roomId, userId }) => {
-    // set away for user matching socket id (not using hostId or userId)
-  })
+  // socket.on("setAway", async ({ roomId, userId }) => {
+  //   // set away for user matching socket id (not using hostId or userId)
+  // })
 
   // teamId: -1 for spectator, 0 for rockets, 1 for ufo
   socket.on("setTeam", async ({ roomId, clientId, name, currTeamId, newTeamId }) => {
