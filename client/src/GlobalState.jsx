@@ -117,6 +117,14 @@ export const mainMenuOpenAtom = atom(true)
 export const editGuestsOpenAtom = atom(false)
 export const guestBeingEdittedAtom = atom(null)
 export const editOneGuestOpenAtom = atom(false)
+export const resetGameOpenAtom = atom(false)
+export const setGameRulesOpenAtom = atom(false)
+export const viewGuestsOpenAtom = atom(false)
+export const viewGameRulesOpenAtom = atom(false)
+export const audioOpenAtom = atom(false)
+export const languageOpenAtom = atom(false)
+export const soundEffectsAtom = atom(true)
+export const musicAtom = atom(true)
 
 const deepPieceEquals = (prev, next) => {
   let result;

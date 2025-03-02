@@ -1,4 +1,10 @@
 export default {
+  english: {
+    english: 'ENGLISH',
+    korean: '영어',
+    spanish: 'INGLÉS',
+    chinese : '英语'
+  },
   languages: {
     english: 'ENGLISH',
     korean: '한글',

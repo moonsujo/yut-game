@@ -2823,7 +2823,7 @@ export default {
           }
         },
         mainMenu: {
-          position: [-0.5, 0, -0.05],
+          position: [-0.5, 0, -0.075],
         },
         editGuests: {
           position: [-2.5, 0, -1.6],
@@ -2835,19 +2835,19 @@ export default {
           rotation: [-Math.PI/2, 0, 0]
         },
         resetGame: {
-          position: [-7.5, 0, -2.5],
+          position: [-2, 0, -2.3],
           rotation: [-Math.PI/2, 0, 0]
         },
         setGameRules: {
-          position: [-8.6, 0, -2.5],
+          position: [-1.25, 0, 0.8],
           rotation: [-Math.PI/2, 0, 0]
         },
         audio: {
-          position: [-5.5, 0, -2.5],
+          position: [-0.5, 0, -2.75],
           rotation: [-Math.PI/2, 0, 0]
         },
         language: {
-          position: [-7.5, 0, -2.5],
+          position: [-1.5, 0, -1.4],
           rotation: [-Math.PI/2, 0, 0]
         },
         inviteFriends: {

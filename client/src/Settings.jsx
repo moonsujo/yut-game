@@ -1,11 +1,34 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { clientAtom, deviceAtom, editGuestsOpenAtom, editOneGuestOpenAtom, gamePhaseAtom, guestBeingEdittedAtom, hostAtom, languageAtom, mainMenuOpenAtom, pauseGameAtom, settingsOpenAtom, spectatorsAtom, teamsAtom } from "./GlobalState"
+import { 
+  audioOpenAtom, 
+  clientAtom, 
+  deviceAtom, 
+  editGuestsOpenAtom, 
+  editOneGuestOpenAtom, 
+  gamePhaseAtom, 
+  guestBeingEdittedAtom, 
+  hostAtom, 
+  languageAtom, 
+  languageOpenAtom, 
+  mainMenuOpenAtom, 
+  musicAtom, 
+  pauseGameAtom, 
+  resetGameOpenAtom, 
+  setGameRulesOpenAtom, 
+  settingsOpenAtom, 
+  soundEffectsAtom, 
+  spectatorsAtom, 
+  teamsAtom, 
+  viewGameRulesOpenAtom, 
+  viewGuestsOpenAtom } from "./GlobalState"
 import { useParams } from "wouter"
 import { useEffect, useState } from "react"
-import { Text3D } from "@react-three/drei"
+import { Image, Text3D } from "@react-three/drei"
 import { socket } from "./SocketManager"
 import layout from "./layout"
 import { formatName } from "./helpers/helpers"
+import GameRules from "./GameRules"
+import MeshColors from "./MeshColors"
 
 export default function Settings({ position, rotation, scale }) {
   // #region state setters and getters
@@ -23,12 +46,12 @@ export default function Settings({ position, rotation, scale }) {
   const [guestBeingEditted, setGuestBeingEditted] = useAtom(guestBeingEdittedAtom)
   const [editOneGuestOpen, setEditOneGuestOpen] = useAtom(editOneGuestOpenAtom)
   // the rest
-  const [resetGameOpen, setResetGameOpen] = useState(false)
-  const [setGameRulesOpen, setSetGameRulesOpen] = useState(false)
-  const [viewGuestsOpen, setViewGuestsOpen] = useState(false)
-  const [viewGameRulesOpen, setViewGameRulesOpen] = useState(false)
-  const [audioOpen, setAudioOpen] = useState(false)
-  const [languageOpen, setLanguageOpen] = useState(false)
+  const [resetGameOpen, setResetGameOpen] = useAtom(resetGameOpenAtom)
+  const [setGameRulesOpen, setSetGameRulesOpen] = useAtom(setGameRulesOpenAtom)
+  const [viewGuestsOpen, setViewGuestsOpen] = useAtom(viewGuestsOpenAtom)
+  const [viewGameRulesOpen, setViewGameRulesOpen] = useAtom(viewGameRulesOpenAtom)
+  const [audioOpen, setAudioOpen] = useAtom(audioOpenAtom)
+  const [languageOpen, setLanguageOpen] = useAtom(languageOpenAtom)
   const [language, setLanguage] = useAtom(languageAtom)
   const [inviteFriendsOpen, setInviteFriendsOpen] = useState(false)
   // #endregion
@@ -646,7 +669,7 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        setAudioOpen(true)
+        setLanguageOpen(true)
         setMainMenuOpen(false)
       }
 
@@ -686,14 +709,14 @@ export default function Settings({ position, rotation, scale }) {
 
     const hostBackgroundPosition = [0,0,0]
     const guestBackgroundPosition = [0,0,-1]
-    const hostBackgroundOuterScale = [6, 0.01, 8.1]
-    const hostBackgroundInnerScale = [5.9, 0.02, 8.0]
+    const hostBackgroundOuterScale = [6, 0.01, 8.05]
+    const hostBackgroundInnerScale = [5.9, 0.02, 7.95]
     const guestBackgroundOuterScale = [6, 0.01, 5.1]
     const guestBackgroundInnerScale = [5.9, 0.02, 5.0]
-    const hostAudioButtonPosition = [0, 0.02, 2.4]
-    const guestAudioButtonPosition = [0, 0.02, -0.1]
-    const hostLanguageButtonPosition = [0, 0.02, 3.4]
-    const guestLanguageButtonPosition = [0, 0.02, 0.9]
+    const hostAudioButtonPosition = [0, 0.02, 2.35]
+    const guestAudioButtonPosition = [0, 0.02, -0.15]
+    const hostLanguageButtonPosition = [0, 0.02, 3.35]
+    const guestLanguageButtonPosition = [0, 0.02, 0.85]
     return <group position={position}>
       {/* background */}
       <group name='background' position={ client.socketId === host.socketId ? hostBackgroundPosition : guestBackgroundPosition }>
@@ -724,21 +747,17 @@ export default function Settings({ position, rotation, scale }) {
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       {/* close button */}
-      <CloseButton position={[1.975, 0.02, -3.525]} rotation={[0,0,0]}/>
+      <CloseButton position={[2, 0.02, -3.55]} rotation={[0,0,0]}/>
       {/* buttons */}
-      { client.socketId === host.socketId && <EditGuestsButton position={[0, 0.02, -2.6]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <SetAwayButton position={[0, 0.02, -1.6]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <ResetGameButton position={[0, 0.02, -0.6]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <PauseGameButton position={[0, 0.02, 0.4]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <SetGameRulesButton position={[0, 0.02, 1.4]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGuestsButton position={[0, 0.02, -1.1]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGameRulesButton position={[0, 0.02, -0.1]} rotation={[0,0,0]}/> }
-      <AudioButton 
-      position={ client.socketId === host.socketId ? hostAudioButtonPosition : guestAudioButtonPosition } 
-      rotation={[0,0,0]}/>
-      <LanguageButton 
-      position={ client.socketId === host.socketId ? hostLanguageButtonPosition : guestLanguageButtonPosition } 
-      rotation={[0,0,0]}/>
+      { client.socketId === host.socketId && <EditGuestsButton position={[0, 0.02, -2.65]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <SetAwayButton position={[0, 0.02, -1.65]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <ResetGameButton position={[0, 0.02, -0.65]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <PauseGameButton position={[0, 0.02, 0.35]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <SetGameRulesButton position={[0, 0.02, 1.35]} rotation={[0,0,0]}/> }
+      { client.socketId !== host.socketId && <ViewGuestsButton position={[0, 0.02, -1.15]} rotation={[0,0,0]}/> }
+      { client.socketId !== host.socketId && <ViewGameRulesButton position={[0, 0.02, -0.15]} rotation={[0,0,0]}/> }
+      <AudioButton position={ client.socketId === host.socketId ? hostAudioButtonPosition : guestAudioButtonPosition }/>
+      <LanguageButton position={ client.socketId === host.socketId ? hostLanguageButtonPosition : guestLanguageButtonPosition }/>
     </group>
   }
 
@@ -1381,12 +1400,190 @@ export default function Settings({ position, rotation, scale }) {
     </group>
   }
 
-  function ResetGame() {
-
+  function ResetGame(props) {
+    function YesButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
+        setSettingsOpen(false)
+        setMainMenuOpen(false)
+      }
+      return <group name='yes-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[4.2, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[4.1, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[4.25, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-0.5,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          YES
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    function NoButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
+        setSettingsOpen(false)
+        setMainMenuOpen(false)
+      }
+      return <group name='no-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[4.2, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[4.1, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[4.25, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-0.4,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          NO
+          <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
+        </Text3D>
+      </group>
+    }
+    return <group {...props}>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[9, 0.01, 3.6]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[8.9, 0.02, 3.5]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <group name='title' position={[0.34, 0.02, -1.3]}>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.6,0,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          RESET GAME
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* navigation */}
+      <BackButton position={[1.9, 0.02, -1.325]}/>
+      <CloseButton position={[3.5, 0.02, -1.325]}/>
+      {/* text */}
+      <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[-4.25,0.02,-0.3]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.45}
+        height={0.01}
+        lineHeight={0.8}
+      >
+        {`ALL PROGRESS WILL BE ERASED.\nARE YOU SURE?`}
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+      {/* yes */}
+      <YesButton position={[-2.15, 0.02, 1.1]}/>
+      {/* no */}
+      <NoButton position={[2.15, 0.02, 1.1]}/>
+    </group>
   }
 
-  function SetGameRules() {
-
+  function SetGameRules({ position }) {
+    return <group position={position}>
+    {/* background */}
+    <group name='background'>
+      <mesh name='background-outer' scale={[7.5, 0.01, 9.8]}>
+        <boxGeometry args={[1,1,1]}/>
+        <meshStandardMaterial color='yellow'/>
+      </mesh>
+      <mesh name='background-inner' scale={[7.4, 0.02, 9.7]}>
+        <boxGeometry args={[1,1,1]}/>
+        <meshStandardMaterial color='black'/>
+      </mesh>
+    </group>
+    {/* title */}
+    <group name='title' position={[0.34, 0.02, -1.4]}>
+      <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[-3.9,0,-2.8]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.45}
+        height={0.01}
+      >
+        SET RULES
+        <meshStandardMaterial color='yellow'/>
+      </Text3D>
+    </group>
+    {/* navigation */}
+    <BackButton position={[1.15, 0.02, -4.425]}/>
+    <CloseButton position={[2.75, 0.02, -4.425]}/>
+    {/* buttons */}
+    <GameRules position={[-8.45, 0, 0.65]}/>
+    </group>
   }
 
   function ViewGuests() {
@@ -1397,23 +1594,394 @@ export default function Settings({ position, rotation, scale }) {
 
   }
 
-  function Audio() {
-
+  function Audio({ position }) {
+    function MusicRow({ position }) {
+      const [hover, setHover] = useState(false)
+      const [music, setMusic] = useAtom(musicAtom)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        // enable effects
+        e.stopPropagation()
+        setMusic((music) => {
+          return music ? false : true
+        })
+      }
+      return <group name='music' position={position}>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-2.75,0.02,0.14]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          MUSIC
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        {/* toggle */}
+        <group name='music-toggle' position={[2.45, 0, -0.1]}>
+          <mesh scale={[0.6,0.01,0.6]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='yellow'/>
+          </mesh>
+          <mesh scale={[0.5,0.02,0.5]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh scale={[0.6, 0.02, 0.6]}
+          onPointerEnter={e=>handlePointerEnter(e)}
+          onPointerLeave={e=>handlePointerLeave(e)}
+          onPointerUp={e=>handlePointerUp(e)}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+          <mesh name='toggle' scale={[0.4, 0.03, 0.4]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ music ? 'yellow' : hover ? '#555500' : '#000000' }/>
+          </mesh>
+        </group>
+      </group>
+    }
+    function EffectsRow({ position }) {
+      const [hover, setHover] = useState(false)
+      const [soundEffects, setSoundEffects] = useAtom(soundEffectsAtom)
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+      }
+      function handlePointerUp(e) {
+        // enable effects
+        e.stopPropagation()
+        setSoundEffects((effects) => {
+          return effects ? false : true
+        })
+      }
+      return <group name='effects' position={position}>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-2.75,0.02,0.14]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          EFFECTS
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        {/* toggle */}
+        <group name='music-toggle' position={[2.45, 0, -0.1]}>
+          <mesh scale={[0.6,0.01,0.6]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='yellow'/>
+          </mesh>
+          <mesh scale={[0.5,0.02,0.5]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh scale={[0.6, 0.02, 0.6]}
+          onPointerEnter={e=>handlePointerEnter(e)}
+          onPointerLeave={e=>handlePointerLeave(e)}
+          onPointerUp={e=>handlePointerUp(e)}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+          <mesh name='toggle' scale={[0.4, 0.03, 0.4]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ soundEffects ? 'yellow' : hover ? '#555500' : '#000000' }/>
+          </mesh>
+        </group>
+      </group>
+    }
+    return <group position={position}>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[6, 0.01, 2.7]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[5.9, 0.02, 2.6]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <group name='title' position={[1.84, 0.02, -0.85]}>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.6,0,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          AUDIO
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* navigation */}
+      <BackButton position={[0.4, 0.02, -0.875]}/>
+      <CloseButton position={[2.0, 0.02, -0.875]}/>
+      {/* music */}
+      <MusicRow position={[0, 0.02, 0.1]}/>
+      <EffectsRow position={[0, 0.02, 0.9]}/>
+    </group>
   }
 
-  function Language() {
-
+  function Language({ position }) {
+    function EnglishButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+      }
+      return <group name='english-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[7.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[7.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[8.5, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.5, 0.02, 0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          ENGLISH
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+        {/* flag */}
+      </group>
+    }
+    function KoreanButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+      }
+      return <group name='korean-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[7.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[7.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[8.5, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.5, 0.02, 0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          KOREAN
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    function SpanishButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+      }
+      return <group name='spanish-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[7.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[7.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[8.5, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.5,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          SPANISH
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    function ChineseButton({ position=[0,0,0] }) {
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+      }
+      return <group name='chinese-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[7.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[7.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[8.5, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.5,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          CHINESE
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+    return <group position={position} scale={scale}>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[8, 0.01, 5.4]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[7.9, 0.02, 5.3]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <group name='title' position={[0.34, 0.02, -2.2]}>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.1,0,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          LANGUAGE
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* navigation */}
+      <BackButton position={[1.4, 0.02, -2.225]}/>
+      <CloseButton position={[3.0, 0.02, -2.225]}/>
+      {/* action buttons */}
+      <EnglishButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
+      <KoreanButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
+      <SpanishButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 2]}/>
+      <ChineseButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 3]}/>
+    </group>
   }
 
   return <group position={position} rotation={rotation} scale={scale}>
     { mainMenuOpen && <MainMenu position={layout[device].game.settings.mainMenu.position}/> }
     { editGuestsOpen && <EditGuests position={layout[device].game.settings.editGuests.position}/> }
     { editOneGuestOpen && <EditOneGuest position={layout[device].game.settings.editOneGuest.position}/> }
-    { resetGameOpen && <ResetGame/> }
-    { setGameRulesOpen && <SetGameRules/> }
+    { resetGameOpen && <ResetGame position={layout[device].game.settings.resetGame.position}/> }
+    { setGameRulesOpen && <SetGameRules position={layout[device].game.settings.setGameRules.position}/> }
     { viewGuestsOpen && <ViewGuests/> }
     { viewGameRulesOpen && <ViewGameRules/> }
-    { audioOpen && <Audio/> }
-    { languageOpen && <Language/> }
+    { audioOpen && <Audio position={layout[device].game.settings.audio.position}/> }
+    { languageOpen && <Language position={layout[device].game.settings.language.position}/> }
   </group>
 }
