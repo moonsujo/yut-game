@@ -1028,7 +1028,7 @@ export default function Settings({ position, rotation, scale }) {
             height={0.01}
           >
             {formatName(value.name)}
-            <meshStandardMaterial color={mapTeamToPlayerColor(value.team)}/>
+            <meshStandardMaterial color={ value.connectionState !== true ? 'grey' : mapTeamToPlayerColor(value.team)}/>
           </Text3D>
           {/* actions / host-you indicator */}
           { value.isYou && value.isHost && <Text3D 
@@ -1702,7 +1702,7 @@ export default function Settings({ position, rotation, scale }) {
             height={0.01}
           >
             {formatName(value.name)}
-            <meshStandardMaterial color={mapTeamToPlayerColor(value.team)}/>
+            <meshStandardMaterial color={ value.connectionState !== true ? 'grey' : mapTeamToPlayerColor(value.team)}/>
           </Text3D>
           {/* actions / host-you indicator */}
           { !value.isYou && value.isHost && <Text3D 

@@ -10,9 +10,6 @@ import { Loader } from '@react-three/drei';
 import MilkyWay from './shader/MilkyWay';
 import StarsPatterns2Shader from './shader/starsPatterns2/StarsPatterns2Shader';
 import * as THREE from 'three';
-import Lobby from './Lobby';
-import Game from './Game';
-import GameExperience from './GameExperience';
 import Alert from './Alert';
 import AssetLoader from './AssetLoader';
 

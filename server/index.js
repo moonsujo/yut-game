@@ -1627,13 +1627,14 @@ io.on("connect", async (socket) => {
       let room = await Room.findOne({ shortId: roomId })
       if (!room) {
         throw new Error('room with short id', roomId, 'not found')
-      } else if (room.gamePhase !== 'finished' && room.host !== clientId) {
+      } else if (room.gamePhase !== 'finished' && room.host._id.valueOf() !== clientId) {
         throw new Error('only host can reset the game')
-      } else if (room.gamePhase === 'finished') {
+      } 
+      // if (room.gamePhase === 'finished') {
         // let player reset the game
-      } else if (room.gamePhase === 'pregame' || room.gamePhase === 'game' && room.host === clientId) {
+      // } else if (room.gamePhase === 'pregame' || room.gamePhase === 'game' && room.host === clientId) {
         // let host reset the game
-      }
+      // }
 
       room.gamePhase = 'lobby'
       room.tiles = [
@@ -1982,7 +1983,6 @@ io.on("connect", async (socket) => {
 
   // rules: 'backdo', 'timer'
   socket.on('setGameRule', async ({ roomId, clientId, rule, flag }) => {
-    console.log('[setGameRule]')
     try {
       let room = await Room.findOne({ shortId: roomId, host: clientId })
       if (!room) 

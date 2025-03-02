@@ -393,7 +393,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[0] ? formatName(teams[0].players[0].name, 8) : `SEAT 1`}
-            <meshStandardMaterial color={ seat1Team0Hover ? 'orange' : 'red' }/>
+            <meshStandardMaterial color={ (teams[0].players[0] && !teams[0].players[0].connectedToRoom) ? 'grey' : seat1Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -449,7 +449,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[1] ? formatName(teams[0].players[1].name, 8) : `SEAT 2`}
-            <meshStandardMaterial color={ seat2Team0Hover ? 'orange' : 'red' }/>
+            <meshStandardMaterial color={ (teams[0].players[1] && !teams[0].players[1].connectedToRoom) ? 'grey' : seat2Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -505,7 +505,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[2] ? formatName(teams[0].players[2].name, 8) : `SEAT 3`}
-            <meshStandardMaterial color={ seat3Team0Hover ? 'orange' : 'red' }/>
+            <meshStandardMaterial color={ (teams[0].players[2] && !teams[0].players[2].connectedToRoom) ? 'grey' : seat3Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -561,7 +561,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[0].players[3] ? formatName(teams[0].players[3].name, 8) : `SEAT 4`}
-            <meshStandardMaterial color={ seat4Team0Hover ? 'orange' : 'red' }/>
+            <meshStandardMaterial color={ (teams[0].players[3] && !teams[0].players[3].connectedToRoom) ? 'grey' : seat4Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -617,7 +617,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[0] ? formatName(teams[1].players[0].name, 8) : `SEAT 1`}
-            <meshStandardMaterial color={ seat1Team1Hover ? 'green' : 'turquoise' }/>
+            <meshStandardMaterial color={ (teams[1].players[0] && !teams[1].players[0].connectedToRoom) ? 'grey' : seat1Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -673,7 +673,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[1] ? formatName(teams[1].players[1].name, 8) : `SEAT 2`}
-            <meshStandardMaterial color={ seat2Team1Hover ? 'green' : 'turquoise' }/>
+            <meshStandardMaterial color={ (teams[1].players[1] && !teams[1].players[1].connectedToRoom) ? 'grey' : seat2Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -729,7 +729,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[2] ? formatName(teams[1].players[2].name, 8) : `SEAT 3`}
-            <meshStandardMaterial color={ seat3Team1Hover ? 'green' : 'turquoise' }/>
+            <meshStandardMaterial color={ (teams[1].players[2] && !teams[1].players[2].connectedToRoom) ? 'grey' : seat3Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 
@@ -785,7 +785,7 @@ export default function Lobby() {
             lineHeight={0.7}
           >
             {teams[1].players[3] ? formatName(teams[1].players[3].name, 8) : `SEAT 4`}
-            <meshStandardMaterial color={ seat4Team1Hover ? 'green' : 'turquoise' }/>
+            <meshStandardMaterial color={ (teams[1].players[3] && !teams[1].players[3].connectedToRoom) ? 'grey' : seat4Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
             <mesh 

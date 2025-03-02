@@ -17,13 +17,17 @@ export default function Experience() {
         socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
       })
     }
+    return (() => {
+      // remove player from room
+      if (connectedToServer) {
+        socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
+      }
+    })
   }, [connectedToServer])
 
   return <>
     { gamePhase === 'lobby' && <Lobby/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
-    {/* { gamePhase === 'finished' && <GameExperience/> } */}
-    {/* <GameExperience/> */}
   </>
 }

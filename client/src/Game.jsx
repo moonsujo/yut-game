@@ -99,14 +99,6 @@ export default function Game() {
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)
 
-  useEffect(() => {
-    // socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
-    return (() => {
-      // remove player from room (grey text)
-      socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
-    })
-  }, [])
-
   function StartGameButton({ position }) {
 
     const colorMaterial = new MeshStandardMaterial({ color: 'turquoise' })
