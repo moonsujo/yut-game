@@ -981,6 +981,11 @@ export default function Settings({ position, rotation, scale }) {
           userId: guestBeingEditted._id,
           team: guestBeingEditted.team,
           name: guestBeingEditted.name
+        }, (response) => {
+          if (response === 'success') {
+            setEditOneGuestOpen(false)
+            setMainMenuOpen(true)
+          }
         })
       }
       return <group name='assign-host-button' position={position}>
@@ -1031,12 +1036,16 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        socket.emit('assignHost', { 
+        socket.emit('kick', { 
           roomId: params.id.toUpperCase(),
           clientId: client._id,
-          userId: guestBeingEditted._id,
           team: guestBeingEditted.team,
-          name: guestBeingEditted.name
+          name: guestBeingEditted.name,
+        }, (response) => {
+          if (response === 'success') {
+            setEditOneGuestOpen(false)
+            setEditGuestsOpen(true)
+          }
         })
       }
       return <group name='kick-button' position={position}>
@@ -1151,14 +1160,20 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        // set player as away (skip to next player when he's chosen)
-        socket.emit('setAway', { 
-          roomId: params.id.toUpperCase(), 
-          clientId: client._id, 
-          name: guestBeingEditted.name, 
-          team: guestBeingEditted.team, 
-          status: guestBeingEditted.status === 'away' ? 'playing' : 'away' 
-        });
+        // set player to spectator
+        socket.emit('setTeam', {
+          roomId: params.id.toUpperCase(),
+          clientId: client._id,
+          userId: guestBeingEditted._id,
+          name: guestBeingEditted.name,
+          currTeamId: guestBeingEditted.team,
+          newTeamId: -11
+        }, (response) => {
+          if (response === 'success') {
+            setEditOneGuestOpen(false)
+            setEditGuestsOpen(true)
+          }
+        })
       }
       return <group name='set-spectator-button' position={position}>
         {/* background */}

@@ -1801,7 +1801,7 @@ io.on("connect", async (socket) => {
   // })
 
   // teamId: -1 for spectator, 0 for rockets, 1 for ufo
-  socket.on("setTeam", async ({ roomId, clientId, name, currTeamId, newTeamId }) => {
+  socket.on("setTeam", async ({ roomId, clientId, name, currTeamId, newTeamId }, callback) => {
     console.log('[setTeam]')
     try {
       // additional call; will have to do this when I do authentication anyway
@@ -1835,6 +1835,7 @@ io.on("connect", async (socket) => {
         }
         
         await Room.findOneAndUpdate({ shortId: roomId }, operation )
+        return callback('success')
       } else if (newTeamId === 0 || newTeamId === 1) {
         console.log('[setTeam] spectator to player')
         // switching to a team
@@ -1856,18 +1857,19 @@ io.on("connect", async (socket) => {
         }
         
         await Room.findOneAndUpdate({ shortId: roomId }, operation )
+        return callback('success')
       }
     } catch (err) {
       console.log(`[setTeam] error setting away for player from host`, err)
+      return callback('fail')
     }
   })
 
-  socket.on("assignHost", async ({ roomId, clientId, userId, team, name }) => {
+  socket.on("assignHost", async ({ roomId, clientId, userId, team, name }, callback) => {
     // check client is the host of the room // findOneAndUpdate (roomId, newValues)
     // check user is not the host of the room
     // set user as the host
       // this removes client from the host
-    console.log('[assignHost] roomId', roomId, 'hostId', clientId, 'userId', userId, 'team', team, 'name', name)
     try {
       await Room.findOneAndUpdate({ shortId: roomId, host: clientId }, {
         '$set': {
@@ -1881,12 +1883,14 @@ io.on("connect", async (socket) => {
           }
         }
       })
+      return callback('success')
     } catch (err) {
       console.log('[assignHost]', err)
+      return callback('fail')
     }
   })
 
-  socket.on("kick", async ({ roomId, clientId, team, name }) => {
+  socket.on("kick", async ({ roomId, clientId, team, name }, callback) => {
     // check if client is the host of the room // findOneAndUpdate (roomId, newValues)
     // check if user is connected to the room
     // remove player from player list (team0, team1 or spectators)
@@ -1921,8 +1925,10 @@ io.on("connect", async (socket) => {
       }
       
       await Room.findOneAndUpdate({ shortId: roomId }, operation )
+      return callback('success')
     } catch (err) {
       console.log('[kick]', err)
+      return callback('fail')
     }
   })
 
