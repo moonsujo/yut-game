@@ -218,6 +218,63 @@ export default function Settings({ position, rotation, scale }) {
       </group>
     }
 
+    function SetAwayButton({ position, rotation, scale }) {
+      const [hover, setHover] = useState(false)
+  
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('setAway', { 
+          roomId: params.id.toUpperCase(), 
+          clientId: client._id, 
+          name: client.name,
+          team: client.team,
+          status: client.status !== 'away' ? 'away' : 'playing' 
+        }, (response) => {});
+      }
+
+      return <group position={position} rotation={rotation} scale={scale}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[5.5, 0.01, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[5.4, 0.02, 0.8]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='background-wrapper' scale={[5.5, 0.02, 0.9]}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onPointerUp={handlePointerUp}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-2.55,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          { client.status === 'away' ? `SET RETURNED` : `SET AWAY` }
+          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+
     function ResetGameButton({ position, rotation, scale }) {
       const [hover, setHover] = useState(false)
   
@@ -629,13 +686,13 @@ export default function Settings({ position, rotation, scale }) {
 
     const hostBackgroundPosition = [0,0,0]
     const guestBackgroundPosition = [0,0,-1]
-    const hostBackgroundOuterScale = [6, 0.01, 7.1]
-    const hostBackgroundInnerScale = [5.9, 0.02, 7.0]
+    const hostBackgroundOuterScale = [6, 0.01, 8.1]
+    const hostBackgroundInnerScale = [5.9, 0.02, 8.0]
     const guestBackgroundOuterScale = [6, 0.01, 5.1]
     const guestBackgroundInnerScale = [5.9, 0.02, 5.0]
-    const hostAudioButtonPosition = [0, 0.02, 1.9]
+    const hostAudioButtonPosition = [0, 0.02, 2.4]
     const guestAudioButtonPosition = [0, 0.02, -0.1]
-    const hostLanguageButtonPosition = [0, 0.02, 2.9]
+    const hostLanguageButtonPosition = [0, 0.02, 3.4]
     const guestLanguageButtonPosition = [0, 0.02, 0.9]
     return <group position={position}>
       {/* background */}
@@ -658,7 +715,7 @@ export default function Settings({ position, rotation, scale }) {
       {/* title */}
       <Text3D
         font="/fonts/Luckiest Guy_Regular.json"
-        position={[-2.75,0.02,-2.8]}
+        position={[-2.75,0.02,-3.3]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.45}
         height={0.01}
@@ -667,14 +724,15 @@ export default function Settings({ position, rotation, scale }) {
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       {/* close button */}
-      <CloseButton position={[1.975, 0.02, -3.025]} rotation={[0,0,0]}/>
+      <CloseButton position={[1.975, 0.02, -3.525]} rotation={[0,0,0]}/>
       {/* buttons */}
-      { client.socketId === host.socketId && <EditGuestsButton position={[0, 0.02, -2.1]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <ResetGameButton position={[0, 0.02, -1.1]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <PauseGameButton position={[0, 0.02, -0.1]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <SetGameRulesButton position={[0, 0.02, 0.9]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGuestsButton position={[0, 0.02, -2.1]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGameRulesButton position={[0, 0.02, -1.1]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <EditGuestsButton position={[0, 0.02, -2.6]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <SetAwayButton position={[0, 0.02, -1.6]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <ResetGameButton position={[0, 0.02, -0.6]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <PauseGameButton position={[0, 0.02, 0.4]} rotation={[0,0,0]}/> }
+      { client.socketId === host.socketId && <SetGameRulesButton position={[0, 0.02, 1.4]} rotation={[0,0,0]}/> }
+      { client.socketId !== host.socketId && <ViewGuestsButton position={[0, 0.02, -1.1]} rotation={[0,0,0]}/> }
+      { client.socketId !== host.socketId && <ViewGameRulesButton position={[0, 0.02, -0.1]} rotation={[0,0,0]}/> }
       <AudioButton 
       position={ client.socketId === host.socketId ? hostAudioButtonPosition : guestAudioButtonPosition } 
       rotation={[0,0,0]}/>

@@ -2823,7 +2823,7 @@ export default {
           }
         },
         mainMenu: {
-          position: [-0.5, 0, -0.55],
+          position: [-0.5, 0, -0.05],
         },
         editGuests: {
           position: [-2.5, 0, -1.6],
