@@ -262,7 +262,9 @@ export default function Settings({ position, rotation, scale }) {
           name: client.name,
           team: client.team,
           status: client.status !== 'away' ? 'away' : 'playing' 
-        }, (response) => {});
+        }, (response) => {
+
+        });
       }
 
       return <group position={position} rotation={rotation} scale={scale}>
@@ -562,7 +564,7 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        setViewGuestsOpen(true)
+        setViewGameRulesOpen(true)
         setMainMenuOpen(false)
       }
 
@@ -707,30 +709,88 @@ export default function Settings({ position, rotation, scale }) {
       </group>
     }
 
-    const hostBackgroundPosition = [0,0,0]
-    const guestBackgroundPosition = [0,0,-1]
-    const hostBackgroundOuterScale = [6, 0.01, 8.05]
-    const hostBackgroundInnerScale = [5.9, 0.02, 7.95]
-    const guestBackgroundOuterScale = [6, 0.01, 5.1]
-    const guestBackgroundInnerScale = [5.9, 0.02, 5.0]
-    const hostAudioButtonPosition = [0, 0.02, 2.35]
-    const guestAudioButtonPosition = [0, 0.02, -0.15]
-    const hostLanguageButtonPosition = [0, 0.02, 3.35]
-    const guestLanguageButtonPosition = [0, 0.02, 0.85]
+    function getPlayerType() {
+      let isHost = false
+      let isPlayer = false
+      if (client.socketId === host.socketId) {
+        isHost = true
+      }
+      if (client.team === 0 || client.team === 1) {
+        isPlayer = true
+      }
+      if (isHost && isPlayer) {
+        return 'hostPlayer'
+      } else if (isHost && !isPlayer) {
+        return 'hostSpectator'
+      } else if (!isHost && isPlayer) {
+        return 'guestPlayer'
+      } else if (!isHost && !isPlayer) {
+        return 'guestSpectator'
+      }
+    }
+    // No 'Set Away' button
+    const hostSpectatorButtons = [
+      <EditGuestsButton/>,
+      <ResetGameButton/>,
+      <PauseGameButton/>,
+      <SetGameRulesButton/>,
+      <AudioButton/>,
+      <LanguageButton/>
+    ]
+    const hostPlayerButtons = [
+      <EditGuestsButton/>,
+      <SetAwayButton/>,
+      <ResetGameButton/>,
+      <PauseGameButton/>,
+      <SetGameRulesButton/>,
+      <AudioButton/>,
+      <LanguageButton/>
+    ]
+    // No 'Set Away' button
+    const guestSpectatorButtons = [
+      <ViewGuestsButton/>,
+      <ViewGameRulesButton/>,
+      <AudioButton/>,
+      <LanguageButton/>
+    ]
+    const guestPlayerButtons = [
+      <ViewGuestsButton/>,
+      <SetAwayButton/>,
+      <ViewGameRulesButton/>,
+      <AudioButton/>,
+      <LanguageButton/>
+    ]
+    const backgroundDimensions = {
+      'hostSpectator': {
+        position: [0,0,-0.5],
+        scaleOuter: [6, 0.01, 6.95],
+        scaleInner: [5.9, 0.02, 6.85]
+      },
+      'hostPlayer': {
+        position: [0,0,0],
+        scaleOuter: [6, 0.01, 8.05],
+        scaleInner: [5.9, 0.02, 7.95]
+      },
+      'guestSpectator': {
+        position: [0,0,-1.5],
+        scaleOuter: [6, 0.01, 5],
+        scaleInner: [5.9, 0.02, 4.9]
+      },
+      'guestPlayer': {
+        position: [0,0,-1],
+        scaleOuter: [6, 0.01, 6.1],
+        scaleInner: [5.9, 0.02, 6.0]
+      },
+    }
+    
     return <group position={position}>
       {/* background */}
-      <group name='background' position={ client.socketId === host.socketId ? hostBackgroundPosition : guestBackgroundPosition }>
-        <mesh name='background-outer' 
-        scale={client.socketId === host.socketId ? 
-          hostBackgroundOuterScale :
-          guestBackgroundOuterScale}>
+      <group name='background' position={ backgroundDimensions[getPlayerType()].position }>
+        <mesh name='background-outer' scale={backgroundDimensions[getPlayerType()].scaleOuter}>
           <boxGeometry args={[1,1,1]}/>
           <meshStandardMaterial color='yellow'/>
         </mesh>
-        <mesh name='background-inner' 
-        scale={client.socketId === host.socketId ? 
-          hostBackgroundInnerScale :
-          guestBackgroundInnerScale}>
+        <mesh name='background-inner' scale={backgroundDimensions[getPlayerType()].scaleInner}>
           <boxGeometry args={[1,1,1]}/>
           <meshStandardMaterial color='black'/>
         </mesh>
@@ -749,15 +809,26 @@ export default function Settings({ position, rotation, scale }) {
       {/* close button */}
       <CloseButton position={[2, 0.02, -3.55]} rotation={[0,0,0]}/>
       {/* buttons */}
-      { client.socketId === host.socketId && <EditGuestsButton position={[0, 0.02, -2.65]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <SetAwayButton position={[0, 0.02, -1.65]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <ResetGameButton position={[0, 0.02, -0.65]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <PauseGameButton position={[0, 0.02, 0.35]} rotation={[0,0,0]}/> }
-      { client.socketId === host.socketId && <SetGameRulesButton position={[0, 0.02, 1.35]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGuestsButton position={[0, 0.02, -1.15]} rotation={[0,0,0]}/> }
-      { client.socketId !== host.socketId && <ViewGameRulesButton position={[0, 0.02, -0.15]} rotation={[0,0,0]}/> }
-      <AudioButton position={ client.socketId === host.socketId ? hostAudioButtonPosition : guestAudioButtonPosition }/>
-      <LanguageButton position={ client.socketId === host.socketId ? hostLanguageButtonPosition : guestLanguageButtonPosition }/>
+      { getPlayerType() === 'hostSpectator' && hostSpectatorButtons.map((value, index) => {
+        return <group position={[0, 0.02, -2.65 + 1 * index]} key={index}>
+          {value}
+        </group>
+      }) }
+      { getPlayerType() === 'hostPlayer' && (client.team === 0 || client.team === 1) && hostPlayerButtons.map((value, index) => {
+        return <group position={[0, 0.02, -2.65 + 1 * index]} key={index}>
+          {value}
+        </group>
+      }) }
+      { getPlayerType() === 'guestSpectator' && client.team === -1 && guestSpectatorButtons.map((value, index) => {
+        return <group position={[0, 0.02, -2.65 + 1 * index]} key={index}>
+          {value}
+        </group>
+      }) }
+      { getPlayerType() === 'guestPlayer' && (client.team === 0 || client.team === 1) && guestPlayerButtons.map((value, index) => {
+        return <group position={[0, 0.02, -2.65 + 1 * index]} key={index}>
+          {value}
+        </group>
+      }) }
     </group>
   }
 
@@ -1554,44 +1625,143 @@ export default function Settings({ position, rotation, scale }) {
 
   function SetGameRules({ position }) {
     return <group position={position}>
-    {/* background */}
-    <group name='background'>
-      <mesh name='background-outer' scale={[7.5, 0.01, 9.8]}>
-        <boxGeometry args={[1,1,1]}/>
-        <meshStandardMaterial color='yellow'/>
-      </mesh>
-      <mesh name='background-inner' scale={[7.4, 0.02, 9.7]}>
-        <boxGeometry args={[1,1,1]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[7.5, 0.01, 9.8]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[7.4, 0.02, 9.7]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <group name='title' position={[0.34, 0.02, -1.4]}>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.9,0,-2.8]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          SET RULES
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* navigation */}
+      <BackButton position={[1.15, 0.02, -4.425]}/>
+      <CloseButton position={[2.75, 0.02, -4.425]}/>
+      {/* buttons */}
+      <GameRules position={[-8.45, 0, 0.65]}/>
     </group>
-    {/* title */}
-    <group name='title' position={[0.34, 0.02, -1.4]}>
+  }
+
+  function ViewGuests({ position, scale }) {
+    return <group position={position} scale={scale}>
+      {/* background */}
+      <group name='background' position={[0, 0, -2 + (0.55)*(guestList().length)]}>
+        {/* height: title + x * numGuests */}
+        <mesh name='background-outer' scale={[10, 0.01, 1 + (1 + 0.1) * guestList().length]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[9.9, 0.02, 0.9 + (1 + 0.1) * guestList().length]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
       <Text3D
         font="/fonts/Luckiest Guy_Regular.json"
-        position={[-3.9,0,-2.8]}
+        position={[-4.75,0.02,-1.8]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.45}
         height={0.01}
       >
-        SET RULES
+        VIEW GUESTS
         <meshStandardMaterial color='yellow'/>
       </Text3D>
-    </group>
-    {/* navigation */}
-    <BackButton position={[1.15, 0.02, -4.425]}/>
-    <CloseButton position={[2.75, 0.02, -4.425]}/>
-    {/* buttons */}
-    <GameRules position={[-8.45, 0, 0.65]}/>
+      {/* navigation buttons */}
+      <BackButton position={[2.4, 0.02, -2.0]}/>
+      <CloseButton position={[4, 0.02, -2.0]} rotation={[0,0,0]}/>
+      {/* players */}
+      { guestList().map((value, index) => {
+        return <group name='guest' key={index} position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * index]}>
+          {/* background */}
+          <mesh name='background' scale={[9.6, 0.01, 1]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={mapTeamToBackgroundColor(value.team)}/>
+          </mesh>
+          {/* name */}
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-4.6,0,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            {formatName(value.name)}
+            <meshStandardMaterial color={mapTeamToPlayerColor(value.team)}/>
+          </Text3D>
+          {/* actions / host-you indicator */}
+          { !value.isYou && value.isHost && <Text3D 
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[3.1,0,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            HOST
+            <meshStandardMaterial color={mapTeamToPlayerColor(-1)}/>
+          </Text3D> }
+          { value.isYou && !value.isHost && <Text3D 
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[3.1,0,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            YOU
+            <meshStandardMaterial color={mapTeamToPlayerColor(-1)}/>
+          </Text3D> }
+        </group>
+      })}
     </group>
   }
 
-  function ViewGuests() {
-
-  }
-
-  function ViewGameRules() {
-
+  function ViewGameRules({ position }) {
+    return <group position={position}>
+      {/* background */}
+      <group name='background'>
+        <mesh name='background-outer' scale={[7.5, 0.01, 9.8]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='yellow'/>
+        </mesh>
+        <mesh name='background-inner' scale={[7.4, 0.02, 9.7]}>
+          <boxGeometry args={[1,1,1]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+      </group>
+      {/* title */}
+      <group name='title' position={[0.34, 0.02, -1.4]}>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.9,0,-2.8]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          VIEW RULES
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+      </group>
+      {/* navigation */}
+      <BackButton position={[1.15, 0.02, -4.425]}/>
+      <CloseButton position={[2.75, 0.02, -4.425]}/>
+      {/* buttons */}
+      <GameRules position={[-8.45, 0, 0.65]}/>
+    </group>
   }
 
   function Audio({ position }) {
@@ -1979,8 +2149,8 @@ export default function Settings({ position, rotation, scale }) {
     { editOneGuestOpen && <EditOneGuest position={layout[device].game.settings.editOneGuest.position}/> }
     { resetGameOpen && <ResetGame position={layout[device].game.settings.resetGame.position}/> }
     { setGameRulesOpen && <SetGameRules position={layout[device].game.settings.setGameRules.position}/> }
-    { viewGuestsOpen && <ViewGuests/> }
-    { viewGameRulesOpen && <ViewGameRules/> }
+    { viewGuestsOpen && <ViewGuests position={layout[device].game.settings.editGuests.position}/> }
+    { viewGameRulesOpen && <ViewGameRules position={layout[device].game.settings.setGameRules.position}/> }
     { audioOpen && <Audio position={layout[device].game.settings.audio.position}/> }
     { languageOpen && <Language position={layout[device].game.settings.language.position}/> }
   </group>
