@@ -900,8 +900,6 @@ export default function Settings({ position, rotation, scale }) {
   }
 
   function EditOneGuest({ position=[0,0,0], scale=1 }) {
-    const numButtonsHost = 4
-    const numButtonsGuest = 4
     function SetTeamToRocketsButton({ position=[0,0,0] }) {
       const [hover, setHover] = useState(false);
       function handlePointerEnter(e) {
@@ -916,22 +914,27 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        socket.emit('setTeam', ({
+        socket.emit('setTeam', {
           roomId: params.id.toUpperCase(),
           clientId: client._id,
           name: guestBeingEditted.name,
           currTeamId: guestBeingEditted.team,
           newTeamId: 0
-        }))
+        }, (response) => {
+          if (response === 'success') {
+            setEditOneGuestOpen(false)
+            setEditGuestsOpen(true)
+          }
+        })
       }
       return <group name='set-team-to-rockets-button' position={position}>
         {/* background */}
         <group name='background'>
-          <mesh name='background-outer' scale={[2.6, 0.01, 0.8]}>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
             <boxGeometry args={[1,1,1]}/>
-            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+            <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
           </mesh>
-          <mesh name='background-inner' scale={[2.5, 0.02, 0.7]}>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -939,7 +942,7 @@ export default function Settings({ position, rotation, scale }) {
             onPointerEnter={e => handlePointerEnter(e)}
             onPointerLeave={e => handlePointerLeave(e)}
             onPointerUp={e => handlePointerUp(e)}
-            scale={[2.6,0.02,0.8]}
+            scale={[8.5, 0.02, 1]}
           >
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -948,18 +951,76 @@ export default function Settings({ position, rotation, scale }) {
         {/* text */}
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[-1.12,0.02,0.2]}
+          position={[-4,0.02,0.2]}
           rotation={[-Math.PI/2, 0, 0]}
-          size={0.42}
+          size={0.45}
           height={0.01}
         >
           SET TEAM TO ROCKETS
-          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
         </Text3D>
       </group>
     }
     function SetTeamToUfosButton({ position=[0,0,0] }) {
-
+      const [hover, setHover] = useState(false);
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+        setHover(true)
+        document.body.style.cursor = 'pointer'
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+        setHover(false)
+        document.body.style.cursor = 'default'
+      }
+      function handlePointerUp(e) {
+        e.stopPropagation()
+        socket.emit('setTeam', {
+          roomId: params.id.toUpperCase(),
+          clientId: client._id,
+          name: guestBeingEditted.name,
+          currTeamId: guestBeingEditted.team,
+          newTeamId: 1
+        }, (response) => {
+          if (response === 'success') {
+            setEditOneGuestOpen(false)
+            setEditGuestsOpen(true)
+          }
+        })
+      }
+      return <group name='set-team-to-ufos-button' position={position}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
+          </mesh>
+          <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='wrapper'
+            onPointerEnter={e => handlePointerEnter(e)}
+            onPointerLeave={e => handlePointerLeave(e)}
+            onPointerUp={e => handlePointerUp(e)}
+            scale={[8.5, 0.02, 1]}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black' transparent opacity={0}/>
+          </mesh>
+        </group>
+        {/* text */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4,0.02,0.2]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          SET TEAM TO UFOS
+          <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
+        </Text3D>
+      </group>
     }
     function AssignHostButton({ position=[0,0,0] }) {
       const [hover, setHover] = useState(false);
@@ -1167,7 +1228,7 @@ export default function Settings({ position, rotation, scale }) {
           userId: guestBeingEditted._id,
           name: guestBeingEditted.name,
           currTeamId: guestBeingEditted.team,
-          newTeamId: -11
+          newTeamId: -1
         }, (response) => {
           if (response === 'success') {
             setEditOneGuestOpen(false)
@@ -1249,10 +1310,10 @@ export default function Settings({ position, rotation, scale }) {
       <CloseButton position={[3.5, 0.02, -2.225]}/>
       {/* action buttons */}
       { guestBeingEditted.team === -1 ? <group name='spectator-buttons'>
-        <SetTeamToRocketsButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 0]}/>
-        <SetTeamToUfosButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 1]}/>
-        <AssignHostButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 2]}/>
-        <KickButton position={[0, 0.02, (-1 - 0.1) + (1 + 0.1) * 3]}/>
+        <SetTeamToRocketsButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
+        <SetTeamToUfosButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
+        <AssignHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 2]}/>
+        <KickButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 3]}/>
       </group> : <group name='player-buttons'>
         <SetAwayHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
         <SetSpectatorButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
