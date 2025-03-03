@@ -42,10 +42,12 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     }
   })
 
-  function handlePointerEnter() {
+  function handlePointerEnter(e) {
+    e.stopPropagation();
     document.body.style.cursor = "pointer";
   }
-  function handlePointerLeave() {
+  function handlePointerLeave(e) {
+    e.stopPropagation();
     document.body.style.cursor = "default";
   }
   function handleClick(e) {
@@ -141,11 +143,11 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
       </Text3D>
       <mesh name='wrapper'
         position={[0, 0.1, 0]} 
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onClick={handleClick}
+        onPointerEnter={e=>handlePointerEnter(e)}
+        onPointerLeave={e=>handlePointerLeave(e)}
+        onPointerUp={e=>handleClick(e)}
       >
-        <boxGeometry args={[3, 0.3, 2]}/>
+        <boxGeometry args={[3, 0.2, 2]}/>
         <meshStandardMaterial transparent opacity={0}/>
       </mesh> 
     </group>

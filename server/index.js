@@ -2000,6 +2000,8 @@ io.on("connect", async (socket) => {
           if (flag) {
             if (!room.paused) {
               room.paused = true
+              room.pauseTime = Date.now()
+              clearTimeout(room.timerId)
             } else {
               room.pauseTimerReset = true
             }

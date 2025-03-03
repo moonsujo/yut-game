@@ -30,7 +30,7 @@ import { formatName } from "./helpers/helpers"
 import GameRules from "./GameRules"
 import MeshColors from "./MeshColors"
 
-export default function Settings({ position, rotation, scale }) {
+export default function Settings({ position, rotation=[0,0,0], scale }) {
   // #region state setters and getters
   const device = useAtomValue(deviceAtom)
   const client = useAtomValue(clientAtom)
@@ -1041,7 +1041,7 @@ export default function Settings({ position, rotation, scale }) {
             HOST     YOU
             <meshStandardMaterial color={mapTeamToPlayerColor(-1)}/>
           </Text3D> }
-          { !value.isYou && !value.isHost && <ActionsButton guestInfo={value} position={[3.4,0,0]}/> }
+          { !value.isYou && !value.isHost && <ActionsButton guestInfo={value} position={[3.4,0.01,0]}/> }
         </group>
       })}
     </group>
@@ -1487,8 +1487,9 @@ export default function Settings({ position, rotation, scale }) {
       function handlePointerUp(e) {
         e.stopPropagation()
         socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
-        setSettingsOpen(false)
         setMainMenuOpen(false)
+        setResetGameOpen(false)
+        setSettingsOpen(false)
       }
       return <group name='yes-button' position={position}>
         {/* background */}
@@ -1538,9 +1539,9 @@ export default function Settings({ position, rotation, scale }) {
       }
       function handlePointerUp(e) {
         e.stopPropagation()
-        socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
-        setSettingsOpen(false)
         setMainMenuOpen(false)
+        setResetGameOpen(false)
+        setSettingsOpen(false)
       }
       return <group name='no-button' position={position}>
         {/* background */}

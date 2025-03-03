@@ -6,7 +6,7 @@ import { useSpring } from '@react-spring/three';
 import Piece from './components/Piece';
 import { roundNum, pieceSelected } from './helpers/helpers';
 
-export default function PiecesOnBoard({ currentMoves, boardOffset }) {
+export default function PiecesOnBoard({ currentMovesRockets, currentMovesUfos, boardOffset }) {
     const [pieceTeam0Id0] = useAtom(pieceTeam0Id0Atom)
     const [pieceTeam0Id1] = useAtom(pieceTeam0Id1Atom)
     const [pieceTeam0Id2] = useAtom(pieceTeam0Id2Atom)
@@ -1276,7 +1276,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
         }
     }, [pieceTeam1Id3])
     
-    function hasValidMoveBoard() {
+    function hasValidMoveBoard(currentMoves) {
         for (const move in currentMoves) {
             if (parseInt(move) !== 0 && currentMoves[move] > 0) {
                 return true;
@@ -1295,9 +1295,10 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam0Id0.tile} 
             position={springs0_0.position} 
             scale={springs0_0.scale} 
-            selectable={hasTurn && hasValidMoveBoard(0)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesRockets)}
             selected={pieceSelected(selection, 0, 0)}
             onBoard={true}
+            animation='onBoard'
         />
         <Piece 
             team={0} 
@@ -1305,7 +1306,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam0Id1.tile} 
             position={springs0_1.position} 
             scale={springs0_1.scale} 
-            selectable={hasTurn && hasValidMoveBoard(0)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesRockets)}
             selected={pieceSelected(selection, 1, 0)}
             onBoard={true}
             animation='onBoard'
@@ -1316,7 +1317,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam0Id2.tile} 
             position={springs0_2.position} 
             scale={springs0_2.scale} 
-            selectable={hasTurn && hasValidMoveBoard(0)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesRockets)}
             selected={pieceSelected(selection, 2, 0)}
             onBoard={true}
             animation='onBoard'
@@ -1327,7 +1328,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam0Id3.tile} 
             position={springs0_3.position} 
             scale={springs0_3.scale} 
-            selectable={hasTurn && hasValidMoveBoard(0)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesRockets)}
             selected={pieceSelected(selection, 3, 0)}
             onBoard={true}
             animation='onBoard'
@@ -1338,7 +1339,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam1Id0.tile} 
             position={springs1_0.position}
             scale={springs1_0.scale} 
-            selectable={hasTurn && hasValidMoveBoard(1)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesUfos)}
             selected={pieceSelected(selection, 0, 1)}
             onBoard={true}
             animation='onBoard'
@@ -1349,7 +1350,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam1Id1.tile} 
             position={springs1_1.position} 
             scale={springs1_1.scale} 
-            selectable={hasTurn && hasValidMoveBoard(1)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesUfos)}
             selected={pieceSelected(selection, 1, 1)}
             onBoard={true}
             animation='onBoard'
@@ -1360,7 +1361,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam1Id2.tile} 
             position={springs1_2.position} 
             scale={springs1_2.scale} 
-            selectable={hasTurn && hasValidMoveBoard(1)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesUfos)}
             selected={pieceSelected(selection, 2, 1)}
             onBoard={true}
             animation='onBoard'
@@ -1371,7 +1372,7 @@ export default function PiecesOnBoard({ currentMoves, boardOffset }) {
             tile={pieceTeam1Id3.tile} 
             position={springs1_3.position} 
             scale={springs1_3.scale} 
-            selectable={hasTurn && hasValidMoveBoard(1)}
+            selectable={hasTurn && hasValidMoveBoard(currentMovesUfos)}
             selected={pieceSelected(selection, 3, 1)}
             onBoard={true}
             animation='onBoard'

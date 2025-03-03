@@ -1254,31 +1254,31 @@ export default {
           }
         },
         mainMenu: {
-          position: [0.5, 0, 1],
+          position: [0.5, 0, 1.7],
         },
         editGuests: {
-          position: [-5.5, 0, -1.0],
+          position: [0.5, 0, 0],
           rotation: [-Math.PI/2, 0, 0],
           containerWidth: '350px'
         },
         editOneGuest: {
-          position: [-5.5, 0, -1.0],
+          position: [0.5, 0, 0.3],
           rotation: [-Math.PI/2, 0, 0]
         },
         resetGame: {
-          position: [-5.5, 0, -1.0],
+          position: [0.5, 0, -0.5],
           rotation: [-Math.PI/2, 0, 0]
         },
         setGameRules: {
-          position: [-5.8, 0, -1.0],
+          position: [0.5, 0, 2.5],
           rotation: [-Math.PI/2, 0, 0]
         },
         audio: {
-          position: [-4.0, 0, -1.5],
+          position: [0.5, 0, -1],
           rotation: [-Math.PI/2, 0, 0]
         },
         language: {
-          position: [-5.0, 0, -1.5],
+          position: [0.5, 0, 0.5],
           rotation: [-Math.PI/2, 0, 0]
         },
         inviteFriends: {
@@ -1291,7 +1291,7 @@ export default {
         scale: 1.1,
       },
       rulebook: {
-        position: [-2, 10, 2.3],
+        position: [-2, 3, -0.5],
         scale: 0.75,
         content: {
           position: [0, 0, 0.2]
@@ -2860,7 +2860,7 @@ export default {
         scale: 1,
       },
       rulebook: {
-        position: [6.9, 3, -0.3],
+        position: [6.9, 3, -0.5],
         scale: 0.6,
         content: {
           position: [0, 0, 0.2]

@@ -1,6 +1,6 @@
 // js
 import React, { useEffect, useRef, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import layout from "./layout.js";
 import { useSpring, animated } from '@react-spring/three';
 
@@ -35,6 +35,7 @@ import {
   teamsAtom,
   hasTurnAtom,
   settingsOpenAtom,
+  mainMenuOpenAtom,
   connectedToServerAtom,
   pauseGameAtom,
   timerAtom,
@@ -347,6 +348,7 @@ export default function Game() {
 
   function SettingsButton({ position, scale }) {
     const [open, setOpen] = useAtom(settingsOpenAtom)
+    const setMainMenuOpen = useSetAtom(mainMenuOpenAtom)
     const [hover, setHover] = useState(false)
     function handlePointerEnter(e) {
       e.stopPropagation();
@@ -376,6 +378,7 @@ export default function Game() {
         }
       } else {
         setOpen(true)
+        setMainMenuOpen(true)
       }
     }
 
@@ -414,8 +417,7 @@ export default function Game() {
         scale={[1,1,1]}
       /> } */}
       { open && <Settings
-        position={[-4.7,3,5.1]}
-        rotation={[0,0,0]}
+        position={[-4.7, 6, 6.3]}
         scale={[1,1,1]}
       /> }
     </group>
@@ -1065,6 +1067,18 @@ export default function Game() {
     </group>
   }
   
+  function handleRulebookPointerEnter(e) {
+    e.stopPropagation()
+  }
+  function handleRulebookPointerLeave(e) {
+    e.stopPropagation()
+  }
+  function handleRulebookPointerDown(e) {
+    e.stopPropagation()
+  }
+  function handleRulebookPointerUp(e) {
+    e.stopPropagation()
+  }
 
   return (<>
       {/* <Perf/> */}
@@ -1162,7 +1176,8 @@ export default function Game() {
           hasTurn={hasTurn}
         /> }
         <PiecesOnBoard 
-        currentMoves={teams[turn.team].moves} 
+        currentMovesRockets={teams[0].moves} 
+        currentMovesUfos={teams[1].moves} 
         boardOffset={layout[device].game.board['game'].position[2]}/>
         { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
           position={layout[device].game.moveList.position}
@@ -1179,9 +1194,7 @@ export default function Game() {
         position={layout[device].game.rulebook.position}
         scale={layout[device].game.rulebook.scale}>
           <group 
-          position={layout[device].game.rulebook.blocker.position} 
-          onPointerDown={e=>e.stopPropagation()}
-          onPointerUp={e=>e.stopPropagation()}
+            position={layout[device].game.rulebook.blocker.position} 
           >
             <mesh name='blocker-inner' scale={layout[device].game.rulebook.blocker.innerScale}>
               <boxGeometry args={[1,1,1]}/>
@@ -1190,6 +1203,20 @@ export default function Game() {
             <mesh name='blocker-outer' scale={layout[device].game.rulebook.blocker.outerScale}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color='yellow'/>
+            </mesh>
+            <mesh name='blocker-wrap' 
+              scale={[
+                layout[device].game.rulebook.blocker.outerScale[0], 
+                layout[device].game.rulebook.blocker.innerScale[1], 
+                layout[device].game.rulebook.blocker.outerScale[2], 
+              ]}
+              onPointerEnter={e=>handleRulebookPointerEnter(e)}
+              onPointerLeave={e=>handleRulebookPointerLeave(e)}
+              onPointerDown={e=>handleRulebookPointerDown(e)}
+              onPointerUp={e=>handleRulebookPointerUp(e)}
+            >
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='yellow' transparent opacity={0}/>
             </mesh>
           </group>
           <Text3D
