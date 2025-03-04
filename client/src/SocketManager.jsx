@@ -86,7 +86,6 @@ export const SocketManager = () => {
   const [_spectators, setSpectators] = useAtom(spectatorsAtom)
   const [_readyToStart, setReadyToStart] = useAtom(readyToStartAtom)
   const [_yootActive, setYootActive] = useAtom(yootActiveAtom)
-  const [_disconnect, setDisconnect] = useAtom(disconnectAtom)
   const [_yootThrowValues] = useAtom(yootThrowValuesAtom)
   const [_initialYootThrow] = useAtom(initialYootThrowAtom)
   const [_yootThrown] = useAtom(yootThrownAtom)
@@ -164,7 +163,7 @@ export const SocketManager = () => {
     })
     
     socket.on('connect_error', err => { 
-      setDisconnect(true) 
+      setConnectedToServer(false) 
     })
 
     // Set client info in global store and local storage
@@ -1026,8 +1025,8 @@ export const SocketManager = () => {
 
     socket.on('kicked', () => {
       setSettingsOpen(false)
-      setDisconnect(true);
-
+      setConnectedToServer(false)
+      socket.disconnect()
       localStorage.removeItem('yootGame')
     })
 
@@ -1052,13 +1051,13 @@ export const SocketManager = () => {
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount
       setSettingsOpen(false)
-      setDisconnect(true);
+      setConnectedToServer(false);
     })
 
     return () => {
       socket.disconnect()
-      console.log('[SocketManager][useEffect][disconnected]')
-
+      console.log('[SocketManager][useEffect] return')
+      setConnectedToServer(false)
       socket.off();
     }
   }, [])

@@ -114,7 +114,11 @@ export default {
         colorTint3: [
           0.0, 1.0, 1.0, 1.0
         ]
-      }
+      },
+      disconnectModal: {
+        position: [0, 7, 2.7],
+        rotation: [0,0,0],
+      },
     },
     howToPlay: {
       position: [-2.5,0,-2.2],
@@ -1625,7 +1629,11 @@ export default {
         colorTint3: [
           0.0, 1.0, 1.0, 1.0
         ]
-      }
+      },
+      disconnectModal: {
+        position: [-4, 7, 2.7],
+        rotation: [0,0,0],
+      },
     },
     about: {
       position: [-3, 0, -4],

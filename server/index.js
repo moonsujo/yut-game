@@ -341,21 +341,23 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               player: serverEvent.content
             })
           } else if (serverEvent.name === "setTeam") {
-            console.log('[change stream][setTeam]')
             io.to(userSocketId).emit("setTeam", { 
               user: serverEvent.content.user,
               prevTeam: serverEvent.content.prevTeam
             })
           } else if (serverEvent.name === "assignHost") {
-            console.log('[change stream][assignHost]')
             io.to(userSocketId).emit("assignHost", { 
               newHost: serverEvent.content
             })
           } else if (serverEvent.name === "kick") {
-            io.to(userSocketId).emit("kick", { 
-              team: serverEvent.content.team,
-              name: serverEvent.content.name,
-            })
+            if (userSocketId === serverEvent.content.socketId) {
+              io.to(serverEvent.content.socketId).emit("kicked");
+            } else {
+              io.to(userSocketId).emit("kick", { 
+                team: serverEvent.content.team,
+                name: serverEvent.content.name,
+              })
+            }
           } else if (serverEvent.name === "pause") {
             io.to(userSocketId).emit("pause", { 
               flag: serverEvent.content.flag,
@@ -377,10 +379,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
       } catch (err) {
         console.log(`[Room.watch] error getting user's socket id`, err)
       }
-    }
-    if (serverEvent && serverEvent.name === 'kick') {
-      console.log('[change stream][kick] sending disconnect')
-      io.to(serverEvent.content.socketId).emit("kicked");
     }
   }
 })
@@ -520,57 +518,6 @@ io.on("connect", async (socket) => {
       return callback({ error: err.message })
     }
   })
-
-  async function removeUser(user) {        
-    let operation;
-    if (user.team === -1) {
-      operation = {
-        $pullAll: { 
-          'spectators': [
-            { _id: user._id }
-          ],
-        },
-        $set: {
-          'serverEvent': {
-            name: 'userDisconnect'
-          }
-        }
-      }
-    } else if (user.team === 0) {
-      operation = {
-        $pullAll: { 
-          'teams.0.players': [
-            { _id: user._id }
-          ],
-        },
-        $set: {
-          'serverEvent': {
-            name: 'userDisconnect'
-          }
-        }
-      }
-    } else if (user.team === 1) {
-      operation = {
-        $pullAll: { 
-          'teams.1.players': [
-            { _id: user._id }
-          ],
-        },
-        $set: {
-          'serverEvent': {
-            name: 'userDisconnect'
-          }
-        }
-      }
-    }
-    
-    await Room.updateOne(
-      { 
-        _id: user.roomId
-      }, 
-      operation
-    ).exec()
-  }
 
   socket.on("checkRoomExists", async ({ roomId }, callback) => {
     // enhancement: return a string

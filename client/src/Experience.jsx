@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connectedToServerAtom, gamePhaseAtom } from "./GlobalState.jsx";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
 import Lobby from "./Lobby.jsx";
@@ -8,7 +8,7 @@ import Game from "./Game.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
-  const connectedToServer = useAtomValue(connectedToServerAtom)
+  const [connectedToServer, setConnectedToServer] = useAtom(connectedToServerAtom)
   const params = useParams()
 
   useEffect(() => {
@@ -21,6 +21,7 @@ export default function Experience() {
       // remove player from room
       if (connectedToServer) {
         socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
+        setConnectedToServer(false) // setState within a useEffect, but should be fine because component no longer exists
       }
     })
   }, [connectedToServer])

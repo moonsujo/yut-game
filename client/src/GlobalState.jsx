@@ -92,7 +92,7 @@ export const timerAtom = atom(true)
 export const nakAtom = atom(true)
 export const yutMoCatchAtom = atom(true)
 
-export const connectedToServerAtom = atom(false)
+export const connectedToServerAtom = atom(true)
 export const pauseGameAtom = atom(false)
 export const languageAtom = atom('english')
 export const timeLeftAtom = atom(60); // seconds

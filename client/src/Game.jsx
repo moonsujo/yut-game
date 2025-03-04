@@ -22,7 +22,6 @@ import {
   deviceAtom, 
   readyToStartAtom, 
   hostAtom, 
-  disconnectAtom, 
   gamePhaseAtom, 
   turnAtom,
   legalTilesAtom,
@@ -39,7 +38,6 @@ import {
   connectedToServerAtom,
   pauseGameAtom,
   timerAtom,
-  turnExpireTimeAtom,
   backdoLaunchAtom,
   nakAtom,
   yutMoCatchAtom,
@@ -75,8 +73,6 @@ export default function Game() {
   
   useResponsiveSetting();
   const [device] = useAtom(deviceAtom)
-  console.log('[Game] device', device)
-  const [disconnect] = useAtom(disconnectAtom)
   // To adjust board size
   const [gamePhase] = useAtom(gamePhaseAtom)
   const [turn] = useAtom(turnAtom)
@@ -1097,16 +1093,15 @@ export default function Game() {
           device={device}
           team={1} 
         />
-        { !disconnect && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
+        { connectedToServer && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
           position={layout[device].game.chat.position}
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
-        {/* temporarily to develop Settings panel */}
-        {/* { disconnect && <DisconnectModal
+        { !connectedToServer && <DisconnectModal
           position={layout[device].game.disconnectModal.position}
           rotation={layout[device].game.disconnectModal.rotation}
-        /> } */}
+        /> }
         { pauseGame && <PauseGame
           position={[0, 5, 2]}
         />}

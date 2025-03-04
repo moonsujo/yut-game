@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Float, Html, Text3D, useGLTF } from "@react-three/drei";
 import { animated, useSpring } from "@react-spring/three";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import layout from './layout';
 import RocketAnimated from './meshes/RocketAnimated';
 import UfoAnimated from './meshes/UfoAnimated';
@@ -11,7 +11,7 @@ import HowToPlay from './HowToPlay';
 import Title from './Title';
 import About from './About';
 import { socket } from './SocketManager';
-import { clientAtom, deviceAtom } from './GlobalState';
+import { clientAtom, connectedToServerAtom, deviceAtom } from './GlobalState';
 import Board from './Board';
 import { Physics } from '@react-three/rapier';
 import GameCamera from './GameCamera';
@@ -20,6 +20,7 @@ import Ufo from './meshes/Ufo';
 import useResponsiveSetting from './hooks/useResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 import YootDisplay from './YootDisplay';
+import DisconnectModal from './DisconnectModal';
 
 export default function Home2() {
 
@@ -27,6 +28,7 @@ export default function Home2() {
   const [device] = useAtom(deviceAtom)
   const [display, setDisplay] = useState('board')
   const [client] = useAtom(clientAtom)
+  const connectedToServer = useAtomValue(connectedToServerAtom)
 
   function Pieces() {
     return <group>
@@ -544,6 +546,10 @@ export default function Home2() {
         </animated.group> }
       </Physics>
     </group>
+    { !connectedToServer && <DisconnectModal
+      position={layout[device].title.disconnectModal.position}
+      rotation={layout[device].title.disconnectModal.rotation}
+    /> }
     <MeteorsRealShader/>
   </>
 }
