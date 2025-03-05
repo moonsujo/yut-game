@@ -325,16 +325,23 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               playersTeam1: roomPopulated.teams[1].players,
               gamePhase: roomPopulated.gamePhase,
               host: roomPopulated.host,
-              turn: roomPopulated.turn // to set the throw count for the current team
+              turn: roomPopulated.turn // Used to set the throw count for the current team
             })
           } else if (serverEvent === "reset") {
             io.to(userSocketId).emit("reset");
-          } else if (serverEvent.name === "userDisconnect") {
-            io.to(userSocketId).emit("userDisconnect", { 
-              spectators: roomPopulated.spectators,
-              teams: roomPopulated.teams,
-              gamePhase: roomPopulated.gamePhase,
-              host: roomPopulated.host
+          } else if (serverEvent.name === "spectatorDisconnect") {
+            io.to(userSocketId).emit("spectatorDisconnect", { 
+              name: serverEvent.name,
+            })
+          } else if (serverEvent.name === "playerDisconnect") {
+            io.to(userSocketId).emit("playerDisconnect", { 
+              team: serverEvent.team,
+              name: serverEvent.name,
+            })
+          } else if (serverEvent.name === "playerDisconnectLobby") {
+            io.to(userSocketId).emit("playerDisconnectLobby", { 
+              playersTeam0: roomPopulated.teams[0].players,
+              playersTeam1: roomPopulated.teams[1].players,
             })
           } else if (serverEvent.name === "setAway") {
             io.to(userSocketId).emit("setAway", { 
@@ -1647,56 +1654,81 @@ io.on("connect", async (socket) => {
     }
   })
 
-  socket.on("disconnectFromRoom", async ({ roomId }) => {
-    console.log(`[disconnectFromRoom] ${socket.id} disconnectFromRoom`)
-    try {
+  // socket.on("disconnectFromRoom", async ({ roomId }) => {
+  //   console.log(`[disconnectFromRoom] ${socket.id} disconnectFromRoom`)
+  //   try {
 
-      let user = await User.findOneAndUpdate({ 'roomId': roomId, 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
+  //     let user = await User.findOne({ 'roomId': roomId, 'socketId': socket.id })
 
-      await Room.updateOne(
-        { 
-          shortId: roomId
-        }, 
-        {
-          $set: {
-            'serverEvent': {
-              name: 'userDisconnect'
-            }
-          } 
-        }
-      )
+  //     if (user.team === -1) {
+  //       user
+  //     } else if (user.team === 0 || user.team === 1) {
 
-      console.log(`[disconnectFromRoom] user to disconnect from room`, user)
-    } catch (err) {
-      console.log(`[disconnectFromRoom] error disconnecting user from room`, err)
-    }
-  })
+  //     }
+  //       user.connectedToRoom = false
+
+  //     await Room.updateOne(
+  //       { 
+  //         shortId: roomId
+  //       }, 
+  //       {
+  //         $set: {
+  //           'serverEvent': {
+  //             name: 'userDisconnect'
+  //           }
+  //         } 
+  //       }
+  //     )
+
+  //     console.log(`[disconnectFromRoom] user to disconnect from room`, user)
+  //   } catch (err) {
+  //     console.log(`[disconnectFromRoom] error disconnecting user from room`, err)
+  //   }
+  // })
 
   socket.on("disconnect", async () => {
     console.log(`[disconnect] ${socket.id} disconnect`)
     try {
 
-      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { '$set': { 'connectedToRoom': false }})
-
+      let user = await User.findOne({ 'socketId': socket.id })
       if (!user) {
         throw new Error(`user with socket id ${socket.id} not found`)
       }
-      await Room.updateOne(
-        { 
-          shortId: user.roomId
-        }, 
-        {
-          $set: {
-            'serverEvent': {
-              name: 'userDisconnect'
-            }
-          } 
-        }
-      )
 
-      console.log(`[disconnect] user to disconnect from room`, user)
+      let room = await Room.findOne({ shortId: user.roomId })
+      // Spectator
+      if (user.team === -1) {
+        let { deletedCount } = await User.deleteOne({ 'socketId': socket.id })
+        if (deletedCount < 1) {
+          throw new Error(`user with socket id ${socket.id} wasn't deleted`)
+        }
+        let removeSpectatorIndex = room.spectators.find((spectator) => spectator.socketId === socket.id)
+        room.spectators.splice(removeSpectatorIndex, 1)
+        room.serverEvent = {
+          name: 'spectatorDisconnect',
+          team: -1,
+          name: user.name
+        }
+        await room.save()
+      // Player
+      } else {
+        user.connectedToRoom = false
+        if (room.gamePhase === 'lobby') {
+          room.serverEvent = {
+            name: 'playerDisconnectLobby',
+          }
+        } else {
+          room.serverEvent = {
+            name: 'playerDisconnect',
+            team: user.team,
+            name: user.name
+          }
+        }
+        await user.save()
+        await room.save()
+      }
     } catch (err) {
-      console.log(`[disconnect] error deleting user`, err)
+      console.log(`[disconnect] error`, err)
     }
   });
 

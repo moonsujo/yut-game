@@ -17,13 +17,13 @@ export default function Experience() {
         socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
       })
     }
-    return (() => {
-      // remove player from room
-      if (connectedToServer) {
-        socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
-        setConnectedToServer(false) // setState within a useEffect, but should be fine because component no longer exists
-      }
-    })
+    // return (() => {
+    //   // remove player from room
+    //   if (connectedToServer) {
+    //     socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
+    //     setConnectedToServer(false) // setState within a useEffect, but should be fine because component no longer exists
+    //   }
+    // })
   }, [connectedToServer])
 
   return <>

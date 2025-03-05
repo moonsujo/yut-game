@@ -1007,16 +1007,43 @@ export const SocketManager = () => {
       setRemainingTime(turnExpireTime - Date.now())
     })
 
-    // refactor: only use players arrays from teams
-    socket.on("userDisconnect", ({ spectators, teams, gamePhase, host }) => {
-      setSpectators(spectators)
-      setTeams(teams);
-      setHost(host);
+    socket.on("spectatorDisconnect", ({ name }) => {
+      setSpectators((spectators) => {
+        let removeSpectatorIndex = spectators.find((spectator) => spectator.name === name)
+        spectators.splice(removeSpectatorIndex, 1)
+        return spectators
+      })
+    })
+
+    socket.on("playerDisconnect", ({ team, name }) => {
+      setTeams((teams) => {
+        let newTeams = [...teams]
+        let disconnectPlayerIndex = newTeams[team].players.find((player) => player.name === name)
+        newTeams[team].players[disconnectPlayerIndex].connectedToRoom = false
+        return newTeams
+      });
+    })
+
+    socket.on("playerDisconnectLobby", ({ playersTeam0, playersTeam1 }) => {
+      setTeams((teams) => {
+        let newTeams = [...teams]
+        newTeams[0].players = []
+        for (const player of playersTeam0) {
+          newTeams[0].players.push({
+            ...player
+          })
+        }
+        newTeams[1].players = []
+        for (const player of playersTeam1) {
+          newTeams[1].players.push({
+            ...player
+          })
+        }
+        return newTeams
+      });
       
-      if (gamePhase === 'lobby' && 
-        teams[0].players.length > 0 && 
-        teams[1].players.length > 0 &&
-        allPlayersConnected(teams[0].players, teams[1].players)) {
+      if (playersTeam0.length > 0 && playersTeam1.length > 0 &&
+        allPlayersConnected(playersTeam0, playersTeam1)) {
           setReadyToStart(true)
         } else {
           setReadyToStart(false)
