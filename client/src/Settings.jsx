@@ -832,11 +832,6 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
     </group>
   }
 
-  // -1 team: spectator
-  function formatGuest({ name, connectionState, isHost, isYou, team, status, _id }) {
-    return { name, connectionState, isHost, isYou, team, status, _id }
-  }
-
   function guestList() {
     const teams = useAtomValue(teamsAtom)
     const spectators = useAtomValue(spectatorsAtom)
@@ -844,7 +839,7 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
 
     // you first, host, team rockets, team ufos, and spectators
     if (client.socketId === host.socketId) {
-      guests.push(formatGuest({ 
+      guests.push({ 
         name: client.name,
         connectionState: client.connectedToRoom,
         isYou: true,
@@ -852,9 +847,9 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         team: client.team,
         status: client.status,
         _id: client._id
-      })) // 'host, you'
+      }) // 'host, you'
     } else {
-      guests.push(formatGuest({
+      guests.push({
         name: client.name,
         connectionState: client.connectedToRoom,
         isYou: true,
@@ -862,8 +857,8 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         team: client.team,
         status: client.status,
         _id: client._id
-      })) // 'you'
-      guests.push(formatGuest({
+      }) // 'you'
+      guests.push({
         name: host.name,
         connectionState: host.connectedToRoom,
         isYou: false,
@@ -871,12 +866,12 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         team: host.team,
         status: host.status,
         _id: host._id
-      })) // 'host'
+      }) // 'host'
     }
     for (let teamId = 0; teamId < 2; teamId++) {
       for (const player of teams[teamId].players) {
         if (player.socketId !== client.socketId && player.socketId !== host.socketId) {
-          guests.push(formatGuest({
+          guests.push({
             name: player.name,
             connectionState: player.connectedToRoom,
             isYou: false,
@@ -884,13 +879,13 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
             team: player.team,
             status: player.status,
             _id: player._id
-          }))
+          })
         }
       }
     }
     for (const spectator of spectators) {
       if (spectator.socketId !== client.socketId && spectator.socketId !== host.socketId) {
-        guests.push(formatGuest({
+        guests.push({
           name: spectator.name,
           connectionState: spectator.connectedToRoom,
           isYou: false,
@@ -898,11 +893,11 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
           team: spectator.team,
           status: spectator.status,
           _id: spectator._id
-        }))
+        })
       }
     }
     return guests
-  }
+  }``
   function mapTeamToBackgroundColor(team) {
     if (team === -1) {
       return '#313131'

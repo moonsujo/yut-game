@@ -55,6 +55,7 @@ export default function JoinTeamModal({ position, rotation, scale }) {
           audio.volume = 0.5;
           audio.play();
           setName('')
+          setSubmitHover(false)
           setJoinTeam(null);
         }
       });

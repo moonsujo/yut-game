@@ -354,7 +354,7 @@ export default function Lobby() {
         } else if (teams[team].players[seatIndex].socketId !== client.socketId && client.socketId === host.socketId) {
           const player = teams[team].players[seatIndex]
           console.log('[handleSeatPointerUp] seatIndex', seatIndex)
-          setGuestBeingEditted(formatGuest({
+          setGuestBeingEditted({
             name: player.name,
             connectionState: player.connectedToRoom,
             isYou: false,
@@ -362,8 +362,7 @@ export default function Lobby() {
             team: player.team,
             status: player.status,
             _id: player._id,
-            seatIndex: seatIndex // To position EditOneGuest component
-          }))
+          })
         }
       }
 
@@ -830,9 +829,6 @@ export default function Lobby() {
       }
     }
     // -1 team: spectator
-    function formatGuest({ name, connectionState, isHost, isYou, team, status, _id, seatIndex }) {
-      return { name, connectionState, isHost, isYou, team, status, _id, seatIndex }
-    }
     function EditOneGuest({ position=[0,0,0], scale=1 }) {  
       function CloseButton({ position, rotation, scale }) {
         const [hover, setHover] = useState(false)
@@ -882,126 +878,6 @@ export default function Lobby() {
           >
             X CLOSE
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-      }
-      function SetTeamToRocketsButton({ position=[0,0,0] }) {
-        const [hover, setHover] = useState(false);
-        function handlePointerEnter(e) {
-          e.stopPropagation()
-          setHover(true)
-          document.body.style.cursor = 'pointer'
-        }
-        function handlePointerLeave(e) {
-          e.stopPropagation()
-          setHover(false)
-          document.body.style.cursor = 'default'
-        }
-        function handlePointerUp(e) {
-          e.stopPropagation()
-          socket.emit('setTeam', {
-            roomId: params.id.toUpperCase(),
-            clientId: client._id,
-            name: guestBeingEditted.name,
-            currTeamId: guestBeingEditted.team,
-            newTeamId: 0
-          }, (response) => {
-            if (response === 'success') {
-              setGuestBeingEditted(null)
-            }
-          })
-        }
-        return <group name='set-team-to-rockets-button' position={position}>
-          {/* background */}
-          <group name='background'>
-            <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
-            </mesh>
-            <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black'/>
-            </mesh>
-            <mesh name='wrapper'
-              onPointerEnter={e => handlePointerEnter(e)}
-              onPointerLeave={e => handlePointerLeave(e)}
-              onPointerUp={e => handlePointerUp(e)}
-              scale={[8.5, 0.02, 1]}
-            >
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black' transparent opacity={0}/>
-            </mesh>
-          </group>
-          {/* text */}
-          <Text3D
-            font="/fonts/Luckiest Guy_Regular.json"
-            position={[-4,0.02,0.2]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.45}
-            height={0.01}
-          >
-            SET TEAM TO ROCKETS
-            <meshStandardMaterial color={ hover ? 'green' : 'red' }/>
-          </Text3D>
-        </group>
-      }
-      function SetTeamToUfosButton({ position=[0,0,0] }) {
-        const [hover, setHover] = useState(false);
-        function handlePointerEnter(e) {
-          e.stopPropagation()
-          setHover(true)
-          document.body.style.cursor = 'pointer'
-        }
-        function handlePointerLeave(e) {
-          e.stopPropagation()
-          setHover(false)
-          document.body.style.cursor = 'default'
-        }
-        function handlePointerUp(e) {
-          e.stopPropagation()
-          socket.emit('setTeam', {
-            roomId: params.id.toUpperCase(),
-            clientId: client._id,
-            name: guestBeingEditted.name,
-            currTeamId: guestBeingEditted.team,
-            newTeamId: 1
-          }, (response) => {
-            if (response === 'success') {
-              setGuestBeingEditted(null)
-            }
-          })
-        }
-        return <group name='set-team-to-ufos-button' position={position}>
-          {/* background */}
-          <group name='background'>
-            <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
-            </mesh>
-            <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black'/>
-            </mesh>
-            <mesh name='wrapper'
-              onPointerEnter={e => handlePointerEnter(e)}
-              onPointerLeave={e => handlePointerLeave(e)}
-              onPointerUp={e => handlePointerUp(e)}
-              scale={[8.5, 0.02, 1]}
-            >
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black' transparent opacity={0}/>
-            </mesh>
-          </group>
-          {/* text */}
-          <Text3D
-            font="/fonts/Luckiest Guy_Regular.json"
-            position={[-4,0.02,0.2]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.45}
-            height={0.01}
-          >
-            SET TEAM TO UFOS
-            <meshStandardMaterial color={ hover ? 'green' : 'turquoise' }/>
           </Text3D>
         </group>
       }
@@ -1124,70 +1000,6 @@ export default function Lobby() {
           </Text3D>
         </group>
       }
-      function SetAwayHostButton({ position=[0,0,0] }) {
-        const [hover, setHover] = useState(false);
-        function handlePointerEnter(e) {
-          e.stopPropagation()
-          setHover(true)
-          document.body.style.cursor = 'pointer'
-        }
-        function handlePointerLeave(e) {
-          e.stopPropagation()
-          setHover(false)
-          document.body.style.cursor = 'default'
-        }
-        function handlePointerUp(e) {
-          e.stopPropagation()
-          // set player as away (skip to next player when he's chosen)
-          socket.emit('setAway', { 
-            roomId: params.id.toUpperCase(), 
-            clientId: client._id, 
-            name: guestBeingEditted.name, 
-            team: guestBeingEditted.team, 
-            status: guestBeingEditted.status === 'away' ? 'playing' : 'away' 
-          }, (status) => {
-            setGuestBeingEditted((guest) => {
-              return {
-                ...guest,
-                status
-              }
-            })
-          });
-        }
-        return <group name='set-away-host-button' position={position}>
-          {/* background */}
-          <group name='background'>
-            <mesh name='background-outer' scale={[8.5, 0.01, 1]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-            </mesh>
-            <mesh name='background-inner' scale={[8.4, 0.02, 0.9]}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black'/>
-            </mesh>
-            <mesh name='wrapper'
-              onPointerEnter={e => handlePointerEnter(e)}
-              onPointerLeave={e => handlePointerLeave(e)}
-              onPointerUp={e => handlePointerUp(e)}
-              scale={[8.5, 0.02, 1]}
-            >
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black' transparent opacity={0}/>
-            </mesh>
-          </group>
-          {/* text */}
-          <Text3D
-            font="/fonts/Luckiest Guy_Regular.json"
-            position={[-4.05,0.02,0.2]}
-            rotation={[-Math.PI/2, 0, 0]}
-            size={0.45}
-            height={0.01}
-          >
-            { guestBeingEditted.status === 'away' ? 'SET RETURNED' : 'SET AWAY' }
-            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-          </Text3D>
-        </group>
-      }
       function SetSpectatorButton({ position=[0,0,0] }) {
         const [hover, setHover] = useState(false);
         function handlePointerEnter(e) {
@@ -1250,14 +1062,23 @@ export default function Lobby() {
           </Text3D>
         </group>
       }
+      function handlePointerEnter(e) {
+        e.stopPropagation()
+      }
+      function handlePointerLeave(e) {
+        e.stopPropagation()
+      }
       return <group position={position} scale={scale}>
         {/* background */}
-        <group name='background'>
-          <mesh name='background-outer' scale={[9, 0.01, 5.4]}>
+        <group name='background'
+        onPointerEnter={e=>handlePointerEnter(e)}
+        onPointerLeave={e=>handlePointerEnter(e)}
+        >
+          <mesh name='background-outer' scale={[9, 0.01, 4.3]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='yellow'/>
           </mesh>
-          <mesh name='background-inner' scale={[8.9, 0.02, 5.3]}>
+          <mesh name='background-inner' scale={[8.9, 0.02, 4.2]}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -1266,7 +1087,7 @@ export default function Lobby() {
         <group name='title' position={[0.34, 0.02, -2.2]}>
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[-4.6,0,0.2]}
+            position={[-4.6,0,0.7]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.45}
             height={0.01}
@@ -1276,7 +1097,7 @@ export default function Lobby() {
           </Text3D>
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[-3.2,0,0.2]}
+            position={[-3.2,0,0.7]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.45}
             height={0.01}
@@ -1286,28 +1107,14 @@ export default function Lobby() {
           </Text3D>
         </group>
         {/* navigation */}
-        <CloseButton position={[3.5, 0.02, -2.225]}/>
+        <CloseButton position={[3.5, 0.02, -1.725]}/>
         {/* action buttons */}
-        { guestBeingEditted.team === -1 ? <group name='spectator-buttons'>
-          <SetTeamToRocketsButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
-          <SetTeamToUfosButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
-          <AssignHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 2]}/>
-          <KickButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 3]}/>
-        </group> : <group name='player-buttons'>
-          <SetAwayHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 0]}/>
-          <SetSpectatorButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 1]}/>
-          <AssignHostButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 2]}/>
-          <KickButton position={[0, 0.02, (-1 - 0.3) + (1 + 0.1) * 3]}/>
-        </group> }
+        <group name='player-buttons'>
+          <SetSpectatorButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 0]}/>
+          <AssignHostButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 1]}/>
+          <KickButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 2]}/>
+        </group>
       </group>
-    }
-    function getEditOneGuestPosition(team, seatIndex) {
-      console.log('[getEditOneGuestPosition] team', team, 'seatIndex', seatIndex)
-      if (team === 0 && seatIndex === 0) {
-        return [5, 10, 0]
-      } else if (team === 1 && seatIndex === 0) {
-        return [5, 10, 0]
-      }
     }
 
     return <group scale={scale} position={position}>
@@ -1353,8 +1160,8 @@ export default function Lobby() {
         scale={layout[device].lobby.joinTeamModal.scale}
       />
       { guestBeingEditted && <EditOneGuest 
-        position={getEditOneGuestPosition(guestBeingEditted.team, guestBeingEditted.seatIndex)} 
-        scale={1}
+        position={[0,12,10]} 
+        scale={1.3}
         guestBeingEditted={guestBeingEditted}
       /> }
     </group>
