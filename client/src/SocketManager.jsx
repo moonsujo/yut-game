@@ -324,17 +324,19 @@ export const SocketManager = () => {
       // user can throw while timer is running
     })
 
-    socket.on('throwYut', ({ yootOutcome, yootAnimation, throwCount, turnExpireTime }) => {
+    socket.on('throwYut', ({ yootOutcome, yootAnimation, throwCount, turnExpireTime, paused }) => {
       setYootOutcome(yootOutcome)
       setYootAnimation(yootAnimation)
       setThrowCount(throwCount)
       setTurnExpireTime(turnExpireTime)
+      setPauseGame(paused)
       // const audio = new Audio('sounds/effects/throw.mp3');
       // audio.volume=0.3;
       // audio.play();
     })
 
     socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
+      console.log('[gameStart]')
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -355,7 +357,6 @@ export const SocketManager = () => {
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
     })
 
-    // if pregame, could end in a pass, tie or win
     socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
       setTurn(turn => {
         turn.team = newTeam;
@@ -412,7 +413,9 @@ export const SocketManager = () => {
       setPauseGame(paused)
     })
 
-    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, newGameLogs, turnStartTime, turnExpireTime }) => {    
+    socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, newGameLogs, turnStartTime, turnExpireTime, paused }) => {    
+      console.log('[recordThrow] turnUpdate', turnUpdate)
+      console.log('[recordThrow] paused', paused)
       setTeams(teams) // only update the throw count of the current team
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
@@ -528,6 +531,7 @@ export const SocketManager = () => {
       setYootAnimation(null)
       setHasTurn(clientHasTurn(socket.id, teams, turnUpdate.team, turnUpdate.players[turnUpdate.team]))
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
+      setPauseGame(paused)
     })
 
     function calculateNumPiecesCaught(piecesPrev, piecesUpdate) {
@@ -540,7 +544,7 @@ export const SocketManager = () => {
       return numPiecesCaught;
     }
 
-    socket.on('move', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, updatedTiles, throws, newGameLogs, turnStartTime, turnExpireTime }) => {
+    socket.on('move', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, updatedTiles, throws, newGameLogs, turnStartTime, turnExpireTime, paused }) => {
       // instead of teamsUpdate and tiles, receive updatedPieces and updatedTiles
       // check if moves is empty. if it is, clear it
       // clear legalTiles and selection
@@ -673,9 +677,10 @@ export const SocketManager = () => {
       setGameLogs(gameLogs => [...gameLogs, ...newGameLogs])
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
+      setPauseGame(paused)
     })
 
-    socket.on('score', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, from, throws, winner, gamePhase, newGameLogs, turnStartTime, turnExpireTime }) => {
+    socket.on('score', ({ newTeam, prevTeam, newPlayer, moveUsed, updatedPieces, from, throws, winner, gamePhase, newGameLogs, turnStartTime, turnExpireTime, paused }) => {
       setTeams(teams => {
         // Update pieces
         for (const piece of updatedPieces) {
@@ -770,6 +775,7 @@ export const SocketManager = () => {
       setWinner(winner)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
+      setPauseGame(paused)
     })
 
     socket.on("select", ({ selection, legalTiles }) => { //receive
@@ -887,7 +893,7 @@ export const SocketManager = () => {
       setTurnExpireTime(null)
     })
 
-    socket.on("setAway", ({ player }) => {
+    socket.on("setAway", ({ player, paused }) => {
       setTeams((teams) => {
         const newTeams = [...teams] // make shallow copy
         const newPlayers = [...newTeams[player.team].players]; // make shallow copy of nested array
@@ -910,6 +916,8 @@ export const SocketManager = () => {
         }
         return client
       })
+
+      setPauseGame(paused)
     })
 
     socket.on("setTeam", ({ user, prevTeam }) => {
@@ -1020,6 +1028,15 @@ export const SocketManager = () => {
         let newTeams = [...teams]
         let disconnectPlayerIndex = newTeams[team].players.find((player) => player.name === name)
         newTeams[team].players[disconnectPlayerIndex].connectedToRoom = false
+        return newTeams
+      });
+    })
+
+    socket.on("playerRoomSwitch", ({ roomPlayerIndex, roomPlayerTeam }) => {
+      console.log('[playerRoomSwitch]')
+      setTeams((teams) => {
+        let newTeams = [...teams]
+        newTeams[roomPlayerTeam].players.splice(roomPlayerIndex, 1)
         return newTeams
       });
     })

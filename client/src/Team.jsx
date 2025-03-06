@@ -235,7 +235,7 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
       rotation={layout[device].game[`team${team}`].names.rotation}
     >
       {teams[team].players.map((value, index) => (
-        index < 5 && <group key={index}>
+        index < 4 && <group key={index}>
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             size={layout[device].game[`team${team}`].names.size}
@@ -244,7 +244,8 @@ export default function Team({ position=[0,0,0], scale=1, team, device }) {
             ref={(ref => playerIdsRef.current[team][index] = ref)}
           >
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
-            + (host && value.socketId === host.socketId ? ' (h) ' : '')}
+            + (host && value.socketId === host.socketId ? ' (h) ' : '')
+            + (value.status === 'away' ? ' (away)' : '')}
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? 'yellow' : 'gray' }/>
           </Text3D>
         </group>

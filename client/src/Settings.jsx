@@ -896,8 +896,9 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         })
       }
     }
+    console.log('[guestList] guests', guests)
     return guests
-  }``
+  }
   function mapTeamToBackgroundColor(team) {
     if (team === -1) {
       return '#313131'

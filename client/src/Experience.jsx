@@ -13,17 +13,10 @@ export default function Experience() {
 
   useEffect(() => {
     if (connectedToServer) {
-      socket.emit('addUser', {}, () => {
+      socket.emit('addUser', { roomId: params.id.toUpperCase(), savedClient: localStorage.getItem('yootGame') }, () => {
         socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
       })
     }
-    // return (() => {
-    //   // remove player from room
-    //   if (connectedToServer) {
-    //     socket.emit('disconnectFromRoom', { roomId: params.id.toUpperCase() });
-    //     setConnectedToServer(false) // setState within a useEffect, but should be fine because component no longer exists
-    //   }
-    // })
   }, [connectedToServer])
 
   return <>

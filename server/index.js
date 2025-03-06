@@ -159,11 +159,20 @@ const roomSchema = new mongoose.Schema(
 const User = mongoose.model('users', userSchema)
 const Room = mongoose.model('rooms', roomSchema)
 
-async function addUser(socket, name) {
-  console.log('[addUser] name', name)
+async function addUser(socket, name, roomId, savedClient) {
+  console.log('[addUser] name', name, 'savedClient', savedClient)
+  savedClient = JSON.parse(savedClient)
   try {
+    // Input validation
+    if (socket.length > 20) {
+      throw new Error('socket id is too long')
+    } else if (name.length > 16) {
+      throw new Error('name is too long')
+    } else if (roomId.length > 5) {
+      throw new Error('roomId is too long')
+    }
     let user;
-    if (socket.handshake.query.client === "null") {
+    if (savedClient === null) {
       console.log('[addUser] client did not pass a user info from local storage')
       user = new User({
         socketId: socket.id,
@@ -176,30 +185,71 @@ async function addUser(socket, name) {
       })
       await user.save()
     } else {
-      console.log('[addUser] client passed a user info from local storage')
-      const savedClient = JSON.parse(socket.handshake.query.client)
+      // const savedClient = JSON.parse(socket.handshake.query.client)
+      console.log('[addUser] client passed a user info from local storage', savedClient)
       // in mongodb, when client leaves, the roomId and name haven't changed
       // room refers to player by _id
       // room[team].players array has objectIds, and that object's team hasn't been updated, which is why the host.team is -1 and 'players' is null
-      user = await User.findOneAndUpdate({ roomId: savedClient.roomId, name: savedClient.name }, { socketId: socket.id, connectedToRoom: false })
-      console.log('user after findOneAndUpdate', user)
-      if (!user) {
+      if (roomId !== savedClient.roomId) {
+        console.log('[addUser] client from local storage entered a different room')
+        // If player, remove from the saved room
+        if (savedClient.team === 0 || savedClient.team === 1) {
+          await User.deleteOne({ roomId: savedClient.roomId, name: savedClient.name })
+          let room = await Room.findOne({ shortId: savedClient.roomId })
+          if (!room) {
+            throw new Error('room does not exist')
+          } else {
+            console.log('[addUser] removing player from room', savedClient.roomId)
+            let roomPlayerIndex = room.teams[savedClient.team].players.findIndex((player) => {
+              console.log('player._id', player._id)
+              console.log('savedClient._id.valueOf()', savedClient._id.valueOf())
+              return player._id.valueOf() === savedClient._id.valueOf()
+            })
+            room.teams[savedClient.team].players.splice(roomPlayerIndex, 1)
+            room.serverEvent = {
+              name: 'playerRoomSwitch',
+              content: {
+                roomPlayerIndex,
+                roomPlayerTeam: savedClient.team
+              }
+            }
+            console.log('[addUser] serverEvent', room.serverEvent)
+            await room.save()
+          }
+        }
+
         user = new User({
           socketId: socket.id,
           name,
           team: -1,
-          roomId: null,
+          roomId,
           connectedToRoom: false,
           createdTime: new Date(),
           status: 'playing'
         })
-        console.log('user from scratch', user)
         await user.save()
+      } else {
+        user = await User.findOneAndUpdate({ roomId: savedClient.roomId, name: savedClient.name }, { socketId: socket.id, connectedToRoom: false })
+        console.log('user after findOneAndUpdate', user)
+        // User could have been kicked, and removed
+        if (!user) {
+          user = new User({
+            socketId: socket.id,
+            name,
+            team: -1,
+            roomId: null,
+            connectedToRoom: false,
+            createdTime: new Date(),
+            status: 'playing'
+          })
+          console.log('user from scratch', user)
+          await user.save()
+        }
       }
     }
     console.log('[addUser] user', user)
   } catch (err) {
-    console.log('[addUser]', err)
+    console.log('[addUser] error', err)
     return null
   }
 }
@@ -212,7 +262,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     // instead of concatting everything, do it separately
     // building array takes time
     let users = data.fullDocument.spectators.concat(data.fullDocument.teams[0].players.concat(data.fullDocument.teams[1].players))
-    // console.log(`[Room.watch] users`, users)
+
     // populate only when players are emitted
     let roomPopulated = await Room.findOne({ shortId: data.fullDocument.shortId })
     .populate('spectators')
@@ -220,6 +270,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
     .populate('teams.players')
     .exec()
     let room = data.fullDocument;
+    console.log(`[Room.watch] roomId ${room.shortId} users`, users)
     const serverEvent = data.fullDocument.serverEvent
     console.log(`*******************[Room.watch] serverEvent`, serverEvent.name)
     for (const user of users) {
@@ -262,7 +313,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               yootOutcome: data.fullDocument.yootOutcome,
               newGameLogs: serverEvent.content.gameLogs,
               turnStartTime: room.turnStartTime,
-              turnExpireTime: room.turnExpireTime
+              turnExpireTime: room.turnExpireTime,
+              paused: room.paused
             })
           } else if (serverEvent.name === 'move') {
             io.to(userSocketId).emit('move', {
@@ -276,6 +328,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newGameLogs: serverEvent.content.gameLogs,
               turnStartTime: room.turnStartTime,
               turnExpireTime: room.turnExpireTime,
+              paused: room.paused
             })
           } else if (serverEvent.name === "select") {
             console.log('select')
@@ -289,7 +342,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               yootAnimation: data.fullDocument.yootAnimation, 
               throwCount: room.teams[room.turn.team].throws,
               turnExpireTime: room.turnExpireTime,
-              newGameLogs: serverEvent.content.gameLogs
+              newGameLogs: serverEvent.content.gameLogs,
             })
           } else if (serverEvent.name === 'score') {
             io.to(userSocketId).emit('score', { 
@@ -304,7 +357,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               gamePhase: data.fullDocument.gamePhase,
               newGameLogs: serverEvent.content.gameLogs,
               turnStartTime: room.turnStartTime,
-              turnExpireTime: room.turnExpireTime
+              turnExpireTime: room.turnExpireTime,
+              paused: room.paused
             })
           } else if (serverEvent.name === "joinRoom") {
             if (user._id.valueOf() === data.fullDocument.lastJoinedUser.valueOf()) {
@@ -345,7 +399,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             })
           } else if (serverEvent.name === "setAway") {
             io.to(userSocketId).emit("setAway", { 
-              player: serverEvent.content
+              player: serverEvent.content,
+              paused: room.paused
             })
           } else if (serverEvent.name === "setTeam") {
             io.to(userSocketId).emit("setTeam", { 
@@ -378,6 +433,11 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               turnStartTime: room.turnStartTime,
               turnExpireTime: room.turnExpireTime,
               paused: room.paused
+            })
+          } else if (serverEvent.name === "playerRoomSwitch") {
+            io.to(userSocketId).emit("playerRoomSwitch", { 
+              roomPlayerIndex: serverEvent.content.roomPlayerIndex,
+              roomPlayerTeam: serverEvent.content.roomPlayerTeam
             })
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
@@ -425,11 +485,19 @@ io.on("connect", async (socket) => {
   // when i add data to the socket via the dot operator,
   // it doesn't change across events
 
-  socket.on("addUser", async ({}, callback) => {
+  socket.on("addUser", async ({ roomId, savedClient }, callback) => {
     console.log('[addUser]')
-    let name = await createUniqueUsername()
-    await addUser(socket, name)
-    return callback()
+    try {
+      const room = await Room.findOne({ shortId: roomId })
+      if (!room) {
+        throw new Error(`room with short id`, roomId, `doesn't exist`)
+      }
+      let name = await createUniqueUsername()
+      await addUser(socket, name, roomId, savedClient)
+      return callback()
+    } catch (err) {
+      console.log ('[addUser] error', err)
+    }
   })
 
   socket.on("createRoom", async ({}, callback) => {
@@ -547,11 +615,11 @@ io.on("connect", async (socket) => {
   socket.on("joinRoom", async ({ roomId }) => {
     console.log('[joinRoom] roomId', roomId)
     try {
-      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { roomId, connectedToRoom: true })
+      let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { roomId, connectedToRoom: true }, { new: true })
       console.log('[joinRoom] user', user)
 
       let operation = {}
-      if (user && user.roomId && user.roomId.valueOf() === roomId) { // Use value saved in local storage
+      if (user && user.roomId && user.roomId.valueOf() === roomId) {
         if (user.team === -1) { // if spectator
           operation['$addToSet'] = { "spectators": user._id }
           operation['$set'] = { 
@@ -708,8 +776,10 @@ io.on("connect", async (socket) => {
       const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
       if (outcomePregame === "pass") {
         room.pregameOutcome = outcomePregame
-        room.turn = passTurn(room.turn, room.teams) // add throw here
-        room.teams[room.turn.team].throws = 1 // new team
+        const [newTurn, pause] = await passTurn(room.turn, room.teams)
+        room.turn = newTurn
+        room.paused = pause
+        room.teams[room.turn.team].throws = 1 // New team
         // outcome, turn
         newTurnStartTime += 2 * ALERT_TIME
         serverEvent.content.pregameOutcome = outcomePregame
@@ -717,8 +787,10 @@ io.on("connect", async (socket) => {
         room.pregameOutcome = outcomePregame
         room.teams[0].pregameRoll = null
         room.teams[1].pregameRoll = null
-        room.turn = passTurn(room.turn, room.teams) // add throw here
-        room.teams[room.turn.team].throws = 1 // new team
+        const [newTurn, pause] = await passTurn(room.turn, room.teams)
+        room.turn = newTurn
+        room.paused = pause
+        room.teams[room.turn.team].throws = 1 // New team
         gameLog = {
           logType: 'pregameResult',
           content: {
@@ -749,8 +821,10 @@ io.on("connect", async (socket) => {
         serverEvent.content.pregameOutcome = outcomePregame
       }
     } else {
-      room.turn = passTurn(room.turn, room.teams)
-      room.teams[room.turn.team].throws = 1 // new team
+      const [newTurn, pause] = await passTurn(room.turn, room.teams)
+      room.turn = newTurn
+      room.paused = pause
+      room.teams[room.turn.team].throws = 1 // New team
       newTurnStartTime += 2 * ALERT_TIME
     }
 
@@ -966,9 +1040,6 @@ io.on("connect", async (socket) => {
               }
             }
 
-            // on yoot or mo, if gamePhase is 'game', add 'bonus: true' to 'content'.
-            // else, add 'bonus: false'
-
             // Add move to team
             if (room.gamePhase === "pregame") {
               room.teams[room.turn.team].pregameRoll = outcome // to pass into 'comparePregameRolls'
@@ -988,14 +1059,16 @@ io.on("connect", async (socket) => {
               const outcomePregame = comparePregameRolls(room.teams[0].pregameRoll, room.teams[1].pregameRoll)
               if (outcomePregame === "pass") {
                 serverEvent.content.prevTeam = room.turn.team
-                const newTurn = passTurn(room.turn, room.teams)
+                const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
+                room.paused = pause
                 room.pregameOutcome = outcomePregame
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
               } else if (outcomePregame === "tie") {
-                const newTurn = passTurn(room.turn, room.teams)
+                const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
+                room.paused = pause
                 room.pregameOutcome = outcomePregame
                 room.teams[0].pregameRoll = null
                 room.teams[1].pregameRoll = null
@@ -1061,8 +1134,9 @@ io.on("connect", async (socket) => {
               if (room.teams[user.team].throws === 0 && 
               (isEmptyMoves(room.teams[user.team].moves.toObject()) || 
               (!room.rules.backdoLaunch && isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))) ) {
-                const newTurn = passTurn(room.turn, room.teams)
+                const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
+                room.paused = pause
                 room.teams[user.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
@@ -1089,22 +1163,58 @@ io.on("connect", async (socket) => {
     }
   })
 
-  function passTurn(currentTurn, teams) {
-    const currentTeam = currentTurn.team
+  async function passTurn(currentTurn, teams) {
+    let currentTeam = currentTurn.team
+    let pause = false;
 
-    if (currentTurn.team == teams.length - 1) {
-      currentTurn.team = 0
+    if (currentTeam === (teams.length - 1)) {
+      currentTeam = 0
     } else {
-      currentTurn.team++
+      currentTeam++
     }
   
-    if (currentTurn.players[currentTeam] == teams[currentTeam].players.length - 1) {
+    if (teams[currentTeam].players.length === 0) {
+      pause = true
+      currentTurn.players[currentTeam] = 0 // Someone can join the team to play (host can assign to team)
+    } else if (teams[currentTeam].players.length === 1) {
+      const player = await User.findById(teams[currentTeam].players[0])
+      console.log('[passTurn] player, only one in the team', player)
+      if (player && player.status !== 'playing') {
+        pause = true
+      }
       currentTurn.players[currentTeam] = 0
     } else {
-      currentTurn.players[currentTeam]++
+      let nextPlayerIndex = currentTurn.players[currentTeam]
+      
+      // If everyone's away
+      // Pause the game
+      const playerPlaying = teams[currentTeam].players.find(async (playerId) => {
+        const player = await User.findById(playerId)
+        return player && player.status === 'playing'
+      })
+      if (!playerPlaying) {
+        pause = true
+        nextPlayerIndex++
+      } else { // Find the next player
+        let nextPlayer
+        console.log('[passTurn] at least 2 players, currentTeam', currentTeam, 'nextPlayerIndex', nextPlayerIndex)
+        do {
+          if (currentTurn.players[currentTeam] === (teams[currentTeam].players.length - 1)) {
+            nextPlayerIndex = 0
+          } else {
+            nextPlayerIndex++
+          }
+          console.log('[passTurn] next team players', teams[currentTeam].players)
+          console.log('[passTurn] next player id', teams[currentTeam].players[1]) // prints object id
+          nextPlayer = await User.findById(teams[currentTeam].players[nextPlayerIndex]) // returns null
+          console.log('[passTurn] nextPlayer', nextPlayer)
+        } while (nextPlayer.status !== 'playing') 
+      }
+      currentTurn.players[currentTeam] = nextPlayerIndex
     }
-
-    return currentTurn
+    
+    currentTurn.team = currentTeam
+    return [currentTurn, pause]
   }
 
   function setTurn(currentTurn, team) {
@@ -1118,20 +1228,13 @@ io.on("connect", async (socket) => {
   function comparePregameRolls(team0Roll, team1Roll) {
     if ((team0Roll !== null) && (team1Roll !== null)) {
       if (team0Roll === team1Roll) {
-        // Clear pregame rolls
-        // return passTurn(currentTurn, teams)
         return "tie"
       } else if (team0Roll > team1Roll || team1Roll === 0) {
-        // Proceed to the game phase
-        // return setTurn(currentTurn, 0)
         return 0
       } else if (team1Roll > team0Roll || team0Roll === 0) {
-        // Proceed to the game phase
-        // return setTurn(currentTurn, 1)
         return 1
       }
     } else {
-      // return passTurn(currentTurn, teams)
       return "pass"
     }
   }
@@ -1164,59 +1267,6 @@ io.on("connect", async (socket) => {
     
     return true
   }
-
-  // Client only emits this event if it has the turn
-  // client sends what was clicked. server calculates the new state
-  // and sends it to the client
-  // socket.on("select", async ({ roomId, tile, team, tokenId }) => {
-  //   console.log('[select] tile', tile, 'team', team, 'tokenId', tokenId)
-  //   try {
-  //     // check that team has the turn
-  //     // that there is a token with team that's passed in on the tile
-  //     let room = await Room.findOne(
-  //       {
-  //         shortId: roomId, 
-  //         paused: false,
-  //       }
-  //     )
-  //     if (!room) {
-  //       throw new Error('room with shortId', roomId, 'and not paused not found')
-  //     } else if (room.turn.team === team) {
-  //       console.log("[select] player's team has turn")
-  //       console.log("[select] room.selection", room.selection)
-  //       if (!room.selection) {
-  //         console.log("[select] room has no selection")
-  //         // calculate legalTiles 
-  //         let pieces;
-  //         let history;
-  //         if (tileType(tile) === 'home') {
-  //           history = []
-  //           pieces = [{tile, team, tokenId, history}]
-  //         } else if (room.tiles[tile][0].team === team) {
-  //           history = room.tiles[tile][0].history // go back the way you came from of the first token
-  //           pieces = room.tiles[tile];
-  //         }
-  //         let legalTiles = getLegalTiles(tile, room.teams[team].moves, room.teams[team].pieces, history)
-  //         if (!(Object.keys(legalTiles).length === 0)) {
-  //           room.selection = { tile, pieces };
-  //           console.log("[select] selection", room.selection)
-  //           room.legalTiles = legalTiles;
-  //           console.log("[select] legalTiles", room.legalTiles)
-  //         }
-  //       } else {
-  //         room.selection = undefined;
-  //         console.log("[select] selection", room.selection)
-  //         room.legalTiles = {};
-  //         console.log("[select] legalTiles", room.legalTiles)
-  //       }
-  //       room.serverEvent.name = 'select'
-  //       room.serverEvent.content = {}
-  //       await room.save();
-  //     }
-  //   } catch (err) {
-  //     console.log(`[select] error making selection`, err)
-  //   }
-  // });
 
   socket.on("select", async ({ roomId, selection, legalTiles }) => {
     try {
@@ -1423,8 +1473,9 @@ io.on("connect", async (socket) => {
       turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
-        const newTurn = passTurn(room.turn, room.teams)
+        const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
+        room.paused = pause
         room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
         room.teams[newTurn.team].throws = 1
         serverEvent.content.throws = 1
@@ -1550,8 +1601,9 @@ io.on("connect", async (socket) => {
         let throws = room.teams[movingTeam].throws;
         serverEvent.content.throws = throws
         if (throws === 0 && (isEmptyMoves(moves.toObject()) || isBackdoMovesWithoutPieces(moves.toObject(), room.teams[movingTeam].pieces))) { // check backdoLaunch rule
-          const newTurn = passTurn(room.turn, room.teams)
+          const [newTurn, pause] = await passTurn(room.turn, room.teams)
           room.turn = newTurn
+          room.paused = pause
           room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
           room.teams[newTurn.team].throws = 1
           serverEvent.content.throws = 1
@@ -1761,6 +1813,13 @@ io.on("connect", async (socket) => {
         }
       }
 
+      if ((team === 0 || team === 1) && 
+      room.turn.team === team && 
+      room.teams[team].players.length === 1 && 
+      (room.gamePhase === 'pregame' || room.gamePhase === 'game') && 
+      status === 'away') {
+        room.paused = true
+      }
       room.serverEvent = {
         'name': 'setAway',
         'content': {
