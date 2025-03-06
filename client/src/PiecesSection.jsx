@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { backdoLaunchAtom, clientAtom, selectionAtom, teamsAtom } from './GlobalState';
+import { backdoLaunchAtom, clientAtom, hasTurnAtom, selectionAtom, teamsAtom } from './GlobalState';
 import layout from './layout';
 import Piece from './components/Piece';
 import { hasValidMoveHome, pieceSelected, tileType } from './helpers/helpers';
@@ -15,6 +15,7 @@ export default function PiecesSection({
   const [teams] = useAtom(teamsAtom)
   const [selection] = useAtom(selectionAtom)
   const backdoLaunch = useAtomValue(backdoLaunchAtom)
+  const hasTurn = useAtomValue(hasTurnAtom)
 
   function UnassignedPieces() {
     const emptyPieces = [0, 0, 0, 0]
@@ -72,7 +73,7 @@ export default function PiecesSection({
               id={value.id}
               key={index}
               // on selection, no other piece should be in 'selectable' animation
-              selectable={(selection === null && hasValidMoveHome(teams[team].pieces, teams[team].moves, backdoLaunch))}
+              selectable={(selection === null && hasValidMoveHome(teams[team].pieces, teams[team].moves, backdoLaunch) && hasTurn)}
               onBoard={false}
               selected={pieceSelected(selection, value.id, team)}
             />

@@ -1163,6 +1163,25 @@ io.on("connect", async (socket) => {
     }
   })
 
+  // Returns a player that's not away
+  async function getNextPlayer(players, indexStart, index) {
+    // Base case
+    if (index === indexStart) {
+      return -1
+    } else {
+      if (index === players.length) {
+        return await getNextPlayer(players, indexStart, 0)
+      } else {
+        const player = await User.findById(players[index])
+        if (player.status === 'playing') {
+          return index
+        } else {
+          return await getNextPlayer(players, indexStart, index+1)
+        }
+      }
+    } 
+  }
+  
   async function passTurn(currentTurn, teams) {
     let currentTeam = currentTurn.team
     let pause = false;
@@ -1184,31 +1203,21 @@ io.on("connect", async (socket) => {
       }
       currentTurn.players[currentTeam] = 0
     } else {
-      let nextPlayerIndex = currentTurn.players[currentTeam]
-      
-      // If everyone's away
-      // Pause the game
-      const playerPlaying = teams[currentTeam].players.find(async (playerId) => {
-        const player = await User.findById(playerId)
-        return player && player.status === 'playing'
-      })
-      if (!playerPlaying) {
-        pause = true
-        nextPlayerIndex++
-      } else { // Find the next player
-        let nextPlayer
-        console.log('[passTurn] at least 2 players, currentTeam', currentTeam, 'nextPlayerIndex', nextPlayerIndex)
-        do {
-          if (currentTurn.players[currentTeam] === (teams[currentTeam].players.length - 1)) {
+      let currentPlayerIndex = currentTurn.players[currentTeam]
+      const players = teams[currentTeam].players
+      let nextPlayerIndex = await getNextPlayer(players, currentPlayerIndex, currentPlayerIndex+1)
+      if (nextPlayerIndex === -1) {
+        const currentPlayer = await User.findById(teams[currentTeam].players[currentPlayerIndex])
+        if (currentPlayer.status === 'playing') {
+          nextPlayerIndex = currentPlayerIndex
+        } else {
+          pause = true
+          if (currentPlayerIndex === players.length-1) {
             nextPlayerIndex = 0
           } else {
-            nextPlayerIndex++
+            nextPlayerIndex = currentPlayerIndex+1
           }
-          console.log('[passTurn] next team players', teams[currentTeam].players)
-          console.log('[passTurn] next player id', teams[currentTeam].players[1]) // prints object id
-          nextPlayer = await User.findById(teams[currentTeam].players[nextPlayerIndex]) // returns null
-          console.log('[passTurn] nextPlayer', nextPlayer)
-        } while (nextPlayer.status !== 'playing') 
+        }
       }
       currentTurn.players[currentTeam] = nextPlayerIndex
     }
