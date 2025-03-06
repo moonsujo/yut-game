@@ -804,7 +804,9 @@ io.on("connect", async (socket) => {
         serverEvent.content.pregameOutcome = outcomePregame
       } else {
         // 'outcomePregame' is the winning team index
-        room.turn = setTurn(room.turn, outcomePregame)
+        const [newTurn, pause] = await setTurn(room.turn, outcomePregame, room.teams)
+        room.turn = newTurn
+        room.paused = pause
         room.pregameOutcome = outcomePregame.toString()
         room.gamePhase = 'game'
         room.teams[outcomePregame].throws = 1
@@ -1084,8 +1086,9 @@ io.on("connect", async (socket) => {
                 turnStartTimeDelay += 3 * ALERT_TIME
               } else {
                 // 'outcomePregame' is the winning team index
-                const newTurn = setTurn(room.turn, outcomePregame)
+                const [newTurn, pause] = await setTurn(room.turn, outcomePregame, room.teams)
                 room.turn = newTurn
+                room.paused = pause
                 room.pregameOutcome = outcomePregame.toString()
                 room.gamePhase = 'game'
                 room.teams[outcomePregame].throws++
@@ -1226,11 +1229,45 @@ io.on("connect", async (socket) => {
     return [currentTurn, pause]
   }
 
-  function setTurn(currentTurn, team) {
-    return {
+  async function setTurn(currentTurn, team, teams) {
+    currentTurn = {
       team: team,
       players: currentTurn.players
     }
+    
+    let currentTeam = currentTurn.team
+    let pause = false;
+    if (teams[currentTeam].players.length === 0) {
+      pause = true
+      currentTurn.players[currentTeam] = 0 // Someone can join the team to play (host can assign to team)
+    } else if (teams[currentTeam].players.length === 1) {
+      const player = await User.findById(teams[currentTeam].players[0])
+      console.log('[passTurn] player, only one in the team', player)
+      if (player && player.status !== 'playing') {
+        pause = true
+      }
+      currentTurn.players[currentTeam] = 0
+    } else {
+      let currentPlayerIndex = currentTurn.players[currentTeam]
+      const players = teams[currentTeam].players
+      let nextPlayerIndex = await getNextPlayer(players, currentPlayerIndex, currentPlayerIndex+1)
+      if (nextPlayerIndex === -1) {
+        const currentPlayer = await User.findById(teams[currentTeam].players[currentPlayerIndex])
+        if (currentPlayer.status === 'playing') {
+          nextPlayerIndex = currentPlayerIndex
+        } else {
+          pause = true
+          if (currentPlayerIndex === players.length-1) {
+            nextPlayerIndex = 0
+          } else {
+            nextPlayerIndex = currentPlayerIndex+1
+          }
+        }
+      }
+      currentTurn.players[currentTeam] = nextPlayerIndex
+    }
+
+    return [currentTurn, pause]
   }
 
   // Return the result
