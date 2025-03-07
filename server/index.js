@@ -199,10 +199,7 @@ async function addUser(socket, name, roomId, savedClient) {
           if (!room) {
             throw new Error('room does not exist')
           } else {
-            console.log('[addUser] removing player from room', savedClient.roomId)
             let roomPlayerIndex = room.teams[savedClient.team].players.findIndex((player) => {
-              console.log('player._id', player._id)
-              console.log('savedClient._id.valueOf()', savedClient._id.valueOf())
               return player._id.valueOf() === savedClient._id.valueOf()
             })
             room.teams[savedClient.team].players.splice(roomPlayerIndex, 1)
@@ -412,14 +409,12 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               newHost: serverEvent.content
             })
           } else if (serverEvent.name === "kick") {
-            if (userSocketId === serverEvent.content.socketId) {
-              io.to(serverEvent.content.socketId).emit("kicked");
-            } else {
-              io.to(userSocketId).emit("kick", { 
-                team: serverEvent.content.team,
-                name: serverEvent.content.name,
-              })
-            }
+            io.to(userSocketId).emit("kick", { 
+              team: serverEvent.content.team,
+              name: serverEvent.content.name,
+              turn: room.turn,
+              paused: room.paused
+            })
           } else if (serverEvent.name === "pause") {
             io.to(userSocketId).emit("pause", { 
               flag: serverEvent.content.flag,
@@ -490,13 +485,14 @@ io.on("connect", async (socket) => {
     try {
       const room = await Room.findOne({ shortId: roomId })
       if (!room) {
-        throw new Error(`room with short id`, roomId, `doesn't exist`)
+        throw new Error(`room with short id ${roomId} doesn't exist`)
       }
       let name = await createUniqueUsername()
       await addUser(socket, name, roomId, savedClient)
-      return callback()
+      return callback('success')
     } catch (err) {
       console.log ('[addUser] error', err)
+      return callback('fail')
     }
   })
 
@@ -1185,14 +1181,16 @@ io.on("connect", async (socket) => {
     } 
   }
   
-  async function passTurn(currentTurn, teams) {
+  async function passTurn(currentTurn, teams, sameTeam=false) {
     let currentTeam = currentTurn.team
     let pause = false;
 
-    if (currentTeam === (teams.length - 1)) {
-      currentTeam = 0
-    } else {
-      currentTeam++
+    if (!sameTeam) {
+      if (currentTeam === (teams.length - 1)) {
+        currentTeam = 0
+      } else {
+        currentTeam++
+      }
     }
   
     if (teams[currentTeam].players.length === 0) {
@@ -1984,35 +1982,58 @@ io.on("connect", async (socket) => {
     console.log('[kick]')
     try {
       // Check if client is the host of the room
-      if (!Room.findOne({ shortId: roomId, host: clientId })) {
+      let room = await Room.findOne({ shortId: roomId, host: clientId })
+      if (!room) {
         throw new Error('room with shortId', roomId, 'and hostId', hostId, 'not found')
       }
 
-      // Change user's 'connectedToRoom' state
       const user = await User.findOneAndDelete({ name, roomId })
+      if (!user) {
+        throw new Error(`user with name ${name} in room ${roomId} not found`)
+      }
+
+      io.to(user.socketId).emit("kicked");
   
       // Remove the user from the room
-      let operation = {}
-      operation['$pullAll'] = { 
-        [`spectators`]: [{ _id: user._id }],
-        [`teams.${team}.players`]: [{ _id: user._id }],
-      }
       
-      operation['$set'] = { 
-        'serverEvent': {
-          'name': 'kick',
-          'content': {
-            team,
-            name,
-            socketId: user.socketId
-          }
+      if (team === -1) {
+        let spectatorIndex = room.spectators.findIndex((spectator) => {
+          return spectator._id.valueOf() === user._id.valueOf()
+        })
+        if (spectatorIndex === -1) {
+          throw new Error(`spectator not found in room ${roomId}`)
+        } else {
+          room.spectators.splice(spectatorIndex, 1)
+        }
+      } else {
+        let playerIndex = room.teams[team].players.findIndex((player) => {
+          return player._id.valueOf() === user._id.valueOf()
+        })
+        if (playerIndex === -1) {
+          throw new Error(`player not found in room ${roomId} team ${team}`)
+        } else {
+          room.teams[team].players.splice(playerIndex, 1)
         }
       }
       
-      await Room.findOneAndUpdate({ shortId: roomId }, operation )
+      room.serverEvent = {
+        'name': 'kick',
+        'content': {
+          team,
+          name,
+          socketId: user.socketId
+        }
+      }
+
+      // If player had turn, find the next player on the team
+      const [nextTurn, pause] = await passTurn(room.turn, room.teams, true)
+      room.turn = nextTurn
+      room.paused = pause
+      
+      await room.save()
       return callback('success')
     } catch (err) {
-      console.log('[kick]', err)
+      console.log('[kick] error', err)
       return callback('fail')
     }
   })

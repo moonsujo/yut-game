@@ -13,8 +13,12 @@ export default function Experience() {
 
   useEffect(() => {
     if (connectedToServer) {
-      socket.emit('addUser', { roomId: params.id.toUpperCase(), savedClient: localStorage.getItem('yootGame') }, () => {
-        socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
+      socket.emit('addUser', { roomId: params.id.toUpperCase(), savedClient: localStorage.getItem('yootGame') }, (response) => {
+        if (response === 'success') {
+          socket.emit('joinRoom', { roomId: params.id.toUpperCase() })
+        } else {
+          // Display message: 'room doesn't exist. create a new room from the main entrance. <button/>'
+        }
       })
     }
   }, [connectedToServer])

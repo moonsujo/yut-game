@@ -41,6 +41,9 @@ import {
   backdoLaunchAtom,
   nakAtom,
   yutMoCatchAtom,
+  editGuestsOpenAtom,
+  editOneGuestOpenAtom,
+  guestBeingEdittedAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -345,6 +348,9 @@ export default function Game() {
   function SettingsButton({ position, scale }) {
     const [open, setOpen] = useAtom(settingsOpenAtom)
     const setMainMenuOpen = useSetAtom(mainMenuOpenAtom)
+    const setEditGuestsOpen = useSetAtom(editGuestsOpenAtom)
+    const setEditOneGuestOpen = useSetAtom(editOneGuestOpenAtom)
+    const setGuestBeingEditted = useSetAtom(guestBeingEdittedAtom)
     const [hover, setHover] = useState(false)
     function handlePointerEnter(e) {
       e.stopPropagation();
@@ -375,6 +381,9 @@ export default function Game() {
       } else {
         setOpen(true)
         setMainMenuOpen(true)
+        setEditGuestsOpen(false)
+        setEditOneGuestOpen(false)
+        setGuestBeingEditted(null)
       }
     }
 

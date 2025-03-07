@@ -963,6 +963,7 @@ export default function Lobby() {
           }, (response) => {
             if (response === 'success') {
               setGuestBeingEditted(null)
+              
             }
           })
         }

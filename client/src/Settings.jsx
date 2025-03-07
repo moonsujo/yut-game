@@ -1249,6 +1249,7 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         }, (response) => {
           if (response === 'success') {
             setEditOneGuestOpen(false)
+            setGuestBeingEditted(null)
             setEditGuestsOpen(true)
           }
         })
