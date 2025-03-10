@@ -15,6 +15,7 @@ import { TaurusConstellation } from './meshes/TaurusConstellation';
 import { AriesConstellation } from './meshes/AriesConstellation';
 import CurvedArrow from './meshes/CurvedArrow';
 import FinishMarkerSelectable from './FinishMarkerSelectable';
+import FinishTile from './FinishTile';
 
 export default function Board({ 
   position=[0,0,0], 
@@ -258,95 +259,8 @@ export default function Board({
       interactive={interactive}
     />
   );
-
   // position 29
-  const finishMarkerRadius = 3.5
-  tileComponents.push(
-    <group name='finish-marker' key={29} scale={1.67}>
-      { !legalTiles[29] && <group name='finish-marker-normal'>
-        <group name='dots-normal'>
-          <animated.mesh name='dot-0' position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32))+0.19, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (24/32)), 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </animated.mesh>
-          <mesh position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32))+0.17, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32))-0.04, 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh>
-          <mesh position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32))+0.13, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32))-0.05, 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh>
-          <mesh position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32))+0.08, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32))-0.02, 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh>
-          <mesh position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32))+0.02, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (28/32))+0.03, 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh>
-          <mesh position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32))-0.05, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.1, 
-            ]}>
-            <sphereGeometry args={[0.04, 32, 16]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh>
-          <mesh name='arrow' rotation={[0, Math.PI * 2 * 4/32, 0]}
-            position={[
-            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32))-0.1, 
-            0, 
-            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.2, 
-            ]}>
-            <cylinderGeometry args={[0, 0.1, 0.01, 3]}/>
-            <meshStandardMaterial color='limegreen'/>
-          </mesh >
-        </group>
-        <Text3D name='text-normal'
-          font="/fonts/Luckiest Guy_Regular.json"
-          position={layout[device].board.finish.text.position}
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.25}
-          height={0.01}
-        >
-          FINISH
-          <meshStandardMaterial color='limegreen'/>
-        </Text3D>
-      </group> }
-      { legalTiles[29] && <FinishMarkerSelectable/> }
-      <group name='finish-pad'>
-        <mesh name='finish-pad-background-inner' position={[0, 0, 3.9]}>
-          <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
-          <meshStandardMaterial color='limegreen'/>
-        </mesh>
-        <mesh name='finish-pad-background-outer' position={[0, 0, 3.9]}>
-          <cylinderGeometry args={[0.28, 0.28, 0.011, 32]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Star scale={0.22} color='limegreen' position={[0, -0.03, 3.9]}/>
-      </group>
-    </group>)
+  tileComponents.push(<FinishTile legalTiles={legalTiles}/>)
 
   const selectTileComponents = []
   if (omit) {

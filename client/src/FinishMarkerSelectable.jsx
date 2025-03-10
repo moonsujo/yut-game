@@ -48,7 +48,7 @@ export default function FinishMarkerSelectable() {
   useEffect(() => {
     finishDotSpring0Api.start({
       from: {
-        scale: 1
+        scale: 1,
       },
       to: [
         {
@@ -64,6 +64,7 @@ export default function FinishMarkerSelectable() {
             tension: 170,
             friction: 26
           },
+          delay: 1000
         }
       ],
       loop: true,
@@ -87,6 +88,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true,
@@ -111,6 +113,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true,
@@ -135,6 +138,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true
@@ -159,6 +163,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true
@@ -183,6 +188,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true
@@ -207,6 +213,7 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
+            delay: 1000
           }
         ],
         loop: true
