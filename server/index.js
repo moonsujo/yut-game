@@ -740,7 +740,7 @@ io.on("connect", async (socket) => {
       await switchTurnByTimeExpired(room.shortId);
     }, room.turnExpireTime - Date.now())
     room.timerId = timer
-    // await room.save() // done in "startGame"
+    // await room.save() // done in their respective event handlers
   }
 
   async function switchTurnByTimeExpired(roomId) {
@@ -863,8 +863,8 @@ io.on("connect", async (socket) => {
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
-      // room.gamePhase = "game" // testing
-      room.gamePhase = "pregame"
+      room.gamePhase = "game" // testing
+      // room.gamePhase = "pregame"
       
       // Game logs
       let gameLog = {
@@ -891,7 +891,7 @@ io.on("connect", async (socket) => {
       
       await room.save()
     } catch (err) {
-      console.log(`[startGame] error starting game`, err)
+      console.log(`[gameStart] error starting game`, err)
     }
   })
 

@@ -3018,7 +3018,7 @@ export default {
       finish: {
         position: [2.5, 0, 5.5],
         text: {
-          position: [-1.5,0,4.1],
+          position: [-1.6,0,4.1],
           rotation: [-Math.PI/2, 0, 0],
           fontSize: 15,
         },

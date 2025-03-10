@@ -1179,10 +1179,10 @@ export default function Game() {
           legalTiles={legalTiles}
           hasTurn={hasTurn}
         /> }
-        <PiecesOnBoard 
+        { gamePhase === 'game' && <PiecesOnBoard 
         currentMovesRockets={teams[0].moves} 
         currentMovesUfos={teams[1].moves} 
-        boardOffset={layout[device].game.board['game'].position[2]}/>
+        boardOffset={layout[device].game.board['game'].position[2]}/> }
         { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}

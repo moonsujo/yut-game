@@ -414,8 +414,6 @@ export const SocketManager = () => {
     })
 
     socket.on('recordThrow', ({ teams, gamePhaseUpdate, turnUpdate, pregameOutcome, yootOutcome, newGameLogs, turnStartTime, turnExpireTime, paused }) => {    
-      console.log('[recordThrow] turnUpdate', turnUpdate)
-      console.log('[recordThrow] paused', paused)
       setTeams(teams) // only update the throw count of the current team
       // this invocation is within a useEffect
       // 'gamePhase' state is saved as the one loaded in component load because there's no dependency
@@ -439,7 +437,6 @@ export const SocketManager = () => {
 
       setYootOutcome(yootOutcome)
       
-      let alerts;
       if (gamePhaseUpdate === 'pregame') {
         let yootOutcomeAlertName;
         if (yootOutcome === 4 || yootOutcome === 5) {
@@ -448,12 +445,14 @@ export const SocketManager = () => {
           yootOutcomeAlertName = `yootOutcome${yootOutcome}`
         }
         if (pregameOutcome === 'pass') {
-          alerts = [yootOutcomeAlertName]
+          let alerts = [yootOutcomeAlertName]
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
+          setAlerts(alerts)
           setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === 'tie') {
-          alerts = [yootOutcomeAlertName, 'pregameTie']
+          let alerts = [yootOutcomeAlertName, 'pregameTie']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
+          setAlerts(alerts)
           setThrowCount(teams[turnUpdate.team].throws)
         }
       } else if (gamePhasePrev === 'pregame' && gamePhaseUpdate === 'game') {
@@ -464,19 +463,22 @@ export const SocketManager = () => {
           yootOutcomeAlertName = `yootOutcome${yootOutcome}`
         }
         if (pregameOutcome === '0') { // changes from int to string
-          alerts = [yootOutcomeAlertName, 'pregameRocketsWin']
+          let alerts = [yootOutcomeAlertName, 'pregameRocketsWin']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
+          setAlerts(alerts)
           setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === '1') {
-          alerts = [yootOutcomeAlertName, 'pregameUfosWin']
+          let alerts = [yootOutcomeAlertName, 'pregameUfosWin']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
+          setAlerts(alerts)
           setThrowCount(teams[turnUpdate.team].throws)
         }
       } else if (gamePhaseUpdate === 'game') {
         let yootOutcomeAlertName = `yootOutcome${yootOutcome}`
         if ((yootOutcome === 0 || yootOutcome === -1) && teams[turnPrev.team].throws === 0 && movesIsEmpty(teams[turnPrev.team].moves)) {
-          alerts = [yootOutcomeAlertName] // add 'no available moves' alert
+          let alerts = [yootOutcomeAlertName] // add 'no available moves' alert
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
+          setAlerts(alerts)
           // server determines if turn was skipped
         } else {
           setAlerts([yootOutcomeAlertName])
@@ -535,7 +537,6 @@ export const SocketManager = () => {
         }
       }
 
-      setAlerts(alerts)
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setYootAnimationPlaying(false)
@@ -559,6 +560,7 @@ export const SocketManager = () => {
       // instead of teamsUpdate and tiles, receive updatedPieces and updatedTiles
       // check if moves is empty. if it is, clear it
       // clear legalTiles and selection
+
       let alerts = []
 
       let piecesCurrentTeam = []
@@ -623,8 +625,10 @@ export const SocketManager = () => {
         }
       
         // Update current player's name
-        const currentPlayerName = teams[newTeam].players[newPlayer].name
-        setCurrentPlayerName(currentPlayerName)
+        if (teams[newTeam].players[newPlayer].name) {
+          const currentPlayerName = teams[newTeam].players[newPlayer].name
+          setCurrentPlayerName(currentPlayerName)
+        }
 
         return [...teams]
       })
@@ -633,7 +637,6 @@ export const SocketManager = () => {
         // Join
         const movingTeam = prevTeam
         const to = updatedTiles.to.index
-        console.log('[move] to', to, 'movingTeam', movingTeam, 'tiles[to]', tiles[to])
         if (tiles[to].length > 0 && tiles[to][0].team === movingTeam) {
           alerts.push(`join${movingTeam}${to}`)
         }

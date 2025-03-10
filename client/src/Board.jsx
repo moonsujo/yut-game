@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tile from './components/Tile'
-import { animated } from '@react-spring/three';
+import { animated, useSpring } from '@react-spring/three';
 import Star from './meshes/Star';
 import Earth from './meshes/Earth';
 import Mars from './meshes/Mars';
@@ -8,14 +8,13 @@ import Saturn from './meshes/Saturn';
 import Neptune from './meshes/Neptune';
 import Moon from './meshes/Moon';
 import layout from './layout';
-import { Text3D } from '@react-three/drei';
+import { Float, Text3D } from '@react-three/drei';
 import { WolfConstellation } from './meshes/WolfConstellation';
 import { RhinoConstellation } from './meshes/RhinoConstellation';
 import { TaurusConstellation } from './meshes/TaurusConstellation';
 import { AriesConstellation } from './meshes/AriesConstellation';
 import CurvedArrow from './meshes/CurvedArrow';
-
-
+import FinishMarkerSelectable from './FinishMarkerSelectable';
 
 export default function Board({ 
   position=[0,0,0], 
@@ -259,109 +258,83 @@ export default function Board({
       interactive={interactive}
     />
   );
+
   // position 29
   const finishMarkerRadius = 3.5
   tileComponents.push(
     <group name='finish-marker' key={29} scale={1.67}>
-      { /* <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (20/32)), 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (20/32)), 
-        ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (21/32)), 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (21/32)), 
-        ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (22/32)), 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (22/32)), 
-        ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (23/32)), 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (23/32)), 
-        ]}>
-        <sphereGeometry args={[0.05, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh> */}
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32))+0.19, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (24/32)), 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32))+0.17, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32))-0.04, 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32))+0.13, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32))-0.05, 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32))+0.08, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32))-0.02, 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32))+0.02, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (28/32))+0.03, 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32))-0.05, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.1, 
-        ]}>
-        <sphereGeometry args={[0.04, 32, 16]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
-      <mesh name='arrow' rotation={[0, Math.PI * 2 * 4/32, 0]}
-        position={[
-        finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32))-0.1, 
-        0, 
-        -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.2, 
-        ]}>
-        <cylinderGeometry args={[0, 0.1, 0.01, 3]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh >
-      <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
-        position={layout[device].board.finish.text.position}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.25}
-        height={0.01}
-      >
-        FINISH
-        <meshStandardMaterial color='limegreen'/>
-      </Text3D>
+      { !legalTiles[29] && <group name='finish-marker-normal'>
+        <group name='dots-normal'>
+          <animated.mesh name='dot-0' position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32))+0.19, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (24/32)), 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </animated.mesh>
+          <mesh position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (25/32))+0.17, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (25/32))-0.04, 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh>
+          <mesh position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (26/32))+0.13, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (26/32))-0.05, 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh>
+          <mesh position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (27/32))+0.08, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (27/32))-0.02, 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh>
+          <mesh position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (28/32))+0.02, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (28/32))+0.03, 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh>
+          <mesh position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (29/32))-0.05, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (29/32))+0.1, 
+            ]}>
+            <sphereGeometry args={[0.04, 32, 16]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh>
+          <mesh name='arrow' rotation={[0, Math.PI * 2 * 4/32, 0]}
+            position={[
+            finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (30/32))-0.1, 
+            0, 
+            -finishMarkerRadius * Math.sin(Math.PI * 1 + Math.PI/2 * (30/32))+0.2, 
+            ]}>
+            <cylinderGeometry args={[0, 0.1, 0.01, 3]}/>
+            <meshStandardMaterial color='limegreen'/>
+          </mesh >
+        </group>
+        <Text3D name='text-normal'
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={layout[device].board.finish.text.position}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.25}
+          height={0.01}
+        >
+          FINISH
+          <meshStandardMaterial color='limegreen'/>
+        </Text3D>
+      </group> }
+      { legalTiles[29] && <FinishMarkerSelectable/> }
       <group name='finish-pad'>
         <mesh name='finish-pad-background-inner' position={[0, 0, 3.9]}>
           <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
@@ -382,9 +355,6 @@ export default function Board({
     }
   }
 
-  // arrow: sphere geometries
-  // add a star after Earth
-  // color the 'start' star in info-green
   return <animated.group position={position} rotation={rotation} scale={scale}>
     {!omit && tileComponents}
     {omit && selectTileComponents}
