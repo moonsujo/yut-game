@@ -1891,9 +1891,9 @@ export default function Lobby() {
     }
 
     return <group position={position}>
-      <ShareThisLobbyButton position={[0,0,1.4]}/>
-      { !isHost && <GuestStartButton position={[0,0,3.4]}/> }
-      { isHost && <StartGameButton position={[0,0,3.4]}/> } 
+      <ShareThisLobbyButton position={[0,0,1.1]}/>
+      { !isHost && <GuestStartButton position={[0,0,3.1]}/> }
+      { isHost && <StartGameButton position={[0,0,3.1]}/> } 
     </group>
   }
   

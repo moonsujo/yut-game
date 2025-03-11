@@ -29,14 +29,14 @@ export default {
         lookAt: [0, 0, 0]
       },
       text: {
-        position: [-5,0,-11],
+        position: [-4.2,0,-10.4],
         rotation: [-Math.PI/2,0,0],
-        scale: 4.5
+        scale: 3.5
       },
       yoots: {
-        position: [3, 0, -8.4],
+        position: [2.4, 0, -8.4],
         rotation: [0,Math.PI/2,0],
-        scale: 0.43
+        scale: 0.35
       },
       tiles: {
         position: [0, 0, -0.1],
@@ -50,14 +50,14 @@ export default {
         scale: 2
       },
       howToPlay: {
-        position: [0, 0, 8.2],
+        position: [0, 0, 8],
         rotation: [0,0,0],
-        scale: 2
+        scale: 1.8
       },
       joinGame: {
-        position: [0, 0, 9.6],
+        position: [0, 0, 9.2],
         rotation: [0,0,0],
-        scale: 2
+        scale: 1.8
       },
       rocketHome: {
         position: [-4.3,0,5.2],
@@ -73,9 +73,9 @@ export default {
         scale: [1.7, 1.7, 1.7]
       },
       letsPlay: {
-        position: [0, 0, 11],
+        position: [0, 0, 10.4],
         rotation: [0,0,0],
-        scale: 2
+        scale: 1.8
       },
       pieces: {
         position: [0,0,0],
@@ -97,12 +97,12 @@ export default {
         }
       },
       board: {
-        position: [0, 0, 0],
+        position: [0, 0, -0.2],
         scale: 1
       },
       milkyWay: {
         rotation: [-Math.PI/2, 0, -35.0],
-        position: [0, -1, -0.5],
+        position: [0, -1, -0.7],
         scale: 5,
         brightness: 0.3,
         colorTint1: [
@@ -1166,7 +1166,7 @@ export default {
         scale: [1.3, 1.3, 1.3]
       },
       chat: {
-        position: [-5.4,0,6.8],
+        position: [-5.4,0,6.7],
         rotation: [-Math.PI/2, 0, 0],
         scale: [0.5, 0.5, 0.5],
         box: {
@@ -1321,7 +1321,7 @@ export default {
         }
       },
       piecesSection: {
-        position: [-0.7, 0, 8.2],
+        position: [-0.7, 0, 8],
         emptyPieces: {
           positions: [
             [0, 0, -1],
@@ -1342,7 +1342,7 @@ export default {
         }
       },
       moveList: {
-        position: [-1.3, 0, 10.5],
+        position: [-1.3, 0, 10.1],
         rotation: [-Math.PI/2, 0, 0],
         tokenScale: 1,
         tokenPosition: [0.6, 0, 0.7],
@@ -1365,7 +1365,7 @@ export default {
         scale: 1.2
       },
       yootButton: {
-        position: [3.9, 0, 9.3],
+        position: [3.9, 0, 9.1],
         rotation: [0, Math.PI/2, 0],
         scale: 1.4
       },

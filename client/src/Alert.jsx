@@ -1354,22 +1354,28 @@ export default function Alert({ position, rotation }) {
       let team = alertString && parseInt(alertString[4]);
       let tile = alertString && parseInt(alertString.substring(5, alertString.length));
 
-      // specific location for each tile
+      // Specific location for each tile
       let position;
-      if (tile === 9 || tile === 10 || tile === 11) { 
+      // Fourth quadrant
+      if (tile === 1 || tile === 2 || tile === 3 || tile === 4 || tile === 5 || tile === 20 || tile === 21 || tile === 22 || tile === 27 || tile == 28 || tile === 0) {
         position = [
-          tilePositions[tile][0] + 0,
-          tilePositions[tile][1] + 0.5,
-          tilePositions[tile][2] + 1.6,
+          2.3, 0, 1.5
         ]
-      } else if (tile === 0 || tile) {
+      // First quadrant
+      } else if (tile === 6 || tile === 7 || tile === 8 || tile === 9 || tile === 25 || tile === 26) {
         position = [
-          tilePositions[tile][0] + 0,
-          tilePositions[tile][1] + 0.5,
-          tilePositions[tile][2] - 1.3,
+          2.3, 0, -2.5
         ]
+      // Second quadrant
+      } else if (tile === 10 || tile === 11 || tile === 12 || tile === 13 || tile === 14 || tile === 23 || tile === 24) {
+        position = [
+          -2.3, 0, -2.5
+        ]
+      // Third quadrant
       } else {
-        position = [0,0,0]
+        position = [
+          -2.3, 0, 1.5
+        ]
       }
 
       const borderMesh0Ref = useRef();
