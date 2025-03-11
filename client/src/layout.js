@@ -969,6 +969,10 @@ export default {
       }
     },
     lobby: {
+      disconnectModal: {
+        position: [0, 10, 2.7],
+        rotation: [0,0,0],
+      },
       joinTeamModal: {
         position: [-4.5, 0, -3],
         rotation: [-Math.PI/2, 0, 0],
@@ -2543,6 +2547,10 @@ export default {
       },
     },
     lobby: {
+      disconnectModal: {
+        position: [0, 10, 2.7],
+        rotation: [0,0,0],
+      },
       joinTeamModal: {
         position: [-4, 0, -2.5],
         rotation: [-Math.PI/2, 0, 0],

@@ -11,7 +11,7 @@ import { getLegalTiles } from "./helpers/legalTiles";
 import { socket } from "./SocketManager";
 import { useParams } from "wouter";
 
-export default function FinishTile({ legalTileInfo, key=29 }) {
+export default function FinishTile({ legalTileInfo }) {
   const tile = 29
 
   const selection = useAtomValue(selectionAtom);

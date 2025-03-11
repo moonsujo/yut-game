@@ -569,8 +569,7 @@ io.on("connect", async (socket) => {
         paused: false,
         rules: {
           backdoLaunch: true,
-          timer: false,
-          // timer: true,
+          timer: true,
           nak: true,
           yutMoCatch: true
         },
@@ -862,8 +861,8 @@ io.on("connect", async (socket) => {
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
-      room.gamePhase = "game" // testing
-      // room.gamePhase = "pregame"
+      // room.gamePhase = "game" // testing
+      room.gamePhase = "pregame"
       
       // Game logs
       let gameLog = {
@@ -2027,9 +2026,11 @@ io.on("connect", async (socket) => {
       }
 
       // If player had turn, find the next player on the team
-      const [nextTurn, pause] = await passTurn(room.turn, room.teams, true)
-      room.turn = nextTurn
-      room.paused = pause
+      if (room.gamePhase === 'pregame' || room.gamePhase === 'game') {
+        const [nextTurn, pause] = await passTurn(room.turn, room.teams, true)
+        room.turn = nextTurn
+        room.paused = pause
+      }
       
       await room.save()
       return callback('success')

@@ -963,7 +963,6 @@ export default function Lobby() {
           }, (response) => {
             if (response === 'success') {
               setGuestBeingEditted(null)
-              
             }
           })
         }
@@ -1911,8 +1910,8 @@ export default function Lobby() {
       <ActionSection position={[0, 0, 7]}/>
     </group>}
     { !connectedToServer && <DisconnectModal
-      position={layout[device].game.disconnectModal.position}
-      rotation={layout[device].game.disconnectModal.rotation}
+      position={layout[device].lobby.disconnectModal.position}
+      rotation={layout[device].lobby.disconnectModal.rotation}
     /> }
     <MeteorsRealShader/>
   </animated.group>

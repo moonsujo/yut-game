@@ -261,6 +261,7 @@ export default function Board({
     />
   );
   // position 29
+  // key is unused
   tileComponents.push(<FinishTile legalTileInfo={legalTiles[29]} key={29}/>)
 
   const selectTileComponents = []
