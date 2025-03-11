@@ -116,7 +116,7 @@ export default {
         ]
       },
       disconnectModal: {
-        position: [0, 7, 2.7],
+        position: [0, 10, 3.7],
         rotation: [0,0,0],
       },
     },
@@ -970,7 +970,7 @@ export default {
     },
     lobby: {
       disconnectModal: {
-        position: [0, 10, 2.7],
+        position: [0, 10, 3.7],
         rotation: [0,0,0],
       },
       joinTeamModal: {
@@ -1214,7 +1214,7 @@ export default {
         height: 0.01
       },
       disconnectModal: {
-        position: [0, 7, 2.7],
+        position: [0, 10, 3.7],
         rotation: [0,0,0],
       },
       board: {
@@ -1635,7 +1635,7 @@ export default {
         ]
       },
       disconnectModal: {
-        position: [-4, 7, 2.7],
+        position: [-4, 10, 3.7],
         rotation: [0,0,0],
       },
     },
@@ -2548,7 +2548,7 @@ export default {
     },
     lobby: {
       disconnectModal: {
-        position: [0, 10, 2.7],
+        position: [0, 10, 3.7],
         rotation: [0,0,0],
       },
       joinTeamModal: {
@@ -2791,7 +2791,7 @@ export default {
         height: 0.01
       },
       disconnectModal: {
-        position: [0, 7, 2.7],
+        position: [0, 10, 3.7],
         rotation: [0,0,0],
       },
       board: {
