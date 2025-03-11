@@ -1,7 +1,7 @@
 export default {
   initialPiecesTeam0: [
-    { tile: 28, team: 0, id: 0, history: [], lastPath: [] },
-    { tile: 28, team: 0, id: 1, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
+    { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
   ],
@@ -49,8 +49,6 @@ export default {
     [], // 25
     [],
     [],
-    [
-      { tile: 28, team: 0, id: 0, history: [], lastPath: [] },
-      { tile: 28, team: 0, id: 1, history: [], lastPath: [] },],
+    [],
   ],
 };

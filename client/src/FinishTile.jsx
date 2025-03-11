@@ -4,31 +4,44 @@ import FinishMarkerSelectable from "./FinishMarkerSelectable"
 import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
 import { useRef } from "react";
-import { selectionAtom, turnAtom } from "./GlobalState";
-import { useAtomValue } from "jotai";
+import { clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, showFinishMovesAtom, turnAtom } from "./GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useAnimationPlaying } from "./hooks/useAnimationPlaying";
+import { getLegalTiles } from "./helpers/legalTiles";
+import { socket } from "./SocketManager";
+import { useParams } from "wouter";
 
-export default function FinishTile({ legalTiles }) {
+export default function FinishTile({ legalTileInfo, key=29 }) {
+  const tile = 29
 
   const selection = useAtomValue(selectionAtom);
-  const turn = useAtomValue(turnAtom)
+  const hasTurn = useAtomValue(hasTurnAtom)
+  const gamePhase = useAtomValue(gamePhaseAtom)
+  const animationPlaying = useAnimationPlaying()
+  const paused = useAtomValue(pauseGameAtom)
+  const client = useAtomValue(clientAtom)
+  const setShowFinishMoves = useSetAtom(showFinishMovesAtom)
+  const params = useParams()
   const { wrapperScale } = useSpring({
-    wrapperScale: (selection != null && legalTiles[29]) ? 0.5 : 0, // want the animation to start again when status changes
+    wrapperScale: (selection != null && legalTileInfo) ? 0.5 : 0, // want the animation to start again when status changes
   })
   const wrapperMat = useRef();
   const wrapper = useRef();
 
-  useFrame((state) => {
-    const time = state.clock.elapsedTime
-    if (selection != null && legalTiles[29]) {
-      if (turn.team === 0) {
-        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
-      } else {
-        wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
-      }
-      wrapperMat.current.opacity = 0.3;
-      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + 1.1;
+  let time = 0
+  useFrame((state, delta) => {
+    // const time = state.clock.elapsedTime
+    time += delta
+    if (selection != null && legalTileInfo) {
+      // if (turn.team === 0) {
+      //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
+      // } else {
+      //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
+      // }
+      wrapperMat.current.opacity = 0.2;
+      wrapper.current.scale.x = Math.sin(time * 3) * 0.05 + 1.1;
+      wrapper.current.scale.y = Math.sin(time * 3) * 0.05 + 1.1;
+      wrapper.current.scale.z = Math.sin(time * 3) * 0.05 + 1.1;
     } else {
       wrapperMat.current.opacity = 0;
     }
@@ -44,12 +57,27 @@ export default function FinishTile({ legalTiles }) {
   }
   function handleFinishPointerUp(e) {
     e.stopPropagation()
-    // logic
+    if (gamePhase === "game" && hasTurn && !animationPlaying && !paused) {
+      // if legalTileInfo.length === 1: click scores
+      // if it's greater than 1: click selects tile
+        // select doesn't clear. it sends 'display finish moves' event
+      if (selection.tile !== tile && legalTileInfo) {
+        // Server clears legalTiles and selection
+        // When they're called separately, the order of operation is not kept
+        if (legalTileInfo.length === 1) {
+          socket.emit("score", { roomId: params.id.toUpperCase(), selectedMove: legalTileInfo[0], playerName: client.name });
+        } else if (legalTileInfo.length > 1) {
+          setShowFinishMoves(true)
+        }
+      } else {
+        socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
+      }
+    }
   }
 
   const finishMarkerRadius = 3.5
   return <group name='finish-marker' key={29} scale={1.67}>
-    { !legalTiles[29] && <group name='finish-marker-normal'>
+    { !legalTileInfo && <group name='finish-marker-normal'>
       <group name='dots-normal'>
         <mesh name='dot-0' position={[
           finishMarkerRadius * Math.cos(Math.PI * 1 + Math.PI/2 * (24/32))+0.19, 
@@ -120,7 +148,7 @@ export default function FinishTile({ legalTiles }) {
         <meshStandardMaterial color='limegreen'/>
       </Text3D>
     </group> }
-    { legalTiles[29] && <FinishMarkerSelectable/> }
+    { legalTileInfo && <FinishMarkerSelectable legalTileInfo={legalTileInfo} selection={selection} /> }
     <group name='finish-pad' position={[0, 0, 3.9]}>
       <mesh name='finish-pad-background-inner' position={[0, 0, 0]}>
         <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
@@ -146,6 +174,7 @@ export default function FinishTile({ legalTiles }) {
           opacity={0}
           ref={wrapperMat}
           depthWrite={false}
+          color='limegreen'
         />
       </mesh>
       </animated.group>

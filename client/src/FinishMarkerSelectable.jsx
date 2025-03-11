@@ -1,9 +1,21 @@
 import { animated, useSpring } from '@react-spring/three'
 import { Text3D } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { clientAtom, hasTurnAtom, pauseGameAtom, showFinishMovesAtom } from './GlobalState'
+import { useAtomValue } from 'jotai'
+import { MeshStandardMaterial } from 'three'
+import { socket } from './SocketManager'
+import { useParams } from 'wouter'
 
-export default function FinishMarkerSelectable() {
+// legalTileInfo: moves to finish with
+export default function FinishMarkerSelectable({ legalTileInfo, selection }) {
+
+  const showFinishMoves = useAtomValue(showFinishMovesAtom)
+  const hasTurn = useAtomValue(hasTurnAtom)
+  const paused = useAtomValue(pauseGameAtom)
+  const client = useAtomValue(clientAtom)
+  const params = useParams()
   // #region springs
   const frictionWobbly = 15
   const startDelay = 100
@@ -62,9 +74,8 @@ export default function FinishMarkerSelectable() {
           scale: 1,
           config: {
             tension: 170,
-            friction: 26
+            friction: 26,
           },
-          delay: 1000
         }
       ],
       loop: true,
@@ -88,12 +99,11 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true,
       })
-    }, 200)
+    }, 100)
     setTimeout(() => {
       finishDotSpring2Api.start({
         from: {
@@ -113,12 +123,11 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true,
       })
-    }, 400)
+    }, 200)
     setTimeout(() => {
       finishDotSpring3Api.start({
         from: {
@@ -138,12 +147,11 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true
       })
-    }, 600)
+    }, 300)
     setTimeout(() => {
       finishDotSpring4Api.start({
         from: {
@@ -163,12 +171,11 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true
       })
-    }, 800)
+    }, 400)
     setTimeout(() => {
       finishDotSpring5Api.start({
         from: {
@@ -188,12 +195,11 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true
       })
-    }, 1000)
+    }, 500)
     setTimeout(() => {
       arrowSpringApi.start({
         from: {
@@ -213,22 +219,112 @@ export default function FinishMarkerSelectable() {
               tension: 170,
               friction: 26
             },
-            delay: 1000
           }
         ],
         loop: true
       })
-    }, 1200)
+    }, 600)
   }, [])
 
   const finishTextRef = useRef()
   let time = 0
   useFrame((state, delta) => {
     time += delta
-    finishTextRef.current.scale.x = 1 + Math.sin(time*3) * 0.05
-    finishTextRef.current.scale.y = 1 + Math.sin(time*3) * 0.05
-    finishTextRef.current.scale.z = 1 + Math.sin(time*3) * 0.05
+    if (legalTileInfo.length > 0 && !showFinishMoves) {
+      finishTextRef.current.scale.x = 1 + Math.sin(time*3) * 0.05
+      finishTextRef.current.scale.y = 1 + Math.sin(time*3) * 0.05
+      finishTextRef.current.scale.z = 1 + Math.sin(time*3) * 0.05
+    }
   })
+
+  function MoveToken({moveInfo, position}) {
+
+    const [hover, setHover] = useState(false);
+    const primaryMaterial = new MeshStandardMaterial({ color: 'limegreen' })
+    // console.log(primaryMaterial.color.r) // 0.03190
+    // console.log(primaryMaterial.color.g) // 0.6105
+
+    useFrame((state) => {
+      const time = state.clock.elapsedTime;
+      if (!hover) {
+        primaryMaterial.color.g = 0.3105 + Math.cos(time * 5) * 0.3 + 0.1
+      } else {
+        primaryMaterial.color.r = 0.7
+        primaryMaterial.color.g = 1
+        primaryMaterial.color.b = 1
+      }
+    })
+
+    function scorePointerEnter(event) {
+      event.stopPropagation();
+      if (hasTurn) {
+        document.body.style.cursor = "pointer";
+        setHover(true)
+      }
+    }
+  
+    function scorePointerOut(event) {
+      event.stopPropagation();
+      if (hasTurn) {
+        document.body.style.cursor = "default";
+        setHover(false)
+      }
+    }
+
+    return <group position={position} scale={0.6}>
+      <mesh rotation={[0, 0, 0]} material={primaryMaterial}>
+        <cylinderGeometry args={[0.5, 0.5, 0.1]}/>
+      </mesh>
+      <mesh rotation={[0, 0, 0]}>
+        <cylinderGeometry args={[0.45, 0.45, 0.11]}/>
+        <meshStandardMaterial color='black'/>
+      </mesh>
+      <Text3D 
+      font="/fonts/Luckiest Guy_Regular.json" 
+      height={0.01} 
+      size={0.5} 
+      position={[-0.17, 0.05, 0.23]}
+      rotation={[-Math.PI/2, 0, 0]}
+      material={primaryMaterial}>
+        {`${moveInfo.move}`}
+      </Text3D>
+      <mesh 
+        name='wrapper' 
+        position={[0,0,0]} 
+        rotation={[0, 0, 0]}
+        onPointerEnter={scorePointerEnter}
+        onPointerLeave={scorePointerOut}
+        onPointerDown={() => {
+          if (hasTurn && !paused) {
+            socket.emit('score', { roomId: params.id.toUpperCase(), selectedMove: moveInfo, playerName: client.name });
+            setHover(false)
+          }
+        }}
+      >
+        <cylinderGeometry args={[0.5, 0.5, 0.15]}/>
+        <meshStandardMaterial transparent opacity={0}/>
+      </mesh>
+    </group> 
+  }
+
+  function MultipleMoveButtonSet({ position, scale, moves }) {
+    return <group 
+      position={position}
+      scale={scale}
+    >
+      { moves.map((value, index) => ( // must use parentheses instead of brackets
+        <MoveToken
+          moveInfo={value} 
+          position={[
+            0.4 + index * 0.65, 
+            0, 
+            0
+          ]} 
+          key={index}
+        />
+      ))}
+    </group>
+  }
   
   const finishMarkerRadius = 3.5
   return <group name='finish-marker-selectable'>
@@ -312,5 +408,19 @@ export default function FinishMarkerSelectable() {
       FINISH
       <meshStandardMaterial color='limegreen'/>
     </Text3D>
+    { legalTileInfo.length > 1 && showFinishMoves && <group>
+      <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[0.7,0,3.7]}
+        rotation={[-Math.PI/2, 0, 0]}
+        size={0.25}
+        height={0.01}
+        lineHeight={0.8}
+      >
+        {`SELECT A MOVE`}
+        <meshStandardMaterial color='limegreen'/>
+      </Text3D> 
+      <MultipleMoveButtonSet moves={legalTileInfo} position={[0.6, 0, 4.1]}/>
+    </group> }
   </group>
 }

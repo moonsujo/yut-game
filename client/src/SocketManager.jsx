@@ -50,7 +50,8 @@ import {
   pieceTeam1Id0AnimationPlayingAtom,
   pieceTeam1Id1AnimationPlayingAtom,
   pieceTeam1Id2AnimationPlayingAtom,
-  pieceTeam1Id3AnimationPlayingAtom
+  pieceTeam1Id3AnimationPlayingAtom,
+  showFinishMovesAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -151,6 +152,7 @@ export const SocketManager = () => {
   const setTurnExpireTime = useSetAtom(turnExpireTimeAtom)
   const setRemainingTime = useSetAtom(remainingTimeAtom)
   const [results, setResults] = useAtom(resultsAtom)
+  const setShowFinishMoves = useSetAtom(showFinishMovesAtom)
 
   useEffect(() => {
 
@@ -790,6 +792,7 @@ export const SocketManager = () => {
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
       setPauseGame(paused)
+      setShowFinishMoves(false)
     })
 
     socket.on("select", ({ selection, legalTiles }) => { //receive
@@ -809,6 +812,10 @@ export const SocketManager = () => {
       }
 
       setHelperTiles(helperTiles)
+
+      if (selection === null) {
+        setShowFinishMoves(false)
+      }
     })
 
     // Emitted to other clients when a client joins

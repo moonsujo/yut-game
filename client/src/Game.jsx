@@ -44,6 +44,7 @@ import {
   editGuestsOpenAtom,
   editOneGuestOpenAtom,
   guestBeingEdittedAtom,
+  showFinishMovesAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -79,7 +80,6 @@ export default function Game() {
   // To adjust board size
   const [gamePhase] = useAtom(gamePhaseAtom)
   const [turn] = useAtom(turnAtom)
-  const [hasTurn] = useAtom(hasTurnAtom);
   // To pass to Board
   const [legalTiles] = useAtom(legalTilesAtom)
   const [helperTiles] = useAtom(helperTilesAtom)
@@ -93,6 +93,7 @@ export default function Game() {
   const [yootAnimation] = useAtom(yootAnimationAtom);
   const pauseGame = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
+  const showFinishMoves = useAtomValue(showFinishMovesAtom)
   const animationPlaying = useAnimationPlaying()
   const [playMusic] = useMusicPlayer();
   
@@ -1124,6 +1125,7 @@ export default function Game() {
           interactive={true}
           showStart={true}
           device={device}
+          showFinishMoves={showFinishMoves}
           />
         </animated.group>
         {/* Who Goes First components */}
@@ -1173,11 +1175,6 @@ export default function Game() {
         { ((device === 'portrait' && !(29 in legalTiles)) || device === 'landscapeDesktop') && <PiecesSection 
         position={layout[device].game.piecesSection.position}
         device={device}
-        /> }
-        { (29 in legalTiles) && <ScoreButtons
-          device={device}
-          legalTiles={legalTiles}
-          hasTurn={hasTurn}
         /> }
         { gamePhase === 'game' && <PiecesOnBoard 
         currentMovesRockets={teams[0].moves} 

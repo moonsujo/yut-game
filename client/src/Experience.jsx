@@ -5,6 +5,7 @@ import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
 import Lobby from "./Lobby.jsx";
 import Game from "./Game.jsx";
+import RocketsWin from "./RocketsWin.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
@@ -27,5 +28,6 @@ export default function Experience() {
     { gamePhase === 'lobby' && <Lobby/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
+    {/* { gamePhase === 'finished' && <RocketsWin/> } */}
   </>
 }

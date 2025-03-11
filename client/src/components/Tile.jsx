@@ -1,9 +1,9 @@
 import { useMemo, useRef } from "react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame, useGraph } from "@react-three/fiber";
-import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, teamsAtom, tilesAtom, turnAtom } from "../GlobalState";
+import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, showFinishMovesAtom, teamsAtom, tilesAtom, turnAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
@@ -29,17 +29,17 @@ export default function Tile({
   interactive=false
 }) {
 
-  const [selection] = useAtom(selectionAtom);
-  const [hasTurn] = useAtom(hasTurnAtom)
-  const [tiles] = useAtom(tilesAtom)
-  const [teams] = useAtom(teamsAtom)
-  const [client] = useAtom(clientAtom)
-  const [turn] = useAtom(turnAtom)
-  const [gamePhase] = useAtom(gamePhaseAtom)
-  const animationPlaying = useAnimationPlaying()
-  const params = useParams()
+  const selection = useAtomValue(selectionAtom);
+  const hasTurn = useAtomValue(hasTurnAtom)
+  const tiles = useAtomValue(tilesAtom)
+  const teams = useAtomValue(teamsAtom)
+  const client = useAtomValue(clientAtom)
+  const turn = useAtomValue(turnAtom)
+  const gamePhase = useAtomValue(gamePhaseAtom)
   const paused = useAtomValue(pauseGameAtom)
   const backdoLaunch = useAtomValue(backdoLaunchAtom)
+  const animationPlaying = useAnimationPlaying()
+  const params = useParams()
 
   const group = useRef()
   const wrapperMat = useRef();
@@ -76,7 +76,6 @@ export default function Tile({
         socket.emit("move", { roomId: params.id.toUpperCase(), tile, playerName: client.name });
       } else {
         socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
-
       }
     }
   }

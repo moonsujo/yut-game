@@ -32,7 +32,8 @@ export default function Board({
   showTiles=[],
   showArrows=true,
   starColor='yellow',
-  highlightShortcuts=false
+  highlightShortcuts=false,
+  showFinishMoves=false
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
@@ -260,7 +261,7 @@ export default function Board({
     />
   );
   // position 29
-  tileComponents.push(<FinishTile legalTiles={legalTiles}/>)
+  tileComponents.push(<FinishTile legalTileInfo={legalTiles[29]} key={29}/>)
 
   const selectTileComponents = []
   if (omit) {
@@ -270,9 +271,9 @@ export default function Board({
   }
 
   return <animated.group position={position} rotation={rotation} scale={scale}>
-    {!omit && tileComponents}
-    {omit && selectTileComponents}
-    {showStart && <group 
+    { !omit && tileComponents}
+    { omit && selectTileComponents}
+    { (showStart && !showFinishMoves) && <group 
       position={layout[device].board.startEarth.position} 
       scale={1.67}>
       <Text3D

@@ -328,7 +328,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               paused: room.paused
             })
           } else if (serverEvent.name === "select") {
-            console.log('select')
             io.to(userSocketId).emit("select", {
               selection: data.fullDocument.selection,
               legalTiles: data.fullDocument.legalTiles // should emit an array of tile indices
@@ -1735,6 +1734,8 @@ io.on("connect", async (socket) => {
       room.teams[1].throws = 0
       room.teams[1].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
       room.teams[1].pregameRoll = null
+
+      room.paused = false
 
       room.serverEvent = {
         name: 'reset',
