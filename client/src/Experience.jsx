@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import { connectedToServerAtom, gamePhaseAtom } from "./GlobalState.jsx";
+import { connectedToServerAtom, gamePhaseAtom, winnerAtom } from "./GlobalState.jsx";
 import { useAtom, useAtomValue } from "jotai";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
 import Lobby from "./Lobby.jsx";
 import Game from "./Game.jsx";
 import RocketsWin from "./RocketsWin.jsx";
+import UfosWin from "./UfosWin.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
+  const winner = useAtomValue(winnerAtom)
   const [connectedToServer, setConnectedToServer] = useAtom(connectedToServerAtom)
   const params = useParams()
 
@@ -28,6 +30,7 @@ export default function Experience() {
     { gamePhase === 'lobby' && <Lobby/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
-    {/* { gamePhase === 'finished' && <RocketsWin/> } */}
+    { gamePhase === 'finished' && winner === 0 && <RocketsWin/> }
+    { gamePhase === 'finished' && winner === 1 && <UfosWin/> }
   </>
 }

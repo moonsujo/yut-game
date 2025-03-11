@@ -15,7 +15,7 @@ import { useFireworksShader } from './shader/fireworks/FireworksShader';
 
 export default function RocketsWin() {
 
-  const [device] = useAtom(deviceAtom)
+  const device = useAtomValue(deviceAtom)
   const [CreateFirework] = useFireworksShader();
   const params = useParams()
 

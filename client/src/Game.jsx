@@ -1172,10 +1172,10 @@ export default function Game() {
           position={layout[device].game.rulebookButton.position}
           scale={layout[device].game.rulebookButton.scale}
         />
-        { ((device === 'portrait' && !(29 in legalTiles)) || device === 'landscapeDesktop') && <PiecesSection 
-        position={layout[device].game.piecesSection.position}
-        device={device}
-        /> }
+        <PiecesSection 
+          position={layout[device].game.piecesSection.position}
+          device={device}
+        />
         { gamePhase === 'game' && <PiecesOnBoard 
         currentMovesRockets={teams[0].moves} 
         currentMovesUfos={teams[1].moves} 

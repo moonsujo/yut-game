@@ -569,7 +569,7 @@ io.on("connect", async (socket) => {
         paused: false,
         rules: {
           backdoLaunch: true,
-          timer: true,
+          timer: false,
           nak: true,
           yutMoCatch: true
         },
