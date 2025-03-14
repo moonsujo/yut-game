@@ -17,12 +17,12 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
   const animationPlaying = useAnimationPlaying()
 
-  const [hasTurn] = useAtom(hasTurnAtom)
+  const hasTurn = useAtomValue(hasTurnAtom)
   const enabled = !animationPlaying && hasTurn && hasThrow
   const paused = useAtomValue(pauseGameAtom)
   const throwCount = useAtomValue(throwCountAtom)
 
-  const [client] = useAtom(clientAtom);
+  const client = useAtomValue(clientAtom);
   const turn = useAtomValue(turnAtom);
 
   const scaleOuter = [1.4, -0.079, 1]
@@ -80,6 +80,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
     </group>
   }
 
+  const YUT_BROWN = '#EE9E26'
   return <group 
     position={position} 
     rotation={rotation} 
@@ -94,7 +95,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
         rotation={[-Math.PI, 0, -Math.PI]}
         scale={scaleOuter}
       >
-        <meshStandardMaterial color={ enabled ? "yellow" : "grey" }/>
+        <meshStandardMaterial color={ enabled ? YUT_BROWN : "grey" }/>
       </mesh>
       <mesh
         castShadow

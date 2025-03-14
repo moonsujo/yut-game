@@ -1357,12 +1357,12 @@ export default function Alert({ position, rotation }) {
       // Specific location for each tile
       let position;
       // Fourth quadrant
-      if (tile === 1 || tile === 2 || tile === 3 || tile === 4 || tile === 5 || tile === 20 || tile === 21 || tile === 22 || tile === 27 || tile == 28 || tile === 0) {
+      if (tile === 1 || tile === 2 || tile === 3 || tile === 4 || tile === 22 || tile === 27 || tile == 28 || tile === 0) {
         position = [
           2.3, 0, 1.5
         ]
       // First quadrant
-      } else if (tile === 6 || tile === 7 || tile === 8 || tile === 9 || tile === 25 || tile === 26) {
+      } else if (tile === 5 || tile === 6 || tile === 7 || tile === 8 || tile === 9 || tile === 25 || tile === 26 || tile === 20 || tile === 21) {
         position = [
           2.3, 0, -2.5
         ]

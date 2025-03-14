@@ -75,6 +75,7 @@ export default function HowToPlay({
     }
   }, [page])
   
+  const ANIMATION = 17
   function ThrowTheYutPage() {
 
     const [yootButtonTurnedOn, setYootButtonTurnedOn] = useState(true)
@@ -87,7 +88,7 @@ export default function HowToPlay({
         setYootButtonTurnedOn(false)
         setYutPosition(layout[device].howToPlay.throwingTheDicePage.yut.animationYutPosition)
         setYutRotation(layout[device].howToPlay.throwingTheDicePage.yut.animationYutRotation)
-        setAnimation(17)
+        setAnimation(ANIMATION)
       }, 2000)
 
       return () => {
@@ -187,7 +188,7 @@ export default function HowToPlay({
         size={layout[device].howToPlay.throwingTheDicePage.text.size}
         height={layout[device].howToPlay.throwingTheDicePage.text.height}
       >
-        {`THROW THE YUT TO DETERMINE HOW MANY\nSTARS TO JUMP. EACH FLAT SIDE IS ONE STAR.`}
+        {`THROW THE YUT TO DETERMINE HOW MANY\nSTARS TO JUMP. COUNT THE STARS ON THE\nFLAT SIDE OF THE BARS.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       <animated.group
@@ -1369,7 +1370,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.text.size}
           height={layout[device].howToPlay.readingTheDicePage.text.height}
         >
-          {'EACH FLAT SIDE IS 1 STAR. IF YOU THROW A\nYUT OR MO, YOU GET ANOTHER TURN!'}
+          {'COUNT THE STARS. IF YOU THROW A YUT OR\nMO, YOU GET ANOTHER TURN!'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
@@ -1386,6 +1387,9 @@ export default function HowToPlay({
           {'DO'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
+        <group name='stars'>
+          <Star scale={0.2} position={[1.4, 0, -3]}/>
+        </group>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.do.text.line1.position}
@@ -1393,7 +1397,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.do.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.do.text.line1.height}
         >
-          {'1 STAR'}
+          {'JUMP 1'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -1416,6 +1420,10 @@ export default function HowToPlay({
           {'GE'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
+        <group name='stars'>
+          <Star scale={0.2} position={[1.3, 0, -3]}/>
+          <Star scale={0.2} position={[1.7, 0, -3]}/>
+        </group>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.ge.text.line1.position}
@@ -1423,7 +1431,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.ge.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.ge.text.line1.height}
         >
-          {'2 STARS'}
+          {'JUMP 2'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -1446,6 +1454,11 @@ export default function HowToPlay({
           {'GUL'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
+        <group name='stars'>
+          <Star scale={0.2} position={[1.8, 0, -3]}/>
+          <Star scale={0.2} position={[2.2, 0, -3]}/>
+          <Star scale={0.2} position={[2.6, 0, -3]}/>
+        </group>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.gul.text.line1.position}
@@ -1453,7 +1466,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.gul.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.gul.text.line1.height}
         >
-          {'3 STARS'}
+          {'JUMP 3'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Float rotationIntensity={0.1}>
@@ -1476,6 +1489,12 @@ export default function HowToPlay({
           {'YUT'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>       
+        <group name='stars'>
+          <Star scale={0.2} position={[1.9, 0, -3.8]}/>
+          <Star scale={0.2} position={[2.3, 0, -3.8]}/>
+          <Star scale={0.2} position={[2.7, 0, -3.8]}/>
+          <Star scale={0.2} position={[3.1, 0, -3.8]}/>
+        </group>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.position}
@@ -1483,7 +1502,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.yoot.text.line1.height}
         >
-          {'4 STARS'}
+          {'JUMP 4'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>   
         <Text3D
@@ -1516,6 +1535,13 @@ export default function HowToPlay({
           {'MO'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
+        <group name='stars'>
+          <Star scale={0.2} position={[1.6, 0, -3.8]}/>
+          <Star scale={0.2} position={[2.0, 0, -3.8]}/>
+          <Star scale={0.2} position={[2.4, 0, -3.8]}/>
+          <Star scale={0.2} position={[2.8, 0, -3.8]}/>
+          <Star scale={0.2} position={[3.2, 0, -3.8]}/>
+        </group>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           position={layout[device].howToPlay.readingTheDicePage.mo.text.line1.position}
@@ -1523,7 +1549,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.mo.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.mo.text.line1.height}
         >
-          {'5 STARS'}
+          {'JUMP 5'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D
@@ -1563,7 +1589,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.size}
           height={layout[device].howToPlay.readingTheDicePage.backdo.text.line1.height}
         >
-          {'-1 STAR'}
+          {'JUMP -1'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>      
         <Text3D

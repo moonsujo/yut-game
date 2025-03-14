@@ -2387,7 +2387,7 @@ export default {
             line0: {
               position: [-0.2,0,-2.7],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
@@ -2409,7 +2409,7 @@ export default {
             line0: {
               position: [-0.2,0,-2.7],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
@@ -2431,7 +2431,7 @@ export default {
             line0: {
               position: [-0.2,0,-2.7],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
@@ -2453,7 +2453,7 @@ export default {
             line0: {
               position: [-0.2,0,-3.5],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
@@ -2481,7 +2481,7 @@ export default {
             line0: {
               position: [-0.2,0,-3.5],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
@@ -2509,7 +2509,7 @@ export default {
             line0: {
               position: [-0.2,0,-3.5],
               rotation: [-Math.PI/2, 0, 0],
-              size: 0.5,
+              size: 0.7,
               height: 0.01,
             },
             line1: {
