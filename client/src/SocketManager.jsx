@@ -51,7 +51,8 @@ import {
   pieceTeam1Id1AnimationPlayingAtom,
   pieceTeam1Id2AnimationPlayingAtom,
   pieceTeam1Id3AnimationPlayingAtom,
-  showFinishMovesAtom
+  showFinishMovesAtom,
+  showBonusAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -153,6 +154,7 @@ export const SocketManager = () => {
   const setRemainingTime = useSetAtom(remainingTimeAtom)
   const [results, setResults] = useAtom(resultsAtom)
   const setShowFinishMoves = useSetAtom(showFinishMovesAtom)
+  const setShowBonus = useSetAtom(showBonusAtom)
 
   useEffect(() => {
 
@@ -486,6 +488,9 @@ export const SocketManager = () => {
           setAlerts([yootOutcomeAlertName])
         }
         setThrowCount(teams[turnUpdate.team].throws)
+        if (teams[turnUpdate.team].throws) {
+          setShowBonus(true)
+        }
 
         // meteor effect (alert)
         if (yootOutcome === 4 || yootOutcome === 5) {
@@ -618,6 +623,9 @@ export const SocketManager = () => {
         // Update throws
         teams[newTeam].throws = throws
         setThrowCount(throws)
+        if (throws > 0) {
+          setShowBonus(true)
+        }
 
         // Update moves
         if (newTeam !== prevTeam) {
@@ -740,6 +748,9 @@ export const SocketManager = () => {
         // Update throws
         teams[newTeam].throws = throws
         setThrowCount(throws)
+        if (throws > 0) {
+          setShowBonus(true)
+        }
 
         // Update moves
         if (newTeam !== prevTeam) {

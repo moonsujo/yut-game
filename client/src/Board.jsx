@@ -16,6 +16,8 @@ import { AriesConstellation } from './meshes/AriesConstellation';
 import CurvedArrow from './meshes/CurvedArrow';
 import FinishMarkerSelectable from './FinishMarkerSelectable';
 import FinishTile from './FinishTile';
+import YootMesh from './meshes/YootMesh';
+import YutBonus from './YutBonus';
 
 export default function Board({ 
   position=[0,0,0], 
@@ -33,7 +35,8 @@ export default function Board({
   showArrows=true,
   starColor='yellow',
   highlightShortcuts=false,
-  showFinishMoves=false
+  showFinishMoves=false,
+  showBonus=false
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
@@ -271,6 +274,15 @@ export default function Board({
     }
   }
 
+  const { yutBonusScale, taurusConstellationScale } = useSpring({
+    yutBonusScale: showBonus ? 1 : 0,
+    taurusConstellationScale: showBonus ? 0 : 0.8
+  })
+
+  useEffect(() => {
+    console.log('[Board] yutBonusScale', yutBonusScale)
+  }, [yutBonusScale])
+
   return <animated.group position={position} rotation={rotation} scale={scale}>
     { !omit && tileComponents}
     { omit && selectTileComponents}
@@ -324,7 +336,17 @@ export default function Board({
     </group>}
     { constellations && <WolfConstellation position={[-2.1,0,-1.2]} rotation={[-Math.PI/2, 0, 0]} scale={0.85}/> }
     { constellations && <RhinoConstellation position={[2.1,0,-1.3]} rotation={[-Math.PI/2, 0, 0]} scale={0.8}/> }
-    { constellations && <AriesConstellation position={[-2.3,0,4.1]} rotation={[-Math.PI/2, 0, 0]} scale={0.75}/> }
-    { constellations && <TaurusConstellation position={[2.3, 0, 3.5]} scale={0.8} rotation={[-Math.PI/2, 0, Math.PI/16]}/> }
+    { constellations && <AriesConstellation position={[-2.3,-1.3,3.6]} rotation={[-Math.PI/2, 0, 0]} scale={0.75}/> }
+    { constellations && <animated.group name='taurus-constellation-animation-wrapper' scale={taurusConstellationScale} position={[2.3, 0, 3.5]} >
+      <TaurusConstellation rotation={[-Math.PI/2, 0, Math.PI/16]}/> 
+    </animated.group> }
+    {/* rotationIntensity: rotate around a center in a sphere pattern */}
+    {/* floatIntensity: up and down */}
+    {/* floatingRange: doesn't change much */}
+    <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={[1.5, 0, 2.3]}>
+      <Float rotationIntensity={0.2} speed={7} floatIntensity={3} floatingRange={[-0.1, 0.1]}>
+        <YutBonus/>
+      </Float>
+    </animated.group>
   </animated.group>;
 }

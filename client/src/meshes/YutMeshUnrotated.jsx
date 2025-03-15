@@ -5,7 +5,7 @@ import { SkeletonUtils } from "three-stdlib";
 import { useGraph } from "@react-three/fiber";
 import { animated } from "@react-spring/three";
 
-export default function YootMesh({ 
+export default function YootMeshUnrotated({ 
   position, 
   rotation=[0, 0, 0], 
   scale=1,
@@ -35,7 +35,7 @@ export default function YootMesh({
         geometry={nodes.yoot1.geometry}
         material={materials['material-disabled']}
         position={[0,0,0]}
-        rotation={[Math.PI, 0, -1.539]}
+        rotation={[0, Math.PI/2+Math.PI/16, 0]}
       /> :
       <mesh
         castShadow
@@ -43,7 +43,7 @@ export default function YootMesh({
         geometry={nodesDisabled.yoot0.geometry}
         material={materialDisabled['Material.006']}
         position={[0,0,0]}
-        rotation={[Math.PI, 0, -1.539]}
+        rotation={[0, 0, 0]}
       >
         {/* <meshStandardMaterial color='grey'/> */}
       </mesh>

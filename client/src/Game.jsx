@@ -45,6 +45,7 @@ import {
   editOneGuestOpenAtom,
   guestBeingEdittedAtom,
   showFinishMovesAtom,
+  showBonusAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -96,6 +97,11 @@ export default function Game() {
   const showFinishMoves = useAtomValue(showFinishMovesAtom)
   const animationPlaying = useAnimationPlaying()
   const [playMusic] = useMusicPlayer();
+  const showBonus = useAtomValue(showBonusAtom)
+
+  useEffect(() => {
+    console.log(`[Game] animationPlaying ${animationPlaying} showBonus ${showBonus}`)
+  }, [animationPlaying, showBonus])
   
   const params = useParams();
   const connectedToServer = useAtomValue(connectedToServerAtom)
@@ -1117,15 +1123,16 @@ export default function Game() {
         />}
         <animated.group position={boardPosition} scale={boardScale}>
           <Board 
-          position={[0,0,0]}
-          scale={1}
-          tiles={tiles}
-          legalTiles={legalTiles}
-          helperTiles={helperTiles}
-          interactive={true}
-          showStart={true}
-          device={device}
-          showFinishMoves={showFinishMoves}
+            position={[0,0,0]}
+            scale={1}
+            tiles={tiles}
+            legalTiles={legalTiles}
+            helperTiles={helperTiles}
+            interactive={true}
+            showStart={true}
+            device={device}
+            showFinishMoves={showFinishMoves}
+            showBonus={ !animationPlaying && showBonus }
           />
         </animated.group>
         {/* Who Goes First components */}

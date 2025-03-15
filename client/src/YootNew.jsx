@@ -27,11 +27,11 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
   return <group ref={group} scale={scale} position={position} rotation={rotation} dispose={null}>
     <group name="Scene">
       <mesh
-          name="yoot1"
-          castShadow
-          receiveShadow
-          geometry={nodes.yoot1.geometry}
-          material={materials['material-disabled']}
+        name="yoot1"
+        castShadow
+        receiveShadow
+        geometry={nodes.yoot1.geometry}
+        material={materials['material-disabled']}
         position={[19.534, 15.094, 21.846]}
         rotation={[0.116, -0.574, -1.317]}
       />

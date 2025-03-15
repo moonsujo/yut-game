@@ -81,6 +81,7 @@ export const throwCountAtom = atom(0)
 export const alertsAtom = atom([])
 export const currentPlayerNameAtom = atom('')
 export const catchPathAtom = atom(null)
+export const showBonusAtom = atom(false)
 // using an object to group the rules together has an issue
 // editting a field doesn't trigger re-render of the toggle state
 // when I click on the box to enable the rule, the box stays lit

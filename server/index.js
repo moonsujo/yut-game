@@ -861,8 +861,8 @@ io.on("connect", async (socket) => {
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
-      // room.gamePhase = "game" // testing
-      room.gamePhase = "pregame"
+      room.gamePhase = "game" // testing
+      // room.gamePhase = "pregame"
       
       // Game logs
       let gameLog = {
@@ -998,13 +998,15 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        // let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
+        let outcome = 4
+        // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {
-        //     outcome = 5
+        //     outcome = -1
         //   } else {
-        //     outcome = 4
+        //     outcome = -1
         //   }
         // } else if (room.gamePhase === 'game') {
         //   // if (room.turn.team === 0) {

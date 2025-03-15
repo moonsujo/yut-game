@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { SkeletonUtils } from "three-stdlib";
 import { useGraph } from "@react-three/fiber";
 import React from "react";
+import { animated } from "@react-spring/three";
 
 export default function YootRhino({ 
   position, 
@@ -16,15 +17,16 @@ export default function YootRhino({
   const { nodes } = useGraph(clone);
 
   return (
-    <group position={position} rotation={rotation} scale={scale}>      
+    <animated.group position={position} rotation={rotation} scale={scale}>      
       <mesh        
-        castShadow
-        receiveShadow
-        geometry={nodes.yoot1.geometry}
-        material={materials['material-disabled']}
+          name="yoot0"
+          castShadow
+          receiveShadow
+          geometry={nodes.yoot0.geometry}
+          material={materials['Material.006']}
         position={[0,0,0]}
         rotation={[Math.PI, 0, -1.539]}
       />
-    </group>
+    </animated.group>
   );
 }
