@@ -1,12 +1,15 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { catchPathAtom, gamePhaseAtom, hasTurnAtom, pieceTeam0Id0AnimationPlayingAtom, pieceTeam0Id0Atom, pieceTeam0Id1AnimationPlayingAtom, pieceTeam0Id1Atom, pieceTeam0Id2AnimationPlayingAtom, pieceTeam0Id2Atom, pieceTeam0Id3AnimationPlayingAtom, pieceTeam0Id3Atom, pieceTeam1Id0AnimationPlayingAtom, pieceTeam1Id0Atom, pieceTeam1Id1AnimationPlayingAtom, pieceTeam1Id1Atom, pieceTeam1Id2AnimationPlayingAtom, pieceTeam1Id2Atom, pieceTeam1Id3AnimationPlayingAtom, pieceTeam1Id3Atom, selectionAtom, teamsAtom } from './GlobalState';
 import tilePositions from './tilePositions';
 import { useSpring } from '@react-spring/three';
 import Piece from './components/Piece';
 import { roundNum, pieceSelected } from './helpers/helpers';
 
-export default function PiecesOnBoard({ currentMovesRockets, currentMovesUfos, boardOffset }) {
+export default function PiecesOnBoard({ boardOffset }) {
+    const teams = useAtomValue(teamsAtom)
+    const currentMovesRockets = teams[0].moves
+    const currentMovesUfos = teams[1].moves
     const [pieceTeam0Id0] = useAtom(pieceTeam0Id0Atom)
     const [pieceTeam0Id1] = useAtom(pieceTeam0Id1Atom)
     const [pieceTeam0Id2] = useAtom(pieceTeam0Id2Atom)

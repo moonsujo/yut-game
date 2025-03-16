@@ -52,7 +52,7 @@ import PiecesOnBoard from "./PiecesOnBoard.jsx";
 import ScoreButtons from "./ScoreButtons.jsx";
 import RocketsWin from "./RocketsWin.jsx";
 import UfosWin from "./UfosWin.jsx";
-import { Text3D, useGLTF } from "@react-three/drei";
+import { Float, Text3D, useGLTF } from "@react-three/drei";
 import { Color, MeshStandardMaterial } from "three";
 import { useFrame } from "@react-three/fiber";
 import GameLog from "./GameLog.jsx";
@@ -72,38 +72,20 @@ import MeshColors from "./MeshColors.jsx";
 import QrCode3d from "./QRCode3D.jsx";
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying.jsx";
 import Settings from "./Settings.jsx";
+import YutBonus from "./YutBonus.jsx";
 
 // There should be no state
 export default function Game() {
   
   useResponsiveSetting();
-  const [device] = useAtom(deviceAtom)
-  // To adjust board size
-  const [gamePhase] = useAtom(gamePhaseAtom)
-  const [turn] = useAtom(turnAtom)
-  // To pass to Board
-  const [legalTiles] = useAtom(legalTilesAtom)
-  const [helperTiles] = useAtom(helperTilesAtom)
-  const [tiles] = useAtom(tilesAtom)
-  const [winner] = useAtom(winnerAtom)
-  const [host] = useAtom(hostAtom)
-  const [showRulebook, setShowRulebook] = useState(false);
-  const [client] = useAtom(clientAtom)
-  const teams = useAtomValue(teamsAtom)
-  const [yootAnimation] = useAtom(yootAnimationAtom);
-  const pauseGame = useAtomValue(pauseGameAtom)
-  const timer = useAtomValue(timerAtom)
-  const showFinishMoves = useAtomValue(showFinishMovesAtom)
-  const animationPlaying = useAnimationPlaying()
-  const [playMusic] = useMusicPlayer();
-  const showBonus = useAtomValue(showBonusAtom)
-  
+  const device = useAtomValue(deviceAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
+  const gamePhase = useAtomValue(gamePhaseAtom)
+  const pauseGame = useAtomValue(pauseGameAtom)
+  const [playMusic] = useMusicPlayer();
 
   // Animations
-  const { boardScale, boardPosition, gameScale, winScreenScale } = useSpring({
-    boardScale: layout[device].game.board[gamePhase].scale,
-    boardPosition: layout[device].game.board[gamePhase].position,
+  const { gameScale, winScreenScale } = useSpring({
     gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
     winScreenScale: gamePhase === 'finished' ? 1 : 0,
     config: {
@@ -195,60 +177,10 @@ export default function Game() {
     </group>
   }
 
-  function RulebookButton({ position, scale }) {
-    const [hover, setHover] = useState(false)
-
-    function handlePointerEnter(e) {
-      e.stopPropagation();
-      setHover(true)
-    }
-
-    function handlePointerLeave(e) {
-      e.stopPropagation();
-      setHover(false)
-    }
-
-    function handlePointerDown(e) {
-      e.stopPropagation();
-      if (showRulebook) {
-        setShowRulebook(false)
-      } else {
-        setShowRulebook(true)
-      }
-    }
-
-    return <group position={position} scale={scale}>
-      <mesh>
-        <boxGeometry args={[1.5, 0.03, 0.6]}/>
-        <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
-      </mesh>
-      <mesh>
-        <boxGeometry args={[1.45, 0.04, 0.5]}/>
-        <meshStandardMaterial color='black'/>
-      </mesh>
-      <mesh 
-        name='wrapper' 
-        onPointerEnter={e => handlePointerEnter(e)}
-        onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
-      >
-        <boxGeometry args={[1.5, 0.1, 0.6]}/>
-        <meshStandardMaterial transparent opacity={0}/>
-      </mesh>
-      <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
-        position={[-0.6,0.02,0.15]}
-        rotation={[-Math.PI/2, 0, 0]}
-        size={0.3}
-        height={0.01}
-      >
-        Rules
-        <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
-      </Text3D>
-    </group>
-  }
-
   function DisplayHostAndSpectating() {
+    const host = useAtomValue(hostAtom)
+    const client = useAtomValue(clientAtom)
+
     // case 0: spectating
     const Spectating = () => {
       return <Text3D 
@@ -317,18 +249,195 @@ export default function Game() {
       return <></>
     }
   }
-  
-  function handleRulebookPointerEnter(e) {
-    e.stopPropagation()
+
+  function GameBoard() {
+    const gamePhase = useAtomValue(gamePhaseAtom)
+    const tiles = useAtomValue(tilesAtom)
+    const legalTiles = useAtomValue(legalTilesAtom)
+    const helperTiles = useAtomValue(helperTilesAtom)
+    const showFinishMoves = useAtomValue(showFinishMovesAtom)
+    const showBonus = useAtomValue(showBonusAtom)
+    const animationPlaying = useAnimationPlaying()
+
+    const { boardScale, boardPosition } = useSpring({
+      boardScale: layout[device].game.board[gamePhase].scale,
+      boardPosition: layout[device].game.board[gamePhase].position,
+    })
+
+    return <animated.group position={boardPosition} scale={boardScale}>
+      <Board 
+        position={[0,0,0]}
+        scale={1}
+        tiles={tiles}
+        legalTiles={legalTiles}
+        helperTiles={helperTiles}
+        interactive={true}
+        showStart={true}
+        device={device}
+        showFinishMoves={showFinishMoves}
+        showBonus={showBonus}
+        animationPlaying={animationPlaying}
+      />
+    </animated.group>
   }
-  function handleRulebookPointerLeave(e) {
-    e.stopPropagation()
+  function WhoGoesFirst() {
+    return <group>
+      <Text3D
+      font="/fonts/Luckiest Guy_Regular.json"
+      position={layout[device].game.whoGoesFirst.title.position}
+      rotation={layout[device].game.whoGoesFirst.title.rotation}
+      size={layout[device].game.whoGoesFirst.title.size}
+      height={layout[device].game.whoGoesFirst.title.height}
+      >
+        {`Who goes first?`}
+        <meshStandardMaterial color="limegreen"/>
+      </Text3D>
+      <Text3D
+      font="/fonts/Luckiest Guy_Regular.json"
+      position={layout[device].game.whoGoesFirst.description.position}
+      rotation={layout[device].game.whoGoesFirst.description.rotation}
+      size={layout[device].game.whoGoesFirst.description.size}
+      height={layout[device].game.whoGoesFirst.title.height}
+      lineHeight={layout[device].game.whoGoesFirst.title.lineHeight}
+      >
+        {`One player from each team throws\nthe yoot. The team with a higher\nnumber goes first.`}
+        <meshStandardMaterial color="limegreen"/>
+      </Text3D>
+    </group>
   }
-  function handleRulebookPointerDown(e) {
-    e.stopPropagation()
+  function Rulebook() {
+    const [showRulebook, setShowRulebook] = useState(false);
+
+    function RulebookButton({ position, scale }) {
+      const [hover, setHover] = useState(false)
+
+      function handlePointerEnter(e) {
+        e.stopPropagation();
+        setHover(true)
+      }
+
+      function handlePointerLeave(e) {
+        e.stopPropagation();
+        setHover(false)
+      }
+
+      function handlePointerDown(e) {
+        e.stopPropagation();
+        if (showRulebook) {
+          setShowRulebook(false)
+        } else {
+          setShowRulebook(true)
+        }
+      }
+
+      return <group position={position} scale={scale}>
+        <mesh>
+          <boxGeometry args={[1.5, 0.03, 0.6]}/>
+          <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
+        </mesh>
+        <mesh>
+          <boxGeometry args={[1.45, 0.04, 0.5]}/>
+          <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh 
+          name='wrapper' 
+          onPointerEnter={e => handlePointerEnter(e)}
+          onPointerLeave={e => handlePointerLeave(e)}
+          onPointerDown={e => handlePointerDown(e)}
+        >
+          <boxGeometry args={[1.5, 0.1, 0.6]}/>
+          <meshStandardMaterial transparent opacity={0}/>
+        </mesh>
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-0.6,0.02,0.15]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.3}
+          height={0.01}
+        >
+          Rules
+          <meshStandardMaterial color={ hover || showRulebook ? 'green': 'yellow' }/>
+        </Text3D>
+      </group>
+    }
+
+    // Block pointer interactivity behind the book
+    function handleRulebookPointerEnter(e) {
+      e.stopPropagation()
+    }
+    function handleRulebookPointerLeave(e) {
+      e.stopPropagation()
+    }
+    function handleRulebookPointerDown(e) {
+      e.stopPropagation()
+    }
+    function handleRulebookPointerUp(e) {
+      e.stopPropagation()
+    }
+
+    return <group>
+      <RulebookButton 
+        position={layout[device].game.rulebookButton.position}
+        scale={layout[device].game.rulebookButton.scale}
+      />
+      { showRulebook && <group 
+        position={layout[device].game.rulebook.position}
+        scale={layout[device].game.rulebook.scale}>
+        <group 
+          position={layout[device].game.rulebook.blocker.position} 
+        >
+          <mesh name='blocker-inner' scale={layout[device].game.rulebook.blocker.innerScale}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+          <mesh name='blocker-outer' scale={layout[device].game.rulebook.blocker.outerScale}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='yellow'/>
+          </mesh>
+          <mesh name='blocker-wrap' 
+            scale={[
+              layout[device].game.rulebook.blocker.outerScale[0], 
+              layout[device].game.rulebook.blocker.innerScale[1], 
+              layout[device].game.rulebook.blocker.outerScale[2], 
+            ]}
+            onPointerEnter={e=>handleRulebookPointerEnter(e)}
+            onPointerLeave={e=>handleRulebookPointerLeave(e)}
+            onPointerDown={e=>handleRulebookPointerDown(e)}
+            onPointerUp={e=>handleRulebookPointerUp(e)}
+          >
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='yellow' transparent opacity={0}/>
+          </mesh>
+        </group>
+        <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={layout[device].game.rulebook.title.position}
+        rotation={layout[device].game.rulebook.title.rotation}
+        size={layout[device].game.rulebook.title.size}
+        height={layout[device].game.rulebook.title.height}>
+          RULEBOOK
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        <HowToPlay 
+          device={device}
+          closeButton={true}
+          setShowRulebook={setShowRulebook}
+          position={layout[device].game.rulebook.content.position}
+        />
+      </group> }
+    </group>
   }
-  function handleRulebookPointerUp(e) {
-    e.stopPropagation()
+  function WinScreen() {
+    const winner = useAtomValue(winnerAtom)
+    const { winScreenScale } = useSpring({ winScreenScale: gamePhase === 'finished' ? 1 : 0 })
+    return <animated.group scale={winScreenScale}>
+      { winner === 0 && <RocketsWin/>}
+      { winner === 1 && <UfosWin/>}
+    </animated.group>
+  }
+  function GameYut() {
+    const yutAnimation = useAtomValue(yootAnimationAtom)
+    return yutAnimation && <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
   }
 
   return (<>
@@ -339,13 +448,11 @@ export default function Game() {
         <Team 
           position={layout[device].game.team0.position}
           scale={layout[device].game.team0.scale}
-          device={device}
           team={0} 
         />
         <Team 
           position={layout[device].game.team1.position}
           scale={layout[device].game.team1.scale}
-          device={device}
           team={1} 
         />
         { connectedToServer && (gamePhase === 'pregame' || gamePhase === 'game') && <GameLog
@@ -357,76 +464,26 @@ export default function Game() {
           position={layout[device].game.disconnectModal.position}
           rotation={layout[device].game.disconnectModal.rotation}
         /> }
-        { pauseGame && <PauseGame
-          position={[0, 5, 2]}
-        />}
-        <animated.group position={boardPosition} scale={boardScale}>
-          <Board 
-            position={[0,0,0]}
-            scale={1}
-            tiles={tiles}
-            legalTiles={legalTiles}
-            helperTiles={helperTiles}
-            interactive={true}
-            showStart={true}
-            device={device}
-            showFinishMoves={showFinishMoves}
-            showBonus={ !animationPlaying && showBonus }
-          />
-        </animated.group>
-        {/* Who Goes First components */}
-        { gamePhase === "pregame" && <group>
-          <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.whoGoesFirst.title.position}
-          rotation={layout[device].game.whoGoesFirst.title.rotation}
-          size={layout[device].game.whoGoesFirst.title.size}
-          height={layout[device].game.whoGoesFirst.title.height}
-          >
-            {`Who goes first?`}
-            <meshStandardMaterial color="limegreen"/>
-          </Text3D>
-          <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.whoGoesFirst.description.position}
-          rotation={layout[device].game.whoGoesFirst.description.rotation}
-          size={layout[device].game.whoGoesFirst.description.size}
-          height={layout[device].game.whoGoesFirst.title.height}
-          lineHeight={layout[device].game.whoGoesFirst.title.lineHeight}
-          >
-            {`One player from each team throws\nthe yoot. The team with a higher\nnumber goes first.`}
-            <meshStandardMaterial color="limegreen"/>
-          </Text3D>
-        </group>}
-        { yootAnimation && <YootNew
-          animation={yootAnimation}
-          scale={0.22}
-          position={[0, 2, 0]}
-        /> }
-        { (gamePhase === 'pregame' || gamePhase === 'game') && turn.team !== -1 && <YootButtonNew
+        { pauseGame && <PauseGame position={[0, 5, 2]}/> }
+        <GameBoard/>
+        { gamePhase === "pregame" && <WhoGoesFirst/> }
+        { (gamePhase === 'pregame' || gamePhase === 'game') && <YootButtonNew
           position={layout[device].game.yootButton.position}
           rotation={layout[device].game.yootButton.rotation}
           scale={layout[device].game.yootButton.scale}
-          hasThrow={client.team === turn.team && teams[turn.team].throws > 0}
-          device={device}
         /> }
+        <GameYut/>
+        <YutBonus position={[1.5, 0, 1.9]}/>
         <SettingsButton 
           position={layout[device].game.settings.mainButton.position}
           scale={layout[device].game.settings.mainButton.scale}
-        />
-        <RulebookButton 
-          position={layout[device].game.rulebookButton.position}
-          scale={layout[device].game.rulebookButton.scale}
         />
         <PiecesSection 
           position={layout[device].game.piecesSection.position}
           device={device}
         />
-        { gamePhase === 'game' && <PiecesOnBoard 
-        currentMovesRockets={teams[0].moves} 
-        currentMovesUfos={teams[1].moves} 
-        boardOffset={layout[device].game.board['game'].position[2]}/> }
-        { (device === 'landscapeDesktop' || (device === 'portrait' && !(29 in legalTiles && legalTiles[29].length > 1))) && <MoveList
+        { gamePhase === 'game' && <PiecesOnBoard boardOffset={layout[device].game.board['game'].position[2]}/> }
+        <MoveList
           position={layout[device].game.moveList.position}
           rotation={layout[device].game.moveList.rotation}
           tokenScale={layout[device].game.moveList.tokenScale}
@@ -435,64 +492,17 @@ export default function Game() {
           piecePosition={layout[device].game.moveList.piecePosition}
           pieceScale={layout[device].game.moveList.pieceScale}
           gamePhase={gamePhase}
-        /> }
+        />
         <DisplayHostAndSpectating/>
-        { showRulebook && <group 
-        position={layout[device].game.rulebook.position}
-        scale={layout[device].game.rulebook.scale}>
-          <group 
-            position={layout[device].game.rulebook.blocker.position} 
-          >
-            <mesh name='blocker-inner' scale={layout[device].game.rulebook.blocker.innerScale}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='black'/>
-            </mesh>
-            <mesh name='blocker-outer' scale={layout[device].game.rulebook.blocker.outerScale}>
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='yellow'/>
-            </mesh>
-            <mesh name='blocker-wrap' 
-              scale={[
-                layout[device].game.rulebook.blocker.outerScale[0], 
-                layout[device].game.rulebook.blocker.innerScale[1], 
-                layout[device].game.rulebook.blocker.outerScale[2], 
-              ]}
-              onPointerEnter={e=>handleRulebookPointerEnter(e)}
-              onPointerLeave={e=>handleRulebookPointerLeave(e)}
-              onPointerDown={e=>handleRulebookPointerDown(e)}
-              onPointerUp={e=>handleRulebookPointerUp(e)}
-            >
-              <boxGeometry args={[1,1,1]}/>
-              <meshStandardMaterial color='yellow' transparent opacity={0}/>
-            </mesh>
-          </group>
-          <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          position={layout[device].game.rulebook.title.position}
-          rotation={layout[device].game.rulebook.title.rotation}
-          size={layout[device].game.rulebook.title.size}
-          height={layout[device].game.rulebook.title.height}>
-            RULEBOOK
-            <meshStandardMaterial color='yellow'/>
-          </Text3D>
-          <HowToPlay 
-            device={device}
-            closeButton={true}
-            setShowRulebook={setShowRulebook}
-            position={layout[device].game.rulebook.content.position}
-          />
-        </group> }
-        { timer && !animationPlaying && <Timer 
+        <Rulebook/>
+        <Timer 
           position={layout[device].game.timer.position} 
           scale={[layout[device].game.timer.scaleX, 1, 1]}
           boxArgs={layout[device].game.timer.boxArgs}
           heightMultiplier={layout[device].game.timer.heightMultiplier}
-        /> }
+        />
       </animated.group> }
-      { gamePhase === 'finished' && <animated.group scale={winScreenScale}>
-        { winner === 0 && <RocketsWin/>}
-        { winner === 1 && <UfosWin/>}
-      </animated.group> }
+      { gamePhase === 'finished' && <WinScreen/> }
       <MeteorsRealShader/>
     </>
   );

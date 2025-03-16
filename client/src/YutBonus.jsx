@@ -1,15 +1,25 @@
 import YootMesh from "./meshes/YootMesh"
-import { Text3D } from "@react-three/drei"
+import { Float, Text3D } from "@react-three/drei"
 import YootRhino from "./meshes/YootRhino"
 import SparkleYutShader from "./shader/sparkleYut/SparkleYutShader"
-import { useSpring } from "@react-spring/three"
+import { useSpring, animated } from "@react-spring/three"
 import { useEffect, useState } from "react"
 import YootMeshUnrotated from "./meshes/YutMeshUnrotated"
 import { useAtomValue, useSetAtom } from "jotai"
-import { clientAtom, hasTurnAtom, pauseGameAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from "./GlobalState"
+import { clientAtom, hasTurnAtom, pauseGameAtom, showBonusAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from "./GlobalState"
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
+import { socket } from "./SocketManager"
+import { useParams } from "wouter"
 
-export default function YutBonus({ position, rotation, scale }) {
+export default function YutBonus({ position }) {
+  
+  const showBonus = useAtomValue(showBonusAtom)
+  const animationPlaying = useAnimationPlaying()
+  const params = useParams()
+
+  const { yutBonusScale } = useSpring({
+    yutBonusScale: showBonus && !animationPlaying ? 1 : 0,
+  })
 
   const yutSprings = useSpring({
     from: {
@@ -67,7 +77,6 @@ export default function YutBonus({ position, rotation, scale }) {
     }
     function handlePointerUp(e) {
       e.stopPropagation()
-      setHover(false)
       document.body.style.cursor = 'default'
       socket.emit('throwYut', { roomId: params.id.toUpperCase() })
     }
@@ -105,12 +114,16 @@ export default function YutBonus({ position, rotation, scale }) {
     </group>
   }
 
-  return <group name='yut-bonus' position={position} rotation={rotation} scale={scale}>
-    <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
-    <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
-    <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>
-    <YootRhino scale={0.2} position={yutSprings.yut3Position} rotation={yutSprings.yut3Rotation}/>
-    <SparkleYutShader texturePath={'./textures/particles/8.png'}/>
-    <Label/>
-  </group>
+  return <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={position}>
+    <Float rotationIntensity={0.2} speed={7} floatIntensity={3} floatingRange={[-0.1, 0.1]}>
+      <group name='yut-bonus'>
+        <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
+        <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
+        <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>
+        <YootRhino scale={0.2} position={yutSprings.yut3Position} rotation={yutSprings.yut3Rotation}/>
+        <SparkleYutShader texturePath={'./textures/particles/8.png'}/>
+        <Label/>
+      </group>
+    </Float>
+  </animated.group>
 }

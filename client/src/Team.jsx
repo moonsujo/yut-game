@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import layout from './layout';
-import { useAtom } from 'jotai';
-import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom } from './GlobalState';
+import { useAtom, useAtomValue } from 'jotai';
+import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom, deviceAtom } from './GlobalState';
 import { Html, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import Piece from './components/Piece';
 import { formatName, tileType } from './helpers/helpers';
@@ -11,12 +11,13 @@ import { useFrame } from '@react-three/fiber';
 import { animated, useSpring } from '@react-spring/three';
 import { useParams } from 'wouter';
 
-export default function Team({ position=[0,0,0], scale=1, team, device }) {
-  const [teams] = useAtom(teamsAtom)
-  const [gamePhase] = useAtom(gamePhaseAtom);
-  const [host] = useAtom(hostAtom);
-  const [turn] = useAtom(turnAtom)
-  const [client] = useAtom(clientAtom);
+export default function Team({ position=[0,0,0], scale=1, team }) {
+  const device = useAtomValue(deviceAtom)
+  const teams = useAtomValue(teamsAtom)
+  const gamePhase = useAtomValue(gamePhaseAtom);
+  const host = useAtomValue(hostAtom);
+  const turn = useAtomValue(turnAtom)
+  const client = useAtomValue(clientAtom);
   const params = useParams();
 
   function JoinTeamButton() {

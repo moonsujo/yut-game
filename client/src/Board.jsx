@@ -36,7 +36,8 @@ export default function Board({
   starColor='yellow',
   highlightShortcuts=false,
   showFinishMoves=false,
-  showBonus=false
+  showBonus=false,
+  animationPlaying=false
 }) {
   const tileRadius = 5
   const NUM_STARS = 20;
@@ -274,14 +275,9 @@ export default function Board({
     }
   }
 
-  const { yutBonusScale, taurusConstellationScale } = useSpring({
-    yutBonusScale: showBonus ? 1 : 0,
-    taurusConstellationScale: showBonus ? 0 : 0.8
+  const { taurusConstellationScale } = useSpring({
+    taurusConstellationScale: (showBonus && !animationPlaying) ? 0 : 0.8
   })
-
-  useEffect(() => {
-    console.log('[Board] yutBonusScale', yutBonusScale)
-  }, [yutBonusScale])
 
   return <animated.group position={position} rotation={rotation} scale={scale}>
     { !omit && tileComponents}
@@ -343,10 +339,5 @@ export default function Board({
     {/* rotationIntensity: rotate around a center in a sphere pattern */}
     {/* floatIntensity: up and down */}
     {/* floatingRange: doesn't change much */}
-    <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={[1.5, 0, 2.3]}>
-      <Float rotationIntensity={0.2} speed={7} floatIntensity={3} floatingRange={[-0.1, 0.1]}>
-        <YutBonus/>
-      </Float>
-    </animated.group>
   </animated.group>;
 }

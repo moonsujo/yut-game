@@ -2,28 +2,29 @@ import { Text3D, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useRef } from 'react';
-import { clientAtom, hasTurnAtom, pauseGameAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
+import { clientAtom, deviceAtom, hasTurnAtom, pauseGameAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
 import YootMesh from './meshes/YootMesh';
 import { useAnimationPlaying } from './hooks/useAnimationPlaying';
 
-export default function YootButtonNew({ position, rotation, scale, hasThrow, device }) {
+export default function YootButtonNew({ position, rotation, scale }) {
   const { nodes } = useGLTF("/models/rounded-rectangle.glb");
   let buttonRef = useRef();
   const params = useParams();
 
+  const device = useAtomValue(deviceAtom)
   const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
-  const animationPlaying = useAnimationPlaying()
-
   const hasTurn = useAtomValue(hasTurnAtom)
   const paused = useAtomValue(pauseGameAtom)
-  const enabled = !animationPlaying && hasTurn && hasThrow
-  const throwCount = useAtomValue(throwCountAtom)
-
   const client = useAtomValue(clientAtom);
   const turn = useAtomValue(turnAtom);
+  const throwCount = useAtomValue(throwCountAtom)
+  const hasThrow = client.team === turn.team && throwCount > 0
+
+  const animationPlaying = useAnimationPlaying()
+  const enabled = !animationPlaying && hasTurn && hasThrow
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]
@@ -81,7 +82,7 @@ export default function YootButtonNew({ position, rotation, scale, hasThrow, dev
   }
 
   const YUT_BROWN = '#EE9E26'
-  return <group 
+  return turn.team !== -1 && <group 
     position={position} 
     rotation={rotation} 
     scale={scale}

@@ -8,15 +8,16 @@
 import React, { useEffect, useRef } from 'react'
 import { LoopOnce } from 'three'
 import { useAnimations, useGLTF } from '@react-three/drei';
+import { yootAnimationAtom } from './GlobalState';
+import { useAtomValue } from 'jotai';
 
 export default function YootNew({ animation, scale, position, rotation=[0,0,0] }) {
   const group = useRef()
   const { nodes, materials, animations } = useGLTF('/models/yoot-animation-3.glb')
-  // const { nodes, materials, animations } = useGLTF('/models/yoot-animation-2.glb')
   const { actions, mixer } = useAnimations(animations, group)
 
   useEffect(() => {
-    if (animation !== null) {
+    if (animation) {
       for (let i = 0; i < 4; i++) {
         actions[`yoot${i}Throw${animation}`].clampWhenFinished = true
         actions[`yoot${i}Throw${animation}`].play().setLoop(LoopOnce);
