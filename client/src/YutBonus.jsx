@@ -3,21 +3,13 @@ import { Text3D } from "@react-three/drei"
 import YootRhino from "./meshes/YootRhino"
 import SparkleYutShader from "./shader/sparkleYut/SparkleYutShader"
 import { useSpring } from "@react-spring/three"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import YootMeshUnrotated from "./meshes/YutMeshUnrotated"
-import * as THREE from 'three';
+import { useAtomValue, useSetAtom } from "jotai"
+import { clientAtom, hasTurnAtom, pauseGameAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from "./GlobalState"
+import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
 
 export default function YutBonus({ position, rotation, scale }) {
-  
-  // rotation to quaternion
-
-  // Euler angles for two different rotations (in radians)
-  const euler1 = new THREE.Euler(0, Math.PI / 2, 0); // 45° pitch and yaw
-  const euler2 = new THREE.Euler(0, Math.PI / 2, -Math.PI / 2, "ZYX"); // 90° pitch and yaw
-
-  // Convert Euler angles to quaternions
-  // const quaternion0 = new THREE.Quaternion().setFromEuler(euler1);
-  // const quaternion1 = new THREE.Quaternion().setFromEuler(euler2);
 
   const yutSprings = useSpring({
     from: {
@@ -60,16 +52,31 @@ export default function YutBonus({ position, rotation, scale }) {
     reset: true // Need this to loop
   })
 
-  return <group name='yut-bonus' position={position} rotation={rotation} scale={scale}>
-    <group>
-      <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
-      <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
-      <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>
-      <YootRhino scale={0.2} position={yutSprings.yut3Position} rotation={yutSprings.yut3Rotation}/>
+  function Label() {
+    
+    const [hover, setHover] = useState(false)
+    function handlePointerEnter(e) {
+      e.stopPropagation()
+      setHover(true)
+      document.body.style.cursor = 'pointer'
+    }
+    function handlePointerLeave(e) {
+      e.stopPropagation()
+      setHover(false)
+      document.body.style.cursor = 'default'
+    }
+    function handlePointerUp(e) {
+      e.stopPropagation()
+      setHover(false)
+      document.body.style.cursor = 'default'
+      socket.emit('throwYut', { roomId: params.id.toUpperCase() })
+    }
+
+    return <group>
       <group name='label' position={[0.55, 0.5, 0.8]}> 
         <mesh scale={[0.9, 0.01, 0.3]}>
           <cylinderGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color='#EE9E26'/>
+          <meshStandardMaterial color={ hover ? 'green' : '#EE9E26' }/>
         </mesh>
         <mesh scale={[0.85, 0.02, 0.25]}>
           <cylinderGeometry args={[1, 1, 1]}/>
@@ -83,14 +90,27 @@ export default function YutBonus({ position, rotation, scale }) {
           height={0.01}
         >
           BONUS
-          <meshStandardMaterial color='#EE9E26'/>
+          <meshStandardMaterial color={ hover ? 'green' : '#EE9E26' }/>
         </Text3D>
       </group>
-      <SparkleYutShader texturePath={'./textures/particles/8.png'}/>
+      <mesh 
+        position={[0.5, 0, 0]} 
+        onPointerEnter={e=>handlePointerEnter(e)} 
+        onPointerLeave={e=>handlePointerLeave(e)} 
+        onPointerUp={e=>handlePointerUp(e)}
+      >
+        <sphereGeometry args={[1, 32, 16]}/>
+        <meshStandardMaterial color='white' transparent opacity={0}/>
+      </mesh>
     </group>
-    <group name='wrapper'>
-      <mesh/>
-      <sphereGeometry/>
-    </group>
+  }
+
+  return <group name='yut-bonus' position={position} rotation={rotation} scale={scale}>
+    <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
+    <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
+    <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>
+    <YootRhino scale={0.2} position={yutSprings.yut3Position} rotation={yutSprings.yut3Rotation}/>
+    <SparkleYutShader texturePath={'./textures/particles/8.png'}/>
+    <Label/>
   </group>
 }

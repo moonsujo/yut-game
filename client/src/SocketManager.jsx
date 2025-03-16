@@ -333,6 +333,7 @@ export const SocketManager = () => {
       setYootAnimation(yootAnimation)
       setThrowCount(throwCount)
       setTurnExpireTime(turnExpireTime)
+      setYootAnimationPlaying(true)
       setPauseGame(paused)
       // const audio = new Audio('sounds/effects/throw.mp3');
       // audio.volume=0.3;

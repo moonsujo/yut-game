@@ -11,7 +11,7 @@ import UfosWin from "./UfosWin.jsx";
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
   const winner = useAtomValue(winnerAtom)
-  const [connectedToServer, setConnectedToServer] = useAtom(connectedToServerAtom)
+  const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams()
 
   useEffect(() => {
