@@ -18,7 +18,7 @@ export default function YutBonus({ position }) {
   const params = useParams()
 
   const { yutBonusScale } = useSpring({
-    yutBonusScale: showBonus && !animationPlaying ? 1 : 0,
+    yutBonusScale: (showBonus && !animationPlaying) ? 1 : 0,
   })
 
   const yutSprings = useSpring({

@@ -52,7 +52,8 @@ import {
   pieceTeam1Id2AnimationPlayingAtom,
   pieceTeam1Id3AnimationPlayingAtom,
   showFinishMovesAtom,
-  showBonusAtom
+  showBonusAtom,
+  bonusExistsAtom
 } from "./GlobalState.jsx";
 import { clientHasTurn, movesIsEmpty } from "./helpers/helpers.js";
 import useMeteorsShader from "./shader/meteors/MeteorsShader.jsx";
@@ -91,7 +92,7 @@ export const SocketManager = () => {
   const [_yootThrowValues] = useAtom(yootThrowValuesAtom)
   const [_initialYootThrow] = useAtom(initialYootThrowAtom)
   const [_yootThrown] = useAtom(yootThrownAtom)
-  const [_hasTurn, setHasTurn] = useAtom(hasTurnAtom)
+  const [hasTurn, setHasTurn] = useAtom(hasTurnAtom)
   const [_turnAlertActive] = useAtom(turnAlertActiveAtom)
   const [_moveResult] = useAtom(moveResultAtom)
   const [_throwResult] = useAtom(throwResultAtom)
@@ -154,6 +155,7 @@ export const SocketManager = () => {
   const setRemainingTime = useSetAtom(remainingTimeAtom)
   const [results, setResults] = useAtom(resultsAtom)
   const setShowFinishMoves = useSetAtom(showFinishMovesAtom)
+  const [bonusExists, setBonusExists] = useAtom(bonusExistsAtom)
   const setShowBonus = useSetAtom(showBonusAtom)
 
   useEffect(() => {
@@ -360,6 +362,7 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
+      setBonusExists(false)
     })
 
     socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
@@ -490,7 +493,7 @@ export const SocketManager = () => {
         }
         setThrowCount(teams[turnUpdate.team].throws)
         if (teams[turnUpdate.team].throws) {
-          setShowBonus(true)
+          setBonusExists(true)
         }
 
         // meteor effect (alert)
@@ -625,7 +628,7 @@ export const SocketManager = () => {
         teams[newTeam].throws = throws
         setThrowCount(throws)
         if (throws > 0) {
-          setShowBonus(true)
+          setBonusExists(true)
         }
 
         // Update moves
@@ -750,7 +753,7 @@ export const SocketManager = () => {
         teams[newTeam].throws = throws
         setThrowCount(throws)
         if (throws > 0) {
-          setShowBonus(true)
+          setBonusExists(true)
         }
 
         // Update moves
@@ -1154,11 +1157,24 @@ export const SocketManager = () => {
 
   useEffect(() => {
     if (turn.team !== -1 && teams[0].players.length > 0 && teams[1].players.length > 0) {
-      const currentPlayerName = teams[turn.team].players[turn.players[turn.team]].name
+      const currentTeam = turn.team
+      const currentPlayer = turn.players[currentTeam]
+      const currentPlayerName = teams[currentTeam].players[currentPlayer].name
       setCurrentPlayerName(currentPlayerName)
-      setHasTurn(teams[turn.team].players[turn.players[turn.team]].socketId === client.socketId)
+      setHasTurn(teams[currentTeam].players[currentPlayer].socketId === client.socketId)
     }
   }, [turn, teams, client])
+
+  useEffect(() => {
+    if (turn.team !== -1 && hasTurn && bonusExists) {
+    // if (turn.team !== -1 && teams[0].players.length > 0 && teams[1].players.length > 0 && hasTurn && bonusExists) {
+      setShowBonus(true)
+      console.log('[SocketManager] show bonus')
+    } else {
+      setShowBonus(false)
+      console.log('[SocketManager] do not show bonus')
+    }
+  }, [bonusExists, client, hasTurn])
 };
 
 /**

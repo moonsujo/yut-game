@@ -437,7 +437,7 @@ export default function Game() {
   }
   function GameYut() {
     const yutAnimation = useAtomValue(yootAnimationAtom)
-    return yutAnimation && <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
+    return <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
   }
 
   return (<>

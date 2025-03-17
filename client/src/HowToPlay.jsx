@@ -1,7 +1,7 @@
-import { Float, MeshDistortMaterial, Text3D, useAnimations, useGLTF } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import React, { useEffect, useRef, useState } from 'react';
 import YootButtonModel from './meshes/YootButtonModel';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import Cursor from './meshes/Cursor';
 import Mars from './meshes/Mars';
 import Star from './meshes/Star';

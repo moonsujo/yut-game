@@ -4,6 +4,7 @@ import { backdoLaunchAtom, clientAtom, hasTurnAtom, selectionAtom, teamsAtom } f
 import layout from './layout';
 import Piece from './components/Piece';
 import { hasValidMoveHome, pieceSelected, tileType } from './helpers/helpers';
+import MeshColors from './MeshColors';
 
 export default function PiecesSection({ 
   position=[0,0,0], 
@@ -53,34 +54,30 @@ export default function PiecesSection({
       </mesh>
     }
 
-    return (
-      <group>
-        {
-          teams[team].pieces.map((value, index) =>
-            tileType(value.tile) === "onBoard" ? <EmptyPiece 
-              position={layout[device].game.piecesSection.pieces.positions[index]}
-              key={index}
-            /> : 
-            tileType(value.tile) === "scored" ? <ScoredPiece
-              position={layout[device].game.piecesSection.pieces.positions[index]}
-              key={index}
-            /> : <Piece
-              position={layout[device].game.piecesSection.pieces.positions[index]}
-              rotation={layout[device].game.piecesSection.pieces.rotation}
-              scale={layout[device].game.piecesSection.pieces.scale}
-              tile={-1}
-              team={team}
-              id={value.id}
-              key={index}
-              // on selection, no other piece should be in 'selectable' animation
-              selectable={(selection === null && hasValidMoveHome(teams[team].pieces, teams[team].moves, backdoLaunch) && hasTurn)}
-              onBoard={false}
-              selected={pieceSelected(selection, value.id, team)}
-            />
-          )
-        }
-      </group>
-    )
+    return <group>
+      { teams[team].pieces.map((value, index) =>
+        tileType(value.tile) === "onBoard" ? <EmptyPiece 
+          position={layout[device].game.piecesSection.pieces.positions[index]}
+          key={index}
+        /> : 
+        tileType(value.tile) === "scored" ? <ScoredPiece
+          position={layout[device].game.piecesSection.pieces.positions[index]}
+          key={index}
+        /> : <Piece
+          position={layout[device].game.piecesSection.pieces.positions[index]}
+          rotation={layout[device].game.piecesSection.pieces.rotation}
+          scale={layout[device].game.piecesSection.pieces.scale}
+          tile={-1}
+          team={team}
+          id={value.id}
+          key={index}
+          // on selection, no other piece should be in 'selectable' animation
+          selectable={(selection === null && hasValidMoveHome(teams[team].pieces, teams[team].moves, backdoLaunch) && hasTurn)}
+          onBoard={false}
+          selected={pieceSelected(selection, value.id, team)}
+        />
+      )}
+    </group>
   } 
 
   return <group
