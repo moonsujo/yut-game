@@ -987,8 +987,8 @@ io.on("connect", async (socket) => {
         throw new Error('room with shortId', roomId, 'not found, or game is paused')
       } else if (room.teams[user.team].throws < 0) {
         throw new Error("player's team has no throws")
-      } else if (room.teams[currentTeam].players[currentPlayer].socketId !== user.socketId) {
-        throw new Error("player doesn't have the turn'")
+      } else if (room.teams[currentTeam].players[currentPlayer].valueOf() !== user._id.valueOf()) {
+        throw new Error("player doesn't have the turn")
       } else {
 
         // Stop the timer

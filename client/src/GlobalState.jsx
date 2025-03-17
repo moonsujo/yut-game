@@ -128,6 +128,7 @@ export const audioOpenAtom = atom(false)
 export const languageOpenAtom = atom(false)
 export const soundEffectsAtom = atom(true)
 export const musicAtom = atom(true)
+export const lastYutAtom = atom(null)
 
 const deepPieceEquals = (prev, next) => {
   let result;

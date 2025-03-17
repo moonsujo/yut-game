@@ -1235,6 +1235,9 @@ export default {
           position: [5, 0, 1]
         },
       },
+      yutBonus: {
+        position: [1.5, 0, 1.4]
+      },
       whoGoesFirst: {
         title: {
           position: [-5.7, 0, -4.6],
@@ -2811,6 +2814,9 @@ export default {
           scale: 0.2,
           position: [5, 0, 1]
         }
+      },
+      yutBonus: {
+        position: [1.5, 0, 1.9]
       },
       whoGoesFirst: {
         title: {

@@ -10,6 +10,7 @@ import YootMesh from './meshes/YootMesh';
 import { useFrame } from '@react-three/fiber';
 import { animated, useSpring } from '@react-spring/three';
 import { useParams } from 'wouter';
+import Star from './meshes/Star';
 
 export default function Team({ position=[0,0,0], scale=1, team }) {
   const device = useAtomValue(deviceAtom)
@@ -132,14 +133,24 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
       <group position={position} scale={scale}>
         {
           teams[team].pieces.map((value, index) =>
-            tileType(value.tile) === "onBoard" ? <EmptyPiece 
+            tileType(value.tile) === "onBoard" ? <Star 
               position={[
                 positionStartX + index * space,
                 positionStartY,
                 positionStartZ,
               ]}
               key={index}
+              scale={0.3}
+              color='grey'
             /> : 
+            // tileType(value.tile) === "onBoard" ? <EmptyPiece 
+            //   position={[
+            //     positionStartX + index * space,
+            //     positionStartY,
+            //     positionStartZ,
+            //   ]}
+            //   key={index}
+            // /> : 
             tileType(value.tile) === "scored" ? <ScoredPiece
               position={[
                 positionStartX + index * space,
@@ -217,20 +228,42 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
   function PlayerIds() {
     const playerIdsRef = useRef([[],[]])
     const yootIconRef = useRef()
-    useFrame((state, delta) => {
-      playerIdsRef.current.forEach(function (value, i) {
-        playerIdsRef.current[i].forEach(function (value1, j) {
-          if (turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere && (gamePhase === 'pregame' || gamePhase === 'game')) {
+    const youIndicatorRef = useRef()
+    useFrame(() => {
+      playerIdsRef.current.forEach(function (_value, i) {
+        playerIdsRef.current[i].forEach(function (_value1, j) {
+          // You Icon
+          const isYou = teams[i].players[j].name === client.name
+          if (isYou && playerIdsRef.current[i][j].geometry.boundingSphere) {            
+            youIndicatorRef.current.scale.x = 1
+            youIndicatorRef.current.scale.y = 1
+            youIndicatorRef.current.scale.z = 1
+            youIndicatorRef.current.position.x = playerIdsRef.current[i][j].geometry.boundingSphere.center.x + playerIdsRef.current[i][j].geometry.boundingSphere.radius + 0.3
+            youIndicatorRef.current.position.z = -j * nameSpacing + 0.35
+          } else {
+            youIndicatorRef.current.scale.x = 0
+            youIndicatorRef.current.scale.y = 0
+            youIndicatorRef.current.scale.z = 0
+          }
+          // Yut Icon
+          if (turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere) {
             yootIconRef.current.scale.x = 1
             yootIconRef.current.scale.y = 1
             yootIconRef.current.scale.z = 1
-            yootIconRef.current.position.x = playerIdsRef.current[i][j].geometry.boundingSphere.center.x + playerIdsRef.current[i][j].geometry.boundingSphere.radius + 0.2
-            // yootIconRef.current.position.y = -j * nameSpacing
+            yootIconRef.current.position.x = playerIdsRef.current[i][j].geometry.boundingSphere.center.x + playerIdsRef.current[i][j].geometry.boundingSphere.radius + 0.4
+            if (isYou) {
+              yootIconRef.current.position.x += 0.25
+            }
             yootIconRef.current.position.z = -j * nameSpacing
+          } else {
+            yootIconRef.current.scale.x = 0
+            yootIconRef.current.scale.y = 0
+            yootIconRef.current.scale.z = 0
           }
         })
       })
     })
+
     return <group
       position={layout[device].game[`team${team}`].names.position}
       rotation={layout[device].game[`team${team}`].names.rotation}
@@ -247,8 +280,11 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
             {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h) ' : '')
             + (value.status === 'away' ? ' (away)' : '')}
-            <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? 'yellow' : 'gray' }/>
+            <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>
+          <group name='you-indicator' ref={youIndicatorRef}>
+            <Star rotation={[Math.PI/2, 0, 0]} scale={0.23} color={ team === 0 ? 'red' : 'turquoise' }/>
+          </group>
         </group>
       ))}
       {/* y position in case it overlaps with a name */}
@@ -260,132 +296,6 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
       </group>
       {/* add 'copy link to share' if game hasn't started yet */}
       {/* { gamePhase === 'lobby' && client.team !== -1 && <CopyLink position={[0.1, -teams[team].players.length * 0.5-0.1, 0]}/> } */}
-    </group>
-  }
-
-  // place under playerIds
-  function CopyLink({ position }) {
-    const [hover, setHover] = useState(false);
-    const button = useRef();
-
-    const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
-    const [springs, api] = useSpring(() => ({        
-      from: {
-        opacity: 0, 
-      }
-    }))
-
-    useFrame((state) => {
-      const time = state.clock.elapsedTime
-      button.current.scale.x = Math.sin(time)*0.05 + 1
-      button.current.scale.y = Math.sin(time)*0.05 + 1
-      button.current.scale.z = Math.sin(time)*0.05 + 1
-    })
-
-    function handlePointerEnter(e) {
-      e.stopPropagation()
-      setHover(true)
-    }
-    function handlePointerLeave(e) {
-      e.stopPropagation()
-      setHover(false)
-    }
-    function handleClick(e) {
-      e.stopPropagation()
-
-      // works on safari and chrome browsers
-      var inputc = document.body.appendChild(document.createElement("input"));
-      inputc.value = window.location.href;
-      inputc.select();
-      document.execCommand('copy');
-      inputc.parentNode.removeChild(inputc);
-
-      // animation
-      api.start({
-        from: {
-          opacity: 1
-        },
-        to: [
-          {
-            opacity: 1
-          },
-          { 
-            opacity: 0,
-            delay: 500,
-            config: {
-              tension: 170,
-              friction: 26
-            }
-          }
-        ]
-      })
-    }
-    return <group position={position} ref={button}>
-      <group name='background' position={[4/2-0.15, 0.5/2-0.1, -0.1]}>
-        <mesh 
-          name='background-outer' 
-          rotation={[Math.PI/2, 0, 0]}
-        >
-          <boxGeometry args={[4, 0.01, 0.7]}/>
-          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-        </mesh>
-        <mesh 
-          name='background-inner' 
-          rotation={[Math.PI/2, 0, 0]}
-        >
-          <boxGeometry args={[3.95, 0.02, 0.65]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <mesh 
-        name='wrapper' 
-        rotation={[Math.PI/2, 0, 0]}
-        onPointerEnter={(e) => handlePointerEnter(e)}
-        onPointerLeave={(e) => handlePointerLeave(e)}
-        onClick={(e) => handleClick(e)}
-        >
-          <boxGeometry args={[4, 0.03, 0.7]}/>
-          <meshStandardMaterial transparent opacity={0}/>
-        </mesh>
-      </group>
-      <Text3D
-        font="/fonts/Luckiest Guy_Regular.json"
-        position={[0,0,-0.08]}
-        rotation={[0, 0, 0]}
-        size={0.35}
-        height={0.01}
-      >
-        <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
-        {`copy room link`}
-      </Text3D>
-      <group name='copied-alert' position={[0, 0.7, 0.5]}>
-        <Text3D 
-          name='copied-tooltip'
-          font="/fonts/Luckiest Guy_Regular.json"
-          position={[0,0,0]}
-          rotation={[0, 0, 0]}
-          size={layout[device].game.invite.size}
-          height={layout[device].game.invite.height}
-        >
-          copied!
-          <AnimatedMeshDistortMaterial
-            speed={5}
-            distort={0}
-            color='green'
-            transparent
-            opacity={springs.opacity}
-          />
-        </Text3D>
-        <mesh position={[0.7, 0.1, 0]} rotation={[Math.PI/2, 0, 0]} scale={[1.1, 1, 0.5]}>
-          <cylinderGeometry args={[1, 1, 0.01, 20]}/>
-          <AnimatedMeshDistortMaterial 
-            speed={5}
-            distort={0}
-            color='black'
-            transparent
-            opacity={springs.opacity}
-          />
-        </mesh>
-      </group>
     </group>
   }
 
