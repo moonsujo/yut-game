@@ -19,7 +19,7 @@ export default {
   portrait: {
     center: [0,0,0],
     camera: {
-      position: [0,17,7],
+      position: [0, 25, 10.3],
       zoomMin: 0,
       zoomMax: 55,
     },
@@ -296,7 +296,7 @@ export default {
         yut: {
           initialYutPosition: [-4.5,8,9],
           initialYutRotation: [Math.PI/16,Math.PI/2+Math.PI/32,-Math.PI/2],
-          animationYutPosition: [-2,0,-3],
+          animationYutPosition: [-2,-1.5,-3],
           animationYutRotation: [0,0,0],
         },
         yootButtonModel: {

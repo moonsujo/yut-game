@@ -17,12 +17,6 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
   const { nodes, materials, animations } = useGLTF('/models/yoot-animation-3.glb')
   const { actions, mixer } = useAnimations(animations, group)
 
-  const [springs, api] = useSpring(() => ({
-    from: {
-      yutScale: 0,
-    }
-  }))
-
   // unset Yut from flashing to initial position
   useEffect(() => {
     if (animation) {
@@ -30,28 +24,10 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
         actions[`yoot${i}Throw${animation}`].clampWhenFinished = true
         actions[`yoot${i}Throw${animation}`].play().setLoop(LoopOnce);
       }
-      api.start({
-        from: {
-          yutScale: 0,
-        },
-        to: {
-          yutScale: 1
-        }
-      })
-    } else {
-      api.start({
-        from: {
-          yutScale: 1,
-        },
-        to: {
-          yutScale: 0
-        }
-      })
     }
   }, [animation])
 
-  return <animated.group scale={springs.yutScale}>
-    <group ref={group} scale={scale} position={position} rotation={rotation} dispose={null}>
+  return <group ref={group} scale={scale} position={position} rotation={rotation} dispose={null}>
       <group name="Scene">
         <mesh
           name="yoot1"
@@ -91,5 +67,4 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
         />
       </group>
     </group>
-  </animated.group>
 }

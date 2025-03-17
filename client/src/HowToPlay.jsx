@@ -89,7 +89,7 @@ export default function HowToPlay({
         setYutPosition(layout[device].howToPlay.throwingTheDicePage.yut.animationYutPosition)
         setYutRotation(layout[device].howToPlay.throwingTheDicePage.yut.animationYutRotation)
         setAnimation(ANIMATION)
-      }, 2000)
+      }, 1500)
 
       return () => {
         clearTimeout(animationTimeout)

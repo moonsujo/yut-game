@@ -6,12 +6,12 @@ import { useFrame } from '@react-three/fiber';
 
 function calcZoom() {
   if (window.innerWidth < mediaValues.landscapeCutoff) {
-    const zoomMax = 44;
+    const zoomMax = 42;
     const newZoom = zoomMax * (window.innerWidth / mediaValues.landscapeCutoff)
     return newZoom
   } else {
     const zoomMin = 21;
-    const newZoom = window.innerWidth * (zoomMin / mediaValues.landscapeCutoff)
+    const newZoom = zoomMin * (window.innerWidth / mediaValues.landscapeCutoff)
     return newZoom
   }
 }

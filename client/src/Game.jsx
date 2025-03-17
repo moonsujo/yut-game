@@ -437,7 +437,37 @@ export default function Game() {
   }
   function GameYut() {
     const yutAnimation = useAtomValue(yootAnimationAtom)
-    return <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
+    const [springs, api] = useSpring(() => ({
+      from: {
+        yutScale: 0,
+      }
+    }))
+
+    useEffect(() => {
+      if (yutAnimation) {
+        api.start({
+          from: {
+            yutScale: 0,
+          },
+          to: {
+            yutScale: 1
+          }
+        })
+      } else {
+        api.start({
+          from: {
+            yutScale: 1,
+          },
+          to: {
+            yutScale: 0
+          }
+        })
+      }
+    }, [yutAnimation])
+
+    return <animated.group scale={springs.yutScale}>
+      <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
+    </animated.group>
   }
 
   return (<>

@@ -22,7 +22,7 @@ export default function StarsPatterns2Shader({ position=[0,0,0], size=1.0, count
   for (let i = 0; i < count; i++) {
     const i3 = i * 3;
   
-    const radius = 40.0;
+    const radius = 45.0;
     const spherical = new THREE.Spherical(
       radius * (0.8 + Math.random() * 0.2),
       Math.random() * Math.PI,
