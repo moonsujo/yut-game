@@ -247,7 +247,8 @@ export default function FinishMarkerSelectable({ legalTileInfo, selection }) {
     useFrame((state) => {
       const time = state.clock.elapsedTime;
       if (!hover) {
-        primaryMaterial.color.g = 0.3105 + Math.cos(time * 5) * 0.3 + 0.1
+        // primaryMaterial.color.g = 0.3105 + Math.cos(time * 5) * 0.3 + 0.1
+        primaryMaterial.color.setHSL(Math.cos(time * 5) * 0.25 + 0.3, Math.cos(time * 5) * 0.06 + 1, Math.cos(time * 5) * 0.06 + 0.3);
       } else {
         primaryMaterial.color.r = 0.7
         primaryMaterial.color.g = 1
@@ -411,7 +412,7 @@ export default function FinishMarkerSelectable({ legalTileInfo, selection }) {
     { legalTileInfo.length > 1 && showFinishMoves && <group>
       <Text3D
         font="/fonts/Luckiest Guy_Regular.json"
-        position={[0.7,0,3.7]}
+        position={[0.7,0,3.6]}
         rotation={[-Math.PI/2, 0, 0]}
         size={0.25}
         height={0.01}
@@ -420,7 +421,7 @@ export default function FinishMarkerSelectable({ legalTileInfo, selection }) {
         {`SELECT A MOVE`}
         <meshStandardMaterial color='limegreen'/>
       </Text3D> 
-      <MultipleMoveButtonSet moves={legalTileInfo} position={[0.6, 0, 4.1]}/>
+      <MultipleMoveButtonSet moves={legalTileInfo} position={[0.6, 0, 4.0]}/>
     </group> }
   </group>
 }

@@ -1778,8 +1778,8 @@ export default function Lobby() {
           try {
             await navigator.share({
               title: 'Yut Nori',
-              text: "Let's play Yut Nori!",
-              url: window.location.href
+              text: "Let's play a game!",
+              url: window.location.href,
             })
           } catch (err) {
             console.error('Error sharing:', err)

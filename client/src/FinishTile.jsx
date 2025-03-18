@@ -3,13 +3,14 @@ import Star from "./meshes/Star"
 import FinishMarkerSelectable from "./FinishMarkerSelectable"
 import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, showFinishMovesAtom, turnAtom } from "./GlobalState";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying";
 import { getLegalTiles } from "./helpers/legalTiles";
 import { socket } from "./SocketManager";
 import { useParams } from "wouter";
+import { MeshStandardMaterial } from "three";
 
 export default function FinishTile({ legalTileInfo }) {
   const tile = 29
@@ -20,30 +21,45 @@ export default function FinishTile({ legalTileInfo }) {
   const animationPlaying = useAnimationPlaying()
   const paused = useAtomValue(pauseGameAtom)
   const client = useAtomValue(clientAtom)
-  const setShowFinishMoves = useSetAtom(showFinishMovesAtom)
+  const [showFinishMoves, setShowFinishMoves] = useAtom(showFinishMovesAtom)
   const params = useParams()
   const { wrapperScale } = useSpring({
     wrapperScale: (selection != null && legalTileInfo) ? 0.5 : 0, // want the animation to start again when status changes
   })
   const wrapperMat = useRef();
   const wrapper = useRef();
+  // Limegreen: 0.031 b, 0.61 g, 0.031 r
+  const starMatRef = useRef();
+  const borderMatRef = useRef();
+  const finishMovesPointerRef = useRef()
 
   let time = 0
+  const finishMovesPointerPositionX = 0.2
   useFrame((state, delta) => {
     // const time = state.clock.elapsedTime
     time += delta
-    if (selection != null && legalTileInfo) {
-      // if (turn.team === 0) {
-      //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
-      // } else {
-      //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
-      // }
-      wrapperMat.current.opacity = 0.2;
-      wrapper.current.scale.x = Math.sin(time * 3) * 0.05 + 1.1;
-      wrapper.current.scale.y = Math.sin(time * 3) * 0.05 + 1.1;
-      wrapper.current.scale.z = Math.sin(time * 3) * 0.05 + 1.1;
-    } else {
-      wrapperMat.current.opacity = 0;
+    if (wrapperMat.current && wrapper.current && starMatRef.current && borderMatRef.current) {
+      if (selection != null && legalTileInfo) {
+        // if (turn.team === 0) {
+        //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
+        // } else {
+        //   wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
+        // }
+        wrapperMat.current.opacity = 0.2;
+        wrapper.current.scale.x = Math.sin(time * 3) * 0.05 + 1.1;
+        wrapper.current.scale.y = Math.sin(time * 3) * 0.05 + 1.1;
+        wrapper.current.scale.z = Math.sin(time * 3) * 0.05 + 1.1;
+  
+        // Star shine
+        starMatRef.current.color.setHSL(Math.cos(time * 5) * 0.2 + 0.3, Math.cos(time * 5) * 0.06 + 1, Math.cos(time * 5) * 0.06 + 0.3);
+        borderMatRef.current.color.setHSL(Math.cos(time * 5) * 0.2 + 0.3, Math.cos(time * 5) * 0.06 + 1, Math.cos(time * 5) * 0.06 + 0.3);
+        wrapperMat.current.color.setHSL(Math.cos(time * 5) * 0.15 + 0.5, Math.cos(time * 5) * 0.3 + 1, Math.cos(time * 6) * 0.1 + 0.4);
+
+      } else {
+        wrapperMat.current.opacity = 0;
+      }
+    } else if (showFinishMoves && finishMovesPointerRef.current) { // Pointer point animation
+      finishMovesPointerRef.current.position.x = Math.cos(time * 5) * 0.05 + finishMovesPointerPositionX
     }
   })
 
@@ -57,6 +73,7 @@ export default function FinishTile({ legalTileInfo }) {
   }
   function handleFinishPointerUp(e) {
     e.stopPropagation()
+    document.body.style.cursor = "default";
     if (gamePhase === "game" && hasTurn && !animationPlaying && !paused) {
       // if legalTileInfo.length === 1: click scores
       // if it's greater than 1: click selects tile
@@ -149,16 +166,16 @@ export default function FinishTile({ legalTileInfo }) {
       </Text3D>
     </group> }
     { legalTileInfo && <FinishMarkerSelectable legalTileInfo={legalTileInfo} selection={selection} /> }
-    <group name='finish-pad' position={[0, 0, 3.9]}>
-      <mesh name='finish-pad-background-inner' position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
-        <meshStandardMaterial color='limegreen'/>
-      </mesh>
+    { !showFinishMoves && <group name='finish-pad' position={[0, 0, 3.9]}>
       <mesh name='finish-pad-background-outer' position={[0, 0, 0]}>
+        <cylinderGeometry args={[0.3, 0.3, 0.01, 32]}/>
+        <meshStandardMaterial color='limegreen' ref={borderMatRef}/>
+      </mesh>
+      <mesh name='finish-pad-background-inner' position={[0, 0, 0]}>
         <cylinderGeometry args={[0.28, 0.28, 0.011, 32]}/>
         <meshStandardMaterial color='black'/>
       </mesh>
-      <Star scale={0.22} color='limegreen' position={[0, -0.03, 0]}/>
+      <Star scale={0.22} material={<meshStandardMaterial color='limegreen' ref={starMatRef}/>} position={[0, -0.03, 0]}/>
       <animated.group scale={wrapperScale}>
         <mesh
           name='wrapper'
@@ -178,6 +195,10 @@ export default function FinishTile({ legalTileInfo }) {
         />
       </mesh>
       </animated.group>
-    </group>
+    </group> }
+    { showFinishMoves && <mesh name='finish-moves-pointer' ref={finishMovesPointerRef} scale={[0.15, 0.4, 0.15]} position={[finishMovesPointerPositionX, 0, 4]} rotation={[0, 0, -Math.PI/2]}>
+      <coneGeometry args={[1, 1, 3]}/>
+      <meshStandardMaterial color='limegreen'/>
+    </mesh>}
   </group>
 }
