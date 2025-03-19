@@ -2807,7 +2807,7 @@ export default {
           position: [0, -13, -3.5]
         },
         game: {
-          scale: 1,
+          scale: 0.9,
           position: [0, 0, -0.5]
         },
         finished: {
