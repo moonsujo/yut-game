@@ -503,7 +503,7 @@ export default function Game() {
           scale={layout[device].game.yootButton.scale}
         /> }
         <GameYut/>
-        <YutBonus position={layout[device].game.yutBonus.position}/>
+        <YutBonus position={layout[device].game.yutBonus.position} scale={layout[device].game.yutBonus.scale}/>
         <SettingsButton 
           position={layout[device].game.settings.mainButton.position}
           scale={layout[device].game.settings.mainButton.scale}

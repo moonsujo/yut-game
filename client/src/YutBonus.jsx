@@ -11,14 +11,14 @@ import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
 import { socket } from "./SocketManager"
 import { useParams } from "wouter"
 
-export default function YutBonus({ position }) {
+export default function YutBonus({ position, scale }) {
   
   const showBonus = useAtomValue(showBonusAtom)
   const animationPlaying = useAnimationPlaying()
   const params = useParams()
 
   const { yutBonusScale } = useSpring({
-    yutBonusScale: (showBonus && !animationPlaying) ? 1 : 0,
+    yutBonusScale: (showBonus && !animationPlaying) ? 0.9 : 0,
   })
 
   const yutSprings = useSpring({
@@ -116,7 +116,7 @@ export default function YutBonus({ position }) {
 
   return <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={position}>
     <Float rotationIntensity={0.2} speed={7} floatIntensity={3} floatingRange={[-0.1, 0.1]}>
-      <group name='yut-bonus'>
+      <group name='yut-bonus' scale={scale}>
         <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
         <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
         <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>

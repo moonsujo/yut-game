@@ -28,7 +28,6 @@ export default function FinishTile({ legalTileInfo }) {
   })
   const wrapperMat = useRef();
   const wrapper = useRef();
-  // Limegreen: 0.031 b, 0.61 g, 0.031 r
   const starMatRef = useRef();
   const borderMatRef = useRef();
   const finishMovesPointerRef = useRef()
@@ -57,6 +56,12 @@ export default function FinishTile({ legalTileInfo }) {
 
       } else {
         wrapperMat.current.opacity = 0;
+        starMatRef.current.color.r = 0.031
+        starMatRef.current.color.g = 0.61
+        starMatRef.current.color.b = 0.031
+        borderMatRef.current.color.r = 0.031
+        borderMatRef.current.color.g = 0.61
+        borderMatRef.current.color.b = 0.031
       }
     } else if (showFinishMoves && finishMovesPointerRef.current) { // Pointer point animation
       finishMovesPointerRef.current.position.x = Math.cos(time * 5) * 0.05 + finishMovesPointerPositionX

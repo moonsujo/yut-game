@@ -999,9 +999,9 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        // let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        let outcome = 4
+        // let outcome = 4
         // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {

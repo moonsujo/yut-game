@@ -339,6 +339,9 @@ export const SocketManager = () => {
       setTurnExpireTime(turnExpireTime)
       setYootAnimationPlaying(true)
       setPauseGame(paused)
+      if (throwCount < 1) {
+        setBonusExists(false)
+      }
       // const audio = new Audio('sounds/effects/throw.mp3');
       // audio.volume=0.3;
       // audio.play();
@@ -499,8 +502,10 @@ export const SocketManager = () => {
           setAlerts([yootOutcomeAlertName])
         }
         setThrowCount(teams[turnUpdate.team].throws)
-        if (teams[turnUpdate.team].throws) {
+        if (teams[turnUpdate.team].throws > 0) {
           setBonusExists(true)
+        } else {
+          setBonusExists(false)
         }
 
         // meteor effect (alert)
@@ -527,6 +532,7 @@ export const SocketManager = () => {
               })
             }, i * 300)
           }
+
         }
 
         // sounds
@@ -635,8 +641,10 @@ export const SocketManager = () => {
         // Update throws
         teams[newTeam].throws = throws
         setThrowCount(throws)
-        if (throws > 0) {
+        if (throws > 0 && newTeam === prevTeam) {
           setBonusExists(true)
+        } else {
+          setBonusExists(false)
         }
 
         // Update moves
@@ -761,8 +769,10 @@ export const SocketManager = () => {
         // Update throws
         teams[newTeam].throws = throws
         setThrowCount(throws)
-        if (throws > 0) {
+        if (throws > 0 && newTeam === prevTeam) {
           setBonusExists(true)
+        } else {
+          setBonusExists(false)
         }
 
         // Update moves
