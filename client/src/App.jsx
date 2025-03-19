@@ -37,8 +37,8 @@ export default function App () {
         </Route>
         <Route path="/:id">
           <Experience/>
-          <StarsPatterns2Shader count={5000} texturePath={'/textures/particles/3.png'}/>
-          <StarsPatterns2Shader count={5000} texturePath={'/textures/particles/6.png'} size={2.5}/>
+          <StarsPatterns2Shader count={10000} texturePath={'/textures/particles/3.png'}/>
+          <StarsPatterns2Shader count={10000} texturePath={'/textures/particles/6.png'} size={2}/>
           <MilkyWay // will not show without a camera
             rotation={[-Math.PI/2, 0, -35.0]} 
             position={[0, -10, -4]}

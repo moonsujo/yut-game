@@ -1380,7 +1380,7 @@ export default {
         boxArgs: [0.25, 0.03, 4],
       },
       throwCount: {
-        position: [1.7, 0, -0.8],
+        position: [-1.2, 0, 1.25],
         // position: [1.7, 0, -0.8],
         orientation: 'downUp'
         // orientation: 'leftRight'

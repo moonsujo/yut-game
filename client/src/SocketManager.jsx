@@ -379,9 +379,9 @@ export const SocketManager = () => {
       })
       
       let alerts = []
-      if (!paused) {
-        alerts.push('timesUp')
-      }
+      // if (!paused) {
+      //   alerts.push('timesUp')
+      // }
 
       setTeams(teams => {
         const newTeamObj = { ...teams[newTeam] }
@@ -518,10 +518,10 @@ export const SocketManager = () => {
               1,
               0, 
             )
-            const size = 0.4 + Math.random() * 0.02
+            const size = 0.6 + Math.random() * 0.02
             const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
             const color = new THREE.Color();
-            color.setHSL(0.06, 1.0, 0.5)
+            color.setHSL(0.1, 1.0, 0.4)
             setTimeout(() => {
               CreateMeteor({
                 count,

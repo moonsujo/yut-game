@@ -8,8 +8,8 @@ export default function Home2Experience() {
 
     return <group>
         <Home2/>
-        <StarsPatterns2Shader count={3000} texturePath={'/textures/particles/3.png'}/>
-        <StarsPatterns2Shader count={3000} texturePath={'/textures/particles/6.png'} size={2.0}/>
+        <StarsPatterns2Shader count={10000} texturePath={'/textures/particles/3.png'}/>
+        <StarsPatterns2Shader count={15000} texturePath={'/textures/particles/6.png'} size={2}/>
         <MilkyWay
             rotation={[-Math.PI/2, 0, -35.0]} 
             position={[0,-1,0]} 

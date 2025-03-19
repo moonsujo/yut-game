@@ -1763,7 +1763,7 @@ export default function Lobby() {
     const readyToStart = useAtomValue(readyToStartAtom)
     const host = useAtomValue(hostAtom)
     const client = useAtomValue(clientAtom)
-    const isHost = client.socketId === host.socketId
+    const isHost = host && client && client.socketId === host.socketId
 
     function ShareThisLobbyButton({ position }) {
       function handleSharePointerEnter(e) {

@@ -13,21 +13,22 @@ export default function useMeteorsShader() {
     const sizes = {
         width: window.innerWidth,
         height: window.innerHeight,
-        // width: 2000,
-        // height: 1000,
-        pixelRatio: Math.min(window.devicePixelRatio, 1)
+        pixelRatio: Math.min(window.devicePixelRatio, 2)
     }
-    sizes.resolution = new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 
-    window.addEventListener('resize', () => {
+    sizes.resolution = new THREE.Vector2(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
+    window.addEventListener('resize', () =>
+    {
         // Update sizes
         sizes.width = window.innerWidth
         sizes.height = window.innerHeight
-        // sizes.width = 2000,
-        // sizes.height = 1000,
-        sizes.pixelRatio = Math.min(window.devicePixelRatio, 1)
+        sizes.pixelRatio = Math.min(window.devicePixelRatio, 2)
         sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
     })
+    
+    const { gl } = useThree();
+    gl.setSize(sizes.width, sizes.height)
+    gl.setPixelRatio(sizes.pixelRatio)
 
     function CreateMeteor({ count, position, size, texture, color }) {
         const duration = 5.0;
