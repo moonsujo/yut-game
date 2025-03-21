@@ -73,13 +73,14 @@ export default function PiecesOnBoard({ boardOffset }) {
         }
     }
 
+    const STAR_JUMP_TIME = 820
     function calculateCatchDelay(catchPath) {
         if (catchPath[0] === 1 && catchPath[1] === 0) {
-            return (catchPath.length-1) * 610
+            return (catchPath.length-1) * STAR_JUMP_TIME
         } if (catchPath[0] === 0 && (catchPath[1] !== 19 && catchPath[1] !== 28)) {
-            return (catchPath.length-1) * 610
+            return (catchPath.length-1) * STAR_JUMP_TIME
         } else {
-            return (catchPath.length-2) * 610
+            return (catchPath.length-2) * STAR_JUMP_TIME
         }
     }
 
