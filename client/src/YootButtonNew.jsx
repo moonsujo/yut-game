@@ -2,7 +2,7 @@ import { Text3D, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useRef, useState } from 'react';
-import { clientAtom, deviceAtom, hasTurnAtom, pauseGameAtom, shakeToThrowEnabledAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
+import { addingDeviceMotionAtom, clientAtom, deviceAtom, hasTurnAtom, pauseGameAtom, shakeToThrowEnabledAtom, showShakeMeshAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from "wouter";
 import layout from './layout';
@@ -86,7 +86,12 @@ export default function YootButtonNew({ position, rotation, scale }) {
   // Error prevention - if device doesn't support the feature
   function ShakeToThrowButton(props) {
     const [shakeToThrowEnabled, setShakeToThrowEnabled] = useAtom(shakeToThrowEnabledAtom)
-    const [enableShakeToThrow, disableShakeToThrow] = useShakeDetector()
+    const addingDeviceMotion = useAtomValue(addingDeviceMotionAtom)
+    const [showShakeMesh, setShowShakeMesh] = useAtom(showShakeMeshAtom)
+    function handler() {
+      setShowShakeMesh(true)
+    }
+    const [enableShakeToThrow, disableShakeToThrow] = useShakeDetector(handler)
     const [pressed, setPressed] = useState(false)
     const { pressedScale } = useSpring({
       pressedScale: pressed ? 1.2 : 1 
@@ -105,10 +110,10 @@ export default function YootButtonNew({ position, rotation, scale }) {
     function handlePointerUp(e) {
       e.stopPropagation()
       if (shakeToThrowEnabled) {
-        disableShakeToThrow(() => { console.log('shake detected') })
+        disableShakeToThrow()
         setShakeToThrowEnabled(false)
       } else {
-        enableShakeToThrow(() => { console.log('shake detected') })
+        enableShakeToThrow()
         setShakeToThrowEnabled(true)
       }
       setPressed(false)
@@ -153,6 +158,23 @@ export default function YootButtonNew({ position, rotation, scale }) {
           <meshStandardMaterial color={ shakeToThrowEnabled ? 'green' : 'grey' }/>
         </mesh>
       </animated.group>
+      { showShakeMesh && <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[0.7,0.02,-1]}
+        rotation={[-Math.PI/2, 0, -Math.PI/2]}
+        size={0.26}
+        height={0.01}>
+          shake detected
+        </Text3D> }
+        
+      { addingDeviceMotion && <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[1,0.02,-1]}
+        rotation={[-Math.PI/2, 0, -Math.PI/2]}
+        size={0.26}
+        height={0.01}>
+          adding device motion
+        </Text3D> }
     </group>
   }
 

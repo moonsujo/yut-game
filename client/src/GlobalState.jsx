@@ -84,6 +84,9 @@ export const catchPathAtom = atom(null)
 export const bonusExistsAtom = atom(false)
 export const showBonusAtom = atom(false)
 export const shakeToThrowEnabledAtom = atom(false)
+export const showShakeMeshAtom = atom(false)
+export const addingDeviceMotionAtom = atom(false)
+export const removingDeviceMotionAtom = atom(false)
 // using an object to group the rules together has an issue
 // editting a field doesn't trigger re-render of the toggle state
 // when I click on the box to enable the rule, the box stays lit
