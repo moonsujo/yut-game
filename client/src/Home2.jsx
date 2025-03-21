@@ -21,14 +21,16 @@ import useResponsiveSetting from './hooks/useResponsiveSetting';
 import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 import YootDisplay from './YootDisplay';
 import DisconnectModal from './DisconnectModal';
+import useMusicPlayer from './hooks/useMusicPlayer';
 
 export default function Home2() {
 
   useResponsiveSetting();
-  const [device] = useAtom(deviceAtom)
+  const device = useAtomValue(deviceAtom)
   const [display, setDisplay] = useState('board')
-  const [client] = useAtom(clientAtom)
+  const client = useAtomValue(clientAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
+  const [playMusic] = useMusicPlayer();
 
   function Pieces() {
     return <group>
@@ -214,6 +216,8 @@ export default function Home2() {
       const audio = new Audio('sounds/effects/boot-up.mp3');
       audio.volume = 0.3;
       audio.play();
+      
+      playMusic();
     }
 
     return <group position={position} rotation={rotation} scale={scale}>

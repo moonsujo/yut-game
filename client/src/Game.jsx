@@ -82,7 +82,6 @@ export default function Game() {
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const gamePhase = useAtomValue(gamePhaseAtom)
   const pauseGame = useAtomValue(pauseGameAtom)
-  const [playMusic] = useMusicPlayer();
 
   // Animations
   const { gameScale, winScreenScale } = useSpring({
