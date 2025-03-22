@@ -1610,7 +1610,6 @@ export default function Lobby() {
         height={0.01}
         lineHeight={0.7}
         ref={roomIdRef}>
-          {/* {`moonsu is the host`} */}
           {`ROOM ID: ${params.id}${isHost ? ' (HOST)' : ''}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>

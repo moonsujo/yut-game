@@ -7,11 +7,13 @@ import { Text3D } from '@react-three/drei'
 import Stars from './particles/Stars'
 import EarthModified from './meshes/EarthModified';
 import RocketWinMesh from './meshes/RocketWinMesh';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { deviceAtom } from './GlobalState';
 import { socket } from './SocketManager';
 import { useParams } from 'wouter';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
+import GameCamera from './GameCamera';
+import layout from './layout';
 
 export default function RocketsWin() {
 
@@ -79,6 +81,7 @@ export default function RocketsWin() {
   }
 
   return <group>
+    <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     <Text3D 
       font="/fonts/Luckiest Guy_Regular.json" 
       size={1} 
@@ -89,7 +92,6 @@ export default function RocketsWin() {
       ROCKETS WIN!
       <meshStandardMaterial color="yellow"/>
     </Text3D>
-
     <group name='earth-rotation-group' rotation={[-Math.PI/2 + Math.PI/28, 0, 0]}>
       <EarthModified position={[0,0,0]} scale={2}/>
     </group>
@@ -99,7 +101,6 @@ export default function RocketsWin() {
       <RocketWinMesh position={[-1.5, 4, 2.2]} rotation={[-Math.PI/2 + Math.PI/8, 0, 0]}/>
       <RocketWinMesh position={[0.6, 4, 2.8]} rotation={[-Math.PI/2 + Math.PI/8, 0, 0]}/>
     </group>
-
     <group 
       name='play-again-button' 
       position={[-3.8, 0, 5.4]} 

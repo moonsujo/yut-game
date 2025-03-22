@@ -34,7 +34,7 @@ export default function EarthModified({
 
   return (
     <group position={position} rotation={rotation} scale={scale} ref={earth}>
-      <mesh
+      {/* <mesh
         castShadow
         receiveShadow
         geometry={nodes.flagpole.geometry}
@@ -42,7 +42,7 @@ export default function EarthModified({
         position={[-0.007, 0, -0.058]}
         rotation={[0.155, 0.183, 0.021]}
         scale={0.538}
-      />
+      /> */}
       <mesh
         castShadow
         receiveShadow
@@ -60,7 +60,7 @@ export default function EarthModified({
         rotation={[0.155, 0.183, 0.021]}
         scale={0.538}
       />
-      <mesh
+      {/* <mesh
         castShadow
         receiveShadow
         geometry={nodes.flagpole010.geometry}
@@ -69,7 +69,7 @@ export default function EarthModified({
         scale={0.538}
       >
         <meshBasicMaterial color="red"/>
-        </mesh>
+      </mesh> */}
       <group
         position={[-0.007, 0, -0.058]}
         rotation={[0.155, 0.183, 0.021]}

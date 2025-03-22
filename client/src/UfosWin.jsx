@@ -10,7 +10,7 @@ import VertexShader from './shader/ufoBeam/vertex.glsl'
 import Stars from './particles/Stars';
 
 import * as THREE from 'three';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { deviceAtom } from './GlobalState';
 import { useParams } from 'wouter';
 import { socket } from './SocketManager';
@@ -18,10 +18,12 @@ import EarthModified from './meshes/EarthModified';
 import { useFireworksShader } from './shader/fireworks/FireworksShader';
 import { useBeamDustShader } from './shader/beamDust/BeamDustShader';
 import { generateRandomNumberInRange } from './helpers/helpers';
+import layout from './layout';
+import GameCamera from './GameCamera';
 
 export default function UfosWin({}) {
 
-  const [device] = useAtom(deviceAtom)
+  const device = useAtomValue(deviceAtom)
   const [CreateFirework] = useFireworksShader();
   const [CreateBeamDust] = useBeamDustShader();
   const params = useParams()
@@ -129,6 +131,7 @@ export default function UfosWin({}) {
 
   const textSize = 0.8
   return <group>
+    <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     <Text3D 
       font="/fonts/Luckiest Guy_Regular.json" 
       size={textSize} 
@@ -171,9 +174,9 @@ export default function UfosWin({}) {
     </Float>
     <Stars/>
     <group 
-    name='play-again-button' 
-    position={[-3, 0, 6]}
-    rotation={[-Math.PI/2, 0, 0]}
+      name='play-again-button' 
+      position={[-3, 0, 6]}
+      rotation={[-Math.PI/2, 0, 0]}
     >
       <Text3D
         font="/fonts/Luckiest Guy_Regular.json"

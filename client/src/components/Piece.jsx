@@ -62,6 +62,7 @@ export default function Piece ({
           history = []
           pieces = [{tile, team, id, history}]
         } else {
+          console.log(tiles[tile])
           history = tiles[tile][0].history // go back the way you came from of the first token
           pieces = tiles[tile];
         }

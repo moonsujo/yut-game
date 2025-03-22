@@ -1662,37 +1662,38 @@ io.on("connect", async (socket) => {
       // }
 
       room.gamePhase = 'lobby'
-      room.tiles = [
-        [], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
-        [],
-        [],
-        [],
-        [],
-        [], // 5
-        [],
-        [],
-        [],
-        [],
-        [], // 10
-        [],
-        [],
-        [],
-        [],
-        [], // 15
-        [],
-        [],
-        [],
-        [],
-        [], // 20
-        [],
-        [],
-        [],
-        [],
-        [], // 25
-        [],
-        [],
-        [],
-      ]
+      // room.tiles = [
+      //   [], // { [ { team: Number, id: Number, tile: Number, history: [Number], status: String } ] }
+      //   [],
+      //   [],
+      //   [],
+      //   [],
+      //   [], // 5
+      //   [],
+      //   [],
+      //   [],
+      //   [],
+      //   [], // 10
+      //   [],
+      //   [],
+      //   [],
+      //   [],
+      //   [], // 15
+      //   [],
+      //   [],
+      //   [],
+      //   [],
+      //   [], // 20
+      //   [],
+      //   [],
+      //   [],
+      //   [],
+      //   [], // 25
+      //   [],
+      //   [],
+      //   [],
+      // ]
+      room.tiles = JSON.parse(JSON.stringify(initialState.initialTiles))
       room.legalTiles = {}
       room.selection = null
       room.pregameOutcome = null
