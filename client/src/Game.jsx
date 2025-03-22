@@ -434,40 +434,7 @@ export default function Game() {
       { winner === 1 && <UfosWin/>}
     </animated.group>
   }
-  function GameYut() {
-    const yutAnimation = useAtomValue(yootAnimationAtom)
-    const [springs, api] = useSpring(() => ({
-      from: {
-        yutScale: 0,
-      }
-    }))
-
-    useEffect(() => {
-      if (yutAnimation) {
-        api.start({
-          from: {
-            yutScale: 0,
-          },
-          to: {
-            yutScale: 1
-          }
-        })
-      } else {
-        api.start({
-          from: {
-            yutScale: 1,
-          },
-          to: {
-            yutScale: 0
-          }
-        })
-      }
-    }, [yutAnimation])
-
-    return <animated.group scale={springs.yutScale}>
-      <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/>
-    </animated.group>
-  }
+  const yutAnimation = useAtomValue(yootAnimationAtom)
 
   return (<>
       {/* <Perf/> */}
@@ -501,7 +468,7 @@ export default function Game() {
           rotation={layout[device].game.yootButton.rotation}
           scale={layout[device].game.yootButton.scale}
         /> }
-        <GameYut/>
+        { yutAnimation && <YootNew scale={0.22} position={[0, 2, 0]} animation={yutAnimation}/> }
         <YutBonus position={layout[device].game.yutBonus.position} scale={layout[device].game.yutBonus.scale}/>
         <SettingsButton 
           position={layout[device].game.settings.mainButton.position}

@@ -342,13 +342,9 @@ export const SocketManager = () => {
       if (throwCount < 1) {
         setBonusExists(false)
       }
-      // const audio = new Audio('sounds/effects/throw.mp3');
-      // audio.volume=0.3;
-      // audio.play();
     })
 
     socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
-      console.log('[gameStart]')
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -537,7 +533,7 @@ export const SocketManager = () => {
 
         // sounds
         if (yootOutcome === 0) {
-          const audio = new Audio('sounds/effects/yut-0.wav');
+          const audio = new Audio('sounds/effects/yut-0.mp3');
           audio.volume=0.5;
           audio.play();
         } else if (yootOutcome === 1) {
@@ -566,7 +562,7 @@ export const SocketManager = () => {
             return yootOutcome
           })
         } else if (yootOutcome === -1) {
-          const audio = new Audio('sounds/effects/backdo.wav');
+          const audio = new Audio('sounds/effects/backdo.mp3');
           audio.volume=0.5;
           audio.play();
         }

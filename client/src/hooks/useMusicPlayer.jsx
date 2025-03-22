@@ -82,7 +82,7 @@ export default function useMusicPlayer() {
 
   function playAudio(path) {
     const audio = new Audio(path);
-    audio.volume=0.3;
+    audio.volume=1;
     audio.play();
   }
 

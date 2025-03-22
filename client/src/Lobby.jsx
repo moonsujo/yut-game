@@ -1190,6 +1190,10 @@ export default function Lobby() {
         setHover(false)
         if (isHost && readyToStart) {
           socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
+          
+          const audio = new Audio('sounds/effects/boot-up.mp3');
+          audio.volume = 1;
+          audio.play();
         }
       }
       return <group name='start-game-button' position={position}>
@@ -1859,6 +1863,10 @@ export default function Lobby() {
         e.stopPropagation()
         if (isHost && readyToStart) {
           socket.emit('gameStart', { roomId: params.id.toUpperCase(), clientId: client._id })
+          
+          const audio = new Audio('sounds/effects/boot-up.mp3');
+          audio.volume = 1;
+          audio.play();
         }
       }
       return <group name='start-game-button' position={position}>

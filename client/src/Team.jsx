@@ -60,7 +60,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
     }
 
     function handlePointerDown(e) {
-      // const audio = new Audio('sounds/effects/join.wav');
+      // const audio = new Audio('sounds/effects/join.mp3');
       // audio.volume=0.3;
       // audio.play();
       e.stopPropagation();

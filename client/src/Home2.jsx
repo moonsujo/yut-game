@@ -213,8 +213,8 @@ export default function Home2() {
         setLocation(`/${shortId}`)
       })
 
-      const audio = new Audio('sounds/effects/boot-up.mp3');
-      audio.volume = 0.3;
+      const audio = new Audio('sounds/effects/create-game.mp3');
+      audio.volume = 1;
       audio.play();
       
       playMusic();

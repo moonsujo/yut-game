@@ -79,6 +79,10 @@ export default function YutBonus({ position, scale }) {
       e.stopPropagation()
       document.body.style.cursor = 'default'
       socket.emit('throwYut', { roomId: params.id.toUpperCase() })
+      
+      const audio = new Audio('sounds/effects/yut-bonus.mp3');
+      audio.volume = 1;
+      audio.play();
     }
 
     return <group>
