@@ -1302,6 +1302,10 @@ export default {
         position: [4.95, 0, -5.7],
         scale: 1.1,
       },
+      musicButton: {
+        position: [5.4,0,-4.8],
+        scale: 1
+      },
       rulebook: {
         position: [-2, 3, -0.5],
         scale: 0.75,
@@ -2882,6 +2886,10 @@ export default {
       rulebookButton: {
         position: [9.3, 0, -4.8],
         scale: 1,
+      },
+      musicButton: {
+        position: [9.7,0,-4],
+        scale: 0
       },
       rulebook: {
         position: [6.9, 3, -0.5],

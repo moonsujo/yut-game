@@ -257,6 +257,6 @@ export default function YootButtonNew({ position, rotation, scale }) {
       position={layout[device].game.throwCount.position}
       orientation={layout[device].game.throwCount.orientation}
     /> }
-    { device === 'portrait' && <ShakeToThrowButton position={[2, 0, 0]}/> }
+    {/* { device === 'portrait' && <ShakeToThrowButton position={[2, 0, 0]}/> } */}
   </group>
 }

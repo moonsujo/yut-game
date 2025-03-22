@@ -12,6 +12,8 @@ import {
   languageOpenAtom, 
   mainMenuOpenAtom, 
   musicAtom, 
+  musicPlayingAtom, 
+  musicVolumeAtom, 
   pauseGameAtom, 
   resetGameOpenAtom, 
   setGameRulesOpenAtom, 
@@ -29,6 +31,7 @@ import layout from "./layout"
 import { formatName } from "./helpers/helpers"
 import GameRules from "./GameRules"
 import MeshColors from "./MeshColors"
+import useMusicPlayer from "./hooks/useMusicPlayer"
 
 export default function Settings({ position, rotation=[0,0,0], scale }) {
   // #region state setters and getters
@@ -72,6 +75,17 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
     function handlePointerUp(e) {
       e.stopPropagation()
       setSettingsOpen(false)
+      
+      // Turn off every other panel
+      setMainMenuOpen(false)
+      setEditGuestsOpen(false)
+      setViewGuestsOpen(false)
+      setResetGameOpen(false)
+      setSetGameRulesOpen(false)
+      setViewGameRulesOpen(false)
+      setAudioOpen(false)
+      setLanguageOpen(false)
+      setInviteFriendsOpen(false)
     }
 
     return <group position={position} rotation={rotation} scale={scale}>
@@ -739,7 +753,7 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
     ]
     const hostPlayerButtons = [
       <EditGuestsButton/>,
-      <SetAwayButton/>,
+      // <SetAwayButton/>,
       <ResetGameButton/>,
       <PauseGameButton/>,
       <SetGameRulesButton/>,
@@ -755,7 +769,7 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
     ]
     const guestPlayerButtons = [
       <ViewGuestsButton/>,
-      <SetAwayButton/>,
+      // <SetAwayButton/>,
       <ViewGameRulesButton/>,
       <AudioButton/>,
       <LanguageButton/>
@@ -767,9 +781,9 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         scaleInner: [5.9, 0.02, 6.85]
       },
       'hostPlayer': {
-        position: [0,0,0],
-        scaleOuter: [6, 0.01, 8.05],
-        scaleInner: [5.9, 0.02, 7.95]
+        position: [0, 0, -2.55 + 0.5 * (hostPlayerButtons.length - 2)],
+        scaleOuter: [6, 0.01, 1 * hostPlayerButtons.length + 1],
+        scaleInner: [5.9, 0.02, 1 * hostPlayerButtons.length + 0.9]
       },
       'guestSpectator': {
         position: [0,0,-1.5],
@@ -777,9 +791,9 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
         scaleInner: [5.9, 0.02, 4.9]
       },
       'guestPlayer': {
-        position: [0,0,-1],
-        scaleOuter: [6, 0.01, 6.1],
-        scaleInner: [5.9, 0.02, 6.0]
+        position: [0, 0, -2.55 + 0.5 * (guestPlayerButtons.length - 2)],
+        scaleOuter: [6, 0.01, 1 * guestPlayerButtons.length + 1],
+        scaleInner: [5.9, 0.02, 1 * guestPlayerButtons.length + 0.9]
       },
     }
     
@@ -1763,9 +1777,11 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
   }
 
   function Audio({ position }) {
+    const [playMusic, stopMusic] = useMusicPlayer()
+    const [music, setMusic] = useAtom(musicAtom)
+
     function MusicRow({ position }) {
       const [hover, setHover] = useState(false)
-      const [music, setMusic] = useAtom(musicAtom)
       function handlePointerEnter(e) {
         e.stopPropagation()
         setHover(true)
@@ -1777,9 +1793,12 @@ export default function Settings({ position, rotation=[0,0,0], scale }) {
       function handlePointerUp(e) {
         // enable effects
         e.stopPropagation()
-        setMusic((music) => {
-          return music ? false : true
-        })
+        setHover(false)
+        if (!music) {
+          playMusic()
+        } else {
+          stopMusic()
+        }
       }
       return <group name='music' position={position}>
         {/* text */}

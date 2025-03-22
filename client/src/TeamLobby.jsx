@@ -71,9 +71,6 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
     }
 
     function handlePointerDown(e) {
-      // const audio = new Audio('sounds/effects/join.mp3');
-      // audio.volume=0.3;
-      // audio.play();
       e.stopPropagation();
       setJoinTeam(team);
       setHover(false)
@@ -172,9 +169,6 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
     }
 
     function handlePointerDown(e) {
-      // const audio = new Audio('sounds/effects/join.mp3');
-      // audio.volume=0.3;
-      // audio.play();
       e.stopPropagation();
       setJoinTeam(team);
       setHover(false)
@@ -489,9 +483,6 @@ export default function TeamLobby({ position=[0,0,0], scale=1, team, device, but
     }
 
     function handlePointerDown(e) {
-      // const audio = new Audio('sounds/effects/join.mp3');
-      // audio.volume=0.3;
-      // audio.play();
       e.stopPropagation();
       setJoinTeam(team);
       setHover(false)

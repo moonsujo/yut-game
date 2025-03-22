@@ -131,7 +131,9 @@ export const viewGameRulesOpenAtom = atom(false)
 export const audioOpenAtom = atom(false)
 export const languageOpenAtom = atom(false)
 export const soundEffectsAtom = atom(true)
-export const musicAtom = atom(true)
+export const musicAtom = atom(null)
+export const musicPlayingAtom = atom(false)
+export const musicVolumeAtom = atom(0)
 export const lastYutAtom = atom(null)
 
 const deepPieceEquals = (prev, next) => {

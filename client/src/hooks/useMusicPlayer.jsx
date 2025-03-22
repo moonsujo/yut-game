@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+import { musicAtom, musicPlayingAtom, musicVolumeAtom } from "../GlobalState";
+import { useAtom, useAtomValue } from "jotai";
 
 export default function useMusicPlayer() {
+  const [music, setMusic] = useAtom(musicAtom)
+  const [musicPlaying, setMusicPlaying] = useAtom(musicPlayingAtom)
+  const musicVolume = useAtomValue(musicVolumeAtom)
   // playlist
 
   const [songTimeout, setSongTimeout] = useState(null);
@@ -40,7 +45,6 @@ export default function useMusicPlayer() {
 
   function playMusic() {
 
-    console.log('[playMusic]')
     // every client has a different song playing
     function playRandomSong() {
       const randomSong = songs[Math.floor(Math.random() * songs.length)]
@@ -81,10 +85,23 @@ export default function useMusicPlayer() {
   }, [])
 
   function playAudio(path) {
-    const audio = new Audio(path);
-    audio.volume=1;
-    audio.play();
+    setMusic((music) => {
+      if (music) {
+        music.pause()
+      }
+      
+      const newMusic = new Audio(path);
+      newMusic.volume = 1;
+      newMusic.play();
+
+      return newMusic
+    })
   }
 
-  return [playMusic]
+  function stopMusic() {
+    music.pause();
+    setMusic(null)
+  }
+
+  return [playMusic, stopMusic]
 }
