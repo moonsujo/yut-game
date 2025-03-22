@@ -15,6 +15,7 @@ export default function YutBonus({ position, scale }) {
   
   const [showBonus, setShowBonus] = useAtom(showBonusAtom)
   const animationPlaying = useAnimationPlaying()
+  const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
   const params = useParams()
 
   const { yutBonusScale } = useSpring({
@@ -79,6 +80,7 @@ export default function YutBonus({ position, scale }) {
       e.stopPropagation()
       document.body.style.cursor = 'default'
       if (showBonus) {
+        setYootAnimationPlaying(true)
         socket.emit('throwYut', { roomId: params.id.toUpperCase() })
         setShowBonus(false)
       }
