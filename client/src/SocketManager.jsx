@@ -411,6 +411,7 @@ export const SocketManager = () => {
       if (!paused) {
         alerts.push('turn')
         setAlerts(alerts)
+
         setYootOutcome(null)
       }
       setGamePhase(gamePhase)
@@ -457,12 +458,14 @@ export const SocketManager = () => {
           let alerts = [yootOutcomeAlertName]
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
           setAlerts(alerts)
+          
           setYootOutcome(null)
           setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === 'tie') {
           let alerts = [yootOutcomeAlertName, 'pregameTie']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
           setAlerts(alerts)
+
           setYootOutcome(null)
           setThrowCount(teams[turnUpdate.team].throws)
         }
@@ -477,12 +480,14 @@ export const SocketManager = () => {
           let alerts = [yootOutcomeAlertName, 'pregameRocketsWin']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
           setAlerts(alerts)
+
           setYootOutcome(null)
           setThrowCount(teams[turnUpdate.team].throws)
         } else if (pregameOutcome === '1') {
           let alerts = [yootOutcomeAlertName, 'pregameUfosWin']
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
           setAlerts(alerts)
+
           setYootOutcome(null)
           setThrowCount(teams[turnUpdate.team].throws)
         }
@@ -492,6 +497,7 @@ export const SocketManager = () => {
           let alerts = [yootOutcomeAlertName] // add 'no available moves' alert
           teams[turnUpdate.team].players.length > 0 && alerts.push('turn')
           setAlerts(alerts)
+
           setYootOutcome(null)
           // server determines if turn was skipped
         } else {
@@ -537,11 +543,19 @@ export const SocketManager = () => {
           audio.volume=0.5;
           audio.play();
         } else if (yootOutcome === 1) {
-            
+          const audio = new Audio('sounds/effects/throw-reveal.mp3');
+          audio.volume=0.5
+          audio.play();
         } else if (yootOutcome === 2) {
 
+          const audio = new Audio('sounds/effects/throw-reveal.mp3');
+          audio.volume=0.5
+          audio.play();
         } else if (yootOutcome === 3) {
 
+          const audio = new Audio('sounds/effects/throw-reveal.mp3');
+          audio.volume=0.5
+          audio.play();
         } else if (yootOutcome === 4 || yootOutcome === 5) {
           setYootOutcome((prevYootOutcome) => {
             if (prevYootOutcome === 4 || prevYootOutcome === 5) {
@@ -698,6 +712,7 @@ export const SocketManager = () => {
         }
         if (turn.team !== newTeam) {
           alerts.push('turn')
+
           setYootOutcome(null)
         }
         newTurn.players[newTeam] = newPlayer

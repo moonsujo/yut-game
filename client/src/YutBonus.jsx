@@ -5,7 +5,7 @@ import SparkleYutShader from "./shader/sparkleYut/SparkleYutShader"
 import { useSpring, animated } from "@react-spring/three"
 import { useEffect, useState } from "react"
 import YootMeshUnrotated from "./meshes/YutMeshUnrotated"
-import { useAtomValue, useSetAtom } from "jotai"
+import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { clientAtom, hasTurnAtom, pauseGameAtom, showBonusAtom, throwCountAtom, turnAtom, yootAnimationPlayingAtom } from "./GlobalState"
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
 import { socket } from "./SocketManager"
@@ -13,7 +13,7 @@ import { useParams } from "wouter"
 
 export default function YutBonus({ position, scale }) {
   
-  const showBonus = useAtomValue(showBonusAtom)
+  const [showBonus, setShowBonus] = useAtom(showBonusAtom)
   const animationPlaying = useAnimationPlaying()
   const params = useParams()
 
@@ -78,8 +78,11 @@ export default function YutBonus({ position, scale }) {
     function handlePointerUp(e) {
       e.stopPropagation()
       document.body.style.cursor = 'default'
-      socket.emit('throwYut', { roomId: params.id.toUpperCase() })
-      
+      if (showBonus) {
+        socket.emit('throwYut', { roomId: params.id.toUpperCase() })
+        setShowBonus(false)
+      }
+
       const audio = new Audio('sounds/effects/yut-bonus.mp3');
       audio.volume = 1;
       audio.play();
