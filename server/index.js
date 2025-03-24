@@ -931,11 +931,16 @@ io.on("connect", async (socket) => {
 
   function pickAnimation(outcome) {
     const outcomeToPseudoIndex = {
-      '1': [14, 22, 25, 42],
-      '-1': [59, 60],
-      '2': [8, 13, 15, 16, 23, 28, 30, 31, 32, 35, 38, 39, 40, 48, 49, 50, 52, 54, 57, 58],
-      '3': [2, 17, 21, 24, 29, 34, 36, 37, 41, 46, 47, 51, 53, 55, 56],
-      '4': [19, 20, 26, 27, 33, 44, 45],
+      '1': [14, 22, 42],
+      // '1': [14, 22, 25, 42],
+      '-1': [59],
+      // '-1': [59, 60],
+      '2': [8, 13, 16, 28, 31, 32, 35, 38, 40, 48, 49, 50, 54, 57, 58],
+      // '2': [8, 13, 15, 16, 23, 28, 30, 31, 32, 35, 38, 39, 40, 48, 49, 50, 52, 54, 57, 58],
+      '3': [2, 24, 29, 34, 36, 37, 41, 46, 47, 51, 53, 55, 56],
+      // '3': [2, 17, 21, 24, 29, 34, 36, 37, 41, 46, 47, 51, 53, 55, 56],
+      '4': [19, 20, 27, 44, 45],
+      // '4': [19, 20, 26, 27, 33, 44, 45],
       '5': [43],
       '0': [1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 18],
     }
@@ -993,7 +998,8 @@ io.on("connect", async (socket) => {
         //   // }
         //   // outcome = 1
         // }
-        const animation = pickAnimation(outcome)
+        let animation = pickAnimation(outcome)
+        // const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;
         room.yootAnimation = animation
         room.teams[user.team].throws--
@@ -1132,7 +1138,7 @@ io.on("connect", async (socket) => {
           } catch (err) {
             console.log(`[throwYut] error recording throw`, err)
           }
-        }, 5000)
+        }, animation === 59 ? 5000 : 4000) // 59 is Backdo
       }
     } catch (err) {
       console.log(`[throwYut] error on throw yoot`, err)

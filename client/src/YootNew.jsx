@@ -14,7 +14,8 @@ import { useSpring, animated } from '@react-spring/three';
 
 export default function YootNew({ animation, scale, position, rotation=[0,0,0] }) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('/models/yoot-animation-3.glb')
+  const { nodes, materials, animations } = useGLTF('/models/yoot-animation-2-shorter.glb')
+  // const { nodes, materials, animations } = useGLTF('/models/yoot-animation-3.glb')
   const { actions, mixer } = useAnimations(animations, group)
 
   useEffect(() => {
