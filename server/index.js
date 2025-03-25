@@ -4,7 +4,7 @@ import http from 'http';
 import router from './router.js'; // needs .js suffix
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { makeId } from './helpers.js';
+import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
 import { tileType } from './rules/rulesHelpers.js'
@@ -707,7 +707,7 @@ io.on("connect", async (socket) => {
     try {
       player = await User.findOne({ 'socketId': socket.id })
       if (!player) {
-        throw new Error(`player with name ${name} not found`)
+        throw new Error(`player with socket id ${socket.id} not found`)
       }
       player.team = team
       player.name = name
@@ -1133,6 +1133,15 @@ io.on("connect", async (socket) => {
                 }
                 room.gameLogs.push(gameLog)
                 serverEvent.content.gameLogs.push(gameLog)
+
+                // If player is AI
+                const newTeam = newTurn.team
+                const newPlayer = newTurn.players[newTurn.team]
+                let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
+                if (newPlayerDocument.type === 'ai') {
+                  await aiMove(newPlayerDocument, room)
+                }
+
                 turnStartTimeDelay += 3 * ALERT_TIME
               }
             } else if (room.gamePhase === "game") {
@@ -1223,6 +1232,10 @@ io.on("connect", async (socket) => {
         setTimeout(() => {
           handleThrowYut({ user: player, room })
         }, 1500)
+      } else if (hasValidMove(room.teams[player.team].moves)) {
+        // select token
+        // getLegalTiles (client)
+        // move
       }
     } catch(err) {
       console.log('[aiMove] err', err)
@@ -1402,7 +1415,6 @@ io.on("connect", async (socket) => {
   });
 
   // Client only emits this event if it has the turn
-  
   socket.on("legalTiles", async ({ roomId, legalTiles }) => {
     try {
       await Room.findOneAndUpdate(

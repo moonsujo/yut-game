@@ -81,9 +81,8 @@ export default function Game() {
   const pauseGame = useAtomValue(pauseGameAtom)
 
   // Animations
-  const { gameScale, winScreenScale } = useSpring({
+  const { gameScale } = useSpring({
     gameScale: (gamePhase === 'pregame' || gamePhase === 'game') ? 1 : 0,
-    winScreenScale: gamePhase === 'finished' ? 1 : 0,
     config: {
       tension: 170,
       friction: 26

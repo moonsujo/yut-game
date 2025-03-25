@@ -207,8 +207,19 @@ export default function Home2() {
       setHover(false)
     }
 
+    const [isThrottled, setIsThrottled] = useState(false)
     function handlePointerUp(e) {
       e.stopPropagation();
+      if (isThrottled) return
+      
+      console.log('[LetsPlayButton] pointer up')
+
+      setIsThrottled(true)
+
+      setTimeout(() => {
+        setIsThrottled(false)
+      }, 1000)
+
       socket.emit('createRoom', { hostId: client._id }, ({ shortId }) => {
         setLocation(`/${shortId}`)
       })

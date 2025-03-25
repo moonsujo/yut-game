@@ -231,6 +231,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
         playerIdsRef.current[i].forEach(function (_value1, j) {
           // You Icon
           const isYou = teams[i].players[j].name === client.name
+          const isAI = teams[i].players[j].type === 'ai'
           if (isYou && playerIdsRef.current[i][j].geometry.boundingSphere) {            
             youIndicatorRef.current.scale.x = 1
             youIndicatorRef.current.scale.y = 1
@@ -243,7 +244,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
             youIndicatorRef.current.scale.z = 0
           }
           // Yut Icon
-          if (turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere) {
+          if (!isAI && turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere) {
             yootIconRef.current.scale.x = 1
             yootIconRef.current.scale.y = 1
             yootIconRef.current.scale.z = 1
@@ -307,7 +308,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
           >
             { value.type === 'human' ? formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h) ' : '')
-            + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]]._id === AIPlayingText()}
+            + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]].name === value.name ? AIPlayingText() : formatName(value.name, layout[device].game[`team${team}`].names.maxLength) }
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>
           <group name='you-indicator' ref={youIndicatorRef}>

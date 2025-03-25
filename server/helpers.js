@@ -27,14 +27,12 @@ export function makeId(length, onlyAlphabet=false, onlyNumbers=false) {
 }
 
 export function hasValidMove (moves) {
-  let flag = false;
   for (let move in moves) {
     if (parseInt(move) != 0 && moves[move] > 0) {
-      flag = true;
-      break;
+      return true;
     }
   }
-  return flag
+  return false
 }
 
 export function isMyTurn (turn, teams, socketId) {
