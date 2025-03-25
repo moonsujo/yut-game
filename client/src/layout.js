@@ -974,9 +974,9 @@ export default {
         rotation: [0,0,0],
       },
       joinTeamModal: {
-        position: [-4.5, 0, -3],
+        position: [-5.5, 0, -2],
         rotation: [-Math.PI/2, 0, 0],
-        scale: 2
+        scale: 2.5
       },
       readyTextRocket: {
         position: [1.7, 0, 0],
@@ -2560,9 +2560,9 @@ export default {
         rotation: [0,0,0],
       },
       joinTeamModal: {
-        position: [-4, 0, -2.5],
+        position: [-5.5, 0, -2.5],
         rotation: [-Math.PI/2, 0, 0],
-        scale: [1.8, 1.8, 1.8]
+        scale: [2.5, 2.5, 2.5]
       },
       readyTextRocket: {
         position: [1.7, 0, 0],

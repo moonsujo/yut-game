@@ -27,6 +27,7 @@ import {
   teamsAtom,
   connectedToServerAtom,
   guestBeingEdittedAtom,
+  seatChosenAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -72,6 +73,7 @@ export default function Lobby() {
     const host = useAtomValue(hostAtom)
     const client = useAtomValue(clientAtom)  
     const [guestBeingEditted, setGuestBeingEditted] = useAtom(guestBeingEdittedAtom)
+    const [seatChosen, setSeatChosen] = useAtom(seatChosenAtom)
 
     // #region animation
     const partyRef = useRef()
@@ -349,7 +351,12 @@ export default function Lobby() {
         e.stopPropagation()
         // Empty seat
         if (client.team !== team && !teams[team].players[seatIndex]) {
-          setJoinTeam(team)
+          // setSeatChosen - modal title
+          setSeatChosen([team, seatIndex])
+          // on 'take seat', setJoinTeam(team)
+
+          // take seat or add ai
+
         // You're the host and it's not your own seat
         } else if (teams[team].players[seatIndex].socketId !== client.socketId && client.socketId === host.socketId) {
           const player = teams[team].players[seatIndex]
@@ -1072,7 +1079,7 @@ export default function Lobby() {
         {/* background */}
         <group name='background'
         onPointerEnter={e=>handlePointerEnter(e)}
-        onPointerLeave={e=>handlePointerEnter(e)}
+        onPointerLeave={e=>handlePointerLeave(e)}
         >
           <mesh name='background-outer' scale={[9, 0.01, 4.3]}>
             <boxGeometry args={[1,1,1]}/>
@@ -1114,6 +1121,195 @@ export default function Lobby() {
           <AssignHostButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 1]}/>
           <KickButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 2]}/>
         </group>
+      </group>
+    }
+
+    function SeatModal({ position, rotation, scale }) {
+      function CloseButton({ position, rotation, scale }) {
+        const [hover, setHover] = useState(false)
+    
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          setHover(true)
+          document.body.style.cursor = 'pointer'
+        }
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          setHover(false)
+          document.body.style.cursor = 'default'
+        }
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          setSeatChosen(null)
+        }
+    
+        return <group position={position} rotation={rotation} scale={scale}>
+          {/* background */}
+          <group name='background'>
+            <mesh name='background-outer' scale={[1.55, 0.01, 0.55]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+            </mesh>
+            <mesh name='background-inner' scale={[1.45, 0.02, 0.45]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='black'/>
+            </mesh>
+            <mesh name='background-wrapper' 
+            scale={[1.55, 0.02, 0.55]}
+            onPointerEnter={e=>handlePointerEnter(e)}
+            onPointerLeave={e=>handlePointerLeave(e)}
+            onPointerUp={e=>handlePointerUp(e)}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial transparent opacity={0}/>
+            </mesh>
+          </group>
+          {/* text */}
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-0.63,0.02,0.14]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.26}
+            height={0.01}
+          >
+            X CLOSE
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+      function TakeSeatButton({ position, rotation, scale }) {
+        const [hover, setHover] = useState(false)
+    
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          setHover(true)
+          document.body.style.cursor = 'pointer'
+        }
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          setHover(false)
+          document.body.style.cursor = 'default'
+        }
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          setJoinTeam(seatChosen[0])
+          setSeatChosen(null)
+        }
+    
+        return <group position={position} rotation={rotation} scale={scale}>
+          {/* background */}
+          <group name='background'>
+            <mesh name='background-outer' scale={[6.8, 0.01, 1]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+            </mesh>
+            <mesh name='background-inner' scale={[6.7, 0.02, 0.9]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='black'/>
+            </mesh>
+            <mesh name='background-wrapper' 
+            scale={[6.8, 0.02, 1]}
+            onPointerEnter={e=>handlePointerEnter(e)}
+            onPointerLeave={e=>handlePointerLeave(e)}
+            onPointerUp={e=>handlePointerUp(e)}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial transparent opacity={0}/>
+            </mesh>
+          </group>
+          {/* text */}
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-3.15,0.02,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            TAKE SEAT
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+      function AddAIButton({ position, rotation, scale }) {
+        const [hover, setHover] = useState(false)
+    
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          setHover(true)
+          document.body.style.cursor = 'pointer'
+        }
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          setHover(false)
+          document.body.style.cursor = 'default'
+        }
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          setSeatChosen(null)
+          // send 'add AI' event to server
+        }
+    
+        return <group position={position} rotation={rotation} scale={scale}>
+          {/* background */}
+          <group name='background'>
+            <mesh name='background-outer' scale={[6.8, 0.01, 1]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+            </mesh>
+            <mesh name='background-inner' scale={[6.7, 0.02, 0.9]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='black'/>
+            </mesh>
+            <mesh name='background-wrapper' 
+            scale={[6.8, 0.02, 1]}
+            onPointerEnter={e=>handlePointerEnter(e)}
+            onPointerLeave={e=>handlePointerLeave(e)}
+            onPointerUp={e=>handlePointerUp(e)}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial transparent opacity={0}/>
+            </mesh>
+          </group>
+          {/* text */}
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-3.15,0.02,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            ADD AI
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+
+      return <group position={position} rotation={rotation} scale={scale}>
+        {/* background */}
+        <group name='background'>
+          <mesh name='background-outer' scale={[7, 0.01, 3.1]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='yellow'/>
+          </mesh>
+          <mesh name='background-inner' scale={[6.9, 0.02, 3.0]}>
+            <boxGeometry args={[1,1,1]}/>
+            <meshStandardMaterial color='black'/>
+          </mesh>
+        </group>
+        {/* title */}
+        <Text3D
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-3.3, 0.02, -0.85]}
+          rotation={[-Math.PI/2, 0, 0]}
+          size={0.45}
+          height={0.01}
+        >
+          {`SEAT ${seatChosen[1]+1}`}
+          <meshStandardMaterial color={ seatChosen[0] === 0 ? 'red' : 'turquoise' }/>
+        </Text3D>
+        {/* close button */}
+        <CloseButton position={[2.45, 0.02, -1.1]} scale={1.2}/>
+        {/* take seat button */}
+        <TakeSeatButton position={[0, 0.02, -0.15]}/>
+        {/* add ai button */}
+        <AddAIButton position={[0, 0.02, 0.95]}/>
       </group>
     }
 
@@ -1159,6 +1355,7 @@ export default function Lobby() {
         rotation={layout[device].lobby.joinTeamModal.rotation}
         scale={layout[device].lobby.joinTeamModal.scale}
       />
+      { seatChosen && <SeatModal position={[0, 13, 10]} rotation={[0,0,0]} scale={1.5}/> }
       { guestBeingEditted && <EditOneGuest 
         position={[0,12,10]} 
         scale={1.3}

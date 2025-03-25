@@ -135,6 +135,7 @@ export const musicAtom = atom(null)
 export const musicPlayingAtom = atom(false)
 export const musicVolumeAtom = atom(0)
 export const lastYutAtom = atom(null)
+export const seatChosenAtom = atom(null) // [team, seatIndex]
 
 const deepPieceEquals = (prev, next) => {
   let result;
