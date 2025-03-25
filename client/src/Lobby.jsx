@@ -349,27 +349,24 @@ export default function Lobby() {
 
       function handleSeatPointerUp(e, team, seatIndex) {
         e.stopPropagation()
-        // Empty seat
-        if (client.team !== team && !teams[team].players[seatIndex]) {
-          // setSeatChosen - modal title
-          setSeatChosen([team, seatIndex])
-          // on 'take seat', setJoinTeam(team)
-
-          // take seat or add ai
-
-        // You're the host and it's not your own seat
-        } else if (teams[team].players[seatIndex].socketId !== client.socketId && client.socketId === host.socketId) {
-          const player = teams[team].players[seatIndex]
-          console.log('[handleSeatPointerUp] seatIndex', seatIndex)
-          setGuestBeingEditted({
-            name: player.name,
-            connectionState: player.connectedToRoom,
-            isYou: false,
-            isHost: false,
-            team: player.team,
-            status: player.status,
-            _id: player._id,
-          })
+        if (client.socketId === host.socketId) {
+          console.log(client.team, team, teams[team].players[seatIndex])
+          if (client.team !== team && !teams[team].players[seatIndex]) {
+            setSeatChosen([team, seatIndex])
+          } else if (teams[team].players[seatIndex].socketId !== client.socketId) {
+            const player = teams[team].players[seatIndex]
+            setGuestBeingEditted({
+              name: player.name,
+              connectionState: player.connectedToRoom,
+              isYou: false,
+              isHost: false,
+              team: player.team,
+              status: player.status,
+              _id: player._id,
+            })
+          }
+        } else if (client.team !== team) {
+          setJoinTeam(team)
         }
       }
 
@@ -1245,6 +1242,8 @@ export default function Lobby() {
           e.stopPropagation()
           setSeatChosen(null)
           // send 'add AI' event to server
+          // must be host
+          socket.emit('addAI', { roomId: params.id.toUpperCase(), clientId: client._id, team: seatChosen[0], level: 'random' })
         }
     
         return <group position={position} rotation={rotation} scale={scale}>

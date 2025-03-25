@@ -6,10 +6,17 @@ export function getCurrentPlayerSocketId (turn, teams) {
   }
 }
 
-export function makeId(length, allCaps=true) {
+export function makeId(length, onlyAlphabet=false, onlyNumbers=false) {
   let result = '';
   // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let characters
+  if (onlyAlphabet) {
+    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  } else if (onlyNumbers) {
+    characters = '0123456789';
+  } else {
+    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  }
   const charactersLength = characters.length;
   let counter = 0;
   while (counter < length) {

@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema(
     team: Number,
     connectedToRoom: Boolean,
     createdTime: Date,
-    status: String // playing, away
+    status: String, // playing, away
+    type: String
   },
   {
     versionKey: false,
@@ -159,6 +160,7 @@ const roomSchema = new mongoose.Schema(
 const User = mongoose.model('users', userSchema)
 const Room = mongoose.model('rooms', roomSchema)
 
+
 async function addUser(socket, name, roomId, savedClient) {
   savedClient = JSON.parse(savedClient)
   try {
@@ -179,7 +181,8 @@ async function addUser(socket, name, roomId, savedClient) {
         roomId: null,
         connectedToRoom: false,
         createdTime: new Date(),
-        status: 'playing'
+        status: 'playing',
+        type: 'human'
       })
       await user.save()
     } else {
@@ -216,7 +219,8 @@ async function addUser(socket, name, roomId, savedClient) {
           roomId,
           connectedToRoom: false,
           createdTime: new Date(),
-          status: 'playing'
+          status: 'playing',
+          type: 'human'
         })
         await user.save()
       } else {
@@ -230,7 +234,8 @@ async function addUser(socket, name, roomId, savedClient) {
             roomId: null,
             connectedToRoom: false,
             createdTime: new Date(),
-            status: 'playing'
+            status: 'playing',
+            type: 'human'
           })
           await user.save()
         }
@@ -453,6 +458,20 @@ async function createUniqueUsername() {
   return name;
 }
 
+async function createUniqueAIName(level) {
+  let name;
+  let exists = true;
+  while (exists) {
+    name = ''
+    if (level === 'random') {
+      name += 'RANDY'
+    }
+    name += makeId(3, false, true)
+    exists = await User.findOne({ name }).exec(); // Check for collisions
+  }
+  return name;
+}
+
 const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert
 const ALERT_TIME = 2500
 const JUMP_TIME = 1000
@@ -476,6 +495,39 @@ io.on("connect", async (socket) => {
     } catch (err) {
       console.log ('[addUser] error', err)
       return callback('fail')
+    }
+  })
+
+  socket.on("addAI", async ({ roomId, clientId, team, level }) => {
+    try {
+      const room = await Room.findOne({ shortId: roomId, host: clientId })
+      if (!room) {
+        throw new Error(`room with short id ${roomId} or host with id ${clientId} doesn't exist`)
+      }
+
+      let name = await createUniqueAIName(level)
+      let ai = new User({
+        socketId: 'ai',
+        name,
+        team,
+        roomId,
+        connectedToRoom: true,
+        createdTime: new Date(),
+        status: 'playing',
+        type: 'ai'
+      })
+      await ai.save()
+
+      // Add user to team
+      room.teams[team].players.push(ai)
+      room.serverEvent = {
+        name: 'joinTeam',
+        content: {}
+      }
+      await room.save()
+
+    } catch (err) {
+      console.log ('[addAI] error', err)
     }
   })
 
@@ -949,31 +1001,23 @@ io.on("connect", async (socket) => {
     return pseudoIndex
   }
 
-  socket.on('throwYut', async ({ roomId }) => {
-    let user;
-    
-    // Find user who made the request
-    // Keep for pseudo-authentication
+  async function handleThrowYut({ user, room }) {
+    console.log('[handleThrowYut]')
     try {
-      user = await User.findOne({ socketId: socket.id })
-    } catch (err) {
-      console.log(`[throwYut] error getting user with socket id ${socket.id}`, err)
-    }
-
-    try {
-      let room = await Room.findOne({ shortId: roomId, paused: false })
       const currentTeam = room.turn.team
       const currentPlayer = room.turn.players[currentTeam]
       if (!room) {
-        throw new Error('room with shortId', roomId, 'not found, or game is paused')
+        throw new Error('room with shortId', room.shortId, 'not found, or game is paused')
       } else if (room.teams[user.team].throws < 0) {
         throw new Error("player's team has no throws")
       } else if (room.teams[currentTeam].players[currentPlayer].valueOf() !== user._id.valueOf()) {
         throw new Error("player doesn't have the turn")
       } else {
 
+        const roomShortId = room.shortId
         // Stop the timer
         clearTimeout(room.timerId)
+        
         let serverEvent = {
           name: 'throwYut',
           content: {} // if not defined, the nested variable with the same name has an undefined 'content'
@@ -1006,12 +1050,13 @@ io.on("connect", async (socket) => {
 
         room.serverEvent = serverEvent
         await room.save();
+        
+        console.log('room save')
 
         // record throw
         setTimeout(async () => {
-
           try {
-            let room = await Room.findOne({ shortId: roomId })  
+            let room = await Room.findOne({ shortId: roomShortId })  
             let turnStartTimeDelay = 0
             let gameLog // temporary variable
             serverEvent = {
@@ -1045,6 +1090,15 @@ io.on("connect", async (socket) => {
                 room.paused = pause
                 room.pregameOutcome = outcomePregame
                 room.teams[newTurn.team].throws++
+
+                // If player is AI
+                const newTeam = newTurn.team
+                const newPlayer = newTurn.players[newTurn.team]
+                let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
+                if (newPlayerDocument.type === 'ai') {
+                  await aiMove(newPlayerDocument, room)
+                }
+
                 turnStartTimeDelay += 2 * ALERT_TIME
               } else if (outcomePregame === "tie") {
                 const [newTurn, pause] = await passTurn(room.turn, room.teams)
@@ -1143,7 +1197,37 @@ io.on("connect", async (socket) => {
     } catch (err) {
       console.log(`[throwYut] error on throw yoot`, err)
     }
+  }
+  
+  socket.on('throwYut', async ({ roomId }) => {
+    let user, room;
+    
+    // Find user who made the request
+    // Keep for pseudo-authentication
+    try {
+      user = await User.findOne({ socketId: socket.id })
+      room = await Room.findOne({ shortId: roomId, paused: false })
+      await handleThrowYut({ user, room })
+    } catch (err) {
+      console.log(`[throwYut] error getting user with socket id ${socket.id}`, err)
+    }
+
   })
+
+  async function aiMove(player, room) {
+    console.log('[aiMove]')
+    try {
+
+      console.log('[aiMove] room.teams[player.team].throws', room.teams[player.team].throws)
+      if (room.teams[player.team].throws > 0) {
+        setTimeout(() => {
+          handleThrowYut({ user: player, room })
+        }, 1500)
+      }
+    } catch(err) {
+      console.log('[aiMove] err', err)
+    }
+  }
 
   // Returns a player that's not away
   async function getNextPlayer(players, indexStart, index) {
@@ -1206,6 +1290,7 @@ io.on("connect", async (socket) => {
     }
     
     currentTurn.team = currentTeam
+
     return [currentTurn, pause]
   }
 
@@ -1504,6 +1589,7 @@ io.on("connect", async (socket) => {
         room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
         room.teams[newTurn.team].throws = 1
         serverEvent.content.throws = 1
+
         turnStartTimeDelay += (1 * ALERT_TIME)
       } else {
         room.teams[movingTeam].moves = moves

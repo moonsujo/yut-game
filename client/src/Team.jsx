@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import layout from './layout';
 import { useAtom, useAtomValue } from 'jotai';
 import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom, deviceAtom } from './GlobalState';
@@ -261,6 +261,37 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
       })
     })
 
+    function AIPlayingText() {
+      const [text, setText] = useState('AI playing . . .')
+      const [count, setCount] = useState(1)
+
+      useEffect(() => {
+
+        const interval = setInterval(() => {
+          setText(text => {
+            let newText = 'AI playing'
+            for (let i = 0; i < count; i++) {
+              newText += ' .'
+            }
+            setCount(count => {
+              let newCount = count+1
+              if (count === 3) {
+                newCount = 1
+              }
+              return newCount
+            })
+            return newText
+          })
+        }, 800)
+
+        return () => {
+          clearInterval(interval)
+        }
+      })
+      
+      return text
+    }
+
     return <group
       position={layout[device].game[`team${team}`].names.position}
       rotation={layout[device].game[`team${team}`].names.rotation}
@@ -274,9 +305,9 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
             position={[0, -index * 0.5, 0]}
             ref={(ref => playerIdsRef.current[team][index] = ref)}
           >
-            {formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
+            { value.type === 'human' ? formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h) ' : '')
-            + (value.status === 'away' ? ' (away)' : '')}
+            + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]]._id === AIPlayingText()}
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>
           <group name='you-indicator' ref={youIndicatorRef}>

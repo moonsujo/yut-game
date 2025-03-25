@@ -32,7 +32,7 @@ useGLTF.preload("/models/rocket.glb")
 useGLTF.preload("/models/ufo.glb")
 useGLTF.preload("/models/yoot.glb")
 useGLTF.preload("/models/cursor.glb");
-useGLTF.preload('/models/yoot-animation-3.glb')
+useGLTF.preload('/models/yoot-animation-2-shorter.glb')
 useGLTF.preload('/models/bam-emoji.glb')
 useGLTF.preload("/models/yoot-v3-regular.glb")
 useGLTF.preload("/models/yoot-v3-backdo.glb")
