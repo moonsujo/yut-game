@@ -894,9 +894,12 @@ io.on("connect", async (socket) => {
         newTurn = await getHostTurn(room)
       }
       room.turn = newTurn
-      room.teams[newTurn.team].throws = 1
-      // room.gamePhase = "game" // testing
-      room.gamePhase = "pregame"
+      // room.teams[newTurn.team].throws = 1
+      // room.gamePhase = "pregame"
+      // testing
+      room.gamePhase = "game" 
+      room.turn.team = 1
+      room.teams[room.turn.team].throws = 1
       
       // Game logs
       let gameLog = {
@@ -922,6 +925,15 @@ io.on("connect", async (socket) => {
       }
       
       await room.save()
+
+      // ai test
+      let newPlayer = room.turn.players[room.turn.team]
+      let newPlayerDocument = await User.findOne({ _id: room.teams[room.turn.team].players[newPlayer] })
+      await aiMove({
+        player: newPlayerDocument, 
+        room, 
+        level: newPlayerDocument.level
+      })
     } catch (err) {
       console.log(`[gameStart] error starting game`, err)
     }
@@ -1056,8 +1068,6 @@ io.on("connect", async (socket) => {
 
         room.serverEvent = serverEvent
         await room.save();
-        
-        console.log('room save')
 
         // record throw
         setTimeout(async () => {
@@ -1102,7 +1112,11 @@ io.on("connect", async (socket) => {
                 const newPlayer = newTurn.players[newTurn.team]
                 let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
                 if (newPlayerDocument.type === 'ai') {
-                  await aiMove(newPlayerDocument, room, newPlayerDocument.level)
+                  await aiMove({
+                    player: newPlayerDocument, 
+                    room, 
+                    level: newPlayerDocument.level
+                  })
                 }
 
                 turnStartTimeDelay += 2 * ALERT_TIME
@@ -1145,7 +1159,11 @@ io.on("connect", async (socket) => {
                 const newPlayer = newTurn.players[newTurn.team]
                 let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
                 if (newPlayerDocument.type === 'ai') {
-                  await aiMove(newPlayerDocument, room, newPlayerDocument.level)
+                  await aiMove({
+                    player: newPlayerDocument, 
+                    room, 
+                    level: newPlayerDocument.level
+                  })
                 }
 
                 turnStartTimeDelay += 3 * ALERT_TIME
@@ -1191,11 +1209,27 @@ io.on("connect", async (socket) => {
                 room.teams[user.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
+
+                // If player is AI
+                const newTeam = newTurn.team
+                const newPlayer = newTurn.players[newTurn.team]
+                let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
+                if (newPlayerDocument.type === 'ai') {
+                  await aiMove({
+                    player: newPlayerDocument, 
+                    room, 
+                    level: newPlayerDocument.level
+                  })
+                }
               } else {
                 turnStartTimeDelay += 1 * ALERT_TIME
                 
                 if (user.type === 'ai') {
-                  await aiMove(user, room, user.level)
+                  await aiMove({
+                    player: user, 
+                    room, 
+                    level: user.level
+                  })
                 }
               }
             }
@@ -1249,8 +1283,12 @@ io.on("connect", async (socket) => {
     return index
   }
   
-  function handleSelectTokenRandom(room, team) {
+  async function handleSelectTokenRandom({room, team, player}) {
     console.log('handleSelectTokenRandom')
+    
+    // check if piece has legal tiles
+    // if not, select another one
+    // if you went through all of them, forfeit the turn
     const randomPieceIndex = calculateRandomPieceIndex(room.teams[team].pieces, NUM_TOKENS)
     console.log('randomPieceIndex', randomPieceIndex)
 
@@ -1278,40 +1316,47 @@ io.on("connect", async (socket) => {
         content: {}
       }
     }
-    room.save()
+    await room.save()
+
+    // make a move
+    if (player.type === 'ai') await aiMove({ player, room, level: player.level })
   }
 
   // on pass turn, check if it's ai's turn
   // if it is, set room state - 'ai turn'
-  // 
-  async function aiMove(player, room, level) {
+  // delay for animation
+  async function aiMove({ player, room, level, delay=0 }) {
     console.log('[aiMove]')
+    console.log('[aiMove] selection', room.selection) // MongooseDocument { null }
     try {
       console.log('[aiMove] room.teams[player.team].throws', room.teams[player.team].throws)
       if (room.teams[player.team].throws > 0) {
-        setTimeout(() => {
-          handleThrowYut({ user: player, room })
-        }, 1500)
-      } else if (hasValidMove(room.teams[player.team].moves)) {
-        // select token
-          // loop through team's tokens
-          // get legal tiles
-          // handle select
+        setTimeout(async () => {
+          await handleThrowYut({ user: player, room })
+        }, delay > 0 ? delay : 1500)
+      } else if (hasValidMove(room.teams[player.team].moves) && !room.selection.tile) { // check document null
         if (level === 'random') {
-          setTimeout(() => {
-            handleSelectTokenRandom(room, player.team)
+          setTimeout(async () => {
+            await handleSelectTokenRandom({room, team: player.team, player})
             // selected, but on a tile with an enemy
-          }, 1500)
+          }, delay > 0 ? delay : 1500)
         }
       } else if (room.selection) {
         // move or score
         if (level === 'random') {
-
+          setTimeout(async () => {
+            await handleMove({ room, team: player.team, player })
+            // selected, but on a tile with an enemy
+          }, delay > 0 ? delay : 1500)
         }
       }
     } catch(err) {
       console.log('[aiMove] err', err)
     }
+  }
+
+  async function handleMove() {
+    console.log('handleMove')
   }
 
   // Returns a player that's not away
@@ -1682,7 +1727,12 @@ io.on("connect", async (socket) => {
         const newPlayer = newTurn.players[newTurn.team]
         let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
         if (newPlayerDocument.type === 'ai') {
-          await aiMove(newPlayerDocument, room, newPlayerDocument.level)
+          await aiMove({ 
+            player: newPlayerDocument, 
+            room, 
+            level: newPlayerDocument.level, 
+            delay: turnStartTimeDelay
+          })
         }
       } else {
         room.teams[movingTeam].moves = moves
