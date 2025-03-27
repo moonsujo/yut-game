@@ -10,6 +10,7 @@ import { tileType } from "./rulesHelpers.js";
 //   ]
 // }
 export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
+  console.log(`tile ${tile} moves ${moves} pieces ${pieces} history ${history} backdoLaunch ${backdoLaunch}`)
   let legalTiles = {}
 
   for (let move in moves) {

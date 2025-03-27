@@ -1042,9 +1042,9 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        // let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        // let outcome = 4
+        let outcome = -1
         // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {
@@ -1266,8 +1266,7 @@ io.on("connect", async (socket) => {
     }
   })
 
-  function calculateRandomPieceIndex(pieces, numTokens) {
-    console.log('calculateRandomPieceIndex')
+  function calculateRandomPieceIndex({pieces, moves, numTokens}) {
     // select index
     // if token at that index is finished
     // for loop until you find an unfinished one
@@ -1279,17 +1278,23 @@ io.on("connect", async (socket) => {
         index = 0
       }
       piece = pieces[index]
-    } while (tileType(piece.tile) === 'scored')
+    } while (tileType(piece.tile) === 'scored' || (tileType(piece.tile) === 'home' && !isBackdoMovesWithoutPieces(moves.toObject(), pieces)))
     return index
   }
   
   async function handleSelectTokenRandom({room, team, player}) {
     console.log('handleSelectTokenRandom')
     
-    // check if piece has legal tiles
-    // if not, select another one
-    // if you went through all of them, forfeit the turn
-    const randomPieceIndex = calculateRandomPieceIndex(room.teams[team].pieces, NUM_TOKENS)
+    // get selectable 
+    // if none, forfeit turn
+    // else, select random
+
+    //if token on board, and you have a backdo, you can't choose tokens at home
+    const randomPieceIndex = calculateRandomPieceIndex({ 
+      pieces: room.teams[team].pieces, 
+      moves: room.teams[team].moves, 
+      numTokens: NUM_TOKENS
+    })
     console.log('randomPieceIndex', randomPieceIndex)
 
     const moves = room.teams[team].moves
@@ -1304,6 +1309,7 @@ io.on("connect", async (socket) => {
       selectedPieces = [{tile, team, id, history}]
     } else {
       history = room.tiles[tile][0].history // go back the way you came from of the first token
+      console.log('history', history)
       selectedPieces = room.tiles[tile];
     }
     let legalTiles = getLegalTiles(tile, moves, selectedPieces, history, room.rules.backdoLaunch)
@@ -1489,23 +1495,33 @@ io.on("connect", async (socket) => {
   }
 
   function isBackdoMovesWithoutPieces(moves, pieces) {
-    if (moves['-1'] === 0) {
-      return false;
-    }
-
-    for (let i = 0; i < 4; i++) {
-      if (tileType(pieces[i].tile) === 'onBoard') {
-        return false
+    try {
+      if (typeof moves !== 'object') {
+        throw new Error('parameter "moves" is not an object')
       }
-    }
-
-    for (const move in moves) {
-      if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
+      if (moves['-1'] === 0) {
+        console.log('has no backdo')
         return false;
       }
+  
+      for (let i = 0; i < 4; i++) {
+        if (tileType(pieces[i].tile) === 'onBoard') {
+          console.log('token on board', i)
+          return false
+        }
+      }
+  
+      for (const move in moves) {
+        if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
+          console.log('has another move besides backdo', 'move:', move)
+          return false;
+        }
+      }
+      
+      return true
+    } catch (err) {
+      console.log('[isBackdoMovesWithoutPieces] error', err)
     }
-    
-    return true
   }
 
   socket.on("select", async ({ roomId, selection, legalTiles }) => {

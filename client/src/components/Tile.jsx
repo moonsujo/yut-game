@@ -104,6 +104,7 @@ export default function Tile({
     wrapperScale: ((selection != null && legalTileInfo) || hasMovablePiece) ? 1 : 0, // want the animation to start again when status changes
   })
 
+  const baseWrapperScale = 1.3
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     if (hasMovablePiece) {
@@ -118,9 +119,9 @@ export default function Tile({
         wrapperMat.current.opacity = 0.3
         wrapperMat.current.color = new THREE.Color('grey')
       }
-      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + baseWrapperScale;
+      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + baseWrapperScale;
+      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + baseWrapperScale;
     } else if (selection != null && legalTileInfo) {
       if (turn.team === 0) {
         wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.02 + 0.03, 0.8, 0.5);
@@ -128,9 +129,9 @@ export default function Tile({
         wrapperMat.current.color.setHSL(Math.cos(time * 3) * 0.06 + 0.55, 1, 0.3);
       }
       wrapperMat.current.opacity = 0.3;
-      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + 1.1;
-      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + 1.1;
+      wrapper.current.scale.x = Math.cos(time * 3) * 0.1 + baseWrapperScale;
+      wrapper.current.scale.y = Math.cos(time * 3) * 0.1 + baseWrapperScale;
+      wrapper.current.scale.z = Math.cos(time * 3) * 0.1 + baseWrapperScale;
     } else {
       wrapperMat.current.opacity = 0;
     }
