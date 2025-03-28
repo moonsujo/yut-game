@@ -1297,7 +1297,8 @@ io.on("connect", async (socket) => {
     })
     console.log('randomPieceIndex', randomPieceIndex)
 
-    const moves = room.teams[team].moves
+    const moves = room.teams[team].moves.toObject()
+    const pieces = room.teams[team].pieces
     let selectedPieces;
     let history;
     let selectedPiece = room.teams[team].pieces[randomPieceIndex]
@@ -1312,7 +1313,7 @@ io.on("connect", async (socket) => {
       console.log('history', history)
       selectedPieces = room.tiles[tile];
     }
-    let legalTiles = getLegalTiles(tile, moves, selectedPieces, history, room.rules.backdoLaunch)
+    let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch)
     console.log('legalTiles', legalTiles)
     if (!(Object.keys(legalTiles).length === 0)) {
       room.selection = { tile, pieces: selectedPieces }

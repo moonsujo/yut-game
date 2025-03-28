@@ -138,6 +138,25 @@ export default function Tile({
   })
 
   function PathNumHelper({pathNum}) {
+    function shiftPosition({ tile }) {
+      const positionTopRight = [1, 2.3, 0]
+      const positionTopLeft = [-1, 2.3, 0]
+      const positionBottomRight = [1, 2.3, 2]
+      const positionBottomLeft = [-1, 2.3, 2]
+      if (tile === 0 || tile === 1 || tile === 2 || tile === 3 || tile === 4) {
+        return positionBottomRight
+      } else if (tile === 5 || tile === 6 || tile === 7 || tile === 8 || tile === 9) {
+        return positionTopRight
+      } else if (tile === 10 || tile === 11 || tile === 12 || tile === 13 || tile === 14) {
+        return positionTopRight
+      } else if (tile === 15 || tile === 16 || tile === 17 || tile === 18 || tile === 19) {
+        return positionTopRight
+      } else if (tile === 20 || tile === 21 || tile === 22 || tile === 23 || tile === 24) {
+        return positionTopRight
+      } else if (tile === 25 || tile === 26 || tile === 27 || tile === 28) {
+        return positionTopRight
+      }
+    }
     const Move = ({ position }) => {
       return <>
         { pathNum === -1 && <BackdoToken position={position} scale={0.8} rotation={[0, Math.PI/2, 0]}/>}
@@ -150,7 +169,7 @@ export default function Tile({
     }
 
     return <>
-      <Move position={[1,2.3,0]}/>
+      <Move position={shiftPosition({tile})}/>
     </>
   }
 

@@ -10,59 +10,66 @@ import { tileType } from "./rulesHelpers.js";
 //   ]
 // }
 export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
-  console.log(`tile ${tile} moves ${moves} pieces ${pieces} history ${history} backdoLaunch ${backdoLaunch}`)
-  let legalTiles = {}
-
-  for (let move in moves) {
-    if (parseInt(move) == 0) {
-      continue;
-    } else if (moves[move] > 0) {
-
-      // Special Rule: If you don't have a piece on the board, you can place one on Earth immediately
-      if (parseInt(move) < 0 && (backdoLaunch && checkBackdoRule(moves, pieces))) {
-
-        legalTiles[0] = { tile: 0, move: "-1", history: [], path: [1, 0] }
-
-      } else {
-
-        let forward = parseInt(move) > 0 ? true: false
-        let forks = getNextTiles(tile, forward)
-        if (forward) {
-          // If you're on Earth, there's a path to score and path to tile 1. Eliminate the path to tile 1
-          forks = checkFinishRule(forks) 
+  try {
+    if (typeof moves !== 'object') {
+      throw new Error('moves is not an object')
+    }
+    
+    let legalTiles = {}
+  
+    for (let move in moves) {
+      if (parseInt(move) == 0) {
+        continue;
+      } else if (moves[move] > 0) {
+  
+        // Special Rule: If you don't have a piece on the board, you can place one on Earth immediately
+        if (parseInt(move) < 0 && (backdoLaunch && checkBackdoRule(moves, pieces))) {
+  
+          legalTiles[0] = { tile: 0, move: "-1", history: [], path: [1, 0] }
+  
         } else {
-          // If you have no history, present both paths. If you do, take the last tile from the history
-          forks = checkBackdoFork(forks, history)
-        }
   
-        for (let i = 0; i < forks.length; i++) {
-          
-          // Initialize path
-          let path = tileType(tile) === 'home' ? [0] : [tile]
-          let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path)
-          
-          let forkHistory = makeNewHistory(
-            history, 
-            destination.path.slice(0, destination.path.length-1), 
-            forward
-          )
-  
-          // If piece can score
-          if (destination.tile == 29) {
-            if (!(29 in legalTiles)) {
-              // Initialize array because multiple moves can be used to finish
-              legalTiles[29] = []
-            }
-            legalTiles[29].push({ tile: destination.tile, move, history: forkHistory, path: destination.path })
+          let forward = parseInt(move) > 0 ? true: false
+          let forks = getNextTiles(tile, forward)
+          if (forward) {
+            // If you're on Earth, there's a path to score and path to tile 1. Eliminate the path to tile 1
+            forks = checkFinishRule(forks) 
           } else {
-            legalTiles[destination.tile] = { tile: destination.tile, move, history: forkHistory, path: destination.path }
+            // If you have no history, present both paths. If you do, take the last tile from the history
+            forks = checkBackdoFork(forks, history)
+          }
+    
+          for (let i = 0; i < forks.length; i++) {
+            
+            // Initialize path
+            let path = tileType(tile) === 'home' ? [0] : [tile]
+            let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path)
+            
+            let forkHistory = makeNewHistory(
+              history, 
+              destination.path.slice(0, destination.path.length-1), 
+              forward
+            )
+    
+            // If piece can score
+            if (destination.tile == 29) {
+              if (!(29 in legalTiles)) {
+                // Initialize array because multiple moves can be used to finish
+                legalTiles[29] = []
+              }
+              legalTiles[29].push({ tile: destination.tile, move, history: forkHistory, path: destination.path })
+            } else {
+              legalTiles[destination.tile] = { tile: destination.tile, move, history: forkHistory, path: destination.path }
+            }
           }
         }
       }
     }
+  
+    return legalTiles
+  } catch (err) {
+    console.log('[getLegalTiles] error', err)
   }
-
-  return legalTiles
 }
 
 function makeNewHistory(history, path, forward) {
