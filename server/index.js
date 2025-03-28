@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
-import { tileType } from './rules/rulesHelpers.js'
+import { hasTokenOnBoard, isBackdoMoves, tileType } from './rules/rulesHelpers.js'
 
 const app = express();
 const server = http.createServer(app);
@@ -1061,7 +1061,6 @@ io.on("connect", async (socket) => {
         //   // outcome = 1
         // }
         let animation = pickAnimation(outcome)
-        // const animation = pickAnimation(outcome)
         room.yootOutcome = outcome;
         room.yootAnimation = animation
         room.teams[user.team].throws--
@@ -1278,7 +1277,8 @@ io.on("connect", async (socket) => {
         index = 0
       }
       piece = pieces[index]
-    } while (tileType(piece.tile) === 'scored' || (tileType(piece.tile) === 'home' && !isBackdoMovesWithoutPieces(moves.toObject(), pieces)))
+    } while (tileType(piece.tile) === 'scored' || 
+    (isBackdoMoves({ moves: moves.toObject() }) && hasTokenOnBoard({ pieces }) && tileType(piece.tile) === 'home'))
     return index
   }
   
@@ -1310,11 +1310,9 @@ io.on("connect", async (socket) => {
       selectedPieces = [{tile, team, id, history}]
     } else {
       history = room.tiles[tile][0].history // go back the way you came from of the first token
-      console.log('history', history)
       selectedPieces = room.tiles[tile];
     }
     let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch)
-    console.log('legalTiles', legalTiles)
     if (!(Object.keys(legalTiles).length === 0)) {
       room.selection = { tile, pieces: selectedPieces }
       room.legalTiles = legalTiles
