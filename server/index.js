@@ -1042,9 +1042,9 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        // let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        let outcome = -1
+        // let outcome = -1
         // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {
@@ -1350,7 +1350,10 @@ io.on("connect", async (socket) => {
         // move or score
         if (level === 'random') {
           setTimeout(async () => {
-            await handleMove({ room, team: player.team, player })
+            console.log('[aiMove] room has selection', room.selection)
+            // select a legal tile
+            // pass to handleMove
+            await handleMove({ room, tile: room.selection.tile, playerName: player.name })
             // selected, but on a tile with an enemy
           }, delay > 0 ? delay : 1500)
         }
@@ -1360,8 +1363,206 @@ io.on("connect", async (socket) => {
     }
   }
 
-  async function handleMove() {
+  async function handleMove({ room, tile, playerName }) {
     console.log('handleMove')
+    
+    try {  
+      let moveInfo = room.legalTiles[tile]
+      let tiles = room.tiles
+      let from = room.selection.tile
+      let to = tile
+      let moveUsed = moveInfo.move
+      let path = moveInfo.path
+      let history = moveInfo.history
+      let pieces = room.selection.pieces
+      let starting = pieces[0].tile === -1
+      let movingTeam = pieces[0].team;
+
+      // Stop Timer
+      clearTimeout(room.timerId)
+      room.turnsSkipped = 0
+      let turnStartTimeDelay = 0
+
+      let moves = room.teams[movingTeam].moves;
+      let throws = room.teams[movingTeam].throws;
+
+      let serverEvent = {
+        name: 'move',
+        content: {
+          moveUsed,
+          updatedPieces: [
+            // object
+            // teamId
+            // pieceId
+          ],
+          updatedTiles: {
+            from: {
+              index: -1,
+              pieces: []
+            },
+            to: {
+              index: null,
+              pieces: []
+            }
+            // fill in indexes of array in SocketManager
+          },
+          throws: null, // current team if bonus from catch, or next team,
+          // new teamId from room.turn.team
+          // new playerId from room.turn.players[room.turn.team]
+          prevTeam: movingTeam,
+          // throws from room.teams[room.turn.team].throws
+          gameLogs: [],
+        }
+      }
+
+      // change throughout the function
+      let gameLog = {
+        logType: 'move',
+        content: {
+          playerName,
+          team: movingTeam,
+          tile,
+          numPieces: pieces.length,
+          starting
+        }
+      }
+      room.gameLogs.push(gameLog)
+      serverEvent.content.gameLogs.push(gameLog)
+
+      // Clear pieces from the 'from' tile if they were on the board
+      if (!starting) {
+        room.tiles[from] = []
+        serverEvent.content.updatedTiles.from.index = from
+        serverEvent.content.updatedTiles.from.pieces = [] // will always be empty
+      } else {
+        turnStartTimeDelay += JUMP_TIME
+      }
+
+      // Update moving team's pieces at home
+      for (const piece of pieces) {
+        room.teams[movingTeam].pieces[piece.id].tile = to
+        room.teams[movingTeam].pieces[piece.id].history = history
+        room.teams[movingTeam].pieces[piece.id].lastPath = path
+        serverEvent.content.updatedPieces.push(piece)
+      }
+
+      // Update moving pieces for the tiles
+      pieces.forEach(function(_item, index, array) {
+        array[index].tile = to
+        array[index].history = history
+        array[index].lastPath = path
+      })
+
+      if (tiles[to].length > 0) {
+        let occupyingTeam = tiles[to][0].team
+
+        // Catch
+        if (occupyingTeam != movingTeam) {
+          for (let piece of tiles[to]) {
+            piece.tile = -1
+            piece.history = []
+            room.teams[occupyingTeam].pieces[piece.id] = piece
+            serverEvent.content.updatedPieces.push(piece)
+          }
+          
+          room.tiles[to] = pieces
+          serverEvent.content.updatedTiles.to.index = to
+          serverEvent.content.updatedTiles.to.pieces = pieces
+
+          if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
+            throws++;
+          }
+
+          gameLog = {
+            logType: "catch",
+            content: {
+              playerName,
+              team: movingTeam,
+              caughtTeam: occupyingTeam,
+              numPiecesCaught: tiles[to].length,
+              path
+            }
+          }
+          room.gameLogs.push(gameLog)
+          serverEvent.content.gameLogs.push(gameLog)
+
+          turnStartTimeDelay += (1 * ALERT_TIME)
+        } else { // Join pieces
+          for (const piece of pieces) {
+            room.tiles[to].push(piece)
+          }
+          serverEvent.content.updatedTiles.to.index = to
+          serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
+          
+          gameLog = {
+            logType: "join",
+            content: {
+              playerName,
+              team: movingTeam,
+              numPiecesCombined: pieces.length + tiles[to].length,
+            }
+          }
+          room.gameLogs.push(gameLog)
+          serverEvent.content.gameLogs.push(gameLog)
+
+          turnStartTimeDelay += (1 * ALERT_TIME)
+        }
+      } else {
+        for (const piece of pieces) {
+          room.tiles[to].push(piece)
+        }
+        serverEvent.content.updatedTiles.to.index = to
+        serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
+      }
+
+      // Clear legal tiles and selection
+      room.legalTiles = {}
+      room.selection = null
+
+      moves[moveUsed]--;
+      turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
+
+      if (throws === 0 && isEmptyMoves(moves.toObject())) {
+        const [newTurn, pause] = await passTurn(room.turn, room.teams)
+        room.turn = newTurn
+        room.paused = pause
+        room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
+        room.teams[newTurn.team].throws = 1
+        serverEvent.content.throws = 1
+
+        turnStartTimeDelay += (1 * ALERT_TIME)
+
+        // If player is AI
+        const newTeam = newTurn.team
+        const newPlayer = newTurn.players[newTurn.team]
+        let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
+        if (newPlayerDocument.type === 'ai') {
+          await aiMove({ 
+            player: newPlayerDocument, 
+            room, 
+            level: newPlayerDocument.level, 
+            delay: turnStartTimeDelay // wait for animation
+          })
+        }
+      } else {
+        room.teams[movingTeam].moves = moves
+        room.teams[movingTeam].throws = throws // may have an extra throw from catch
+        serverEvent.content.throws = throws
+      }
+
+      room.serverEvent = serverEvent
+
+      // Start timer
+      room.turnStartTime = Date.now() + turnStartTimeDelay
+      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+      if (room.rules.timer) {
+        startTimer(room)
+      }
+
+      await room.save()
+    } catch (err) {
+      console.log('[handleMove] error', err)
+    }
   }
 
   // Returns a player that's not away
@@ -1570,201 +1771,8 @@ io.on("connect", async (socket) => {
       if (!room) {
         throw new Error('room with shortId', roomId, 'not found or it is not paused')
       }
-  
-      let moveInfo = room.legalTiles[tile]
-      let tiles = room.tiles
-      let from = room.selection.tile
-      let to = tile
-      let moveUsed = moveInfo.move
-      let path = moveInfo.path
-      let history = moveInfo.history
-      let pieces = room.selection.pieces
-      let starting = pieces[0].tile === -1
-      let movingTeam = pieces[0].team;
 
-      // Stop Timer
-      clearTimeout(room.timerId)
-      room.turnsSkipped = 0
-      let turnStartTimeDelay = 0
-
-      let moves = room.teams[movingTeam].moves;
-      let throws = room.teams[movingTeam].throws;
-
-      let serverEvent = {
-        name: 'move',
-        content: {
-          moveUsed,
-          updatedPieces: [
-            // object
-            // teamId
-            // pieceId
-          ],
-          updatedTiles: {
-            from: {
-              index: -1,
-              pieces: []
-            },
-            to: {
-              index: null,
-              pieces: []
-            }
-            // fill in indexes of array in SocketManager
-          },
-          throws: null, // current team if bonus from catch, or next team,
-          // new teamId from room.turn.team
-          // new playerId from room.turn.players[room.turn.team]
-          prevTeam: movingTeam,
-          // throws from room.teams[room.turn.team].throws
-          gameLogs: [],
-        }
-      }
-
-      // change throughout the function
-      let gameLog = {
-        logType: 'move',
-        content: {
-          playerName,
-          team: movingTeam,
-          tile,
-          numPieces: pieces.length,
-          starting
-        }
-      }
-      room.gameLogs.push(gameLog)
-      serverEvent.content.gameLogs.push(gameLog)
-
-      // Clear pieces from the 'from' tile if they were on the board
-      if (!starting) {
-        room.tiles[from] = []
-        serverEvent.content.updatedTiles.from.index = from
-        serverEvent.content.updatedTiles.from.pieces = [] // will always be empty
-      } else {
-        turnStartTimeDelay += JUMP_TIME
-      }
-
-      // Update moving team's pieces at home
-      for (const piece of pieces) {
-        room.teams[movingTeam].pieces[piece.id].tile = to
-        room.teams[movingTeam].pieces[piece.id].history = history
-        room.teams[movingTeam].pieces[piece.id].lastPath = path
-        serverEvent.content.updatedPieces.push(piece)
-      }
-
-      // Update moving pieces for the tiles
-      pieces.forEach(function(_item, index, array) {
-        array[index].tile = to
-        array[index].history = history
-        array[index].lastPath = path
-      })
-
-      if (tiles[to].length > 0) {
-        let occupyingTeam = tiles[to][0].team
-
-        // Catch
-        if (occupyingTeam != movingTeam) {
-          for (let piece of tiles[to]) {
-            piece.tile = -1
-            piece.history = []
-            room.teams[occupyingTeam].pieces[piece.id] = piece
-            serverEvent.content.updatedPieces.push(piece)
-          }
-          
-          room.tiles[to] = pieces
-          serverEvent.content.updatedTiles.to.index = to
-          serverEvent.content.updatedTiles.to.pieces = pieces
-
-          if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
-            throws++;
-          }
-
-          gameLog = {
-            logType: "catch",
-            content: {
-              playerName,
-              team: movingTeam,
-              caughtTeam: occupyingTeam,
-              numPiecesCaught: tiles[to].length,
-              path
-            }
-          }
-          room.gameLogs.push(gameLog)
-          serverEvent.content.gameLogs.push(gameLog)
-
-          turnStartTimeDelay += (1 * ALERT_TIME)
-        } else { // Join pieces
-          for (const piece of pieces) {
-            room.tiles[to].push(piece)
-          }
-          serverEvent.content.updatedTiles.to.index = to
-          serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
-          
-          gameLog = {
-            logType: "join",
-            content: {
-              playerName,
-              team: movingTeam,
-              numPiecesCombined: pieces.length + tiles[to].length,
-            }
-          }
-          room.gameLogs.push(gameLog)
-          serverEvent.content.gameLogs.push(gameLog)
-
-          turnStartTimeDelay += (1 * ALERT_TIME)
-        }
-      } else {
-        for (const piece of pieces) {
-          room.tiles[to].push(piece)
-        }
-        serverEvent.content.updatedTiles.to.index = to
-        serverEvent.content.updatedTiles.to.pieces = room.tiles[to]
-      }
-
-      // Clear legal tiles and selection
-      room.legalTiles = {}
-      room.selection = null
-
-      moves[moveUsed]--;
-      turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
-
-      if (throws === 0 && isEmptyMoves(moves.toObject())) {
-        const [newTurn, pause] = await passTurn(room.turn, room.teams)
-        room.turn = newTurn
-        room.paused = pause
-        room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
-        room.teams[newTurn.team].throws = 1
-        serverEvent.content.throws = 1
-
-        turnStartTimeDelay += (1 * ALERT_TIME)
-
-        // If player is AI
-        // you don't know when the token will finish moving
-        const newTeam = newTurn.team
-        const newPlayer = newTurn.players[newTurn.team]
-        let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
-        if (newPlayerDocument.type === 'ai') {
-          await aiMove({ 
-            player: newPlayerDocument, 
-            room, 
-            level: newPlayerDocument.level, 
-            delay: turnStartTimeDelay
-          })
-        }
-      } else {
-        room.teams[movingTeam].moves = moves
-        room.teams[movingTeam].throws = throws // may have an extra throw from catch
-        serverEvent.content.throws = throws
-      }
-
-      room.serverEvent = serverEvent
-
-      // Start timer
-      room.turnStartTime = Date.now() + turnStartTimeDelay
-      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
-      if (room.rules.timer) {
-        startTimer(room)
-      }
-
-      await room.save()
+      await handleMove({ room, tile, playerName })
     } catch (err) {
       console.log(`[move] error making move`, err)
     }
