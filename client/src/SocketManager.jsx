@@ -827,6 +827,14 @@ export const SocketManager = () => {
         setAlerts(alerts)
       } else if (gamePhase === 'finished') {
         setResults(results => [ ...results, winner ])
+        setPieceTeam0Id0AnimationPlaying(false)
+        setPieceTeam0Id1AnimationPlaying(false)
+        setPieceTeam0Id2AnimationPlaying(false)
+        setPieceTeam0Id3AnimationPlaying(false)
+        setPieceTeam1Id0AnimationPlaying(false)
+        setPieceTeam1Id1AnimationPlaying(false)
+        setPieceTeam1Id2AnimationPlaying(false)
+        setPieceTeam1Id3AnimationPlaying(false)
       }
 
       setLegalTiles({})

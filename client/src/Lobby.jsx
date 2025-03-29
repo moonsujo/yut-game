@@ -1224,7 +1224,7 @@ export default function Lobby() {
           </Text3D>
         </group>
       }
-      function AddAIButton({ position, rotation, scale }) {
+      function AddAIEZButton({ position, rotation, scale }) {
         const [hover, setHover] = useState(false)
     
         function handlePointerEnter(e) {
@@ -1273,7 +1273,7 @@ export default function Lobby() {
             size={0.45}
             height={0.01}
           >
-            ADD AI
+            ADD AI - EZ
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
           </Text3D>
         </group>
@@ -1307,7 +1307,7 @@ export default function Lobby() {
         {/* take seat button */}
         <TakeSeatButton position={[0, 0.02, -0.15]}/>
         {/* add ai button */}
-        <AddAIButton position={[0, 0.02, 0.95]}/>
+        <AddAIEZButton position={[0, 0.02, 0.95]}/>
       </group>
     }
 

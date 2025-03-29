@@ -891,7 +891,15 @@ io.on("connect", async (socket) => {
           players: [0, 0]
         }
       } else {
-        newTurn = await getHostTurn(room)
+        const host = await User.findById(room.host)
+        if (host.team === -1) {
+          newTurn = {
+            team: 0,
+            players: [0,0]
+          }
+        } else {
+          newTurn = await getHostTurn(room)
+        }
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
@@ -929,7 +937,7 @@ io.on("connect", async (socket) => {
       // if player is ai
       let newPlayer = room.turn.players[room.turn.team]
       let newPlayerDocument = await User.findOne({ _id: room.teams[room.turn.team].players[newPlayer] })
-      if (newPlayer.type === 'ai') {
+      if (newPlayerDocument.type === 'ai') {
         await aiMove({
           player: newPlayerDocument, 
           room, 
