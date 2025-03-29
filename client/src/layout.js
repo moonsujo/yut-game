@@ -1104,7 +1104,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 8
+          maxLength: 11
         },
         join: {
           position: [3.2, 0, -0.1],
@@ -1144,7 +1144,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 8
+          maxLength: 11
         },
         join: {
           position: [3.2, 0, -0.1],
@@ -2690,7 +2690,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 8
+          maxLength: 11
         },
         join: {
           position: [3.3, 0, 0.45],
@@ -2730,7 +2730,7 @@ export default {
           rotation: [-Math.PI/2, 0, 0],
           size: 0.35,
           height: 0.01,
-          maxLength: 8
+          maxLength: 11
         },
         join: {
           position: [3.45, 0, 0.5],

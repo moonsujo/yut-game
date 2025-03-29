@@ -1194,16 +1194,16 @@ export default function Lobby() {
         return <group position={position} rotation={rotation} scale={scale}>
           {/* background */}
           <group name='background'>
-            <mesh name='background-outer' scale={[6.8, 0.01, 1]}>
+            <mesh name='background-outer' scale={[6.8, 0.01, 0.9]}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
             </mesh>
-            <mesh name='background-inner' scale={[6.7, 0.02, 0.9]}>
+            <mesh name='background-inner' scale={[6.7, 0.02, 0.8]}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color='black'/>
             </mesh>
             <mesh name='background-wrapper' 
-            scale={[6.8, 0.02, 1]}
+            scale={[6.8, 0.02, 0.9]}
             onPointerEnter={e=>handlePointerEnter(e)}
             onPointerLeave={e=>handlePointerLeave(e)}
             onPointerUp={e=>handlePointerUp(e)}>
@@ -1248,16 +1248,16 @@ export default function Lobby() {
         return <group position={position} rotation={rotation} scale={scale}>
           {/* background */}
           <group name='background'>
-            <mesh name='background-outer' scale={[6.8, 0.01, 1]}>
+            <mesh name='background-outer' scale={[6.8, 0.01, 0.9]}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
             </mesh>
-            <mesh name='background-inner' scale={[6.7, 0.02, 0.9]}>
+            <mesh name='background-inner' scale={[6.7, 0.02, 0.8]}>
               <boxGeometry args={[1,1,1]}/>
               <meshStandardMaterial color='black'/>
             </mesh>
             <mesh name='background-wrapper' 
-            scale={[6.8, 0.02, 1]}
+            scale={[6.8, 0.02, 0.9]}
             onPointerEnter={e=>handlePointerEnter(e)}
             onPointerLeave={e=>handlePointerLeave(e)}
             onPointerUp={e=>handlePointerUp(e)}>
@@ -1278,15 +1278,82 @@ export default function Lobby() {
           </Text3D>
         </group>
       }
+      function AddAISmartButton({ position, rotation, scale }) {
+        const [hover, setHover] = useState(false)
+    
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          setHover(true)
+          document.body.style.cursor = 'pointer'
+        }
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          setHover(false)
+          document.body.style.cursor = 'default'
+        }
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          setSeatChosen(null)
+          // send 'add AI' event to server
+          // must be host
+          socket.emit('addAI', { roomId: params.id.toUpperCase(), clientId: client._id, team: seatChosen[0], level: 'smart' })
+        }
+
+    
+        return <group position={position} rotation={rotation} scale={scale}>
+          {/* background */}
+          <group name='background'>
+            <mesh name='background-outer' scale={[6.8, 0.01, 0.9]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+            </mesh>
+            <mesh name='background-inner' scale={[6.7, 0.02, 0.8]}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial color='black'/>
+            </mesh>
+            <mesh name='background-wrapper' 
+            scale={[6.8, 0.02, 0.9]}
+            onPointerEnter={e=>handlePointerEnter(e)}
+            onPointerLeave={e=>handlePointerLeave(e)}
+            onPointerUp={e=>handlePointerUp(e)}>
+              <boxGeometry args={[1,1,1]}/>
+              <meshStandardMaterial transparent opacity={0}/>
+            </mesh>
+          </group>
+          {/* text */}
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-3.15,0.02,0.2]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.45}
+            height={0.01}
+          >
+            ADD AI - SMART
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+        </group>
+      }
+      const seatModalButtons = [
+        <TakeSeatButton/>,
+        <AddAIEZButton/>,
+        <AddAISmartButton/>,
+      ]
+      const backgroundDimensions = {
+        position: [0, 0, 0.1 + 0.5 * (seatModalButtons.length - 2)],
+        scaleOuter: [7, 0.01, 1 * seatModalButtons.length + 1],
+        scaleInner: [6.9, 0.02, 1 * seatModalButtons.length + 0.9]
+      }
 
       return <group position={position} rotation={rotation} scale={scale}>
         {/* background */}
-        <group name='background'>
-          <mesh name='background-outer' scale={[7, 0.01, 3.1]}>
+        <group name='background' position={backgroundDimensions.position}>
+          <mesh name='background-outer' scale={backgroundDimensions.scaleOuter}>
+          {/* <mesh name='background-outer' scale={[7, 0.01, 4.2]}> */}
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='yellow'/>
           </mesh>
-          <mesh name='background-inner' scale={[6.9, 0.02, 3.0]}>
+          <mesh name='background-inner' scale={backgroundDimensions.scaleInner}>
+          {/* <mesh name='background-inner' scale={[6.9, 0.02, 4.1]}> */}
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -1294,7 +1361,7 @@ export default function Lobby() {
         {/* title */}
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[-3.3, 0.02, -0.85]}
+          position={[-3.3, 0.02, -0.7]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.45}
           height={0.01}
@@ -1303,11 +1370,12 @@ export default function Lobby() {
           <meshStandardMaterial color={ seatChosen[0] === 0 ? 'red' : 'turquoise' }/>
         </Text3D>
         {/* close button */}
-        <CloseButton position={[2.45, 0.02, -1.1]} scale={1.2}/>
-        {/* take seat button */}
-        <TakeSeatButton position={[0, 0.02, -0.15]}/>
-        {/* add ai button */}
-        <AddAIEZButton position={[0, 0.02, 0.95]}/>
+        <CloseButton position={[2.45, 0.02, -0.95]} scale={1.2}/>
+        { seatModalButtons.map((value, index) => {
+          return <group position={[0, 0.02, 1 * index]} key={index}>
+            {value}
+          </group>
+        }) }
       </group>
     }
 

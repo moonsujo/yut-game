@@ -468,9 +468,11 @@ async function createUniqueAIName(level) {
   while (exists) {
     name = ''
     if (level === 'random') {
-      name += 'RANDY'
+      name += 'AIBOT-EZ'
+    } else if (level === 'smart') {
+      name += 'AIBOT-SMART'
     }
-    name += makeId(3, false, true)
+    // name += makeId(3, false, true)
     exists = await User.findOne({ name }).exec(); // Check for collisions
   }
   return name;
@@ -1354,6 +1356,8 @@ io.on("connect", async (socket) => {
             await handleSelectTokenRandom({room, team: player.team, player})
             // selected, but on a tile with an enemy
           }, delay > 0 ? delay : 1500)
+        } else if (level === 'smart') {
+          console.log('[aiMove] level smart handle select token')
         }
       } else if (room.selection) {
         // move or score
@@ -1376,6 +1380,8 @@ io.on("connect", async (socket) => {
               }
             }
           }, delay > 0 ? delay : 1500)
+        } else if (level === 'smart') {
+          console.log('[aiMove] level smart handle select legal tile')
         }
       }
     } catch(err) {
