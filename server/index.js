@@ -894,12 +894,12 @@ io.on("connect", async (socket) => {
         newTurn = await getHostTurn(room)
       }
       room.turn = newTurn
-      // room.teams[newTurn.team].throws = 1
-      // room.gamePhase = "pregame"
+      room.teams[newTurn.team].throws = 1
+      room.gamePhase = "pregame"
       // testing
-      room.gamePhase = "game" 
-      room.turn.team = 1
-      room.teams[room.turn.team].throws = 1
+      // room.gamePhase = "game" 
+      // room.turn.team = 1
+      // room.teams[room.turn.team].throws = 1
       
       // Game logs
       let gameLog = {
@@ -926,14 +926,16 @@ io.on("connect", async (socket) => {
       
       await room.save()
 
-      // ai test
+      // if player is ai
       let newPlayer = room.turn.players[room.turn.team]
       let newPlayerDocument = await User.findOne({ _id: room.teams[room.turn.team].players[newPlayer] })
-      await aiMove({
-        player: newPlayerDocument, 
-        room, 
-        level: newPlayerDocument.level
-      })
+      if (newPlayer.type === 'ai') {
+        await aiMove({
+          player: newPlayerDocument, 
+          room, 
+          level: newPlayerDocument.level,
+        })
+      }
     } catch (err) {
       console.log(`[gameStart] error starting game`, err)
     }
@@ -1020,7 +1022,6 @@ io.on("connect", async (socket) => {
   }
 
   async function handleThrowYut({ user, room }) {
-    console.log('[handleThrowYut]')
     try {
       const currentTeam = room.turn.team
       const currentPlayer = room.turn.players[currentTeam]
@@ -1115,7 +1116,7 @@ io.on("connect", async (socket) => {
                   await aiMove({
                     player: newPlayerDocument, 
                     room, 
-                    level: newPlayerDocument.level
+                    level: newPlayerDocument.level,
                   })
                 }
               } else if (outcomePregame === "tie") {
@@ -1135,6 +1136,18 @@ io.on("connect", async (socket) => {
                 room.gameLogs.push(gameLog)
                 serverEvent.content.gameLogs.push(gameLog)
                 turnStartTimeDelay += 3 * ALERT_TIME
+
+                // If player is AI
+                const newTeam = newTurn.team
+                const newPlayer = newTurn.players[newTurn.team]
+                let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
+                if (newPlayerDocument.type === 'ai') {
+                  await aiMove({
+                    player: newPlayerDocument, 
+                    room, 
+                    level: newPlayerDocument.level
+                  })
+                }
               } else {
                 // 'outcomePregame' is the winning team index
                 const [newTurn, pause] = await setTurn(room.turn, outcomePregame, room.teams)
@@ -1281,19 +1294,12 @@ io.on("connect", async (socket) => {
   }
   
   async function handleSelectTokenRandom({room, team, player}) {
-    console.log('handleSelectTokenRandom')
-    
-    // get selectable 
-    // if none, forfeit turn
-    // else, select random
 
-    //if token on board, and you have a backdo, you can't choose tokens at home
     const randomPieceIndex = calculateRandomPieceIndex({ 
       pieces: room.teams[team].pieces, 
       moves: room.teams[team].moves, 
       numTokens: NUM_TOKENS
     })
-    console.log('randomPieceIndex', randomPieceIndex)
 
     const moves = room.teams[team].moves.toObject()
     const pieces = room.teams[team].pieces
@@ -1329,11 +1335,7 @@ io.on("connect", async (socket) => {
   // if it is, set room state - 'ai turn'
   // delay for animation
   async function aiMove({ player, room, level, delay=0 }) {
-    console.log('[aiMove]')
     try {
-      console.log('[aiMove] room.teams[player.team].throws', room.teams[player.team].throws)
-      console.log('[aiMove] hasValidMove(room.teams[player.team].moves)', hasValidMove(room.teams[player.team].moves))
-      console.log('[aiMove] room.selection', room.selection)
       if (room.teams[player.team].throws > 0) {
         setTimeout(async () => {
           await handleThrowYut({ user: player, room })
@@ -1346,7 +1348,6 @@ io.on("connect", async (socket) => {
           }, delay > 0 ? delay : 1500)
         }
       } else if (room.selection) {
-        console.log('[aiMove] selection is truthy')
         // move or score
         if (level === 'random') {
           setTimeout(async () => {
@@ -1354,7 +1355,6 @@ io.on("connect", async (socket) => {
             // pick a random move
             let randomLegalTileKey = Math.floor(Math.random() * Object.keys(room.legalTiles).length)
             let randomTile = Object.keys(room.legalTiles)[randomLegalTileKey]
-            console.log('[aiMove] randomTile', randomTile)
             if (parseInt(randomTile) !== 29) {
               await handleMove({ room, tile: randomTile, playerName: player.name })
             } else {
@@ -1376,8 +1376,6 @@ io.on("connect", async (socket) => {
   }
 
   async function handleMove({ room, tile, playerName }) {
-    console.log('handleMove')
-    
     try {  
       let moveInfo = room.legalTiles[tile]
       let tiles = room.tiles
@@ -1542,8 +1540,6 @@ io.on("connect", async (socket) => {
         room.teams[newTurn.team].throws = 1
         serverEvent.content.throws = 1
 
-        turnStartTimeDelay += (1 * ALERT_TIME)
-
         // If player is AI
         const newTeam = newTurn.team
         const newPlayer = newTurn.players[newTurn.team]
@@ -1556,6 +1552,9 @@ io.on("connect", async (socket) => {
             delay: turnStartTimeDelay // wait for animation
           })
         }
+
+        turnStartTimeDelay += (1 * ALERT_TIME)
+
       } else {
         room.teams[movingTeam].moves = moves
         room.teams[movingTeam].throws = throws // may have an extra throw from catch
@@ -1725,20 +1724,17 @@ io.on("connect", async (socket) => {
         throw new Error('parameter "moves" is not an object')
       }
       if (moves['-1'] === 0) {
-        console.log('has no backdo')
         return false;
       }
   
       for (let i = 0; i < 4; i++) {
         if (tileType(pieces[i].tile) === 'onBoard') {
-          console.log('token on board', i)
           return false
         }
       }
   
       for (const move in moves) {
         if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
-          console.log('has another move besides backdo', 'move:', move)
           return false;
         }
       }
@@ -1814,7 +1810,6 @@ io.on("connect", async (socket) => {
   }
 
   async function handleScore({ room, selectedMove, playerName }) {
-    console.log('[handleScore]')
     try {
       // Stop timer
       clearTimeout(room.timerId)
@@ -1906,13 +1901,11 @@ io.on("connect", async (socket) => {
           room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
           room.teams[newTurn.team].throws = 1
           serverEvent.content.throws = 1
-          turnStartTimeDelay += (1 * ALERT_TIME)
-
+          
           // If player is AI
           const newTeam = newTurn.team
           const newPlayer = newTurn.players[newTurn.team]
           let newPlayerDocument = await User.findOne({ _id: room.teams[newTeam].players[newPlayer] })
-          console.log('[handleScore] newPlayerDocument', newPlayerDocument)
           if (newPlayerDocument.type === 'ai') {
             await aiMove({ 
               player: newPlayerDocument, 
@@ -1921,6 +1914,9 @@ io.on("connect", async (socket) => {
               delay: turnStartTimeDelay // wait for animation
             })
           }
+          
+          turnStartTimeDelay += (1 * ALERT_TIME)
+
         } else {
           room.teams[movingTeam].moves = moves
 
@@ -1928,7 +1924,6 @@ io.on("connect", async (socket) => {
           const currentTeam = room.turn.team
           const currentPlayer = room.turn.players[currentTeam]
           let currentPlayerDocument = await User.findOne({ _id: room.teams[currentTeam].players[currentPlayer] })
-          console.log('[handleScore] currentPlayerDocument', currentPlayerDocument)
           if (currentPlayerDocument.type === 'ai') {
             await aiMove({ 
               player: currentPlayerDocument, 
