@@ -350,7 +350,6 @@ export default function Lobby() {
       function handleSeatPointerUp(e, team, seatIndex) {
         e.stopPropagation()
         if (client.socketId === host.socketId) {
-          console.log(client.team, team, teams[team].players[seatIndex])
           if (client.team !== team && !teams[team].players[seatIndex]) {
             setSeatChosen([team, seatIndex])
           } else if (teams[team].players[seatIndex].socketId !== client.socketId) {
