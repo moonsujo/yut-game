@@ -1350,11 +1350,19 @@ io.on("connect", async (socket) => {
         // move or score
         if (level === 'random') {
           setTimeout(async () => {
-            console.log('[aiMove] room has selection', room.selection)
-            // select a legal tile
-            // pass to handleMove
-            await handleMove({ room, tile: room.selection.tile, playerName: player.name })
-            // selected, but on a tile with an enemy
+            // handle when finish tile is highlighted with multiple moves
+            // pick a random move
+            let randomLegalTileIndex = Math.floor(Math.random() * Object.keys(room.legalTiles).length)
+            let randomTile = Object.keys(room.legalTiles)[randomLegalTileIndex]
+            if (randomTile !== 29) {
+              await handleMove({ room, tile: randomTile, playerName: player.name })
+            } else {
+              if (room.legalTiles[randomTile].length > 1) {
+                // choose a random move
+              } else {
+                await handleMove({ room, tile: randomTile, playerName: player.name })
+              }
+            }
           }, delay > 0 ? delay : 1500)
         }
       }
@@ -1548,6 +1556,19 @@ io.on("connect", async (socket) => {
         room.teams[movingTeam].moves = moves
         room.teams[movingTeam].throws = throws // may have an extra throw from catch
         serverEvent.content.throws = throws
+
+        // If player is AI
+        const currentTeam = room.turn.team
+        const currentPlayer = room.turn.players[currentTeam]
+        let currentPlayerDocument = await User.findOne({ _id: room.teams[currentTeam].players[currentPlayer] })
+        if (currentPlayerDocument.type === 'ai') {
+          await aiMove({ 
+            player: currentPlayerDocument, 
+            room, 
+            level: currentPlayerDocument.level, 
+            delay: turnStartTimeDelay // wait for animation
+          })
+        }
       }
 
       room.serverEvent = serverEvent
