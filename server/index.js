@@ -143,7 +143,8 @@ const roomSchema = new mongoose.Schema(
       backdoLaunch: Boolean,
       timer: Boolean,
       nak: Boolean,
-      yutMoCatch: Boolean
+      yutMoCatch: Boolean,
+      numTokens: Number
     },
     turnStartTime: Number,
     turnExpireTime: Number,
@@ -616,7 +617,8 @@ io.on("connect", async (socket) => {
           backdoLaunch: true,
           timer: false,
           nak: true,
-          yutMoCatch: true
+          yutMoCatch: true,
+          numTokens: 4
         },
         turnStartTime: null,
         turnExpireTime: null,
@@ -1305,13 +1307,13 @@ io.on("connect", async (socket) => {
       numTokens: NUM_TOKENS
     })
 
+    // refactor this so it can be used in smartAIMove
     const moves = room.teams[team].moves.toObject()
     const pieces = room.teams[team].pieces
     let selectedPieces;
     let history;
     let selectedPiece = room.teams[team].pieces[randomPieceIndex]
     let tile = selectedPiece.tile
-    // let team = selectedPiece.team
     let id = selectedPiece.id
     if (tileType(tile) === 'home') {
       history = []
@@ -1335,6 +1337,48 @@ io.on("connect", async (socket) => {
     if (player.type === 'ai') await aiMove({ player, room, level: player.level })
   }
 
+  function calculateSmartMove({ room, team }) {
+    const moves = room.teams[team].moves.toObject()
+    const pieces = room.teams[team].pieces
+    const enemies = room.teams[team === 0 ? 1 : 0].pieces
+
+    const possibleMoves = [] // each item is { tokenId, the tile to move to, and the score }
+    // if you have multiple moves to finish with, select the lowest one
+    for (let i = 0; i < room.rules.numTokens; i++) {
+      // take a piece
+      // get legal tiles
+      // get token positions when that move is made
+      // score that set of positions
+      // do it for each legal tile
+      // make a move as { tokenId, the tile to move to, and the score }
+      // append to possibleMoves
+
+      // selection - refactor select function from handleSelectTokenRandom
+      let selectedPiece = room.teams[team].pieces[i]
+      let tile = selectedPiece.tile
+      let id = selectedPiece.id
+      let history;
+      let selectedPieces;
+      if (tileType(tile) === 'home') {
+        history = []
+        selectedPieces = [{tile, team, id, history}]
+      } else {
+        history = room.tiles[tile][0].history // go back the way you came from of the first token
+        selectedPieces = room.tiles[tile];
+      }
+      let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch)
+      if (!(Object.keys(legalTiles).length === 0)) {
+        for (const legalTile of Object.keys(legalTiles)) {
+          // board state: location of pieces
+          const [pieces, enemyPieces] = handleMove(/* tile, selection */)
+          const score = calculateScore(pieces, enemyPieces)
+          possibleMoves.push({ tokenId: id, tile: legalTile, score })
+        }
+      }
+    }
+    // store possibleMoves in player's memory
+  }
+
   // on pass turn, check if it's ai's turn
   // if it is, set room state - 'ai turn'
   // delay for animation
@@ -1352,6 +1396,23 @@ io.on("connect", async (socket) => {
           }, delay > 0 ? delay : 1500)
         } else if (level === 'smart') {
           console.log('[aiMove] level smart handle select token')
+          // loop through tokens
+          // get game state when a legal tile is selected
+          // score it based on
+            // how far the tokens are from the finish
+            // how far the enemy tokens are from the finish
+            // if a token is piggybacked, only count the distance once
+            // when you land on a shortcut, do it for the short path
+            // score: distance for you - distance for them
+          // which move - score
+          // select token, select move, get score
+          // loop through scores
+          // get the highest score
+          // if there's a tie, pick the first one
+          
+          const smartMove = calculateSmartMove({ room, team: player.team })
+          // select
+          // move
         }
       } else if (room.selection) {
         // move or score
@@ -1383,6 +1444,8 @@ io.on("connect", async (socket) => {
     }
   }
 
+  // pass selection
+  // reuse in calculateSmartMove
   async function handleMove({ room, tile, playerName }) {
     try {  
       let moveInfo = room.legalTiles[tile]
