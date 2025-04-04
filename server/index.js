@@ -365,6 +365,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               })
             }
           } else if (serverEvent.name === "joinTeam") {
+            console.log(`[change streams] joinTeam`)
             io.to(userSocketId).emit("joinTeam", { 
               spectators: roomPopulated.spectators,
               playersTeam0: roomPopulated.teams[0].players,
@@ -468,11 +469,11 @@ async function createUniqueAIName(level) {
   while (exists) {
     name = ''
     if (level === 'random') {
-      name += 'AIBOT-EZ'
+      name += 'AIBOT-EZ-'
     } else if (level === 'smart') {
-      name += 'AIBOT-SMART'
+      name += 'AIBOT-SMART-'
     }
-    // name += makeId(3, false, true)
+    name += makeId(5, false, true)
     exists = await User.findOne({ name }).exec(); // Check for collisions
   }
   return name;
@@ -506,6 +507,7 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("addAI", async ({ roomId, clientId, team, level }) => {
+    console.log('[addAI]')
     try {
       const room = await Room.findOne({ shortId: roomId, host: clientId })
       if (!room) {
@@ -522,7 +524,7 @@ io.on("connect", async (socket) => {
         createdTime: new Date(),
         status: 'playing',
         type: 'ai',
-        level: 'random'
+        level
       })
       await ai.save()
 
@@ -893,22 +895,14 @@ io.on("connect", async (socket) => {
           players: [0, 0]
         }
       } else {
-        const host = await User.findById(room.host)
-        if (host.team === -1) {
-          newTurn = {
-            team: 0,
-            players: [0,0]
-          }
-        } else {
-          newTurn = await getHostTurn(room)
-        }
+        newTurn = await getHostTurn(room)
       }
       room.turn = newTurn
       room.teams[newTurn.team].throws = 1
       room.gamePhase = "pregame"
       // testing
       // room.gamePhase = "game" 
-      // room.turn.team = 1
+      // room.turn.team = 0
       // room.teams[room.turn.team].throws = 1
       
       // Game logs

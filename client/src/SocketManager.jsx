@@ -892,6 +892,7 @@ export const SocketManager = () => {
     })
     
     socket.on("joinTeam", ({ spectators, playersTeam0, playersTeam1, gamePhase, host, turn }) => {
+      console.log(`[joinTeam]`)
       setSpectators(spectators)
       setTeams((teams) => {
         let newTeams = [...teams]
