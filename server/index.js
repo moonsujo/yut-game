@@ -1353,7 +1353,6 @@ io.on("connect", async (socket) => {
       // make a move as { tokenId, the tile to move to, and the score }
       // append to possibleMoves
 
-      // selection - refactor select function from handleSelectTokenRandom
       let selectedPiece = room.teams[team].pieces[i]
       let tile = selectedPiece.tile
       let id = selectedPiece.id
@@ -1370,13 +1369,29 @@ io.on("connect", async (socket) => {
       if (!(Object.keys(legalTiles).length === 0)) {
         for (const legalTile of Object.keys(legalTiles)) {
           // board state: location of pieces
-          const [pieces, enemyPieces] = handleMove(/* tile, selection */)
-          const score = calculateScore(pieces, enemyPieces)
+          
+          const moveInfo = legalTiles[legalTile]
+          const [pieces, enemyPieces] = movePieces({ 
+            friendlyPieces: room.teams[team].pieces,
+            enemies: room.teams[team === 0 ? 1 : 0].pieces,
+            movingPieces: selectedPieces,
+            to: legalTile,
+            path: moveInfo.path,
+            history: moveInfo.history,
+            tiles: room.tiles
+          })
+          const score = calculateScore({pieces, enemyPieces})
           possibleMoves.push({ tokenId: id, tile: legalTile, score })
         }
       }
     }
     // store possibleMoves in player's memory
+  }
+
+  function calculateScore({ pieces, enemyPieces }) {
+    let score;
+    // calculate score
+    return score
   }
 
   // on pass turn, check if it's ai's turn
@@ -1443,18 +1458,44 @@ io.on("connect", async (socket) => {
       console.log('[aiMove] err', err)
     }
   }
+  
+  function movePieces({friendlyPieces, enemies, movingPieces, to, path, history, tiles}) {
+    let newFriendlyPieces = {
+      ...friendlyPieces
+    }
+    let newEnemies = {
+      ...enemies
+    }
 
-  // pass selection
-  // reuse in calculateSmartMove
+    // Update moving team's pieces at home
+    for (const piece of movingPieces) {
+      newFriendlyPieces[piece.id].tile = to
+      newFriendlyPieces[piece.id].history = history
+      newFriendlyPieces[piece.id].lastPath = path
+    }
+
+    // If catch, update enemy pieces
+    let occupyingTeam = tiles[to][0].team
+    if (occupyingTeam != movingTeam) {
+      for (let piece of tiles[to]) { // if tile is empty, it won't run
+        piece.tile = -1
+        piece.history = []
+        newEnemies.pieces[piece.id] = piece
+      }
+    }
+
+    return [newFriendlyPieces, newEnemies]
+  }
+
   async function handleMove({ room, tile, playerName }) {
     try {  
       let moveInfo = room.legalTiles[tile]
-      let tiles = room.tiles
       let from = room.selection.tile
-      let to = tile
       let moveUsed = moveInfo.move
+      let to = tile
       let path = moveInfo.path
       let history = moveInfo.history
+      let tiles = room.tiles
       let pieces = room.selection.pieces
       let starting = pieces[0].tile === -1
       let movingTeam = pieces[0].team;
@@ -1510,6 +1551,24 @@ io.on("connect", async (socket) => {
       room.gameLogs.push(gameLog)
       serverEvent.content.gameLogs.push(gameLog)
 
+      const [newFriendlyPieces, newEnemies] = movePieces({
+        friendlyPieces: room.teams[movingTeam].pieces, 
+        enemies: room.teams[movingTeam === 0 ? 1 : 0].pieces, 
+        movingPieces: pieces, 
+        to, 
+        path, 
+        history, 
+        tiles
+      })
+      for (const piece of newFriendlyPieces) {
+        room.teams[movingTeam].pieces[piece.id] = { ...piece }
+        serverEvent.content.updatedPieces.push(piece)
+      }
+      for (const piece of newEnemies) {
+        room.teams[movingTeam === 0 ? 1 : 0].pieces[piece.id] = { ...piece }
+        serverEvent.content.updatedPieces.push(piece)
+      }
+
       // Clear pieces from the 'from' tile if they were on the board
       if (!starting) {
         room.tiles[from] = []
@@ -1519,15 +1578,9 @@ io.on("connect", async (socket) => {
         turnStartTimeDelay += JUMP_TIME
       }
 
-      // Update moving team's pieces at home
-      for (const piece of pieces) {
-        room.teams[movingTeam].pieces[piece.id].tile = to
-        room.teams[movingTeam].pieces[piece.id].history = history
-        room.teams[movingTeam].pieces[piece.id].lastPath = path
-        serverEvent.content.updatedPieces.push(piece)
-      }
+      moves[moveUsed]--;
 
-      // Update moving pieces for the tiles
+      // update tiles
       pieces.forEach(function(_item, index, array) {
         array[index].tile = to
         array[index].history = history
@@ -1539,12 +1592,6 @@ io.on("connect", async (socket) => {
 
         // Catch
         if (occupyingTeam != movingTeam) {
-          for (let piece of tiles[to]) {
-            piece.tile = -1
-            piece.history = []
-            room.teams[occupyingTeam].pieces[piece.id] = piece
-            serverEvent.content.updatedPieces.push(piece)
-          }
           
           room.tiles[to] = pieces
           serverEvent.content.updatedTiles.to.index = to
@@ -1600,7 +1647,6 @@ io.on("connect", async (socket) => {
       room.legalTiles = {}
       room.selection = null
 
-      moves[moveUsed]--;
       turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
