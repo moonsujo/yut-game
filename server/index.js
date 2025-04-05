@@ -1339,7 +1339,7 @@ io.on("connect", async (socket) => {
 
   function calculateSmartMove({ room, team }) {
     const moves = room.teams[team].moves.toObject()
-    const pieces = room.teams[team].pieces
+    const friendlyPieces = room.teams[team].pieces
     const enemies = room.teams[team === 0 ? 1 : 0].pieces
 
     const possibleMoves = [] // each item is { tokenId, the tile to move to, and the score }
@@ -1372,8 +1372,8 @@ io.on("connect", async (socket) => {
           
           const moveInfo = legalTiles[legalTile]
           const [pieces, enemyPieces] = movePieces({ 
-            friendlyPieces: room.teams[team].pieces,
-            enemies: room.teams[team === 0 ? 1 : 0].pieces,
+            friendlyPieces,
+            enemies,
             movingPieces: selectedPieces,
             to: legalTile,
             path: moveInfo.path,
@@ -1385,13 +1385,36 @@ io.on("connect", async (socket) => {
         }
       }
     }
+    console.log('[calculateSmartMove] possibleMoves', possibleMoves)
     // store possibleMoves in player's memory
   }
 
   function calculateScore({ pieces, enemyPieces }) {
-    let score;
-    // calculate score
-    return score
+    // get long distance from piece's tile to finish
+    let score = 0;
+    let scoreEnemy = 0;
+    // depth first search
+    // get longest distance of all paths
+    for (let i = 0; i < pieces.length; i++) {
+      const piece = pieces[i]
+      score += calculateLongestPathToHome(piece.tile, 0)
+    }
+    for (let i = 0; i < enemyPieces.length; i++) {
+      const piece = enemyPieces[i]
+      scoreEnemy += calculateLongestPathToHome(piece.tile, 0)
+    }
+    return score - scoreEnemy
+  }
+
+  function calculateLongestPathToHome(tile, longestDistance) {
+    // dfs
+
+    // base case
+    
+    const nextTiles = getNextTiles(tile, forward)
+    for (nextTile of nextTiles) {
+      calculateLongestPathToHome(nextTile)
+    }
   }
 
   // on pass turn, check if it's ai's turn
@@ -1460,12 +1483,12 @@ io.on("connect", async (socket) => {
   }
   
   function movePieces({friendlyPieces, enemies, movingPieces, to, path, history, tiles}) {
-    let newFriendlyPieces = {
+    let newFriendlyPieces = [
       ...friendlyPieces
-    }
-    let newEnemies = {
+    ]
+    let newEnemies = [
       ...enemies
-    }
+    ]
 
     // Update moving team's pieces at home
     for (const piece of movingPieces) {
