@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
-import { hasTokenOnBoard, isBackdoMoves, tileType } from './rules/rulesHelpers.js'
+import { checkFinishRule, getNextTiles, hasTokenOnBoard, isBackdoMoves, tileType } from './rules/rulesHelpers.js'
 
 const app = express();
 const server = http.createServer(app);
@@ -1375,7 +1375,7 @@ io.on("connect", async (socket) => {
             friendlyPieces,
             enemies,
             movingPieces: selectedPieces,
-            to: legalTile,
+            to: parseInt(legalTile),
             path: moveInfo.path,
             history: moveInfo.history,
             tiles: room.tiles
@@ -1385,8 +1385,17 @@ io.on("connect", async (socket) => {
         }
       }
     }
-    console.log('[calculateSmartMove] possibleMoves', possibleMoves)
-    // store possibleMoves in player's memory
+    let lowestScore = 1000; // minimize distance to finish
+    let bestMoveIndex = -1;
+    for (let i = 0; i < possibleMoves.length; i++) {
+      let candidate = possibleMoves[i]
+      if (candidate.score < lowestScore) {
+        lowestScore = candidate.score
+        bestMoveIndex = i
+      }
+    }
+
+    return possibleMoves[bestMoveIndex] // placeholder
   }
 
   function calculateScore({ pieces, enemyPieces }) {
@@ -1394,26 +1403,38 @@ io.on("connect", async (socket) => {
     let score = 0;
     let scoreEnemy = 0;
     // depth first search
-    // get longest distance of all paths
+    // measure 1: distance to finish
     for (let i = 0; i < pieces.length; i++) {
       const piece = pieces[i]
-      score += calculateLongestPathToHome(piece.tile, 0)
+      score += calculateLongestPathHome(piece.tile, 0)
     }
     for (let i = 0; i < enemyPieces.length; i++) {
       const piece = enemyPieces[i]
-      scoreEnemy += calculateLongestPathToHome(piece.tile, 0)
+      scoreEnemy += calculateLongestPathHome(piece.tile, 0)
     }
+
+    // measure 2: distance between you and enemy
     return score - scoreEnemy
   }
 
-  function calculateLongestPathToHome(tile, longestDistance) {
-    // dfs
+  // dfs
+  function calculateLongestPathHome(tile, longestDistance) {
+    longestDistance+=1
 
-    // base case
+    const nextTiles = checkFinishRule(getNextTiles(tile, true))
     
-    const nextTiles = getNextTiles(tile, forward)
-    for (nextTile of nextTiles) {
-      calculateLongestPathToHome(nextTile)
+    // base case
+    if (nextTiles[0] === 29) {
+      return longestDistance
+    } else {
+      let nextLongestDistance = 0
+      for (const nextTile of nextTiles) {
+        const candidate = calculateLongestPathHome(nextTile, longestDistance)
+        if (candidate > nextLongestDistance) {
+          nextLongestDistance = candidate
+        }
+      }
+      return nextLongestDistance
     }
   }
 
@@ -1483,12 +1504,14 @@ io.on("connect", async (socket) => {
   }
   
   function movePieces({friendlyPieces, enemies, movingPieces, to, path, history, tiles}) {
-    let newFriendlyPieces = [
-      ...friendlyPieces
-    ]
-    let newEnemies = [
-      ...enemies
-    ]
+    let newFriendlyPieces = []
+    for (const piece of friendlyPieces) {
+      newFriendlyPieces.push({ ...piece.toObject() })
+    }
+    let newEnemies = []
+    for (const piece of enemies) {
+      newEnemies.push({ ...piece.toObject() })
+    }
 
     // Update moving team's pieces at home
     for (const piece of movingPieces) {
@@ -1498,12 +1521,14 @@ io.on("connect", async (socket) => {
     }
 
     // If catch, update enemy pieces
-    let occupyingTeam = tiles[to][0].team
-    if (occupyingTeam != movingTeam) {
-      for (let piece of tiles[to]) { // if tile is empty, it won't run
-        piece.tile = -1
-        piece.history = []
-        newEnemies.pieces[piece.id] = piece
+    if (tiles[to].length > 0) {
+      let occupyingTeam = tiles[to][0].team
+      if (occupyingTeam != movingTeam) {
+        for (let piece of tiles[to]) { // if tile is empty, it won't run
+          piece.tile = -1
+          piece.history = []
+          newEnemies.pieces[piece.id] = { ...piece.toObject() }
+        }
       }
     }
 

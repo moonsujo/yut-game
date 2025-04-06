@@ -1,3 +1,5 @@
+import edgeList from "./edgeList.js";
+
 export function tileType(tile) {
   if (tile === -1) {
     return 'home'
@@ -33,4 +35,39 @@ export function hasTokenOnBoard({ pieces }) {
     }
   }
   return false
+}
+
+// if first step, keep forks; else, go straight
+export function getNextTiles(tile, forward) {
+  let nextTiles = [];
+  if (tile === -1 && forward) {
+    return [1]
+  }
+
+  // on board
+  let [start, end] = getStartAndEndVertices(forward);
+  for (const edge of edgeList) {
+    if (edge[start] === tile) {
+      nextTiles.push(edge[end]);
+    }
+  }
+
+  return nextTiles
+}
+
+export function getStartAndEndVertices(forward) {
+  if (forward === true) {
+    return [0, 1]
+  } else {
+    return [1, 0]
+  }
+}
+
+export function checkFinishRule(forks) {
+  for (let i = 0; i < forks.length; i++) {
+    if (forks[i] === 29) {
+      return [29]
+    }
+  }
+  return forks
 }

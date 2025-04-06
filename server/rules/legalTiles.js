@@ -1,5 +1,5 @@
 import edgeList from "./edgeList.js";
-import { tileType } from "./rulesHelpers.js";
+import { checkFinishRule, getNextTiles, getStartAndEndVertices, tileType } from "./rulesHelpers.js";
 
 // schema
 // legalTiles: {
@@ -84,15 +84,6 @@ function makeNewHistory(history, path, forward) {
   }
 }
 
-function checkFinishRule(forks) {
-  for (let i = 0; i < forks.length; i++) {
-    if (forks[i] === 29) {
-      return [29]
-    }
-  }
-  return forks
-}
-
 // Precondition: history is an array
 function checkBackdoFork(forks, history) {
   if (history.length == 0) {
@@ -101,32 +92,6 @@ function checkBackdoFork(forks, history) {
     return forks
   } else {
     return [history[history.length-1]]
-  }
-}
-
-// if first step, keep forks; else, go straight
-function getNextTiles(tile, forward) {
-  let nextTiles = [];
-  if (tile == -1 && (forward)) {
-    return [1]
-  }
-
-  // on board
-  let [start, end] = getStartAndEndVertices(forward);
-  for (const edge of edgeList) {
-    if (edge[start] == tile) {
-      nextTiles.push(edge[end]);
-    }
-  }
-
-  return nextTiles
-}
-
-function getStartAndEndVertices(forward) {
-  if (forward === true) {
-    return [0, 1]
-  } else {
-    return [1, 0]
   }
 }
 
