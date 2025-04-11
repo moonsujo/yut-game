@@ -71,3 +71,36 @@ export function checkFinishRule(forks) {
   }
   return forks
 }
+
+
+export function movePieces({friendlyPieces, enemies, movingPieces, to, path, history, tiles}) {
+  let newFriendlyPieces = []
+  for (const piece of friendlyPieces) {
+    newFriendlyPieces.push({ ...piece.toObject() })
+  }
+  let newEnemies = []
+  for (const piece of enemies) {
+    newEnemies.push({ ...piece.toObject() })
+  }
+
+  // Update moving team's pieces at home
+  for (const piece of movingPieces) {
+    newFriendlyPieces[piece.id].tile = to
+    newFriendlyPieces[piece.id].history = history
+    newFriendlyPieces[piece.id].lastPath = path
+  }
+
+  // If catch, update enemy pieces
+  if (tiles[to].length > 0) {
+    let occupyingTeam = tiles[to][0].team
+    if (occupyingTeam != movingTeam) {
+      for (let piece of tiles[to]) { // if tile is empty, it won't run
+        piece.tile = -1
+        piece.history = []
+        newEnemies.pieces[piece.id] = { ...piece.toObject() }
+      }
+    }
+  }
+
+  return [newFriendlyPieces, newEnemies]
+}

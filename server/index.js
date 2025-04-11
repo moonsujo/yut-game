@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
-import { checkFinishRule, getNextTiles, hasTokenOnBoard, isBackdoMoves, tileType } from './rules/rulesHelpers.js'
+import { hasTokenOnBoard, isBackdoMoves, movePieces, tileType } from './rules/rulesHelpers.js'
+import { calculateSmartMove } from './src/ai.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -899,13 +900,13 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = await getHostTurn(room)
       }
-      room.turn = newTurn
-      room.teams[newTurn.team].throws = 1
-      room.gamePhase = "pregame"
+      // room.turn = newTurn
+      // room.teams[newTurn.team].throws = 1
+      // room.gamePhase = "pregame"
       // testing
-      // room.gamePhase = "game" 
-      // room.turn.team = 0
-      // room.teams[room.turn.team].throws = 1
+      room.gamePhase = "game" 
+      room.turn.team = 1
+      room.teams[room.turn.team].throws = 1
       
       // Game logs
       let gameLog = {
@@ -971,13 +972,13 @@ io.on("connect", async (socket) => {
     // front end maps outcome to an animation
     let probs;
     if (nakEnabled) {
-      const doProb = 0.21
-      const backdoProb = 0.07
-      const geProb = 0.3
-      const gulProb = 0.27
-      const yootProb = 0.1
-      const moProb = 0.03
-      const nakProb = 0.02
+      const doProb = 0.21 // 3
+      const backdoProb = 0.065 // 1
+      const geProb = 0.295 // 4
+      const gulProb = 0.265 // 4
+      const yootProb = 0.095 // 2
+      const moProb = 0.03 // 1
+      const nakProb = 0.04
       probs = [doProb, backdoProb, geProb, gulProb, yootProb, moProb, nakProb]
     } else {
       const doProb = 0.214
@@ -1337,106 +1338,7 @@ io.on("connect", async (socket) => {
     if (player.type === 'ai') await aiMove({ player, room, level: player.level })
   }
 
-  function calculateSmartMove({ room, team }) {
-    const moves = room.teams[team].moves.toObject()
-    const friendlyPieces = room.teams[team].pieces
-    const enemies = room.teams[team === 0 ? 1 : 0].pieces
 
-    const possibleMoves = [] // each item is { tokenId, the tile to move to, and the score }
-    // if you have multiple moves to finish with, select the lowest one
-    for (let i = 0; i < room.rules.numTokens; i++) {
-      // take a piece
-      // get legal tiles
-      // get token positions when that move is made
-      // score that set of positions
-      // do it for each legal tile
-      // make a move as { tokenId, the tile to move to, and the score }
-      // append to possibleMoves
-
-      let selectedPiece = room.teams[team].pieces[i]
-      let tile = selectedPiece.tile
-      let id = selectedPiece.id
-      let history;
-      let selectedPieces;
-      if (tileType(tile) === 'home') {
-        history = []
-        selectedPieces = [{tile, team, id, history}]
-      } else {
-        history = room.tiles[tile][0].history // go back the way you came from of the first token
-        selectedPieces = room.tiles[tile];
-      }
-      let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch)
-      if (!(Object.keys(legalTiles).length === 0)) {
-        for (const legalTile of Object.keys(legalTiles)) {
-          // board state: location of pieces
-          
-          const moveInfo = legalTiles[legalTile]
-          const [pieces, enemyPieces] = movePieces({ 
-            friendlyPieces,
-            enemies,
-            movingPieces: selectedPieces,
-            to: parseInt(legalTile),
-            path: moveInfo.path,
-            history: moveInfo.history,
-            tiles: room.tiles
-          })
-          const score = calculateScore({pieces, enemyPieces})
-          possibleMoves.push({ tokenId: id, tile: legalTile, score })
-        }
-      }
-    }
-    let lowestScore = 1000; // minimize distance to finish
-    let bestMoveIndex = -1;
-    for (let i = 0; i < possibleMoves.length; i++) {
-      let candidate = possibleMoves[i]
-      if (candidate.score < lowestScore) {
-        lowestScore = candidate.score
-        bestMoveIndex = i
-      }
-    }
-
-    return possibleMoves[bestMoveIndex] // placeholder
-  }
-
-  function calculateScore({ pieces, enemyPieces }) {
-    // get long distance from piece's tile to finish
-    let score = 0;
-    let scoreEnemy = 0;
-    // depth first search
-    // measure 1: distance to finish
-    for (let i = 0; i < pieces.length; i++) {
-      const piece = pieces[i]
-      score += calculateLongestPathHome(piece.tile, 0)
-    }
-    for (let i = 0; i < enemyPieces.length; i++) {
-      const piece = enemyPieces[i]
-      scoreEnemy += calculateLongestPathHome(piece.tile, 0)
-    }
-
-    // measure 2: distance between you and enemy
-    return score - scoreEnemy
-  }
-
-  // dfs
-  function calculateLongestPathHome(tile, longestDistance) {
-    longestDistance+=1
-
-    const nextTiles = checkFinishRule(getNextTiles(tile, true))
-    
-    // base case
-    if (nextTiles[0] === 29) {
-      return longestDistance
-    } else {
-      let nextLongestDistance = 0
-      for (const nextTile of nextTiles) {
-        const candidate = calculateLongestPathHome(nextTile, longestDistance)
-        if (candidate > nextLongestDistance) {
-          nextLongestDistance = candidate
-        }
-      }
-      return nextLongestDistance
-    }
-  }
 
   // on pass turn, check if it's ai's turn
   // if it is, set room state - 'ai turn'
@@ -1469,7 +1371,9 @@ io.on("connect", async (socket) => {
           // get the highest score
           // if there's a tie, pick the first one
           
+          // favors piggyback over advancing out of first row
           const smartMove = calculateSmartMove({ room, team: player.team })
+          console.log('smart move', smartMove)
           // select
           // move
         }
@@ -1503,37 +1407,6 @@ io.on("connect", async (socket) => {
     }
   }
   
-  function movePieces({friendlyPieces, enemies, movingPieces, to, path, history, tiles}) {
-    let newFriendlyPieces = []
-    for (const piece of friendlyPieces) {
-      newFriendlyPieces.push({ ...piece.toObject() })
-    }
-    let newEnemies = []
-    for (const piece of enemies) {
-      newEnemies.push({ ...piece.toObject() })
-    }
-
-    // Update moving team's pieces at home
-    for (const piece of movingPieces) {
-      newFriendlyPieces[piece.id].tile = to
-      newFriendlyPieces[piece.id].history = history
-      newFriendlyPieces[piece.id].lastPath = path
-    }
-
-    // If catch, update enemy pieces
-    if (tiles[to].length > 0) {
-      let occupyingTeam = tiles[to][0].team
-      if (occupyingTeam != movingTeam) {
-        for (let piece of tiles[to]) { // if tile is empty, it won't run
-          piece.tile = -1
-          piece.history = []
-          newEnemies.pieces[piece.id] = { ...piece.toObject() }
-        }
-      }
-    }
-
-    return [newFriendlyPieces, newEnemies]
-  }
 
   async function handleMove({ room, tile, playerName }) {
     try {  
