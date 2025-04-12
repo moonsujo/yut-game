@@ -12,6 +12,8 @@ export function useAnimationPlaying() {
   const pieceTeam1Id3AnimationPlaying = useAtomValue(pieceTeam1Id3AnimationPlayingAtom)
   const yootAnimationPlaying = useAtomValue(yootAnimationPlayingAtom)
 
+  console.log('[useAnimationPlaying] pieceTeam1Id0AnimationPlaying', pieceTeam1Id0AnimationPlaying)
+  console.log('[useAnimationPlaying] yootAnimationPlaying', yootAnimationPlaying) // plays infinitely unless i save YootButtonNew
   return (pieceTeam0Id0AnimationPlaying || 
     pieceTeam0Id1AnimationPlaying ||
     pieceTeam0Id2AnimationPlaying ||

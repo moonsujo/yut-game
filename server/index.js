@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     status: String, // playing, away
     type: String,
     level: String,
-    nextMove: {
+    moveSequence: [{
       tokenId: Number,
       moveInfo: {
         tile: Number,
@@ -51,8 +51,7 @@ const userSchema = new mongoose.Schema(
         history: [Number],
         path: [Number]
       },
-      score: Number
-    }
+    }]
   },
   {
     versionKey: false,
@@ -394,7 +393,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               })
             }
           } else if (serverEvent.name === "joinTeam") {
-            console.log(`[change streams] joinTeam`)
             io.to(userSocketId).emit("joinTeam", { 
               spectators: roomPopulated.spectators,
               playersTeam0: roomPopulated.teams[0].players,
@@ -553,12 +551,7 @@ io.on("connect", async (socket) => {
         status: 'playing',
         type: 'ai',
         level,
-        nextMove: {
-          tile: null,
-          move: null,
-          history: [],
-          path: []
-        }
+        moveSequence: null
       })
       await ai.save()
 
@@ -1393,44 +1386,32 @@ io.on("connect", async (socket) => {
           }, delay > 0 ? delay : 1500)
         } else if (level === 'smart') {
           console.log('[aiMove] level smart handle select token')
-          // loop through tokens
-          // get game state when a legal tile is selected
-          // score it based on
-            // how far the tokens are from the finish
-            // how far the enemy tokens are from the finish
-            // if a token is piggybacked, only count the distance once
-            // when you land on a shortcut, do it for the short path
-            // score: distance for you - distance for them
-          // which move - score
-          // select token, select move, get score
-          // loop through scores
-          // get the highest score
-          // if there's a tie, pick the first one
           
-          // favors piggyback over advancing out of first row
-          // favors lowest move when multiple moves can score
-          // what if you have multiple moves?
-          const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
-          console.log('smart move sequence', smartMoveSequence)
-          for (let move of bestMoveSequence) {
-            // select token
-            // make move
-            // if move.catch === true
-            // throw again; break
-            // else
-            // continue
+          // select token
+          // make move
+          // pop move from sequence
+          // if move.catch === true
+          // throw again; break
+          // else
+          // continue
+          if (!player.moveSequence) {           
+            // favors piggyback over advancing out of first row
+            // favors lowest move when multiple moves can score 
+            // if there's a tie, pick the first match
+            const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
+            player.moveSequence = smartMoveSequence
+          } else {
           }
-
-          player.nextMove = smartMove
+          let nextTokenSelectId = player.moveSequence[0].tokenId
           await player.save()
-          console.log('smart move', smartMove)
+          
           // select
           setTimeout(async () => {
             await handleSelectTokenAI({ 
               room, 
               team: player.team, 
               player, 
-              pieceId: smartMove.tokenId 
+              pieceId: nextTokenSelectId
             })
             // selected, but on a tile with an enemy
           }, delay > 0 ? delay : 1500)
@@ -1458,11 +1439,25 @@ io.on("connect", async (socket) => {
           }, delay > 0 ? delay : 1500)
         } else if (level === 'smart') {
           setTimeout(async () => {
-            let chosenTile = player.nextMove.moveInfo.tile
+            // let chosenTile = player.nextMove.moveInfo.tile
+            // make the move in the first element of the move sequence
+            // pop it from the sequence
+            // if it caught
+            // clear the sequence from the player document
+            let chosenTile = player.moveSequence[0].moveInfo.tile
             if (parseInt(chosenTile) !== 29) {
-              await handleMove({ room, tile: chosenTile, playerName: player.name })
+              // return whether a piece was caught
+              // if so, clear player.moveSequence
+              let { caught } = await handleMove({ room, tile: chosenTile, playerName: player.name })
+              if (caught) {
+                player.moveSequence = null
+              } else {
+                player.moveSequence.shift()
+              }
+              await player.save()
             } else {
-              await handleScore({ room, selectedMove: player.nextMove.moveInfo, playerName: player.name })
+              let chosenMove = player.moveSequence[0].moveInfo
+              await handleScore({ room, selectedMove: chosenMove, playerName: player.name })
             }
           }, delay > 0 ? delay : 1500)
         }
@@ -1537,7 +1532,7 @@ io.on("connect", async (socket) => {
       room.gameLogs.push(gameLog)
       serverEvent.content.gameLogs.push(gameLog)
 
-      const [newFriendlyPieces, newEnemies] = movePieces({
+      const [newFriendlyPieces, newEnemies, caught] = movePieces({
         friendlyPieces: room.teams[movingTeam].pieces, 
         enemies: room.teams[movingTeam === 0 ? 1 : 0].pieces, 
         movingPieces: pieces, 
@@ -1546,6 +1541,7 @@ io.on("connect", async (socket) => {
         history, 
         tiles
       })
+
       for (const piece of newFriendlyPieces) {
         room.teams[movingTeam].pieces[piece.id] = { ...piece }
         serverEvent.content.updatedPieces.push(piece)
@@ -1687,6 +1683,8 @@ io.on("connect", async (socket) => {
       }
 
       await room.save()
+
+      return { caught }
     } catch (err) {
       console.log('[handleMove] error', err)
     }

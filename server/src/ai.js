@@ -2,7 +2,7 @@ import { checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePiec
 import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
-// sequence: [{ token id, move, catch: Boolean }]
+// sequence: [{ token id, move }]
 function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens }) {
 
   // base case
@@ -16,7 +16,7 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
       backdoLaunch
     })
 
-    return { sequence: bestMoveSequence, score }
+    return { sequence: bestMoveSequence.sequence, score }
   } else {
     // pick a token
     // get legal tiles
@@ -90,12 +90,16 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
               })
               let newMoves = JSON.parse(JSON.stringify(moves))
               newMoves[moveInfo.move]--
-              bestMoveSequence.push(moveInfo)
+              let nextBestMoveSequence = JSON.parse(JSON.stringify(bestMoveSequence))
+              nextBestMoveSequence.sequence.push({
+                tokenId: i,
+                moveInfo,
+              })
               candidate = pickBestMoveSequence({ 
                 moves: newMoves, 
                 friendlyPieces: newFriendlyPieces, 
                 enemies: newEnemyPieces, 
-                bestMoveSequence, 
+                bestMoveSequence: nextBestMoveSequence, 
                 backdoLaunch, 
                 numTokens 
               })
@@ -116,12 +120,16 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
             })
             let newMoves = JSON.parse(JSON.stringify(moves))
             newMoves[moveInfo.move]--
-            bestMoveSequence.push(moveInfo)
+            let nextBestMoveSequence = JSON.parse(JSON.stringify(bestMoveSequence))
+            nextBestMoveSequence.sequence.push({
+              tokenId: i,
+              moveInfo
+            })
             let candidate = pickBestMoveSequence({ 
               moves: newMoves, 
               friendlyPieces: newFriendlyPieces, 
               enemies: newEnemyPieces, 
-              bestMoveSequence, 
+              bestMoveSequence: nextBestMoveSequence, 
               backdoLaunch, 
               numTokens 
             })
@@ -133,7 +141,7 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
         }
       }
     }
-    return nextBestSequence
+    return { sequence: nextBestSequence, score: nextBestScore }
   }
 }
 
@@ -146,10 +154,10 @@ export function calculateSmartMoveSequence({ room, team }) {
     moves, 
     friendlyPieces, 
     enemies, 
-    bestMoveSequence: [],
+    bestMoveSequence: { sequence: [], score: 100 },
     backdoLaunch: room.rules.backdoLaunch,
     numTokens: room.rules.numTokens
-  })
+  }).sequence
 
   return bestMoveSequence
 }

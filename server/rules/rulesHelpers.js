@@ -90,12 +90,19 @@ export function getOccupiedTiles({ pieces }) {
 export function movePieces({friendlyPieces, enemies, movingPieces, to, path, history}) {
   let newFriendlyPieces = []
   for (const piece of friendlyPieces) {
-    newFriendlyPieces.push({ ...piece.toObject() })
+    if (piece._doc)
+      newFriendlyPieces.push({ ...piece._doc }) // newFriendlyPieces.push({ ...piece.toObject() })
+    else
+      newFriendlyPieces.push({ ...piece })
   }
   let newEnemies = []
   for (const piece of enemies) {
-    newEnemies.push({ ...piece.toObject() })
+    if (piece._doc)
+      newEnemies.push({ ...piece._doc }) // newEnemies.push({ ...piece.toObject() })
+    else
+      newEnemies.push({ ...piece }) // newEnemies.push({ ...piece.toObject() })
   }
+
 
   // Update moving team's pieces at home
   for (const piece of movingPieces) {
@@ -106,7 +113,9 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
 
   // If catch, update enemy pieces
   let enemyTiles = getOccupiedTiles({ pieces: enemies })
+  let caught = false
   if (enemyTiles[to] && enemyTiles[to].length > 0) {
+    caught = true
     let occupyingTeam = enemyTiles[to][0].team
     let movingTeam = friendlyPieces[0].team
     if (occupyingTeam != movingTeam) {
@@ -118,7 +127,7 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
     }
   }
 
-  return [newFriendlyPieces, newEnemies]
+  return [newFriendlyPieces, newEnemies, caught]
 }
 
 export function isEmptyMoves(moves) {
