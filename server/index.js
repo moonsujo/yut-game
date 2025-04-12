@@ -8,7 +8,7 @@ import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
 import { hasTokenOnBoard, isBackdoMoves, isEmptyMoves, movePieces, tileType } from './rules/rulesHelpers.js'
-import { calculateSmartMove } from './src/ai.js';
+import { calculateSmartMoveSequence } from './src/ai.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -512,7 +512,6 @@ const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert
 const ALERT_TIME = 2500
 const JUMP_TIME = 1000
 const NUM_TURNS_SKIPPED_TO_PAUSE = 5
-const NUM_TOKENS = 4
 io.on("connect", async (socket) => {
 
   connectMongo().catch(err => console.log('mongo connect error', err))
@@ -933,13 +932,13 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = await getHostTurn(room)
       }
-      room.turn = newTurn
-      room.teams[newTurn.team].throws = 1
-      room.gamePhase = "pregame"
+      // room.turn = newTurn
+      // room.teams[newTurn.team].throws = 1
+      // room.gamePhase = "pregame"
       // testing
-      // room.gamePhase = "game" 
-      // room.turn.team = 1
-      // room.teams[room.turn.team].throws = 1
+      room.gamePhase = "game" 
+      room.turn.team = 1
+      room.teams[room.turn.team].throws = 1
       
       // Game logs
       let gameLog = {
@@ -1369,7 +1368,7 @@ io.on("connect", async (socket) => {
     const randomPieceIndex = calculateRandomPieceIndex({ 
       pieces: room.teams[team].pieces, 
       moves: room.teams[team].moves, 
-      numTokens: NUM_TOKENS
+      numTokens: room.rules.numTokens
     })
 
     await handleSelectTokenAI({ room, team, player, pieceId: randomPieceIndex })
@@ -1411,7 +1410,17 @@ io.on("connect", async (socket) => {
           // favors piggyback over advancing out of first row
           // favors lowest move when multiple moves can score
           // what if you have multiple moves?
-          const smartMove = calculateSmartMove({ room, team: player.team })
+          const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
+          console.log('smart move sequence', smartMoveSequence)
+          for (let move of bestMoveSequence) {
+            // select token
+            // make move
+            // if move.catch === true
+            // throw again; break
+            // else
+            // continue
+          }
+
           player.nextMove = smartMove
           await player.save()
           console.log('smart move', smartMove)

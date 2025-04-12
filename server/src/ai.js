@@ -1,141 +1,160 @@
-import { checkFinishRule, getNextTiles, isEmptyMoves, movePieces, tileType } from '../rules/rulesHelpers.js'
+import { checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, tileType } from '../rules/rulesHelpers.js'
 import { getLegalTiles } from '../rules/legalTiles.js'
 
-function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence }) {
-  // 
-  // loop through moves
-  // loop through pieces
-  // for each piece
-  // call pickBestMoveSequence with next move 
+// return: { sequence, score }
+// sequence: [{ token id, move, catch: Boolean }]
+function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens }) {
 
   // base case
   if (isEmptyMoves(moves)) {
-    return bestMoveSequence
-  } else {
+    // calculate score
+    // if moves is empty
+    // return move sequence with score
+    let score = calculateScore({ 
+      pieces: friendlyPieces, 
+      enemyPieces: enemies, 
+      backdoLaunch
+    })
 
+    return { sequence: bestMoveSequence, score }
+  } else {
+    // pick a token
+    // get legal tiles
+    // let nextBestScore = 100
+    // let nextBestSequence = []
+    // for each of them
+      // move there and get new friendly pieces and enemies
+      // subtract the move from moves
+      // append it to the bestMoveSequence
+      // candidate = pickBestMoveSequence({ 
+        // moves: newMoves,
+        // friendlyPieces: newFriendlyPieces,
+        // enemies: newEnemies,
+        // bestMoveSequence: newMoveSequence
+      // })
+      // if candidate's score is lower than the nextBestScore
+      // replace nextBestScore and nextBestSequence
+    // return nextBestSequence
+
+    let nextBestScore = 100
+    let nextBestSequence = []
+    let occupiedTiles = getOccupiedTiles({ pieces: friendlyPieces })
+    for (let i = 0; i < numTokens; i++) {
+      // take a piece
+      // get legal tiles
+      // get token positions when that move is made
+      // score that set of positions
+      // do it for each legal tile
+  
+      let selectedPiece = friendlyPieces[i]
+      let tile = selectedPiece.tile
+      let team = selectedPiece.team
+      let id = selectedPiece.id
+      let history;
+      let selectedPieces;
+      if (tileType(tile) === 'home') {
+        history = []
+        selectedPieces = [{tile, team, id, history}]
+      } else {
+        history = selectedPiece.history // go back the way you came from of the first token
+        selectedPieces = occupiedTiles[tile];
+      }
+      let legalTiles = getLegalTiles(tile, moves, friendlyPieces, history, backdoLaunch)
+
+      // appends move for every token
+      // should pick one of them
+      // sample output: 
+      /**
+       * smart move sequence [
+          { tile: 3, move: '3', history: [ 0, 1, 2 ], path: [ 0, 1, 2, 3 ] },
+          { tile: 3, move: '3', history: [ 0, 1, 2 ], path: [ 0, 1, 2, 3 ] },
+          { tile: 3, move: '3', history: [ 0, 1, 2 ], path: [ 0, 1, 2, 3 ] },
+          { tile: 3, move: '3', history: [ 0, 1, 2 ], path: [ 0, 1, 2, 3 ] }
+        ]
+       */
+      if (!(Object.keys(legalTiles).length === 0)) {
+        for (const legalTile of Object.keys(legalTiles)) {
+          
+          // if legal tile is 29
+          // pick the lowest move whether there's one move or multiple moves
+          let moveInfo
+          if (legalTile === 29) {
+            for (const moveInfo of legalTiles[legalTile]) {
+              const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
+                friendlyPieces,
+                enemies,
+                movingPieces: selectedPieces,
+                to: parseInt(legalTile),
+                path: moveInfo.path,
+                history: moveInfo.history,
+              })
+              let newMoves = JSON.parse(JSON.stringify(moves))
+              newMoves[moveInfo.move]--
+              bestMoveSequence.push(moveInfo)
+              candidate = pickBestMoveSequence({ 
+                moves: newMoves, 
+                friendlyPieces: newFriendlyPieces, 
+                enemies: newEnemyPieces, 
+                bestMoveSequence, 
+                backdoLaunch, 
+                numTokens 
+              })
+              if (candidate.score < nextBestScore) {
+                nextBestScore = candidate.score
+                nextBestSequence = candidate.sequence
+              }
+            }
+          } else {
+            moveInfo = legalTiles[legalTile]
+            const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
+              friendlyPieces,
+              enemies,
+              movingPieces: selectedPieces,
+              to: parseInt(legalTile),
+              path: moveInfo.path,
+              history: moveInfo.history,
+            })
+            let newMoves = JSON.parse(JSON.stringify(moves))
+            newMoves[moveInfo.move]--
+            bestMoveSequence.push(moveInfo)
+            let candidate = pickBestMoveSequence({ 
+              moves: newMoves, 
+              friendlyPieces: newFriendlyPieces, 
+              enemies: newEnemyPieces, 
+              bestMoveSequence, 
+              backdoLaunch, 
+              numTokens 
+            })
+            if (candidate.score < nextBestScore) {
+              nextBestScore = candidate.score
+              nextBestSequence = candidate.sequence
+            }
+          }
+        }
+      }
+    }
+    return nextBestSequence
   }
 }
 
-export function calculateSmartMove({ room, team }) {
+export function calculateSmartMoveSequence({ room, team }) {
   const moves = room.teams[team].moves.toObject()
   const friendlyPieces = room.teams[team].pieces
   const enemies = room.teams[team === 0 ? 1 : 0].pieces
-
-  const possibleMoves = [] // each item is [ { sequence of moves, score } ]
-
-  // sequence of moves
-  // try every permutation
   
-  // for each move
-  // pick a move
-  // pick a token
-  // loop until you're out of moves
-  // recursion
-  // pick the sequence that gives the lowest score
-  let moveSequence = [] // item: { tokenId, moveInfo }
-  for (let move of Object.keys(moves)) {
-    move = parseInt(move)
-    if (move !== 0 && moves[move] > 0) {
+  let bestMoveSequence = pickBestMoveSequence({ 
+    moves, 
+    friendlyPieces, 
+    enemies, 
+    bestMoveSequence: [],
+    backdoLaunch: room.rules.backdoLaunch,
+    numTokens: room.rules.numTokens
+  })
 
-    }
-  }
-
-  for (let i = 0; i < room.rules.numTokens; i++) {
-    // take a piece
-    // get legal tiles
-    // get token positions when that move is made
-    // score that set of positions
-    // do it for each legal tile
-    // make a move as { tokenId, the tile to move to, and the score }
-    // append to possibleMoves
-
-    let selectedPiece = room.teams[team].pieces[i]
-    let tile = selectedPiece.tile
-    let id = selectedPiece.id
-    let history;
-    let selectedPieces;
-    if (tileType(tile) === 'home') {
-      history = []
-      selectedPieces = [{tile, team, id, history}]
-    } else {
-      history = room.tiles[tile][0].history // go back the way you came from of the first token
-      selectedPieces = room.tiles[tile];
-    }
-    let legalTiles = getLegalTiles(tile, moves, friendlyPieces, history, room.rules.backdoLaunch)
-    if (!(Object.keys(legalTiles).length === 0)) {
-      for (const legalTile of Object.keys(legalTiles)) {
-        
-        // if legal tile is 29
-        // pick the lowest move whether there's one move or multiple moves
-        let score;
-        let moveInfo
-        if (legalTile === 29) {
-          let lowestMove = 10
-          let lowestMoveInfo = { // fillers
-            tile: -1,
-            move: '-2',
-            history: [],
-            path: []
-          }
-          for (const moveInfo of legalTiles[legalTile]) {
-            if (parseInt(moveInfo.move) < lowestMove) {
-              lowestMove = parseInt(moveInfo.move)
-              lowestMoveInfo = moveInfo
-            }
-          }
-          moveInfo = lowestMoveInfo
-          const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
-            friendlyPieces,
-            enemies,
-            movingPieces: selectedPieces,
-            to: parseInt(legalTile),
-            path: moveInfo.path,
-            history: moveInfo.history,
-            tiles: room.tiles
-          })
-          score = calculateScore({ 
-            pieces: newFriendlyPieces, 
-            enemyPieces: newEnemyPieces, 
-            backdoLaunch: room.rules.backdoLaunch, 
-          })
-        } else {
-          moveInfo = legalTiles[legalTile]
-          const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
-            friendlyPieces,
-            enemies,
-            movingPieces: selectedPieces,
-            to: parseInt(legalTile),
-            path: moveInfo.path,
-            history: moveInfo.history,
-            tiles: room.tiles
-          })
-          score = calculateScore({ 
-            pieces: newFriendlyPieces, 
-            enemyPieces: newEnemyPieces, 
-            backdoLaunch: room.rules.backdoLaunch, 
-          })
-        }
-        possibleMoves.push({ tokenId: id, moveInfo, score })
-      }
-    }
-  }
-
-  let lowestScore = 1000; // minimize distance to finish
-  let bestMoveIndex = -1;
-  for (let i = 0; i < possibleMoves.length; i++) {
-    let candidate = possibleMoves[i]
-    if (candidate.score < lowestScore) {
-      lowestScore = candidate.score
-      bestMoveIndex = i
-    }
-  }
-
-  return possibleMoves[bestMoveIndex] // placeholder
+  return bestMoveSequence
 }
 
-// test cases:
-// u0s3, u1s-1, u2s-1, u3s-1, move: 2. start a new token or move to shortcut.
-  // move to shortcut
+
 export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // get long distance from piece's tile to finish
   let score = 0;
@@ -143,24 +162,8 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // depth first search
   // measure 1: distance to finish
   // piggyback counts distance only once
-  let enemyTiles = {}
-  for (let i = 0; i < enemyPieces.length; i++) {
-    const enemy = enemyPieces[i]
-    if (!enemyTiles[enemy.tile]) {
-      enemyTiles[enemy.tile] = [enemy]
-    } else {
-      enemyTiles[enemy.tile].push(enemy)
-    }
-  }
-  let friendlyTiles = {}
-  for (let i = 0; i < pieces.length; i++) {
-    const friendly = pieces[i]
-    if (!friendlyTiles[friendly.tile]) {
-      friendlyTiles[friendly.tile] = [friendly]
-    } else {
-      friendlyTiles[friendly.tile].push(friendly)
-    }
-  }
+  let enemyTiles = getOccupiedTiles({ pieces: enemyPieces })
+  let friendlyTiles = getOccupiedTiles({ pieces: pieces })
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
     if (friendlyTile === -1) {
