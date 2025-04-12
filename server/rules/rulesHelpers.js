@@ -104,3 +104,12 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
 
   return [newFriendlyPieces, newEnemies]
 }
+
+export function isEmptyMoves(moves) {
+  for (const move in moves) {
+    if (parseInt(move) !== 0 && moves[move] > 0) {
+      return false;
+    }
+  }
+  return true;
+}

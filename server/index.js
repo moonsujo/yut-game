@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
-import { hasTokenOnBoard, isBackdoMoves, movePieces, tileType } from './rules/rulesHelpers.js'
+import { hasTokenOnBoard, isBackdoMoves, isEmptyMoves, movePieces, tileType } from './rules/rulesHelpers.js'
 import { calculateSmartMove } from './src/ai.js';
 
 const app = express();
@@ -42,7 +42,17 @@ const userSchema = new mongoose.Schema(
     createdTime: Date,
     status: String, // playing, away
     type: String,
-    level: String
+    level: String,
+    nextMove: {
+      tokenId: Number,
+      moveInfo: {
+        tile: Number,
+        move: String,
+        history: [Number],
+        path: [Number]
+      },
+      score: Number
+    }
   },
   {
     versionKey: false,
@@ -163,7 +173,6 @@ const roomSchema = new mongoose.Schema(
 const User = mongoose.model('users', userSchema)
 const Room = mongoose.model('rooms', roomSchema)
 
-
 async function addUser(socket, name, roomId, savedClient) {
   savedClient = JSON.parse(savedClient)
   try {
@@ -186,7 +195,13 @@ async function addUser(socket, name, roomId, savedClient) {
         createdTime: new Date(),
         status: 'playing',
         type: 'human',
-        level: 'human'
+        level: 'human',
+        nextMove: {
+          tile: null,
+          move: null,
+          history: [],
+          path: []
+        }
       })
       await user.save()
     } else {
@@ -225,7 +240,13 @@ async function addUser(socket, name, roomId, savedClient) {
           createdTime: new Date(),
           status: 'playing',
           type: 'human',
-          level: 'human'
+          level: 'human',
+          nextMove: {
+            tile: null,
+            move: null,
+            history: [],
+            path: []
+          }
         })
         await user.save()
       } else {
@@ -241,7 +262,13 @@ async function addUser(socket, name, roomId, savedClient) {
             createdTime: new Date(),
             status: 'playing',
             type: 'human',
-            level: 'human'
+            level: 'human',
+            nextMove: {
+              tile: null,
+              move: null,
+              history: [],
+              path: []
+            }
           })
           await user.save()
         }
@@ -526,7 +553,13 @@ io.on("connect", async (socket) => {
         createdTime: new Date(),
         status: 'playing',
         type: 'ai',
-        level
+        level,
+        nextMove: {
+          tile: null,
+          move: null,
+          history: [],
+          path: []
+        }
       })
       await ai.save()
 
@@ -900,13 +933,13 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = await getHostTurn(room)
       }
-      // room.turn = newTurn
-      // room.teams[newTurn.team].throws = 1
-      // room.gamePhase = "pregame"
+      room.turn = newTurn
+      room.teams[newTurn.team].throws = 1
+      room.gamePhase = "pregame"
       // testing
-      room.gamePhase = "game" 
-      room.turn.team = 1
-      room.teams[room.turn.team].throws = 1
+      // room.gamePhase = "game" 
+      // room.turn.team = 1
+      // room.teams[room.turn.team].throws = 1
       
       // Game logs
       let gameLog = {
@@ -1300,20 +1333,13 @@ io.on("connect", async (socket) => {
     return index
   }
   
-  async function handleSelectTokenRandom({room, team, player}) {
+  async function handleSelectTokenAI({ room, team, player, pieceId }) {
 
-    const randomPieceIndex = calculateRandomPieceIndex({ 
-      pieces: room.teams[team].pieces, 
-      moves: room.teams[team].moves, 
-      numTokens: NUM_TOKENS
-    })
-
-    // refactor this so it can be used in smartAIMove
     const moves = room.teams[team].moves.toObject()
     const pieces = room.teams[team].pieces
     let selectedPieces;
     let history;
-    let selectedPiece = room.teams[team].pieces[randomPieceIndex]
+    let selectedPiece = room.teams[team].pieces[pieceId]
     let tile = selectedPiece.tile
     let id = selectedPiece.id
     if (tileType(tile) === 'home') {
@@ -1335,7 +1361,18 @@ io.on("connect", async (socket) => {
     await room.save()
 
     // make a move
-    if (player.type === 'ai') await aiMove({ player, room, level: player.level })
+    await aiMove({ player, room, level: player.level })
+  }
+
+  async function handleSelectTokenRandom({ room, team, player }) {
+
+    const randomPieceIndex = calculateRandomPieceIndex({ 
+      pieces: room.teams[team].pieces, 
+      moves: room.teams[team].moves, 
+      numTokens: NUM_TOKENS
+    })
+
+    await handleSelectTokenAI({ room, team, player, pieceId: randomPieceIndex })
   }
 
 
@@ -1352,7 +1389,7 @@ io.on("connect", async (socket) => {
       } else if (hasValidMove(room.teams[player.team].moves) && (!room.selection.tile && room.selection.tile !== 0)) { // check document null
         if (level === 'random') {
           setTimeout(async () => {
-            await handleSelectTokenRandom({room, team: player.team, player})
+            await handleSelectTokenRandom({room, team: player.team, player })
             // selected, but on a tile with an enemy
           }, delay > 0 ? delay : 1500)
         } else if (level === 'smart') {
@@ -1372,10 +1409,22 @@ io.on("connect", async (socket) => {
           // if there's a tie, pick the first one
           
           // favors piggyback over advancing out of first row
+          // favors lowest move when multiple moves can score
+          // what if you have multiple moves?
           const smartMove = calculateSmartMove({ room, team: player.team })
+          player.nextMove = smartMove
+          await player.save()
           console.log('smart move', smartMove)
           // select
-          // move
+          setTimeout(async () => {
+            await handleSelectTokenAI({ 
+              room, 
+              team: player.team, 
+              player, 
+              pieceId: smartMove.tokenId 
+            })
+            // selected, but on a tile with an enemy
+          }, delay > 0 ? delay : 1500)
         }
       } else if (room.selection) {
         // move or score
@@ -1399,7 +1448,14 @@ io.on("connect", async (socket) => {
             }
           }, delay > 0 ? delay : 1500)
         } else if (level === 'smart') {
-          console.log('[aiMove] level smart handle select legal tile')
+          setTimeout(async () => {
+            let chosenTile = player.nextMove.moveInfo.tile
+            if (parseInt(chosenTile) !== 29) {
+              await handleMove({ room, tile: chosenTile, playerName: player.name })
+            } else {
+              await handleScore({ room, selectedMove: player.nextMove.moveInfo, playerName: player.name })
+            }
+          }, delay > 0 ? delay : 1500)
         }
       }
     } catch(err) {
@@ -1747,14 +1803,6 @@ io.on("connect", async (socket) => {
     }
   }
 
-  function isEmptyMoves(moves) {
-    for (const move in moves) {
-      if (parseInt(move) !== 0 && moves[move] > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   function isBackdoMovesWithoutPieces(moves, pieces) {
     try {
