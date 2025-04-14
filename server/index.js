@@ -1545,10 +1545,12 @@ io.on("connect", async (socket) => {
 
       for (const piece of newFriendlyPieces) {
         room.teams[movingTeam].pieces[piece.id] = { ...piece }
-        serverEvent.content.updatedPieces.push(piece)
       }
       for (const piece of newEnemies) {
         room.teams[movingTeam === 0 ? 1 : 0].pieces[piece.id] = { ...piece }
+      }
+
+      for (const piece of pieces) {
         serverEvent.content.updatedPieces.push(piece)
       }
 
@@ -1579,6 +1581,13 @@ io.on("connect", async (socket) => {
           room.tiles[to] = pieces
           serverEvent.content.updatedTiles.to.index = to
           serverEvent.content.updatedTiles.to.pieces = pieces
+
+          for (let piece of tiles[to]) {
+            piece.tile = -1
+            piece.history = []
+            room.teams[occupyingTeam].pieces[piece.id] = piece
+            serverEvent.content.updatedPieces.push(piece)
+          }
 
           if (room.rules.yutMoCatch || !(moveUsed === '4' || moveUsed === '5')) {
             throws++;
