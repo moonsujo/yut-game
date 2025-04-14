@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema(
         history: [Number],
         path: [Number]
       },
+      _id: false
     }]
   },
   {
@@ -1076,9 +1077,14 @@ io.on("connect", async (socket) => {
         }
         room.turnExpireTime = null
         room.turnsSkipped = 0
-        let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        // let outcome = pickOutcome({ nakEnabled: room.rules.nak })
         // for testing
-        // let outcome = -1
+        // if (room.teams[room.turn.team].throws === 2) {
+        //   outcome = 4
+        // } else if (room.teams[room.turn.team].throws === 1) {
+        //   outcome = 3
+        // }
+        let outcome = 2
         // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {
@@ -1216,7 +1222,8 @@ io.on("connect", async (socket) => {
 
               // Add bonus throw on Yoot and Mo
               if (room.yootOutcome === 4 || room.yootOutcome === 5) {
-                room.teams[user.team].throws++;
+                // test
+                // room.teams[user.team].throws++;
                 gameLog = {
                   logType: 'throw',
                   content: {
@@ -1380,6 +1387,7 @@ io.on("connect", async (socket) => {
           await handleThrowYut({ user: player, room })
         }, delay > 0 ? delay : 1500)
       } else if (hasValidMove(room.teams[player.team].moves) && (!room.selection.tile && room.selection.tile !== 0)) { // check document null
+        console.log('[aiMove] has valid move && no room selection')
         if (level === 'random') {
           setTimeout(async () => {
             await handleSelectTokenRandom({room, team: player.team, player })
@@ -1388,26 +1396,29 @@ io.on("connect", async (socket) => {
         } else if (level === 'smart') {
           console.log('[aiMove] level smart handle select token')
           
-          // select token
-          // make move
-          // pop move from sequence
-          // if move.catch === true
-          // throw again; break
-          // else
-          // continue
-          if (!player.moveSequence) {           
-            // favors piggyback over advancing out of first row
-            // favors lowest move when multiple moves can score 
-            // if there's a tie, pick the first match
-            const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
-            player.moveSequence = smartMoveSequence
-          } else {
-          }
-          let nextTokenSelectId = player.moveSequence[0].tokenId
-          await player.save()
           
           // select
           setTimeout(async () => {
+            // select token
+            // make move
+            // pop move from sequence
+            // if move.catch === true
+            // throw again; break
+            // else
+            // continue
+            if (!player.moveSequence || player.moveSequence.length === 0) {           
+              console.log('[aiMove] no move sequence yet')
+              // favors piggyback over advancing out of first row
+              // favors lowest move when multiple moves can score 
+              // if there's a tie, pick the first match
+              const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
+              console.log('[aiMove] smartMoveSequence', smartMoveSequence)
+              player.moveSequence = smartMoveSequence
+              await player.save()
+            }
+            console.log('[aiMove] move sequence', player.moveSequence)
+            let nextTokenSelectId = player.moveSequence[0].tokenId
+
             await handleSelectTokenAI({ 
               room, 
               team: player.team, 
@@ -1446,16 +1457,13 @@ io.on("connect", async (socket) => {
             // if it caught
             // clear the sequence from the player document
             let chosenTile = player.moveSequence[0].moveInfo.tile
+            player.moveSequence.shift()
+            await player.save()
+            console.log('[aiMove] [room.selection] player.moveSequence', player.moveSequence)
             if (parseInt(chosenTile) !== 29) {
               // return whether a piece was caught
               // if so, clear player.moveSequence
-              let { caught } = await handleMove({ room, tile: chosenTile, playerName: player.name })
-              if (caught) {
-                player.moveSequence = null
-              } else {
-                player.moveSequence.shift()
-              }
-              await player.save()
+              await handleMove({ room, tile: chosenTile, playerName: player.name })
             } else {
               let chosenMove = player.moveSequence[0].moveInfo
               await handleScore({ room, selectedMove: chosenMove, playerName: player.name })
@@ -1473,6 +1481,7 @@ io.on("connect", async (socket) => {
     try {  
       let moveInfo = room.legalTiles[tile]
       let from = room.selection.tile
+      console.log('[handleMove] moveInfo', moveInfo)
       let moveUsed = moveInfo.move
       let to = tile
       let path = moveInfo.path
@@ -1533,7 +1542,7 @@ io.on("connect", async (socket) => {
       room.gameLogs.push(gameLog)
       serverEvent.content.gameLogs.push(gameLog)
 
-      const [newFriendlyPieces, newEnemies, caught] = movePieces({
+      const [newFriendlyPieces, newEnemies] = movePieces({
         friendlyPieces: room.teams[movingTeam].pieces, 
         enemies: room.teams[movingTeam === 0 ? 1 : 0].pieces, 
         movingPieces: pieces, 
@@ -1694,8 +1703,6 @@ io.on("connect", async (socket) => {
       }
 
       await room.save()
-
-      return { caught }
     } catch (err) {
       console.log('[handleMove] error', err)
     }

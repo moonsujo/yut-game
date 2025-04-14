@@ -16,6 +16,7 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
       backdoLaunch
     })
 
+    console.log('terminal sequence', JSON.stringify({ sequence: bestMoveSequence.sequence, score }, null, 2))
     return { sequence: bestMoveSequence.sequence, score }
   } else {
     // pick a token

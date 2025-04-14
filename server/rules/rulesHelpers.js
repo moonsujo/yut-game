@@ -113,21 +113,22 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
 
   // If catch, update enemy pieces
   let enemyTiles = getOccupiedTiles({ pieces: enemies })
-  let caught = false
   if (enemyTiles[to] && enemyTiles[to].length > 0) {
-    caught = true
     let occupyingTeam = enemyTiles[to][0].team
     let movingTeam = friendlyPieces[0].team
     if (occupyingTeam != movingTeam) {
       for (let piece of enemyTiles[to]) { // if tile is empty, it won't run
         piece.tile = -1
         piece.history = []
-        newEnemies.pieces[piece.id] = { ...piece.toObject() }
+        if (piece._doc)
+          newEnemies[piece.id] = { ...piece._doc }
+        else
+          newEnemies[piece.id] = { ...piece }
       }
     }
   }
 
-  return [newFriendlyPieces, newEnemies, caught]
+  return [newFriendlyPieces, newEnemies]
 }
 
 export function isEmptyMoves(moves) {
