@@ -338,6 +338,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               paused: room.paused
             })
           } else if (serverEvent.name === 'move') {
+            console.log('room watch, move')
             io.to(userSocketId).emit('move', {
               newTeam: room.turn.team,
               prevTeam: serverEvent.content.prevTeam,
@@ -1632,6 +1633,7 @@ io.on("connect", async (socket) => {
       turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
+        console.log('[handleMove] new turn')
         const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
         room.paused = pause

@@ -595,6 +595,7 @@ export const SocketManager = () => {
       // instead of teamsUpdate and tiles, receive updatedPieces and updatedTiles
       // check if moves is empty. if it is, clear it
       // clear legalTiles and selection
+      console.log('socketManager - move')
 
       let alerts = []
 

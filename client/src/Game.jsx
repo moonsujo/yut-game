@@ -549,12 +549,12 @@ export default function Game() {
         />
         <DisplayHostAndSpectating/>
         <Rulebook/>
-        <Timer 
+        {/* <Timer 
           position={layout[device].game.timer.position} 
           scale={[layout[device].game.timer.scaleX, 1, 1]}
           boxArgs={layout[device].game.timer.boxArgs}
           heightMultiplier={layout[device].game.timer.heightMultiplier}
-        />
+        /> */}
       </animated.group> }
       { gamePhase === 'finished' && <WinScreen/> }
       <MeteorsRealShader/>
