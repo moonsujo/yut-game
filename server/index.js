@@ -1410,6 +1410,7 @@ io.on("connect", async (socket) => {
               console.log('[aiMove] no move sequence yet')
               // favors piggyback over advancing out of first row
               // favors lowest move when multiple moves can score 
+              
               // if there's a tie, pick the first match
               const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
               console.log('[aiMove] smartMoveSequence', smartMoveSequence)

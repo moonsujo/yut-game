@@ -8,7 +8,7 @@ describe("calculate possible moves", () => {
 
 // calculateSmartMove
 describe("calculate smart move", () => {
-
+  // if you have gul and ge, with token from s10, it should take you to s28
 })
 
 describe("calculate score", () => {
@@ -206,8 +206,41 @@ describe("calculate score", () => {
     })
   })
   describe("fork", () => {
-    it("should return -? if you have a ship at s5", () => {
-
+    it.only("should return -4 if you have a ship at s5", () => {
+      let friendlyPieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam0))
+      friendlyPieces[0] = {
+        tile: 5,
+        team: 0,
+        id: 0,
+        history: [3, 4, 5],
+        lastPath: [2, 3, 4, 5]
+      }
+      let enemyPieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam1))
+      let backdoLaunch = true
+      let score = calculateScore({ pieces: friendlyPieces, enemyPieces, backdoLaunch })
+      expect(score).toEqual(-4)
+    })
+    it("should return -12 if you have a ship at s10 (saturn)", () => {
+      let friendlyPieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam0))
+      friendlyPieces[0] = {
+        tile: 10,
+        team: 0,
+        id: 0,
+        history: [8, 9, 10],
+        lastPath: [7, 8, 9, 10]
+      }
+      let enemyPieces = JSON.parse(JSON.stringify(initialState.initialPiecesTeam1))
+      let backdoLaunch = true
+      let score = calculateScore({ pieces: friendlyPieces, enemyPieces, backdoLaunch })
+      expect(score).toEqual(-12)
+    })
+  })
+  describe("compare two scores", () => {
+    // set up: u0 on s10 and u1 on s6 vs u0 on s9 and u1 on s7
+    it("should favor a token on s10 and token on s6 over a token on s9 and another one on s7", () => {
+      // board 1: u0 on s10, u1 on s6
+      // board 2: u0 on s9, u1 on s7
+      // expect score_board 1 < score_board 2
     })
   })
 })

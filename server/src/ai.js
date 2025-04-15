@@ -16,7 +16,7 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
       backdoLaunch
     })
 
-    console.log('terminal sequence', JSON.stringify({ sequence: bestMoveSequence.sequence, score }, null, 2))
+    // console.log('terminal sequence', JSON.stringify({ sequence: bestMoveSequence.sequence, score }, null, 2))
     return { sequence: bestMoveSequence.sequence, score }
   } else {
     // pick a token
@@ -163,7 +163,7 @@ export function calculateSmartMoveSequence({ room, team }) {
   return bestMoveSequence
 }
 
-
+// should favor landing on shortcut if given a choice between a regular star and a shortcut star
 export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // get long distance from piece's tile to finish
   let score = 0;
@@ -173,20 +173,25 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // piggyback counts distance only once
   let enemyTiles = getOccupiedTiles({ pieces: enemyPieces })
   let friendlyTiles = getOccupiedTiles({ pieces: pieces })
+  console.log('friendlyTiles', friendlyTiles)
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
+    // console.log('friendlyTile', friendlyTile)
     if (friendlyTile === -1) {
-      score += (calculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
+      score += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
     } else {
-      score += calculateLongestPathHome(friendlyTile, 0)
+      let middleScore = startCalculateLongestPathHome(friendlyTile, 0)
+      // console.log('longest distance', middleScore)
+      score += middleScore
     }
   }
+  console.log('enemyTiles', enemyTiles)
   for (let enemyTile of Object.keys(enemyTiles)) {
     enemyTile = parseInt(enemyTile)
     if (enemyTile === -1) {
-      scoreEnemy += (calculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
+      scoreEnemy += (startCalculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
     } else {
-      scoreEnemy += calculateLongestPathHome(enemyTile, 0)
+      scoreEnemy += startCalculateLongestPathHome(enemyTile, 0)
     }
   }
 
@@ -284,11 +289,31 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     }
   }
 
+  console.log('score', score, 'score enemy', scoreEnemy)
   return score - scoreEnemy
 }
 
+// force tile 10, 25, 26, and 22 to the shortcut distance
+// instead of taking the long way from the moon
+function startCalculateLongestPathHome(tile, longestDistance) {
+  if (tile === 10) {
+    return 10 // fix this to be the short path amount
+  } else if (tile === 25) {
+    return 6
+  } else if (tile === 26) {
+    return 5
+  } else if (tile === 22) {
+    return 4
+  } else { // add conditions for mars and the moon. this makes ai prefer shortcut stars over regular ones
+    return calculateLongestPathHome(tile, longestDistance)
+  }
+}
+
 // dfs
+// longest distance from start is 22 because of the path from saturn to moon and neptune
 export function calculateLongestPathHome(tile, longestDistance) {
+  // console.log('[calculateLongestPathHome] tile', tile, 'longestDistance', longestDistance)
+  
   longestDistance+=1
 
   const nextTiles = checkFinishRule(getNextTiles(tile, true))
