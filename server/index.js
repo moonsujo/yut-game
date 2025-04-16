@@ -1087,7 +1087,7 @@ io.on("connect", async (socket) => {
         // } else if (room.teams[room.turn.team].throws === 1) {
         //   outcome = -1
         // }
-        // let outcome = 2
+        // let outcome = 1
         // let outcome
         // if (room.gamePhase === 'pregame') {
         //   if (room.turn.team === 0) {

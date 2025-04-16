@@ -1,23 +1,23 @@
 export default {
   initialPiecesTeam0: [
-    // { tile: 4, team: 0, id: 0, history: [], lastPath: [] },
-    // { tile: 4, team: 0, id: 1, history: [], lastPath: [] },
-    // { tile: 4, team: 0, id: 2, history: [], lastPath: [] },
-    // { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
+    // { tile: 17, team: 0, id: 0, history: [], lastPath: [] },
+    // { tile: 17, team: 0, id: 1, history: [], lastPath: [] },
+    // { tile: 29, team: 0, id: 2, history: [], lastPath: [] },
+    // { tile: 29, team: 0, id: 3, history: [], lastPath: [] },
   ],
   initialPiecesTeam1: [
+    // { tile: 22, team: 1, id: 0, history: [20, 21], lastPath: [] },
+    // { tile: 29, team: 1, id: 1, history: [19, 0], lastPath: [] },
+    // { tile: 29, team: 1, id: 2, history: [19, 0], lastPath: [] },
+    // { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 0, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
-    // { tile: 21, team: 1, id: 0, history: [], lastPath: [] },
-    // { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
-    // { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
-    // { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
   ],
   initialMoves: {
     '0': 0,
@@ -33,11 +33,7 @@ export default {
     [],
     [],
     [],
-    [
-      // { tile: 4, team: 0, id: 0, history: [], lastPath: [] },
-      // { tile: 4, team: 0, id: 1, history: [], lastPath: [] },
-      // { tile: 4, team: 0, id: 2, history: [], lastPath: [] },
-    ],
+    [],
     [], // 5
     [],
     [],
@@ -54,9 +50,7 @@ export default {
     [],
     [],
     [], // 20
-    [
-      // { tile: 21, team: 1, id: 0, history: [], lastPath: [] },
-    ],
+    [],
     [],
     [],
     [],

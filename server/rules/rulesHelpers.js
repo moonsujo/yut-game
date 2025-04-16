@@ -105,7 +105,6 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
       newEnemies.push({ ...piece }) // newEnemies.push({ ...piece.toObject() })
   }
 
-
   // Update moving team's pieces at home
   for (const piece of movingPieces) {
     newFriendlyPieces[piece.id].tile = to
@@ -114,8 +113,10 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
   }
 
   // If catch, update enemy pieces
+  let caught = false
   let enemyTiles = getOccupiedTiles({ pieces: enemies })
   if (enemyTiles[to] && enemyTiles[to].length > 0) {
+    caught = true
     let occupyingTeam = enemyTiles[to][0].team
     let movingTeam = friendlyPieces[0].team
     if (occupyingTeam != movingTeam) {
@@ -130,7 +131,7 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
     }
   }
 
-  return [newFriendlyPieces, newEnemies]
+  return [newFriendlyPieces, newEnemies, caught]
 }
 
 export function scorePieces({pieces, movingPieces, history, path}) {

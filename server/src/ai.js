@@ -3,7 +3,7 @@ import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
 // sequence: [{ token id, move }]
-export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens }) {
+export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens, throwsEarned }) {
 
   // base case
   if (isEmptyMoves(moves)) {
@@ -13,7 +13,8 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
     let score = calculateScore({ 
       pieces: friendlyPieces, 
       enemyPieces: enemies, 
-      backdoLaunch
+      backdoLaunch,
+      throwsEarned
     })
 
     return { sequence: bestMoveSequence.sequence, score }
@@ -109,7 +110,7 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
           } else {
             moveInfo = legalTiles[legalTile]
             console.log('moving, moveInfo', moveInfo)
-            const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
+            const [newFriendlyPieces, newEnemyPieces, caught] = movePieces({ 
               friendlyPieces,
               enemies,
               movingPieces: selectedPieces,
@@ -130,7 +131,8 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
               enemies: newEnemyPieces, 
               bestMoveSequence: nextBestMoveSequence, 
               backdoLaunch, 
-              numTokens 
+              numTokens,
+              throwsEarned: throwsEarned + (caught ? 1 : 0)
             })
             if (candidate.score < nextBestScore) {
               nextBestScore = candidate.score
@@ -155,14 +157,16 @@ export function calculateSmartMoveSequence({ room, team }) {
     enemies, 
     bestMoveSequence: { sequence: [], score: 100 },
     backdoLaunch: room.rules.backdoLaunch,
-    numTokens: room.rules.numTokens
+    numTokens: room.rules.numTokens,
+    throwsEarned: 0
   }).sequence
 
   return bestMoveSequence
 }
 
 // should favor getting closer than advancing the one in front
-export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
+// add additional points for number of throws
+export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned }) {
   // get long distance from piece's tile to finish
   let score = 0;
   let scoreEnemy = 0;
@@ -190,7 +194,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     }
   }
 
-  // measure 2: enemies behind you within catch range
+  
   const moveSets = {
     '1': { // one move
       '0': 0,
@@ -255,34 +259,36 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     '5': 1,
     '-1': 1
   }
-  console.log('enemy tiles', enemyTiles)
-  for (let enemyTile of Object.keys(enemyTiles)) {
-    console.log('enemy tile', enemyTile)
-    enemyTile = parseInt(enemyTile)
-    let history
-    if (tileType(enemyTile) === 'home') {
-      history = []
-    } else {
-      history = enemyTiles[enemyTile][0].history
-    }
-    // count piggyback pieces only once
-    // technically, pieces at home are piggybacked
-    for (const move of Object.keys(moveSets)) {
-      const legalTiles = getLegalTiles(enemyTile, moveSets[move], enemyPieces, history, backdoLaunch)
-      // check how many friendlies are on it
-      // multiply score by that number
-      if (Object.keys(legalTiles).length > 0) {
-        let numMostTokens = 0
-        for (const legalTile of Object.keys(legalTiles)) {
-          if (legalTile !== 29) {
-            // if you're on a shortcut, count the legal tile with the most pieces to catch
-            if (friendlyTiles[legalTile] && friendlyTiles[legalTile].length > numMostTokens) {
-              numMostTokens = friendlyTiles[legalTile].length
+
+  // measure 2: enemies behind you within catch range
+  if (throwsEarned === 0) {
+    for (let enemyTile of Object.keys(enemyTiles)) {
+      enemyTile = parseInt(enemyTile)
+      let history
+      if (tileType(enemyTile) === 'home') {
+        history = []
+      } else {
+        history = enemyTiles[enemyTile][0].history
+      }
+      // count piggyback pieces only once
+      // technically, pieces at home are piggybacked
+      for (const move of Object.keys(moveSets)) {
+        const legalTiles = getLegalTiles(enemyTile, moveSets[move], enemyPieces, history, backdoLaunch)
+        // check how many friendlies are on it
+        // multiply score by that number
+        if (Object.keys(legalTiles).length > 0) {
+          let numMostTokens = 0
+          for (const legalTile of Object.keys(legalTiles)) {
+            if (legalTile !== 29) {
+              // if you're on a shortcut, count the legal tile with the most pieces to catch
+              if (friendlyTiles[legalTile] && friendlyTiles[legalTile].length > numMostTokens) {
+                numMostTokens = friendlyTiles[legalTile].length
+              }
             }
           }
+          let catchScore = proximityScore[move] * numMostTokens
+          scoreEnemy -= catchScore
         }
-        let catchScore = proximityScore[move] * numMostTokens
-        scoreEnemy -= catchScore
       }
     }
   }
@@ -330,6 +336,9 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
       }
     }
   }
+
+  // measure 4: throws earned during the sequence
+  score -= throwsEarned * 3
 
   console.log('score', score, 'score enemy', scoreEnemy)
   return score - scoreEnemy
