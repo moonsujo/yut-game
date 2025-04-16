@@ -1,9 +1,9 @@
-import { checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, tileType } from '../rules/rulesHelpers.js'
+import { checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, scorePieces, tileType } from '../rules/rulesHelpers.js'
 import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
 // sequence: [{ token id, move }]
-function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens }) {
+export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens }) {
 
   // base case
   if (isEmptyMoves(moves)) {
@@ -16,7 +16,6 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
       backdoLaunch
     })
 
-    // console.log('terminal sequence', JSON.stringify({ sequence: bestMoveSequence.sequence, score }, null, 2))
     return { sequence: bestMoveSequence.sequence, score }
   } else {
     // pick a token
@@ -79,13 +78,11 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
           // if legal tile is 29
           // pick the lowest move whether there's one move or multiple moves
           let moveInfo
-          if (legalTile === 29) {
+          if (legalTile === '29') {
             for (const moveInfo of legalTiles[legalTile]) {
-              const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
-                friendlyPieces,
-                enemies,
+              const [newPieces] = scorePieces({ 
+                pieces: friendlyPieces,
                 movingPieces: selectedPieces,
-                to: parseInt(legalTile),
                 path: moveInfo.path,
                 history: moveInfo.history,
               })
@@ -96,10 +93,10 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
                 tokenId: i,
                 moveInfo,
               })
-              candidate = pickBestMoveSequence({ 
+              let candidate = pickBestMoveSequence({ 
                 moves: newMoves, 
-                friendlyPieces: newFriendlyPieces, 
-                enemies: newEnemyPieces, 
+                friendlyPieces: newPieces, 
+                enemies, 
                 bestMoveSequence: nextBestMoveSequence, 
                 backdoLaunch, 
                 numTokens 
@@ -111,6 +108,7 @@ function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence
             }
           } else {
             moveInfo = legalTiles[legalTile]
+            console.log('moving, moveInfo', moveInfo)
             const [newFriendlyPieces, newEnemyPieces] = movePieces({ 
               friendlyPieces,
               enemies,
@@ -163,7 +161,7 @@ export function calculateSmartMoveSequence({ room, team }) {
   return bestMoveSequence
 }
 
-// should favor landing on shortcut if given a choice between a regular star and a shortcut star
+// should favor getting closer than advancing the one in front
 export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // get long distance from piece's tile to finish
   let score = 0;
@@ -173,19 +171,16 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
   // piggyback counts distance only once
   let enemyTiles = getOccupiedTiles({ pieces: enemyPieces })
   let friendlyTiles = getOccupiedTiles({ pieces: pieces })
-  console.log('friendlyTiles', friendlyTiles)
+  console.log('[calculate score] enemyTiles', enemyTiles, 'friendly tiles', friendlyTiles)
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
-    // console.log('friendlyTile', friendlyTile)
     if (friendlyTile === -1) {
       score += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
     } else {
       let middleScore = startCalculateLongestPathHome(friendlyTile, 0)
-      // console.log('longest distance', middleScore)
       score += middleScore
     }
   }
-  console.log('enemyTiles', enemyTiles)
   for (let enemyTile of Object.keys(enemyTiles)) {
     enemyTile = parseInt(enemyTile)
     if (enemyTile === -1) {
@@ -195,7 +190,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     }
   }
 
-  // measure 2: enemies in catch range
+  // measure 2: enemies behind you within catch range
   const moveSets = {
     '1': { // one move
       '0': 0,
@@ -252,7 +247,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
       '-1': 1
     }
   }
-  const moveToCatchScore = {
+  const proximityScore = {
     '1': 3,
     '2': 4,
     '3': 4,
@@ -260,7 +255,9 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     '5': 1,
     '-1': 1
   }
+  console.log('enemy tiles', enemyTiles)
   for (let enemyTile of Object.keys(enemyTiles)) {
+    console.log('enemy tile', enemyTile)
     enemyTile = parseInt(enemyTile)
     let history
     if (tileType(enemyTile) === 'home') {
@@ -272,19 +269,64 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
     // technically, pieces at home are piggybacked
     for (const move of Object.keys(moveSets)) {
       const legalTiles = getLegalTiles(enemyTile, moveSets[move], enemyPieces, history, backdoLaunch)
-      // check how many enemies are on it
+      // check how many friendlies are on it
       // multiply score by that number
       if (Object.keys(legalTiles).length > 0) {
         let numMostTokens = 0
         for (const legalTile of Object.keys(legalTiles)) {
           if (legalTile !== 29) {
+            // if you're on a shortcut, count the legal tile with the most pieces to catch
             if (friendlyTiles[legalTile] && friendlyTiles[legalTile].length > numMostTokens) {
               numMostTokens = friendlyTiles[legalTile].length
             }
           }
         }
-        let catchScore = moveToCatchScore[move] * numMostTokens
+        let catchScore = proximityScore[move] * numMostTokens
         scoreEnemy -= catchScore
+      }
+    }
+  }
+
+  // measure 3: friendlies in piggyback range
+  // if token is within 5 stars, give 1 point
+  // prevent spreading out tokens over first row
+  for (let friendlyTile of Object.keys(friendlyTiles)) {
+    friendlyTile = parseInt(friendlyTile)
+    let history
+    if (tileType(friendlyTile) === 'home') {
+      history = []
+    } else {
+      history = friendlyTiles[friendlyTile][0].history
+    }
+    // count piggyback pieces only once
+    // technically, pieces at home are piggybacked
+    for (const move of Object.keys(moveSets)) {
+      if (parseInt(move) !== 0) {
+        const legalTiles = getLegalTiles(friendlyTile, moveSets[move], pieces, history, backdoLaunch)
+        // console.log('move', move, 'legalTiles', legalTiles)
+        // check how many enemies are on it
+        // multiply score by that number
+        if (Object.keys(legalTiles).length > 0) {
+          for (const legalTile of Object.keys(legalTiles)) {
+            console.log('friendly legal tile', legalTile)
+            if (legalTile !== 29 && legalTile !== -1) {
+              if (friendlyTiles[legalTile]) {
+                score -= 1
+              } else if (enemyTiles[legalTile]) {
+                // check how many enemies are on it
+                // multiply score by that number
+                let numMostTokens = 0
+                // if you're on a shortcut, count the legal tile with the most pieces to catch
+                if (enemyTiles[legalTile].length > numMostTokens) {
+                  numMostTokens = enemyTiles[legalTile].length
+                }
+                let catchEnemyScore = proximityScore[move] * numMostTokens
+                console.log('catch enemy score', catchEnemyScore)
+                score -= catchEnemyScore
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -296,15 +338,19 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch }) {
 // force tile 10, 25, 26, and 22 to the shortcut distance
 // instead of taking the long way from the moon
 function startCalculateLongestPathHome(tile, longestDistance) {
-  if (tile === 10) {
-    return 10 // fix this to be the short path amount
-  } else if (tile === 25) {
+  if (tile === 29) { // scored
+    return 0 
+  } else if (tile === 10) { // Saturn - take shortcut over long path
+    return 7 
+  } else if (tile === 25) { // Vertical shortcut - take shortcut over zigzag
     return 6
-  } else if (tile === 26) {
+  } else if (tile === 26) { // Vertical shortcut - take shortcut over zigzag
     return 5
-  } else if (tile === 22) {
+  } else if (tile === 22) { // Moon - take shortcut over long path
     return 4
-  } else { // add conditions for mars and the moon. this makes ai prefer shortcut stars over regular ones
+  } else if (tile === 5) { // Mars - take shortcut over long path
+    return 12 
+  } else {
     return calculateLongestPathHome(tile, longestDistance)
   }
 }
@@ -312,7 +358,6 @@ function startCalculateLongestPathHome(tile, longestDistance) {
 // dfs
 // longest distance from start is 22 because of the path from saturn to moon and neptune
 export function calculateLongestPathHome(tile, longestDistance) {
-  // console.log('[calculateLongestPathHome] tile', tile, 'longestDistance', longestDistance)
   
   longestDistance+=1
 

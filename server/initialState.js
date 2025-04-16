@@ -1,5 +1,9 @@
 export default {
   initialPiecesTeam0: [
+    // { tile: 4, team: 0, id: 0, history: [], lastPath: [] },
+    // { tile: 4, team: 0, id: 1, history: [], lastPath: [] },
+    // { tile: 4, team: 0, id: 2, history: [], lastPath: [] },
+    // { tile: -1, team: 0, id: 3, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 0, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 0, id: 2, history: [], lastPath: [] },
@@ -10,6 +14,10 @@ export default {
     { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
     { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
+    // { tile: 21, team: 1, id: 0, history: [], lastPath: [] },
+    // { tile: -1, team: 1, id: 1, history: [], lastPath: [] },
+    // { tile: -1, team: 1, id: 2, history: [], lastPath: [] },
+    // { tile: -1, team: 1, id: 3, history: [], lastPath: [] },
   ],
   initialMoves: {
     '0': 0,
@@ -25,15 +33,17 @@ export default {
     [],
     [],
     [],
-    [],
+    [
+      // { tile: 4, team: 0, id: 0, history: [], lastPath: [] },
+      // { tile: 4, team: 0, id: 1, history: [], lastPath: [] },
+      // { tile: 4, team: 0, id: 2, history: [], lastPath: [] },
+    ],
     [], // 5
     [],
     [],
     [],
     [],
-    [
-      { tile: 10, team: 1, id: 0, history: [9, 10], lastPath: [9, 10] },
-    ], // 10
+    [], // 10
     [],
     [],
     [],
@@ -44,7 +54,9 @@ export default {
     [],
     [],
     [], // 20
-    [],
+    [
+      // { tile: 21, team: 1, id: 0, history: [], lastPath: [] },
+    ],
     [],
     [],
     [],

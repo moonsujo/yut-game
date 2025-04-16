@@ -18,7 +18,6 @@ export function isBackdoMoves({moves}) {
 
     for (const move in moves) {
       if (parseInt(move) !== 0 && parseInt(move) !== -1 && moves[move] > 0) {
-        console.log('has another move besides backdo', 'move:', move)
         return false;
       }
     }
@@ -78,16 +77,19 @@ export function getOccupiedTiles({ pieces }) {
   let tiles = {}
   for (let i = 0; i < pieces.length; i++) {
     const piece = pieces[i]
-    if (!tiles[piece.tile]) {
-      tiles[piece.tile] = [piece]
-    } else {
-      tiles[piece.tile].push(piece)
+    if (piece.tile !== 29) {
+      if (!tiles[piece.tile]) {
+        tiles[piece.tile] = [piece]
+      } else {
+        tiles[piece.tile].push(piece)
+      }
     }
   }
   return tiles
 }
 
 export function movePieces({friendlyPieces, enemies, movingPieces, to, path, history}) {
+  console.log('[movePieces]')
   let newFriendlyPieces = []
   for (const piece of friendlyPieces) {
     if (piece._doc)
@@ -129,6 +131,25 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
   }
 
   return [newFriendlyPieces, newEnemies]
+}
+
+export function scorePieces({pieces, movingPieces, history, path}) {
+  let newPieces = []
+  for (const piece of pieces) {
+    if (piece._doc)
+      newPieces.push({ ...piece._doc }) // newFriendlyPieces.push({ ...piece.toObject() })
+    else
+    newPieces.push({ ...piece })
+  }
+
+  // Update moving team's pieces at home
+  for (const piece of movingPieces) {
+    newPieces[piece.id].tile = 29
+    newPieces[piece.id].history = history
+    newPieces[piece.id].lastPath = path
+  }
+
+  return [newPieces]
 }
 
 export function isEmptyMoves(moves) {
