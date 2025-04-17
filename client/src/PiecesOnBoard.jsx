@@ -784,7 +784,6 @@ export default function PiecesOnBoard({ boardOffset }) {
                     }
                 })
             } else if (startCheck(pieceTeam1Id0.tile, pieceTeam1Id0.lastPath)) {
-                console.log('piece 1_0 start')
                 const toAnimations = path.map((value) => {
                     // on score, move to Earth and add an additional animation
                     return {
@@ -804,11 +803,9 @@ export default function PiecesOnBoard({ boardOffset }) {
                     to: toAnimations,
                     loop: false,
                     onStart: () => {
-                        console.log('api 1_0 start')
                         setPieceTeam1Id0AnimationPlaying(true)
                     },
                     onRest: () => {
-                        console.log('api 1_0 rest')
                         setPieceTeam1Id0AnimationPlaying(false)
                     }
                 })

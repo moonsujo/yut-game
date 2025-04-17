@@ -497,5 +497,16 @@ describe("calculate score", () => {
     // option 2
     // u0s26+u1s26 -> u0s28+u1s28
     // currently, it prefers option 2
+
+    // u0s5, u1s1, r0s8, r1s29, r2s29, r3s29
+    // gul
+    // u0s5 -> u0s8
+    // option 2
+    // u0s5 -> u0s22
+    // option 3
+    // u1s1 -> u1s4
+    // option 4
+    // u2sH -> u2s3
+    // should prefer option 1
   })
 })

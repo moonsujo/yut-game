@@ -19,23 +19,6 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
 
     return { sequence: bestMoveSequence.sequence, score }
   } else {
-    // pick a token
-    // get legal tiles
-    // let nextBestScore = 100
-    // let nextBestSequence = []
-    // for each of them
-      // move there and get new friendly pieces and enemies
-      // subtract the move from moves
-      // append it to the bestMoveSequence
-      // candidate = pickBestMoveSequence({ 
-        // moves: newMoves,
-        // friendlyPieces: newFriendlyPieces,
-        // enemies: newEnemies,
-        // bestMoveSequence: newMoveSequence
-      // })
-      // if candidate's score is lower than the nextBestScore
-      // replace nextBestScore and nextBestSequence
-    // return nextBestSequence
 
     let nextBestScore = 100
     let nextBestSequence = []
@@ -109,7 +92,6 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
             }
           } else {
             moveInfo = legalTiles[legalTile]
-            console.log('moving, moveInfo', moveInfo)
             const [newFriendlyPieces, newEnemyPieces, caught] = movePieces({ 
               friendlyPieces,
               enemies,
@@ -168,29 +150,28 @@ export function calculateSmartMoveSequence({ room, team }) {
 // add additional points for number of throws
 export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned }) {
   // get long distance from piece's tile to finish
-  let score = 0;
-  let scoreEnemy = 0;
+  let score;
   // depth first search
   // measure 1: distance to finish
   // piggyback counts distance only once
+  let friendlyDistanceScore = 0
+  let enemyDistanceScore = 0
   let enemyTiles = getOccupiedTiles({ pieces: enemyPieces })
   let friendlyTiles = getOccupiedTiles({ pieces: pieces })
-  console.log('[calculate score] enemyTiles', enemyTiles, 'friendly tiles', friendlyTiles)
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
     if (friendlyTile === -1) {
-      score += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
+      friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
     } else {
-      let middleScore = startCalculateLongestPathHome(friendlyTile, 0)
-      score += middleScore
+      friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0)
     }
   }
   for (let enemyTile of Object.keys(enemyTiles)) {
     enemyTile = parseInt(enemyTile)
     if (enemyTile === -1) {
-      scoreEnemy += (startCalculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
+      enemyDistanceScore += (startCalculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
     } else {
-      scoreEnemy += startCalculateLongestPathHome(enemyTile, 0)
+      enemyDistanceScore += startCalculateLongestPathHome(enemyTile, 0)
     }
   }
 
@@ -261,6 +242,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   }
 
   // measure 2: enemies behind you within catch range
+  let enemyProximityScore = 0
   if (throwsEarned === 0) {
     for (let enemyTile of Object.keys(enemyTiles)) {
       enemyTile = parseInt(enemyTile)
@@ -286,8 +268,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
               }
             }
           }
-          let catchScore = proximityScore[move] * numMostTokens
-          scoreEnemy -= catchScore
+          enemyProximityScore += (proximityScore[move] * numMostTokens)
         }
       }
     }
@@ -296,6 +277,9 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   // measure 3: friendlies in piggyback range
   // if token is within 5 stars, give 1 point
   // prevent spreading out tokens over first row
+  let piggybackScore = 0
+  let enemyCatchScore = 0
+  let piggybackFound = false
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
     let history
@@ -317,7 +301,8 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
             console.log('friendly legal tile', legalTile)
             if (legalTile !== 29 && legalTile !== -1) {
               if (friendlyTiles[legalTile]) {
-                score -= 1
+                piggybackFound = true
+                break
               } else if (enemyTiles[legalTile]) {
                 // check how many enemies are on it
                 // multiply score by that number
@@ -326,22 +311,39 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
                 if (enemyTiles[legalTile].length > numMostTokens) {
                   numMostTokens = enemyTiles[legalTile].length
                 }
-                let catchEnemyScore = proximityScore[move] * numMostTokens
-                console.log('catch enemy score', catchEnemyScore)
-                score -= catchEnemyScore
+                enemyCatchScore += (proximityScore[move] * numMostTokens)
               }
             }
           }
         }
+        if (piggybackFound) {
+          break
+        }
       }
+    }
+    if (piggybackFound) {
+      piggybackScore = 1
     }
   }
 
   // measure 4: throws earned during the sequence
-  score -= throwsEarned * 3
+  let throwsEarnedScore = throwsEarned * 3
+  // score -= throwsEarned * 3
 
-  console.log('score', score, 'score enemy', scoreEnemy)
-  return score - scoreEnemy
+  // heuristic 1: if enemy only has one ship left, chase it
+  // find distance between enemy and your closest ship
+  // reward board with lowest distance
+  // or board that doesn't have the enemy
+
+  console.log('friendlyDistanceScore', friendlyDistanceScore)
+  console.log('enemyDistanceScore', enemyDistanceScore)
+  console.log('enemyProximityScore', enemyProximityScore)
+  console.log('piggybackScore', piggybackScore)
+  console.log('enemyCatchScore', enemyCatchScore)
+  console.log('throwsEarnedScore', throwsEarnedScore)
+  score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
+  console.log('final score', score)
+  return score
 }
 
 // force tile 10, 25, 26, and 22 to the shortcut distance

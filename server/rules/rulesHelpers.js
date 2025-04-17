@@ -76,7 +76,7 @@ export function getOccupiedTiles({ pieces }) {
 
   let tiles = {}
   for (let i = 0; i < pieces.length; i++) {
-    const piece = pieces[i]
+    const piece = JSON.parse(JSON.stringify(pieces[i]))
     if (piece.tile !== 29) {
       if (!tiles[piece.tile]) {
         tiles[piece.tile] = [piece]
@@ -89,21 +89,9 @@ export function getOccupiedTiles({ pieces }) {
 }
 
 export function movePieces({friendlyPieces, enemies, movingPieces, to, path, history}) {
-  console.log('[movePieces]')
-  let newFriendlyPieces = []
-  for (const piece of friendlyPieces) {
-    if (piece._doc)
-      newFriendlyPieces.push({ ...piece._doc }) // newFriendlyPieces.push({ ...piece.toObject() })
-    else
-      newFriendlyPieces.push({ ...piece })
-  }
-  let newEnemies = []
-  for (const piece of enemies) {
-    if (piece._doc)
-      newEnemies.push({ ...piece._doc }) // newEnemies.push({ ...piece.toObject() })
-    else
-      newEnemies.push({ ...piece }) // newEnemies.push({ ...piece.toObject() })
-  }
+  
+  let newFriendlyPieces = JSON.parse(JSON.stringify(friendlyPieces))
+  let newEnemies = JSON.parse(JSON.stringify(enemies))
 
   // Update moving team's pieces at home
   for (const piece of movingPieces) {
@@ -115,6 +103,7 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
   // If catch, update enemy pieces
   let caught = false
   let enemyTiles = getOccupiedTiles({ pieces: enemies })
+
   if (enemyTiles[to] && enemyTiles[to].length > 0) {
     caught = true
     let occupyingTeam = enemyTiles[to][0].team
@@ -124,9 +113,9 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
         piece.tile = -1
         piece.history = []
         if (piece._doc)
-          newEnemies[piece.id] = { ...piece._doc }
+          newEnemies[piece.id] = JSON.parse(JSON.stringify(piece._doc))
         else
-          newEnemies[piece.id] = { ...piece }
+          newEnemies[piece.id] = JSON.parse(JSON.stringify(piece))
       }
     }
   }

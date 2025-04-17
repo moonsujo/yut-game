@@ -28,7 +28,6 @@ export default function YootButtonNew({ position, rotation, scale }) {
 
   const animationPlaying = useAnimationPlaying()
   const enabled = !animationPlaying && hasTurn && hasThrow
-  console.log('enabled - !animationPlaying', !animationPlaying, 'has turn', hasTurn, 'has throw', hasThrow)
 
   const scaleOuter = [1.4, -0.079, 1]
   const scaleInner = [scaleOuter[0] - 0.1, scaleOuter[1]+0.2, scaleOuter[2]-0.1]
