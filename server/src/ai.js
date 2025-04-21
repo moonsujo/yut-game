@@ -1,4 +1,4 @@
-import { checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, scorePieces, tileType } from '../rules/rulesHelpers.js'
+import { allPiecesOut, checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, scorePieces, tileType } from '../rules/rulesHelpers.js'
 import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
@@ -83,7 +83,8 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
                 enemies, 
                 bestMoveSequence: nextBestMoveSequence, 
                 backdoLaunch, 
-                numTokens 
+                numTokens,
+                throwsEarned
               })
               if (candidate.score < nextBestScore) {
                 nextBestScore = candidate.score
@@ -327,13 +328,34 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   }
 
   // measure 4: throws earned during the sequence
-  let throwsEarnedScore = throwsEarned * 3
+  let throwsEarnedScore = throwsEarned * 10
   // score -= throwsEarned * 3
 
-  // heuristic 1: if enemy only has one ship left, chase it
-  // find distance between enemy and your closest ship
-  // reward board with lowest distance
-  // or board that doesn't have the enemy
+  // heuristic 1: prioritize catch if all remaining enemies are on the board
+  let catchPrioritizeScore = 0
+  if (allPiecesOut({ pieces: enemyPieces })) {
+    let enemyFound = false
+    // for each enemy tile
+      // for each friendly tile
+    for (const enemyTile of enemyTiles) {
+      for (const friendlyTile of friendlyTiles) {
+        // find the distance -- reuse calculateLongestPathHome (instead of Home, use enemyTile)
+        // if distance not found
+        // continue
+        // else
+          // if distance is shorter than current one (could be array)
+          // replace candidate with new distance
+          // else if distance is the same
+          // replace candidate with one that has more tokens
+          // keep distance and tokenId of the first token on the friendly tile
+        
+      }
+    }
+    // if you didn't find an enemy in any paths
+    if (!enemyFound) {
+      // add distance score for friendlyTiles again (if you're closer to Earth, you add less)
+    }
+  }
 
   console.log('friendlyDistanceScore', friendlyDistanceScore)
   console.log('enemyDistanceScore', enemyDistanceScore)
@@ -341,6 +363,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   console.log('piggybackScore', piggybackScore)
   console.log('enemyCatchScore', enemyCatchScore)
   console.log('throwsEarnedScore', throwsEarnedScore)
+  console.log('catchPrioritizeScore', catchPrioritizeScore)
   score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
   console.log('final score', score)
   return score

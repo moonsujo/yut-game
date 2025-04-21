@@ -123,6 +123,16 @@ export function movePieces({friendlyPieces, enemies, movingPieces, to, path, his
   return [newFriendlyPieces, newEnemies, caught]
 }
 
+
+export function allPiecesOut({ pieces }) {
+  for (const piece of pieces) {
+    if (piece.tile === -1) {
+      return false
+    }
+  }
+  return true
+}
+
 export function scorePieces({pieces, movingPieces, history, path}) {
   let newPieces = []
   for (const piece of pieces) {

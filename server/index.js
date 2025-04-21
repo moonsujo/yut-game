@@ -1407,8 +1407,8 @@ io.on("connect", async (socket) => {
             // favors piggyback over advancing out of first row // if not wise, square the proximity score for catch
             // favors lowest move when multiple moves can score 
             // favors shortcut star over regular one
+            // favors catch over shortcut
             // if there's a tie, pick the first match
-            // favors catch 
             console.log('[aiMove] enemy pieces', JSON.stringify(room.teams[player.team === 0 ? 1 : 0].pieces, null, 2))
             const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
             console.log('[aiMove] smartMoveSequence', smartMoveSequence)
