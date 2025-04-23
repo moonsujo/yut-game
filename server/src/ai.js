@@ -162,6 +162,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
     if (friendlyTile === -1) {
+      // longest to compare distance. same destination, same algorithm. shorter the better
       friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
     } else {
       friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0)
@@ -276,6 +277,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   }
 
   // measure 3: friendlies in piggyback range
+  // measure 4: enemies in front of you within catch range
   // if token is within 5 stars, give 1 point
   // prevent spreading out tokens over first row
   let piggybackScore = 0
@@ -299,7 +301,6 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
         // multiply score by that number
         if (Object.keys(legalTiles).length > 0) {
           for (const legalTile of Object.keys(legalTiles)) {
-            console.log('friendly legal tile', legalTile)
             if (legalTile !== 29 && legalTile !== -1) {
               if (friendlyTiles[legalTile]) {
                 piggybackFound = true
@@ -327,32 +328,25 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
     }
   }
 
-  // measure 4: throws earned during the sequence
+  // measure 5: throws earned during the sequence
   let throwsEarnedScore = throwsEarned * 10
-  // score -= throwsEarned * 3
 
   // heuristic 1: prioritize catch if all remaining enemies are on the board
   let catchPrioritizeScore = 0
   if (allPiecesOut({ pieces: enemyPieces })) {
     let enemyFound = false
-    // for each enemy tile
-      // for each friendly tile
     for (const enemyTile of enemyTiles) {
       for (const friendlyTile of friendlyTiles) {
-        // find the distance -- reuse calculateLongestPathHome (instead of Home, use enemyTile)
-        // if distance not found
-        // continue
-        // else
-          // if distance is shorter than current one (could be array)
-          // replace candidate with new distance
-          // else if distance is the same
-          // replace candidate with one that has more tokens
-          // keep distance and tokenId of the first token on the friendly tile
-        
+        // get legal tile for enemy with gul
+        // if shortcut, pick the shortest path to home
+        // calculate shortest distance from friendlyTile to there
+        // if path found
+        // enemyFound = true
       }
     }
     // if you didn't find an enemy in any paths
     if (!enemyFound) {
+      // approach earth
       // add distance score for friendlyTiles again (if you're closer to Earth, you add less)
     }
   }
@@ -401,6 +395,35 @@ export function calculateLongestPathHome(tile, longestDistance) {
   if (nextTiles[0] === 29) {
     return longestDistance
   } else {
+    let nextLongestDistance = 0
+    for (const nextTile of nextTiles) {
+      const candidate = calculateLongestPathHome(nextTile, longestDistance)
+      if (candidate > nextLongestDistance) {
+        nextLongestDistance = candidate
+      }
+    }
+    return nextLongestDistance
+  }
+}
+
+// dfs
+// longest distance from start is 22 because of the path from saturn to moon and neptune
+export function calculateLongestPathDestination(start, longestDistance, end) {
+  
+  longestDistance+=1
+
+  const nextTiles = checkFinishRule(getNextTiles(tile, true))
+  
+  // base case
+  if (nextTiles[0] === 29) {
+    return // path not found
+  } else {
+    // for each tile in the fork
+    // check if the tile is the end
+    // if it is
+    // return the distance
+    // else
+    // call function
     let nextLongestDistance = 0
     for (const nextTile of nextTiles) {
       const candidate = calculateLongestPathHome(nextTile, longestDistance)
