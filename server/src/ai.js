@@ -300,7 +300,8 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
         // check how many enemies are on it
         // multiply score by that number
         if (Object.keys(legalTiles).length > 0) {
-          for (const legalTile of Object.keys(legalTiles)) {
+          for (let legalTile of Object.keys(legalTiles)) {
+            legalTile = parseInt(legalTile)
             if (legalTile !== 29 && legalTile !== -1) {
               if (friendlyTiles[legalTile]) {
                 piggybackFound = true
@@ -332,22 +333,49 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   let throwsEarnedScore = throwsEarned * 10
 
   // heuristic 1: prioritize catch if all remaining enemies are on the board
-  let catchPrioritizeScore = 0
+  // get the shortest distance between enemy and friendly
+  // add it to score - algorithm selects lowest score
+  let catchPrioritizeScore = 100
   if (allPiecesOut({ pieces: enemyPieces })) {
     let enemyFound = false
+    
+    // get legal tile for enemy with gul
+    // if shortcut, pick the shortest path to home
     for (const enemyTile of enemyTiles) {
+      enemyTile = parseInt(enemyTile)
+      let history
+      if (tileType(enemyTile) === 'home') {
+        history = []
+      } else {
+        history = enemyTiles[enemyTile][0].history
+      }
+      const legalTiles = getLegalTiles(enemyTile, moveSets['3'], enemyPieces, history, backdoLaunch)
+      let shortestDistanceTile
+      if (Object.keys(legalTiles).length > 0) {
+        // pick distance that's shortest to earth
+        let candidate
+        let shortestDistanceHome
+        for (let tile of Object.keys(legalTiles)) {
+          tile = parseInt(tile)
+          candidate = calculateLongestPathHome(tile, 0)
+          if (candidate < shortestDistanceHome) {
+            shortestDistanceHome = candidate
+            shortestDistanceTile = tile
+          }
+        }
+      }
       for (const friendlyTile of friendlyTiles) {
-        // get legal tile for enemy with gul
-        // if shortcut, pick the shortest path to home
-        // calculate shortest distance from friendlyTile to there
+        // calculate shortest distance from friendlyTile to enemy tile
         // if path found
         // enemyFound = true
+        // console.log('move', move, 'legalTiles', legalTiles)
+        // check how many enemies are on it
+        // multiply score by that number
       }
     }
     // if you didn't find an enemy in any paths
     if (!enemyFound) {
-      // approach earth
-      // add distance score for friendlyTiles again (if you're closer to Earth, you add less)
+      // advance the token that is closest to earth
     }
   }
 
@@ -412,11 +440,11 @@ export function calculateLongestPathDestination(start, longestDistance, end) {
   
   longestDistance+=1
 
-  const nextTiles = checkFinishRule(getNextTiles(tile, true))
+  const nextTiles = checkFinishRule(getNextTiles(start, true))
   
   // base case
   if (nextTiles[0] === 29) {
-    return // path not found
+    return 0
   } else {
     // for each tile in the fork
     // check if the tile is the end
@@ -426,7 +454,7 @@ export function calculateLongestPathDestination(start, longestDistance, end) {
     // call function
     let nextLongestDistance = 0
     for (const nextTile of nextTiles) {
-      const candidate = calculateLongestPathHome(nextTile, longestDistance)
+      const candidate = calculateLongestPathDestination(nextTile, longestDistance, end)
       if (candidate > nextLongestDistance) {
         nextLongestDistance = candidate
       }
