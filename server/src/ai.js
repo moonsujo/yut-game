@@ -1,4 +1,4 @@
-import { allPiecesOut, checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, scorePieces, tileType } from '../rules/rulesHelpers.js'
+import { allPiecesOut, checkFinishRule, getNextTiles, getOccupiedTiles, isEmptyMoves, movePieces, scorePieces, tileType, winCheck } from '../rules/rulesHelpers.js'
 import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
@@ -6,7 +6,7 @@ import { getLegalTiles } from '../rules/legalTiles.js'
 export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens, throwsEarned }) {
 
   // base case
-  if (isEmptyMoves(moves)) {
+  if (isEmptyMoves(moves) || winCheck(friendlyPieces)) {
     // calculate score
     // if moves is empty
     // return move sequence with score
@@ -57,12 +57,12 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
         ]
        */
       if (!(Object.keys(legalTiles).length === 0)) {
-        for (const legalTile of Object.keys(legalTiles)) {
-          
+        for (let legalTile of Object.keys(legalTiles)) {
+          legalTile = parseInt(legalTile)
           // if legal tile is 29
           // pick the lowest move whether there's one move or multiple moves
           let moveInfo
-          if (legalTile === '29') {
+          if (legalTile === 29) {
             for (const moveInfo of legalTiles[legalTile]) {
               const [newPieces] = scorePieces({ 
                 pieces: friendlyPieces,
@@ -314,7 +314,10 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
                 if (enemyTiles[legalTile].length > numMostTokens) {
                   numMostTokens = enemyTiles[legalTile].length
                 }
-                enemyCatchScore += (proximityScore[move] * numMostTokens)
+                // don't reward catching if you're ahead
+                if (friendlyDistanceScore > enemyDistanceScore) {
+                  enemyCatchScore += (proximityScore[move] * numMostTokens)
+                }
               }
             }
           }

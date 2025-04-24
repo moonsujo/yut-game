@@ -71,6 +71,15 @@ export function checkFinishRule(forks) {
   return forks
 }
 
+export function winCheck(pieces) {
+  for (const piece of pieces) {
+    if (piece.tile !== 29) {
+      return false
+    }
+  }
+  return true;
+}
+
 // returns object: { tile: [piece] }
 export function getOccupiedTiles({ pieces }) {
 

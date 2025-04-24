@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import { hasValidMove, makeId } from './helpers.js';
 import initialState from './initialState.js';
 import { getLegalTiles } from './rules/legalTiles.js'
-import { hasTokenOnBoard, isBackdoMoves, isEmptyMoves, movePieces, scorePieces, tileType } from './rules/rulesHelpers.js'
+import { hasTokenOnBoard, isBackdoMoves, isEmptyMoves, movePieces, scorePieces, tileType, winCheck } from './rules/rulesHelpers.js'
 import { calculateSmartMoveSequence } from './src/ai.js';
 
 const app = express();
@@ -926,13 +926,13 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = await getHostTurn(room)
       }
-      room.turn = newTurn
-      room.teams[newTurn.team].throws = 1
-      room.gamePhase = "pregame"
+      // room.turn = newTurn
+      // room.teams[newTurn.team].throws = 1
+      // room.gamePhase = "pregame"
       // testing
-      // room.gamePhase = "game" 
-      // room.turn.team = 1
-      // room.teams[room.turn.team].throws = 0
+      room.gamePhase = "game" 
+      room.turn.team = 1
+      room.teams[room.turn.team].throws = 0
       
       // Game logs
       let gameLog = {
@@ -1911,14 +1911,7 @@ io.on("connect", async (socket) => {
   })
 
 
-  function winCheck(team) {
-    for (const piece of team.pieces) {
-      if (piece.tile !== 29) {
-        return false
-      }
-    }
-    return true;
-  }
+
 
   async function handleScore({ room, selectedMove, playerName }) {
     try {
@@ -1987,7 +1980,7 @@ io.on("connect", async (socket) => {
       room.legalTiles = {}
       room.selection = null
 
-      if (winCheck(room.teams[movingTeam])) {
+      if (winCheck(room.teams[movingTeam].pieces)) {
         room.results.push(movingTeam)
         room.gamePhase = 'finished'
         serverEvent.content.winner = movingTeam
