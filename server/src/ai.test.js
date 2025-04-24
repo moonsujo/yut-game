@@ -508,5 +508,18 @@ describe("calculate score", () => {
     // option 4
     // u2sH -> u2s3
     // should prefer option 1
+
+    // catch prioritize
+    // scenario 1: enemy is far ahead of you
+    // scenario 2: enemy:you 3:0, you have a token in front of the enemy.
+      // send your guy behind him
+    // scenario 3: enemy at saturn, you are at mars with ge
+      // send your guy to s21
+    // scenario 4: enemy at saturn, you are at mars with gul
+      // send your guy to the moon
+    // scenario 4: enemy at saturn, you are at mars with gul and ge
+      // capture
+    // scenario 5: enemy at s11, you are at s8 and s6 with ge
+      // s8 to saturn
   })
 })

@@ -339,8 +339,6 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               paused: room.paused
             })
           } else if (serverEvent.name === 'move') {
-            console.log('room watch, move')
-            console.log('room watch, move, updated pieces', serverEvent.content.updatedPieces)
             io.to(userSocketId).emit('move', {
               newTeam: room.turn.team,
               prevTeam: serverEvent.content.prevTeam,
@@ -1409,7 +1407,6 @@ io.on("connect", async (socket) => {
             // favors shortcut star over regular one
             // favors catch over shortcut
             // if there's a tie, pick the first match
-            console.log('[aiMove] enemy pieces', JSON.stringify(room.teams[player.team === 0 ? 1 : 0].pieces, null, 2))
             const smartMoveSequence = calculateSmartMoveSequence({ room, team: player.team })
             console.log('[aiMove] smartMoveSequence', smartMoveSequence)
             player.moveSequence = smartMoveSequence
@@ -1487,7 +1484,6 @@ io.on("connect", async (socket) => {
     try {  
       let moveInfo = room.legalTiles[tile]
       let from = room.selection.tile
-      console.log('[handleMove] moveInfo', moveInfo)
       let moveUsed = moveInfo.move
       let to = tile
       let path = moveInfo.path
@@ -1556,18 +1552,14 @@ io.on("connect", async (socket) => {
         path, 
         history, 
       })
-      console.log('new friendlies', newFriendlyPieces)
-      console.log('new enemies', newEnemies)
 
       for (const piece of newFriendlyPieces) {
         room.teams[movingTeam].pieces[piece.id] = { ...piece }
       }
       for (const piece of newEnemies) {
-        console.log('new enemy piece', piece)
         room.teams[movingTeam === 0 ? 1 : 0].pieces[piece.id] = { ...piece }
       }
 
-      console.log('selected pieces', pieces)
       for (const piece of pieces) {
         serverEvent.content.updatedPieces.push({ ...piece })
       }
@@ -1660,7 +1652,6 @@ io.on("connect", async (socket) => {
       turnStartTimeDelay += (parseInt(Math.abs(moveUsed)) * JUMP_TIME)
 
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
-        console.log('[handleMove] new turn')
         const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
         room.paused = pause

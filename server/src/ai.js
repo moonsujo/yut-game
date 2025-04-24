@@ -336,12 +336,12 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   // get the shortest distance between enemy and friendly
   // add it to score - algorithm selects lowest score
   let catchPrioritizeScore = 100
-  if (allPiecesOut({ pieces: enemyPieces })) {
+  if (allPiecesOut({ pieces: enemyPieces }) && friendlyDistanceScore > enemyDistanceScore) {
     let enemyFound = false
     
     // get legal tile for enemy with gul
     // if shortcut, pick the shortest path to home
-    for (const enemyTile of enemyTiles) {
+    for (let enemyTile of Object.keys(enemyTiles)) {
       enemyTile = parseInt(enemyTile)
       let history
       if (tileType(enemyTile) === 'home') {
@@ -350,33 +350,57 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
         history = enemyTiles[enemyTile][0].history
       }
       const legalTiles = getLegalTiles(enemyTile, moveSets['3'], enemyPieces, history, backdoLaunch)
+      console.log('legal tiles', Object.keys(legalTiles))
       let shortestDistanceTile
       if (Object.keys(legalTiles).length > 0) {
         // pick distance that's shortest to earth
         let candidate
-        let shortestDistanceHome
+        let shortestDistanceHome = 100
         for (let tile of Object.keys(legalTiles)) {
           tile = parseInt(tile)
-          candidate = calculateLongestPathHome(tile, 0)
+          candidate = startCalculateLongestPathHome(tile, 0)
+          console.log('candidate', candidate)
           if (candidate < shortestDistanceHome) {
             shortestDistanceHome = candidate
             shortestDistanceTile = tile
           }
         }
       }
-      for (const friendlyTile of friendlyTiles) {
+      console.log(`shortestDistanceTile ${shortestDistanceTile}`)
+      // use catchPrioritizeScore
+      for (let friendlyTile of Object.keys(friendlyTiles)) {
+        friendlyTile = parseInt(friendlyTile)
         // calculate shortest distance from friendlyTile to enemy tile
         // if path found
         // enemyFound = true
-        // console.log('move', move, 'legalTiles', legalTiles)
-        // check how many enemies are on it
-        // multiply score by that number
+        let candidate = calculateLongestPathDestination(friendlyTile, 0, shortestDistanceTile)
+        if (candidate > -1) {
+          enemyFound = true
+          if (candidate < catchPrioritizeScore) {
+            catchPrioritizeScore = candidate
+          }
+        }
       }
     }
+
     // if you didn't find an enemy in any paths
     if (!enemyFound) {
       // advance the token that is closest to earth
+      // add the distance of the token closest to earth
+      
+      for (let friendlyTile of Object.keys(friendlyTiles)) {
+        friendlyTile = parseInt(friendlyTile)
+        // calculate shortest distance from friendlyTile to enemy tile
+        // if path found
+        // enemyFound = true
+        let candidate = calculateLongestPathHome(friendlyTile, 0)
+        if (candidate < catchPrioritizeScore) {
+          catchPrioritizeScore = candidate
+        }
+      }
     }
+  } else {
+    catchPrioritizeScore = -1 // it can be 0 if potential enemy tile and friendly tile overlap
   }
 
   console.log('friendlyDistanceScore', friendlyDistanceScore)
@@ -386,7 +410,11 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   console.log('enemyCatchScore', enemyCatchScore)
   console.log('throwsEarnedScore', throwsEarnedScore)
   console.log('catchPrioritizeScore', catchPrioritizeScore)
-  score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
+  if (catchPrioritizeScore > -1) {
+    score = catchPrioritizeScore
+  } else {
+    score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
+  }
   console.log('final score', score)
   return score
 }
@@ -437,6 +465,10 @@ export function calculateLongestPathHome(tile, longestDistance) {
 // dfs
 // longest distance from start is 22 because of the path from saturn to moon and neptune
 export function calculateLongestPathDestination(start, longestDistance, end) {
+
+  if (start === end) {
+    return longestDistance
+  }
   
   longestDistance+=1
 
@@ -444,15 +476,9 @@ export function calculateLongestPathDestination(start, longestDistance, end) {
   
   // base case
   if (nextTiles[0] === 29) {
-    return 0
+    return -1 // not found
   } else {
-    // for each tile in the fork
-    // check if the tile is the end
-    // if it is
-    // return the distance
-    // else
-    // call function
-    let nextLongestDistance = 0
+    let nextLongestDistance = -2 // less than base case
     for (const nextTile of nextTiles) {
       const candidate = calculateLongestPathDestination(nextTile, longestDistance, end)
       if (candidate > nextLongestDistance) {
