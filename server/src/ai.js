@@ -336,7 +336,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   // get the shortest distance between enemy and friendly
   // add it to score - algorithm selects lowest score
   let catchPrioritizeScore = 100
-  if (allPiecesOut({ pieces: enemyPieces }) && friendlyDistanceScore > enemyDistanceScore) {
+  if (allPiecesOut({ pieces: enemyPieces }) && friendlyDistanceScore > enemyDistanceScore && enemyCatchScore === 0) {
     let enemyFound = false
     
     // get legal tile for enemy with gul
