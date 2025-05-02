@@ -3,6 +3,7 @@ import { Html } from '@react-three/drei';
 import { socket } from './SocketManager';
 import { useAtom, useAtomValue } from 'jotai';
 import { joinTeamAtom, teamsAtom } from './GlobalState';
+import axios from 'axios';
 
 export default function JoinTeamModal({ position, rotation, scale }) {
 
@@ -37,7 +38,7 @@ export default function JoinTeamModal({ position, rotation, scale }) {
     return true;
   }
 
-  function handleJoinSubmit(e) {
+  async function handleJoinSubmit(e) {
     e.preventDefault();
     if (name.length == 0) {
       setAlert('Enter something')
@@ -59,6 +60,16 @@ export default function JoinTeamModal({ position, rotation, scale }) {
           setJoinTeam(null);
         }
       });
+
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'buttonClick',
+        timestamp: new Date(),
+        payload: {
+          'button': 'joinTeam',
+          'team': joinTeam
+        }
+      })
+      console.log('[JoinTeamModal] post log response', response)
     }
   }
   

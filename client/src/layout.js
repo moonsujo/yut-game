@@ -1599,6 +1599,10 @@ export default {
         rotation: [0, 0, 0],
         scale: 2.2
       },
+      pageVisits: {
+        position: [-13.9, 0, 5],
+        rotation: [-Math.PI/2, 0, 0],
+      },
       pieces: {
         position: [0,0,0],
         scale: 1,
@@ -1645,7 +1649,7 @@ export default {
       disconnectModal: {
         position: [-4, 10, 3.7],
         rotation: [0,0,0],
-      },
+      }
     },
     about: {
       position: [-3, 0, -4],

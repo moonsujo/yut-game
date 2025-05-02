@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Float, Html, Text3D, useGLTF } from "@react-three/drei";
+import { Float, Html, Text3D } from "@react-three/drei";
 import { animated, useSpring } from "@react-spring/three";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import layout from './layout';
 import RocketAnimated from './meshes/RocketAnimated';
 import UfoAnimated from './meshes/UfoAnimated';
-import YootMesh from './meshes/YootMesh';
-import { useLocation, useParams } from 'wouter';
+import { useLocation } from 'wouter';
 import HowToPlay from './HowToPlay';
 import Title from './Title';
 import About from './About';
@@ -22,6 +21,8 @@ import MeteorsRealShader from './shader/meteorsReal/MeteorsRealShader';
 import YootDisplay from './YootDisplay';
 import DisconnectModal from './DisconnectModal';
 import useMusicPlayer from './hooks/useMusicPlayer';
+import axios from 'axios';
+import useQueryLogs from './hooks/useQueryLogs';
 
 export default function Home2() {
 
@@ -31,6 +32,44 @@ export default function Home2() {
   const client = useAtomValue(clientAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const [playMusic] = useMusicPlayer();
+  const [_location, setLocation] = useLocation();
+  useEffect(() => {
+    async function log() {
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'pageView',
+        timestamp: new Date(),
+        payload: {
+          'page': 'home'
+        }
+      })
+      console.log('[Home2] post log response', response)
+    }
+    log()
+  }, [])
+  
+  // games played, page visits, yut thrown
+  // stats page button
+  function PageVisits({ position, rotation }) {
+    // const numVisits = 10
+    const numVisits = useQueryLogs({ 
+      eventName: 'pageView', 
+      payload: {
+        'page': 'home'
+      }
+    })
+    return <group>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={position}
+        rotation={rotation}
+        size={0.3}
+        height={0.01}
+        color='yellow'
+      >
+        {`Visits: ${numVisits}`}
+      </Text3D>
+    </group>
+  }
 
   function Pieces() {
     return <group>
@@ -94,8 +133,6 @@ export default function Home2() {
     </group>
   }
 
-  const [_location, setLocation] = useLocation();
-
   function AboutButton({ position, rotation, scale }) {
     const [hover, setHover] = useState(false)
 
@@ -158,9 +195,18 @@ export default function Home2() {
       setHover(false)
     }
 
-    function handlePointerDown(e) {
+    async function handlePointerUp(e) {
       e.stopPropagation();
       setDisplay('howToPlay')
+
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'buttonClick',
+        timestamp: new Date(),
+        payload: {
+          'button': 'howToPlayHome',
+        }
+      })
+      console.log('[HowToPlayButton] post log response', response)
     }
 
     return <group position={position} rotation={rotation} scale={scale}>
@@ -176,7 +222,7 @@ export default function Home2() {
         name='wrapper' 
         onPointerEnter={e => handlePointerEnter(e)}
         onPointerLeave={e => handlePointerLeave(e)}
-        onPointerDown={e => handlePointerDown(e)}
+        onPointerUp={e => handlePointerUp(e)}
       >
         <boxGeometry args={[2.8, 0.1, 0.55]}/>
         <meshStandardMaterial transparent opacity={0}/>
@@ -208,12 +254,10 @@ export default function Home2() {
     }
 
     const [isThrottled, setIsThrottled] = useState(false)
-    function handlePointerUp(e) {
+    async function handlePointerUp(e) {
       e.stopPropagation();
       if (isThrottled) return
       
-      console.log('[LetsPlayButton] pointer up')
-
       setIsThrottled(true)
 
       setTimeout(() => {
@@ -229,6 +273,15 @@ export default function Home2() {
       audio.play();
       
       playMusic();
+
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'buttonClick',
+        timestamp: new Date(),
+        payload: {
+          'button': 'createGame'
+        }
+      })
+      console.log('[CreateGameButton] post log response', response)
     }
 
     return <group position={position} rotation={rotation} scale={scale}>
@@ -485,7 +538,7 @@ export default function Home2() {
       position={layout[device].title.camera.position}
       lookAt={layout[device].title.camera.lookAt}
     />
-    <group>
+    <group name='navigation'>
       { device === 'portrait' && <animated.group scale={titleScale} position={titlePosition}>
         <Title 
           position={layout[device].title.text.position}
@@ -533,7 +586,13 @@ export default function Home2() {
         scale={layout[device].title.letsPlay.scale}
       />
     </group>
-    <group>
+    <group name='stats'>
+      <PageVisits 
+        position={layout[device].title.pageVisits.position} 
+        rotation={layout[device].title.pageVisits.rotation}
+      />
+    </group>
+    <group name='display'>
       { display === 'board' && <group position={layout[device].title.board.position} 
         scale={layout[device].title.board.scale}>
         <animated.group scale={titleBoardScale}>
@@ -549,17 +608,15 @@ export default function Home2() {
         rotation={layout[device].about.rotation}
         scale={layout[device].about.scale}
       />}
-      <Physics>
-        { display === 'howToPlay' && <animated.group scale={howToPlayScale}>
-          <HowToPlay 
-            device={device}
-            position={layout[device].howToPlay.position}
-            rotation={[0,0,0]}
-            scale={layout[device].howToPlay.scale}
-            tabOrientation='right'
-          />
-        </animated.group> }
-      </Physics>
+      { display === 'howToPlay' && <animated.group scale={howToPlayScale}>
+        <HowToPlay 
+          device={device}
+          position={layout[device].howToPlay.position}
+          rotation={[0,0,0]}
+          scale={layout[device].howToPlay.scale}
+          tabOrientation='right'
+        />
+      </animated.group> }
     </group>
     { !connectedToServer && <DisconnectModal
       position={layout[device].title.disconnectModal.position}

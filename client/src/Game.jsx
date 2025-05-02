@@ -316,12 +316,32 @@ export default function Game() {
         setHover(false)
       }
 
-      function handlePointerDown(e) {
+      async function handlePointerUp(e) {
         e.stopPropagation();
         if (showRulebook) {
           setShowRulebook(false)
+          
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'howToPlayGame',
+              'action': 'close'
+            }
+          })
+          console.log('[HowToPlayButton] post log response', response)
         } else {
           setShowRulebook(true)
+          
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'howToPlayGame',
+              'action': 'open'
+            }
+          })
+          console.log('[HowToPlayButton] post log response', response)
         }
       }
 
@@ -338,7 +358,7 @@ export default function Game() {
           name='wrapper' 
           onPointerEnter={e => handlePointerEnter(e)}
           onPointerLeave={e => handlePointerLeave(e)}
-          onPointerDown={e => handlePointerDown(e)}
+          onPointerUp={e => handlePointerUp(e)}
         >
           <boxGeometry args={[1.5, 0.1, 0.6]}/>
           <meshStandardMaterial transparent opacity={0}/>

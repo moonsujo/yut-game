@@ -61,6 +61,7 @@ import Rocket from "./meshes/Rocket.jsx";
 import Ufo from "./meshes/Ufo.jsx";
 import { formatName } from "./helpers/helpers.js";
 import GameRules from "./GameRules.jsx";
+import axios from "axios";
 
 export default function Lobby() {
 
@@ -68,6 +69,20 @@ export default function Lobby() {
   const device = useAtomValue(deviceAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams();
+
+  useEffect(() => {
+    async function log() {
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'pageView',
+        timestamp: new Date(),
+        payload: {
+          'page': 'lobby'
+        }
+      })
+      console.log('[Lobby] post log response', response)
+    }
+    log()
+  }, [])
 
   function PlayersParty({ position=[0,0,0], scale=0.7 }) {
     const host = useAtomValue(hostAtom)
@@ -1237,12 +1252,21 @@ export default function Lobby() {
           setHover(false)
           document.body.style.cursor = 'default'
         }
-        function handlePointerUp(e) {
+        async function handlePointerUp (e) {
           e.stopPropagation()
           setSeatChosen(null)
           // send 'add AI' event to server
           // must be host
           socket.emit('addAI', { roomId: params.id.toUpperCase(), clientId: client._id, team: seatChosen[0], level: 'random' })
+        
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'addAIEZ'
+            }
+          })
+          console.log('[AddAIEZButton] post log response', response)
         }
     
         return <group position={position} rotation={rotation} scale={scale}>
@@ -1291,12 +1315,20 @@ export default function Lobby() {
           setHover(false)
           document.body.style.cursor = 'default'
         }
-        function handlePointerUp(e) {
-          e.stopPropagation()
+        async function handlePointerUp () {
           setSeatChosen(null)
           // send 'add AI' event to server
           // must be host
           socket.emit('addAI', { roomId: params.id.toUpperCase(), clientId: client._id, team: seatChosen[0], level: 'smart' })
+        
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'addAISmart'
+            }
+          })
+          console.log('[AddAISmartButton] post log response', response)
         }
 
     
@@ -1448,7 +1480,7 @@ export default function Lobby() {
         document.body.style.cursor = 'default'
         setHover(false)
       }
-      function handlePointerUp(e) {
+      async function handlePointerUp (e) {
         e.stopPropagation()
         setHover(false)
         if (isHost && readyToStart) {
@@ -1457,6 +1489,15 @@ export default function Lobby() {
           const audio = new Audio('sounds/effects/boot-up.mp3');
           audio.volume = 1;
           audio.play();
+
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'startGame'
+            }
+          })
+          console.log('[StartGameButton][desktop] post log response', response)
         }
       }
       return <group name='start-game-button' position={position}>
@@ -2039,6 +2080,7 @@ export default function Lobby() {
         e.stopPropagation()
       }
       async function handleSharePointerUp(e) {
+
         e.stopPropagation()
         if (navigator.share) {
           try {
@@ -2047,6 +2089,15 @@ export default function Lobby() {
               text: "Let's play a game!",
               url: window.location.href,
             })
+
+            const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+              eventName: 'buttonClick',
+              timestamp: new Date(),
+              payload: {
+                'button': 'shareLobby'
+              }
+            })
+            console.log('[ShareThisLobby] post log response', response)
           } catch (err) {
             console.error('Error sharing:', err)
           }
@@ -2069,7 +2120,7 @@ export default function Lobby() {
         scale={[11.4, 0.02, 1.8]}
         onPointerEnter={e => handleSharePointerEnter(e)}
         onPointerLeave={e => handleSharePointerLeave(e)}
-        onPointerUp={e => handleSharePointerUp(e)}
+        onPointerUp={e => handleSharePointerUp(e) }
         >
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -2129,6 +2180,15 @@ export default function Lobby() {
           const audio = new Audio('sounds/effects/boot-up.mp3');
           audio.volume = 1;
           audio.play();
+
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'startGame'
+            }
+          })
+          console.log('[StartGameButton][portrait] post log response', response)
         }
       }
       return <group name='start-game-button' position={position}>
@@ -2143,7 +2203,7 @@ export default function Lobby() {
         <mesh 
         name='wrapper' 
         scale={[11.4, 0.02, 1.8]}
-        onPointerUp={e => handleStartPointerUp(e)}>
+        onPointerUp={e => handleStartPointerUp(e) }>
           <boxGeometry args={[1, 1, 1]}/>
           <meshStandardMaterial color='black' transparent opacity={0}/>
         </mesh>
