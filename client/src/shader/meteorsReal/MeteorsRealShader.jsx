@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { useLoader, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function MeteorsRealShader() {
 

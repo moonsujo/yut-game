@@ -50,13 +50,14 @@ export default function Home2() {
   // games played, page visits, yut thrown
   // stats page button
   function PageVisits({ position, rotation }) {
-    // const numVisits = 10
-    const numVisits = useQueryLogs({ 
+    const [numVisitsResult, loading] = useQueryLogs({ 
       eventName: 'pageView', 
       payload: {
         'page': 'home'
       }
     })
+    const numVisits = numVisitsResult?.[0]?.[0]?.value
+
     return <group>
       <Text3D
         font="fonts/Luckiest Guy_Regular.json"
@@ -64,9 +65,32 @@ export default function Home2() {
         rotation={rotation}
         size={0.3}
         height={0.01}
-        color='yellow'
+        color='limegreen'
       >
-        {`Visits: ${numVisits}`}
+        {`Visits: ${ numVisits ? numVisits : '' }`}
+      </Text3D>
+    </group>
+  }
+
+  function GamesPlayed({ position, rotation }) {
+    const [numGamesPlayedResult] = useQueryLogs({ 
+      eventName: 'buttonClick', 
+      payload: {
+        'button': 'startGame'
+      }
+    })
+    const numGamesPlayed = numGamesPlayedResult?.[0]?.[0]?.value
+
+    return <group>
+      <Text3D
+        font="fonts/Luckiest Guy_Regular.json"
+        position={position}
+        rotation={rotation}
+        size={0.3}
+        height={0.01}
+        color='limegreen'
+      >
+        {`Games Played: ${ numGamesPlayed ? numGamesPlayed : '' }`}
       </Text3D>
     </group>
   }
@@ -590,6 +614,10 @@ export default function Home2() {
       <PageVisits 
         position={layout[device].title.pageVisits.position} 
         rotation={layout[device].title.pageVisits.rotation}
+      />
+      <GamesPlayed 
+        position={layout[device].title.gamesPlayed.position} 
+        rotation={layout[device].title.gamesPlayed.rotation}
       />
     </group>
     <group name='display'>
