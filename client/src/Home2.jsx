@@ -611,14 +611,14 @@ export default function Home2() {
       />
     </group>
     <group name='stats'>
-      <PageVisits 
+      { device === 'landscape' && <PageVisits 
         position={layout[device].title.pageVisits.position} 
         rotation={layout[device].title.pageVisits.rotation}
-      />
-      <GamesPlayed 
+      /> }
+      { device === 'landscape' && <GamesPlayed 
         position={layout[device].title.gamesPlayed.position} 
         rotation={layout[device].title.gamesPlayed.rotation}
-      />
+      /> }
     </group>
     <group name='display'>
       { display === 'board' && <group position={layout[device].title.board.position} 

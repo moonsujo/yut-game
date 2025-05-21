@@ -474,7 +474,7 @@ async function createUniqueRoomId() {
   let exists = true;
   let idLength = 4;
   while (exists) {
-    roomId = makeId(idLength);
+    roomId = makeId(idLength, false, true);
     exists = await Room.findOne({ shortId: roomId }).exec(); // Check for collisions
   }
   return roomId;

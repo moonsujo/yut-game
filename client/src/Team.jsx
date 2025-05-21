@@ -181,7 +181,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
     if (teams[team].pregameRoll === null) {
       rollText = '';
     } else if (teams[team].pregameRoll === 0) {
-      rollText = '&#10007'
+      rollText = '&#10007' // not working
     } else {
       rollText = teams[team].pregameRoll.toString()
     }
@@ -224,43 +224,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
   const nameSpacing = 1.17
   function PlayerIds() {
     const playerIdsRef = useRef([[],[]])
-    const yootIconRef = useRef()
     const youIndicatorRef = useRef()
-    useFrame(() => {
-      playerIdsRef.current.forEach(function (_value, i) {
-        playerIdsRef.current[i].forEach(function (_value1, j) {
-          // You Icon
-          const isYou = teams[i].players[j].name === client.name
-          const isAI = teams[i].players[j].type === 'ai'
-          if (isYou && playerIdsRef.current[i][j].geometry.boundingSphere) {            
-            youIndicatorRef.current.scale.x = 1
-            youIndicatorRef.current.scale.y = 1
-            youIndicatorRef.current.scale.z = 1
-            youIndicatorRef.current.position.x = playerIdsRef.current[i][j].geometry.boundingSphere.center.x + playerIdsRef.current[i][j].geometry.boundingSphere.radius + 0.3
-            youIndicatorRef.current.position.z = -j * nameSpacing + 0.35
-          } else {
-            youIndicatorRef.current.scale.x = 0
-            youIndicatorRef.current.scale.y = 0
-            youIndicatorRef.current.scale.z = 0
-          }
-          // Yut Icon
-          if (!isAI && turn.team === i && turn.players[turn.team] === j && playerIdsRef.current[i][j].geometry.boundingSphere) {
-            yootIconRef.current.scale.x = 1
-            yootIconRef.current.scale.y = 1
-            yootIconRef.current.scale.z = 1
-            yootIconRef.current.position.x = playerIdsRef.current[i][j].geometry.boundingSphere.center.x + playerIdsRef.current[i][j].geometry.boundingSphere.radius + 0.4
-            if (isYou) {
-              yootIconRef.current.position.x += 0.25
-            }
-            yootIconRef.current.position.z = -j * nameSpacing
-          } else {
-            yootIconRef.current.scale.x = 0
-            yootIconRef.current.scale.y = 0
-            yootIconRef.current.scale.z = 0
-          }
-        })
-      })
-    })
 
     function AIPlayingText() {
       const [text, setText] = useState('AI playing . . .')
@@ -307,24 +271,22 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
             ref={(ref => playerIdsRef.current[team][index] = ref)}
           >
             { value.type === 'human' ? formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
-            + (host && value.socketId === host.socketId ? ' (h) ' : '')
+            + (host && value.socketId === host.socketId ? ' (h)' : '')
+            + (value.name === client.name ? ' ★' : '')
             + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]].name === value.name ? AIPlayingText() : formatName(value.name, layout[device].game[`team${team}`].names.maxLength) }
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>
-          <group name='you-indicator' ref={youIndicatorRef}>
+          {/* { teams[team].players[index].name === client.name && <group name='you-indicator' ref={youIndicatorRef}>
             <Star rotation={[Math.PI/2, 0, 0]} scale={0.23} color={ team === 0 ? 'red' : 'turquoise' }/>
-          </group>
+          </group> } */}
+          { turn.team === team && turn.players[turn.team] === index && <group position={[-0.4, 0.17, 0]} scale={0.8}>
+            <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04}/>
+            <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.1, 0, 0]}/>
+            <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.2, 0, 0]}/>
+            <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.3, 0, 0]}/>
+          </group> }
         </group>
       ))}
-      {/* y position in case it overlaps with a name */}
-      <group ref={yootIconRef} scale={0} position={[0, 0.17, 0]}>
-        <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04}/>
-        <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.1, 0, 0]}/>
-        <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.2, 0, 0]}/>
-        <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.3, 0, 0]}/>
-      </group>
-      {/* add 'copy link to share' if game hasn't started yet */}
-      {/* { gamePhase === 'lobby' && client.team !== -1 && <CopyLink position={[0.1, -teams[team].players.length * 0.5-0.1, 0]}/> } */}
     </group>
   }
 
