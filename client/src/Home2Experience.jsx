@@ -22,7 +22,7 @@ export default function Home2Experience() {
         <Constellation omitFactor={2} position={[-15.5,-1,-6.5]} rotation={[-Math.PI/2, 0, Math.PI/16]} scale={1.3} modelPath={'/models/star.glb'}/>
         <Constellation omitFactor={4} position={[-8.7,-1,-7.1]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={0.9} modelPath={'/models/star.glb'}/>
         <Constellation omitFactor={2} position={[-15.5,-1,3.5]} rotation={[-Math.PI/2, 0, Math.PI/6]} scale={1.2} modelPath={'/models/star.glb'}/>
-        <Constellation omitFactor={2} position={[-9,-1,-1.3]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.3} modelPath={'/models/star.glb'}/>
+        <Constellation omitFactor={2} position={[-8.5,-1,3.5]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.3} modelPath={'/models/star.glb'}/>
         {/* top right */}
         <Constellation omitFactor={2} position={[4.4,-1,-6.3]} rotation={[-Math.PI/2, 0, Math.PI/4]} scale={1.3} modelPath={'/models/star.glb'}/>
     </group>

@@ -35,6 +35,8 @@ export default function YootButtonNew({ position, rotation, scale }) {
 
   const scaleYootArray=[0.2, 0.14, 0.14]
 
+  const timeoutRef = useRef(null)
+
   useFrame((state, delta) => {
     if (enabled) {
       // buttonRef.current.scale.x = Math.sin(state.clock.elapsedTime * 3) * 0.07 + scale
@@ -55,25 +57,33 @@ export default function YootButtonNew({ position, rotation, scale }) {
     e.stopPropagation();
     document.body.style.cursor = "default";
   }
+
+  const DEBOUNCE_DELAY = 300
   async function handleClick(e) {
     e.stopPropagation();
 
-    if (enabled && !paused) {
-      setYootAnimationPlaying(true)
-      socket.emit('throwYut', { roomId: params.id.toUpperCase() })
-      const audio = new Audio('sounds/effects/throw-yut-2.mp3');
-      audio.volume=1
-      audio.play();
-    }
-          
-    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
-      eventName: 'buttonClick',
-      timestamp: new Date(),
-      payload: {
-        'button': 'throwYut',
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+    timeoutRef.current = setTimeout(async () => {
+      if (enabled && !paused) {
+        setYootAnimationPlaying(true)
+        socket.emit('throwYut', { roomId: params.id.toUpperCase() })
+        console.log('click event emitted')
+        const audio = new Audio('sounds/effects/throw-yut-2.mp3');
+        audio.volume=1
+        audio.play();
       }
-    })
-    console.log('[YootButton] post log response', response)
+            
+      const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+        eventName: 'buttonClick',
+        timestamp: new Date(),
+        payload: {
+          'button': 'throwYut',
+        }
+      })
+
+      console.log('[YootButton] post log response', response)
+    }, DEBOUNCE_DELAY)
   }
 
   function ThrowCount({position, orientation}) {

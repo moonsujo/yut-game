@@ -183,6 +183,7 @@ export const SocketManager = () => {
           localStorage.setItem('yootGame', JSON.stringify({
             ...spectator
           }))
+          return
         }
       }
 
@@ -192,6 +193,7 @@ export const SocketManager = () => {
           localStorage.setItem('yootGame', JSON.stringify({
             ...player
           }))
+          return
         }
       }
 
@@ -201,6 +203,7 @@ export const SocketManager = () => {
           localStorage.setItem('yootGame', JSON.stringify({
             ...player
           }))
+          return
         }
       }
     }
