@@ -463,7 +463,7 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
           }
         }
       } catch (err) {
-        console.log(`[Room.watch] error getting user's socket id`, err)
+        console.log(`[Room.watch] error in Room.watch`, err)
       }
     }
   }
@@ -682,7 +682,9 @@ io.on("connect", async (socket) => {
   socket.on("joinRoom", async ({ roomId }) => {
     try {
       let user = await User.findOneAndUpdate({ 'socketId': socket.id }, { roomId, connectedToRoom: true }, { new: true })
-
+      if (!user) {
+        throw new Error(`user with socket id ${socket.id} not found`)
+      }
       let operation = {}
       if (user && user.roomId && user.roomId.valueOf() === roomId) {
         if (user.team === -1) { // if spectator
