@@ -27,9 +27,9 @@ export default function App () {
     >
       <Suspense fallback={null}>
         {/* <Perf/> */}
-        <directionalLight castShadow position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
+        <directionalLight castShadow position={ [ 1, 6, 3 ] } intensity={ 4 } />
         <ambientLight intensity={ 1.5 } />
-        <ParticleSystem/>
+        {/* <ParticleSystem/> */}
         <SocketManager/>
         <AssetLoader/>
         <Route path="/">

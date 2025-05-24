@@ -16,7 +16,7 @@ function calcZoom() {
   }
 }
 
-export default function GameCamera({ position=[0, 17, 7], lookAt=[0,0,0] }) {
+export default function GameCamera({ position=[0, 17, 7], lookAt=[0,0,0], controlsEnabled=false }) {
   
   const [zoom, setZoom] = useState(calcZoom());
   
@@ -36,7 +36,7 @@ export default function GameCamera({ position=[0, 17, 7], lookAt=[0,0,0] }) {
   })
 
   return <>
-    <CameraControls enabled={false}/>
+    <CameraControls enabled={controlsEnabled}/>
     <OrthographicCamera
       makeDefault
       zoom={zoom}

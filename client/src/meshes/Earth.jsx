@@ -4,7 +4,7 @@ import { useGLTF } from "@react-three/drei";
 import { animated } from "@react-spring/three";
 import NeptuneParticles from "./NeptuneParticles";
 
-export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
+export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1, showParticles=true }) {
   const { nodes, materials } = useGLTF("/models/earth-round.glb");
 
   const earth = useRef();
@@ -14,8 +14,9 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
   });
 
   return (
-    <animated.group position={position} rotation={rotation} scale={scale}>
-      <group ref={earth} rotation={[Math.PI / 16, Math.PI / 4, 0]}>
+    <animated.group ref={earth} position={position} rotation={rotation} scale={scale}>
+      <group rotation={[Math.PI/3, -Math.PI/2, 0]}>
+      {/* <group ref={earth} rotation={[Math.PI / 16, Math.PI / 4, 0]}> */}
         <mesh
           castShadow
           receiveShadow
@@ -55,7 +56,7 @@ export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
             material={materials.earth}
           />
         </mesh>
-        <NeptuneParticles/>
+        { showParticles && <NeptuneParticles/> }
       </group>
     </animated.group>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { connectedToServerAtom, gamePhaseAtom, winnerAtom } from "./GlobalState.jsx";
+import { clientAtom, connectedToServerAtom, gamePhaseAtom, winnerAtom } from "./GlobalState.jsx";
 import { useAtom, useAtomValue } from "jotai";
 import { socket } from "./SocketManager.jsx";
 import { useParams } from "wouter";
@@ -7,12 +7,18 @@ import Lobby from "./Lobby.jsx";
 import Game from "./Game.jsx";
 import RocketsWin from "./RocketsWin.jsx";
 import UfosWin from "./UfosWin.jsx";
+import RocketsWin2 from "./endScenes/RocketsWin2.jsx";
+import RocketsLose from "./endScenes/RocketsLose.jsx";
+import UfosWin2 from "./endScenes/UfosWin2.jsx";
+import UfosLose from "./endScenes/UfosLose.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
   const winner = useAtomValue(winnerAtom)
+  const client = useAtomValue(clientAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams()
+
 
   useEffect(() => {
     if (connectedToServer) {
@@ -30,7 +36,9 @@ export default function Experience() {
     { gamePhase === 'lobby' && <Lobby/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
-    { gamePhase === 'finished' && winner === 0 && <RocketsWin/> }
-    { gamePhase === 'finished' && winner === 1 && <UfosWin/> }
+    { gamePhase === 'finished' && client.team === 0 && winner === 0 && <RocketsWin2/> }
+    { gamePhase === 'finished' && client.team === 0 && winner === 1 && <RocketsLose/> }
+    { gamePhase === 'finished' && client.team === 1 && winner === 1 && <UfosWin2/> }
+    { gamePhase === 'finished' && client.team === 1 && winner === 0 && <UfosLose/> }
   </>
 }
