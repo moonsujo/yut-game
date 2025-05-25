@@ -1,7 +1,7 @@
 import { Float, Text3D } from "@react-three/drei";
 import { useAtomValue } from "jotai";
 import { teamsAtom } from "../GlobalState";
-import { formatName } from "../helpers/helpers";
+import { formatName, getScore } from "../helpers/helpers";
 import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
 import { useEffect, useRef } from "react";
@@ -14,17 +14,10 @@ import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
 
-function getScore(team) {
-  let score = 0
-  for (const token of team.pieces) {
-    if (token.tile === 29) {
-      score++
-    }
-  }
-  return score
-}
-
 export default function RocketsWin2() {
+  // Displays / Test
+  const scene0On = true
+
   // Hooks
   const [CreateFirework] = useFireworksShader();
 
@@ -48,6 +41,7 @@ export default function RocketsWin2() {
   for (let i = 0; i < numUfos; i++) {
     ufos.push(useRef())
   }
+
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
     rocket0.current.position.y = Math.cos(time) * 0.05
@@ -57,33 +51,35 @@ export default function RocketsWin2() {
     rocket3.current.position.y = Math.cos(time) * 0.05
 
     // Ufos
-    for (let i = 0; i < numUfos; i++) {
-      let t = (time + i * shiftTime) % resetTime
-      let timeSlowed = t / 2
-      const ufo = ufos[i]
-      // scale
-      if (t < 1) {
-        ufo.current.scale.x = Math.min(t, 1)
-        ufo.current.scale.y = Math.min(t, 1)
-        ufo.current.scale.z = Math.min(t, 1)
-      } else if (t < (resetTime - 1)) {
-        // resetTime - 1 = max
-        // resetTime - 1 - t
-        // 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-        ufo.current.scale.x = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-        ufo.current.scale.y = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-        ufo.current.scale.z = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-      } else {
-        ufo.current.scale.x = Math.max(resetTime - t - 0.5, 0)
-        ufo.current.scale.y = Math.max(resetTime - t - 0.5, 0)
-        ufo.current.scale.z = Math.max(resetTime - t - 0.5, 0)
+    if (scene0On) {
+      for (let i = 0; i < numUfos; i++) {
+        let t = (time + i * shiftTime) % resetTime
+        let timeSlowed = t / 2
+        const ufo = ufos[i]
+        // scale
+        if (t < 1) {
+          ufo.current.scale.x = Math.min(t, 1)
+          ufo.current.scale.y = Math.min(t, 1)
+          ufo.current.scale.z = Math.min(t, 1)
+        } else if (t < (resetTime - 1)) {
+          // resetTime - 1 = max
+          // resetTime - 1 - t
+          // 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.x = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.y = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.z = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+        } else {
+          ufo.current.scale.x = Math.max(resetTime - t - 0.5, 0)
+          ufo.current.scale.y = Math.max(resetTime - t - 0.5, 0)
+          ufo.current.scale.z = Math.max(resetTime - t - 0.5, 0)
+        }
+        ufo.current.position.x = Math.cos(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
+        ufo.current.position.y = Math.sin(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
+        ufo.current.position.z = 0
+        // ufo.current.rotation.x = Math.PI/2 // removing this makes scene awesome
+        ufo.current.rotation.y = timeSlowed
+        ufo.current.rotation.x = timeSlowed / 8
       }
-      ufo.current.position.x = Math.cos(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
-      ufo.current.position.y = Math.sin(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
-      ufo.current.position.z = 0
-      // ufo.current.rotation.x = Math.PI/2 // removing this makes scene awesome
-      ufo.current.rotation.y = timeSlowed
-      ufo.current.rotation.x = timeSlowed / 8
     }
   })
 
@@ -114,11 +110,11 @@ export default function RocketsWin2() {
               // generateRandomNumberInRange(0, 5) * (Math.random() > 0.5 ? 1 : -1) + 15,
               // 0, 
               Math.cos(angle) * radiusCircle * 1.7,
-              -5,
-              Math.sin(angle) * radiusCircle
+              -10,
+              Math.sin(angle) * radiusCircle - 3
           )
           size = 0.3 + Math.random() * 0.3
-          radius = 2.0 + Math.random() * 1.0
+          radius = 1.0 + Math.random() * 1.0
         }
         const color = new THREE.Color();
         color.setHSL(Math.random(), 0.7, 0.4)
@@ -140,7 +136,7 @@ export default function RocketsWin2() {
 
   return <group>
     <group name='setup'>
-      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]} controlsEnabled/>
+      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
@@ -218,7 +214,7 @@ export default function RocketsWin2() {
       </group>
     </group>
     {/* scene 0 on the left */}
-    <group name='scene-0' position={[-9, -5, 0]} scale={0.8}>
+    { scene0On && <group name='scene-0' position={[-9, -5, 0]} scale={0.8}>
       <group name='pieces' position={[0.4, -1.9, 0.8]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
           return <group ref={value}>
@@ -237,7 +233,7 @@ export default function RocketsWin2() {
         colorTint2={new THREE.Vector4(1.0, 1.0, 1.0, 0.5)} // large
       />
       <Portal position={[0, 0.3, -3]} scale={1} rotation={[-Math.PI/2, 0, 0]}/>
-    </group>
+    </group> }
     {/* scene 1 in the middle */}
     <group name='scene-1' scale={1} position={[0, 0, 0.5]}>
       <group name='earth-wrapper' rotation={[-Math.PI/2, 0, Math.PI/16]} ref={earth}>

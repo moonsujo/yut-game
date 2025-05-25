@@ -174,3 +174,13 @@ export function isBackdoMovesWithoutPieces(moves, pieces) {
   
   return true
 }
+
+export function getScore(team) {
+  let score = 0
+  for (const token of team.pieces) {
+    if (token.tile === 29) {
+      score++
+    }
+  }
+  return score
+}
