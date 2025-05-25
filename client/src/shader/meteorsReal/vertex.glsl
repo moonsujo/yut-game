@@ -29,25 +29,10 @@ void main()
 
     vSetOffTime = aSetOffTime;
     vTrailDuration = aTrailDuration;
-
-    // Exploding
-    // float explodingProgress = -(1.0 / progress) + 2.0;
-    // float explodingProgress = log2(progress*20.0+1.0)/2.0; // log becomes positive from x = 1
-    // float explodingProgress = remap(progress, aSetOffTime, aSetOffTime+0.1, 0.0, 1.0);
-    // explodingProgress = (-pow(10.0, -explodingProgress) + 1.0) * 2.0;
-    // newPosition *= explodingProgress;
     
     // path = -2, -1
     newPosition.x -= (aSetOffTime * uDuration * uSpeedX);
     newPosition.y -= (aSetOffTime * uDuration * uSpeedY);
-
-    // Falling
-    // fallingProgress = clamp(fallingProgress, 0.0, 1.0);
-    // fallingProgress = 1.0 - pow(1.0 - fallingProgress, 3.0);
-    // float fallingProgress = remap(progress, 0.1, 1.0, 0.0, 1.0);
-    // fallingProgress = (-pow(10.0, -fallingProgress)) * 2.0;
-    // newPosition.y -= fallingProgress * 2.0;
-    // newPosition.x -= fallingProgress * 4.0;
 
     // shift by time instead of position from center
 
@@ -59,17 +44,6 @@ void main()
         sizeProgress = remap(progress, aSetOffTime, aSetOffTime+aTrailDuration, 1.0, 0.0);
         sizeProgress = clamp(sizeProgress, 0.0, 1.0);
     }
-    // float sizeStartProgress = remap(progress, 0.0, aSetOffTime, 0.0, 0.0);
-    // float sizeShineProgress = remap(progress, aSetOffTime, aSetOffTime+0.1, 1.0, 0.0);
-    // float sizeProgress = max(sizeStartProgress, sizeShineProgress);
-    // sizeProgress = clamp(sizeProgress, 0.0, 1.0);
-
-
-    // Twinkling
-    // float twinklingProgress = remap(progress, 0.6, 0.9, 0.0, 1.0);
-    // twinklingProgress = clamp(twinklingProgress, 0.0, 1.0);
-    // float sizeTwinkling = sin(progress * 40.0) * 0.5 + 0.5;
-    // sizeTwinkling = 1.0 - sizeTwinkling * twinklingProgress;
 
     vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);
     vec4 viewPosition = viewMatrix * modelPosition;

@@ -6,8 +6,22 @@ import { useLoader, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useEffect } from 'react';
 
-export default function MeteorsRealShader() {
-
+export default function MeteorsRealShader({ 
+    position=[0,0,0],
+    intervalMs=2000, 
+    speedXBase=5.0, 
+    speedYBase=4.0, 
+    speedXRandom=6.0, 
+    speedYRandom=3.0, 
+    durationBase=5.0, 
+    durationRandom=5.0,
+    color,
+    textures=[
+        useLoader(TextureLoader, '/textures/particles/3.png'),
+        useLoader(TextureLoader, '/textures/particles/7.png'), // heart
+    ]
+}) {
+    console.log('meteor shader')
     const { scene } = useThree();
 
     const sizes = {
@@ -46,7 +60,7 @@ export default function MeteorsRealShader() {
 
             sizesArray[i] = 1.1
 
-            trailDurationArray[i] = 0.05 + Math.random()*0.03
+            trailDurationArray[i] = 0.13 + Math.random()*0.03
 
             setOffTimeArray[i] = (i / count) * 0.8
         }
@@ -93,31 +107,24 @@ export default function MeteorsRealShader() {
         scene.add(points)
     }
 
-    const meteorTextures = [
-        useLoader(TextureLoader, '/textures/particles/3.png'),
-        useLoader(TextureLoader, '/textures/particles/7.png'), // heart
-    ] 
-
     // falling meteor background
     useEffect(() => {       
         const interval = setInterval(() => {
             const count = Math.round(400 + Math.random() * 1000);
-            const position = new THREE.Vector3(
-                (Math.random()-0.5) * 5, 
-                -2,
-                (Math.random()-0.5) * 15, 
+            const positionParticle = new THREE.Vector3(
+                (Math.random()-0.5) * 5 + position[0], 
+                -2 + position[1],
+                (Math.random()-0.5) * 15 + position[2], 
             )
             const size = 0.5 + Math.random() * 0.02
-            const texture = meteorTextures[Math.floor(Math.random() * meteorTextures.length)]
-            const color = new THREE.Color();
-            color.setHSL(0.05, 0.7, 0.4)
-            const speedX = 5.0 + (Math.random() - 0.5) * 6.0;
-            const speedY = 4.0 + (Math.random() - 0.5) * 3.0;
-            const duration = 5.0 + (Math.random() - 0.5) * 5.0;
+            const texture = textures[Math.floor(Math.random() * textures.length)]
+            const speedX = speedXBase + (Math.random() - 0.5) * speedXRandom;
+            const speedY = speedYBase + (Math.random() - 0.5) * speedYRandom;
+            const duration = durationBase + (Math.random() - 0.5) * durationRandom;
             if (document.hasFocus()) {
                 CreateMeteorReal({
                     count,
-                    position,
+                    position: positionParticle,
                     size,
                     texture,
                     color,
@@ -126,7 +133,7 @@ export default function MeteorsRealShader() {
                     duration
                 })
             }
-        }, 2000);
+        }, intervalMs);
         return (() => {
             clearInterval(interval);
         })

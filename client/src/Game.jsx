@@ -448,6 +448,9 @@ export default function Game() {
         </Text3D>
       </group>
     }
+
+    const meteorShaderColor = new THREE.Color();
+    meteorShaderColor.setHSL(0.05, 0.7, 0.4)
     return <group>
       <RulebookButton 
         position={layout[device].game.rulebookButton.position}
@@ -577,7 +580,7 @@ export default function Game() {
         />
       </animated.group> }
       { gamePhase === 'finished' && <WinScreen/> }
-      <MeteorsRealShader/>
+      <MeteorsRealShader color={meteorShaderColor}/>
     </>
   );
 }

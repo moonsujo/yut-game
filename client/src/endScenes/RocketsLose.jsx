@@ -7,7 +7,7 @@ import { formatName, getScore } from "../helpers/helpers";
 import UfoNew from "../meshes/UfoNew";
 import Earth from "../meshes/Earth";
 import { useEffect, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from 'three';
 import { animated, useSpring } from "@react-spring/three";
 import Rocket from "../meshes/Rocket";
@@ -15,8 +15,10 @@ import FragmentShader from '../shader/ufoBeam/fragment.glsl'
 import VertexShader from '../shader/ufoBeam/vertex.glsl'
 import gsap from "gsap";
 import UfoNewBoss from "../meshes/UfoNewBoss";
+import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
-// more rockets in the glass
+// add falling rocket parts in the background
 export default function RocketsLose() {
   // State
   const device = 'landscapeDesktop'
@@ -286,11 +288,14 @@ export default function RocketsLose() {
     config: { tension: 70, friction: 20 },
   }))
 
+  // grey "meteors" fall in the background
+  // spawn a few at start
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0, 0.10, 0.1)
   return <group>
     {/* camera */}
     <group name='setup'>
       <GameCamera controlsEnabled position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
-
     </group>
     {/* title */}
     <Text3D name='title'
@@ -516,5 +521,19 @@ export default function RocketsLose() {
         </Text3D>
       </group>
     </group>
+    {/* <MeteorsRealShader
+      position={[5, 0, 0]}
+      intervalMs={2000} 
+      speedXBase={1.0}
+      speedYBase={0.8}
+      speedXRandom={0.6}
+      speedYRandom={0}
+      durationBase={20.0}
+      durationRandom={1.0}
+      color={meteorShaderColor}
+      textures={[
+        useLoader(TextureLoader, '/textures/particles/3.png'),
+      ]}
+    /> */}
   </group>
 }

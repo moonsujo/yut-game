@@ -557,6 +557,8 @@ export default function Home2() {
     },
   })
   
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <>
     <GameCamera 
       position={layout[device].title.camera.position}
@@ -650,6 +652,6 @@ export default function Home2() {
       position={layout[device].title.disconnectModal.position}
       rotation={layout[device].title.disconnectModal.rotation}
     /> }
-    <MeteorsRealShader/>
+    <MeteorsRealShader color={meteorShaderColor}/>
   </>
 }

@@ -2227,6 +2227,8 @@ export default function Lobby() {
     </group>
   }
   
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <animated.group>
     <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     { device === 'landscapeDesktop' && <group>
@@ -2243,6 +2245,6 @@ export default function Lobby() {
       position={layout[device].lobby.disconnectModal.position}
       rotation={layout[device].lobby.disconnectModal.rotation}
     /> }
-    <MeteorsRealShader/>
+    <MeteorsRealShader color={meteorShaderColor}/>
   </animated.group>
 }
