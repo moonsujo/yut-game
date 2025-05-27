@@ -46,15 +46,83 @@ export default function UfosLose() {
   for (let i = 0; i < numUfos; i++) {
     ufos.push(useRef())
   }
-  const asteroids = []
-  const numAsteroidsRow = 10
-  const numAsteroidsColumn = 10
-  const asteroidResetTime = 10
-  const asteroidRowSpace = 7
-  const asteroidColumnSpace = 8
-  for (let i = 0; i < numAsteroidsRow * numAsteroidsColumn; i++) {
-    asteroids.push(useRef())
-  }
+
+  // Asteroids
+  // speed ratio: 2 : 1
+  const menhir0 = useRef()
+  const menhir0ResetTime = 13
+  const menhir0Origin = [5, 0, -2]
+  const menhir0SpeedX = 1
+  const menhir0SpeedZ = 0.5
+  const menhir1 = useRef()
+  const menhir1ResetTime = 28
+  const menhir1Origin = [9, 0, -2]
+  const menhir1SpeedX = 0.6
+  const menhir1SpeedZ = 0.4
+  const menhir2 = useRef()
+  const menhir2ResetTime = 20
+  const menhir2Origin = [22, 0, -2]
+  const menhir2SpeedX = 1.5
+  const menhir2SpeedZ = 0.9
+  const menhir3 = useRef()
+  const menhir3ResetTime = 40
+  const menhir3Origin = [26, 0, -2]
+  const menhir3SpeedX = 1.2
+  const menhir3SpeedZ = 0.6
+  // behind menhir3
+  const menhir5 = useRef()
+  const menhir5ResetTime = 40
+  const menhir5Origin = [32, 0, -5]
+  const menhir5SpeedX = 1.2
+  const menhir5SpeedZ = 0.6
+  // behind menhir5
+  const menhir10 = useRef()
+  const menhir10ResetTime = 40
+  const menhir10Origin = [38, 0, -8]
+  const menhir10SpeedX = 1.2
+  const menhir10SpeedZ = 0.6
+  // behind menhir10
+  const menhir11 = useRef()
+  const menhir11ResetTime = 40
+  const menhir11Origin = [44, 0, -11]
+  const menhir11SpeedX = 1.2
+  const menhir11SpeedZ = 0.6
+  // behind menhir11
+  const menhir12 = useRef()
+  const menhir12ResetTime = 40
+  const menhir12Origin = [50, 0, -14]
+  const menhir12SpeedX = 1.2
+  const menhir12SpeedZ = 0.6
+
+  const menhir4 = useRef()
+  const menhir4ResetTime = 35
+  const menhir4Origin = [24, 0, 4]
+  const menhir4SpeedX = 0.8
+  const menhir4SpeedZ = 0.5
+  // behind menhir2
+  const menhir6 = useRef()
+  const menhir6ResetTime = 20
+  const menhir6Origin = [22, 0, -5]
+  const menhir6SpeedX = 1.5
+  const menhir6SpeedZ = 0.75
+  // behind menhir1
+  const menhir7 = useRef()
+  const menhir7ResetTime = 28
+  const menhir7Origin = [15, 0, -6]
+  const menhir7SpeedX = 0.6
+  const menhir7SpeedZ = 0.4
+  // behind menhir4
+  const menhir8 = useRef()
+  const menhir8ResetTime = 35
+  const menhir8Origin = [28, 0, 2]
+  const menhir8SpeedX = 0.8
+  const menhir8SpeedZ = 0.4
+  // behind menhir8
+  const menhir9 = useRef()
+  const menhir9ResetTime = 35
+  const menhir9Origin = [32, 0, 0]
+  const menhir9SpeedX = 0.8
+  const menhir9SpeedZ = 0.4
 
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
@@ -98,19 +166,63 @@ export default function UfosLose() {
       }
     }
 
-    // Asteroid
-    for (let i = 0; i < numAsteroidsRow; i++) {
-      for (let j = 0; j < numAsteroidsColumn; j++) {
-        const asteroid = asteroids[i*numAsteroidsRow+j]
-        asteroid.current.position.x = -time % asteroidResetTime + i * asteroidRowSpace + j * 3
-        asteroid.current.position.z = (time % asteroidResetTime) / 2 + j * asteroidColumnSpace
-      }
-    }
+    // Asteroid 0
+    menhir0.current.position.x = menhir0Origin[0] - (time % menhir0ResetTime) * menhir0SpeedX
+    menhir0.current.position.z = menhir0Origin[2] + (time % menhir0ResetTime) * menhir0SpeedZ
+    menhir0.current.rotation.y = time + 0.1
+    // Asteroid 1
+    menhir1.current.position.x = menhir1Origin[0] - (time % menhir1ResetTime) * menhir1SpeedX
+    menhir1.current.position.z = menhir1Origin[2] + (time % menhir1ResetTime) * menhir1SpeedZ
+    menhir1.current.rotation.y = time + 0.4
+    // Asteroid 2
+    menhir2.current.position.x = menhir2Origin[0] - (time % menhir2ResetTime) * menhir2SpeedX
+    menhir2.current.position.z = menhir2Origin[2] + (time % menhir2ResetTime) * menhir2SpeedZ
+    menhir2.current.rotation.y = time + 0.7
+    // Asteroid 3
+    menhir3.current.position.x = menhir3Origin[0] - (time % menhir3ResetTime) * menhir3SpeedX
+    menhir3.current.position.z = menhir3Origin[2] + (time % menhir3ResetTime) * menhir3SpeedZ
+    menhir3.current.rotation.y = time + 1.1
+    // Asteroid 4
+    menhir4.current.position.x = menhir4Origin[0] - (time % menhir4ResetTime) * menhir4SpeedX
+    menhir4.current.position.z = menhir4Origin[2] + (time % menhir4ResetTime) * menhir4SpeedZ
+    menhir4.current.rotation.y = time + 1.3
+    // Asteroid 5
+    menhir5.current.position.x = menhir5Origin[0] - (time % menhir5ResetTime) * menhir5SpeedX
+    menhir5.current.position.z = menhir5Origin[2] + (time % menhir5ResetTime) * menhir5SpeedZ
+    menhir5.current.rotation.y = time + 1.9
+    // Asteroid 6
+    menhir6.current.position.x = menhir6Origin[0] - (time % menhir6ResetTime) * menhir6SpeedX
+    menhir6.current.position.z = menhir6Origin[2] + (time % menhir6ResetTime) * menhir6SpeedZ
+    menhir6.current.rotation.y = time + 1.9
+    // Asteroid 7
+    menhir7.current.position.x = menhir7Origin[0] - (time % menhir7ResetTime) * menhir7SpeedX
+    menhir7.current.position.z = menhir7Origin[2] + (time % menhir7ResetTime) * menhir7SpeedZ
+    menhir7.current.rotation.y = time + 1.9
+    // Asteroid 8
+    menhir8.current.position.x = menhir8Origin[0] - (time % menhir8ResetTime) * menhir8SpeedX
+    menhir8.current.position.z = menhir8Origin[2] + (time % menhir8ResetTime) * menhir8SpeedZ
+    menhir8.current.rotation.y = time + 1.9
+    // Asteroid 9
+    menhir9.current.position.x = menhir9Origin[0] - (time % menhir9ResetTime) * menhir9SpeedX
+    menhir9.current.position.z = menhir9Origin[2] + (time % menhir9ResetTime) * menhir9SpeedZ
+    menhir9.current.rotation.y = time + 1.9
+    // Asteroid 10
+    menhir10.current.position.x = menhir10Origin[0] - (time % menhir10ResetTime) * menhir10SpeedX
+    menhir10.current.position.z = menhir10Origin[2] + (time % menhir10ResetTime) * menhir10SpeedZ
+    menhir10.current.rotation.y = time + 1.9
+    // Asteroid 11
+    menhir11.current.position.x = menhir11Origin[0] - (time % menhir11ResetTime) * menhir11SpeedX
+    menhir11.current.position.z = menhir11Origin[2] + (time % menhir11ResetTime) * menhir11SpeedZ
+    menhir11.current.rotation.y = time + 1.9
+    // Asteroid 12
+    menhir11.current.position.x = menhir11Origin[0] - (time % menhir11ResetTime) * menhir11SpeedX
+    menhir11.current.position.z = menhir11Origin[2] + (time % menhir11ResetTime) * menhir11SpeedZ
+    menhir11.current.rotation.y = time + 1.9
   })
 
   return <group>
     <group name='setup'>
-      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
+      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]} controlsEnabled/>
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
@@ -316,12 +428,49 @@ export default function UfosLose() {
       </group>
     </group>
     {/* background */}
-    <group name='asteroids' position={[-7, 0, -7]}>
-      { asteroids.map((value, index) => 
-        <group ref={value}>
-          <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]} position={[0, -1, 0]}/>
-        </group>
-      )}
+    <group name='asteroids' position={[-7, -1, -7]}>
+      <group ref={menhir0}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      <group ref={menhir1}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      <group ref={menhir2}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      <group ref={menhir3}  scale={2}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      <group ref={menhir4}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      <group ref={menhir5}  scale={2}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir2 */}
+      <group ref={menhir6}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir1 */}
+      <group ref={menhir7}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir4 */}
+      <group ref={menhir8}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir8 */}
+      <group ref={menhir9}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir5 */}
+      <group ref={menhir10}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
+      {/* behind menhir10 */}
+      <group ref={menhir11}>
+        <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
+      </group>
     </group>
   </group>
 }
