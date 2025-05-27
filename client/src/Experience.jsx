@@ -19,8 +19,8 @@ export default function Experience() {
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams()
   // test
-  client.team = 1
-  const winner = 0
+  client.team = 0
+  const winner = 1
 
   useEffect(() => {
     if (connectedToServer) {

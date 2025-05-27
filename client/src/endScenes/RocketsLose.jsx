@@ -346,7 +346,7 @@ export default function RocketsLose() {
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
             >
-              {value.name}
+              {formatName(value.name)}
               <meshStandardMaterial color='red'/>
             </Text3D>
           )}
@@ -514,5 +514,7 @@ export default function RocketsLose() {
         </Text3D>
       </group>
     </group>
+    {/* add asteroids */}
+    {/* add meteors */}
   </group>
 }

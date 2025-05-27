@@ -9,12 +9,12 @@ import { useEffect } from 'react';
 export default function MeteorsRealShader({ 
     position=[0,0,0],
     intervalMs=2000, 
-    speedXBase=5.0, 
-    speedYBase=4.0, 
-    speedXRandom=6.0, 
-    speedYRandom=3.0, 
-    durationBase=5.0, 
-    durationRandom=5.0,
+    speedXBase=3.0, 
+    speedYBase=2.0, 
+    speedXRandom=4.0, 
+    speedYRandom=1.5, 
+    durationBase=3.0, 
+    durationRandom=3.0,
     color,
     textures=[
         useLoader(TextureLoader, '/textures/particles/3.png'),
