@@ -192,7 +192,7 @@ export default function RocketsWin2() {
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
             >
-              {value.name}
+              {formatName(value.name, 10)}
               <meshStandardMaterial color='red'/>
             </Text3D>
           )}

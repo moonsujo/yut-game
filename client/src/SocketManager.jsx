@@ -368,7 +368,7 @@ export const SocketManager = () => {
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
       setBonusExists(false)
-      setWinner(1)
+      setWinner(0)
     })
 
     socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {

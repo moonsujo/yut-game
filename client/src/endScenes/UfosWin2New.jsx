@@ -22,8 +22,6 @@ import CyberTruck from "../meshes/CyberTruck";
 import Barn from "../meshes/Barn";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
 import { Llama } from "../meshes/Llama";
-import { Pig } from "../meshes/Pig";
-import Stonehenge from "../meshes/Stonehenge";
 import Ruby from "../meshes/Ruby";
 
 // add falling rocket parts in the background

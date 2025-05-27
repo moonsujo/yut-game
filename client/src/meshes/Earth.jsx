@@ -4,14 +4,14 @@ import { useGLTF } from "@react-three/drei";
 import { animated } from "@react-spring/three";
 import NeptuneParticles from "./NeptuneParticles";
 
-export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1, showParticles=true, animate=true }) {
+export default function Earth({ position=[0,0,0], rotation=[0,0,0], scale=1, showParticles=true, animate=true, animateSpeed=0.5 }) {
   const { nodes, materials } = useGLTF("/models/earth-round.glb");
 
   const earth = useRef();
 
   useFrame((state) => {
     if (animate)
-      earth.current.rotation.y = state.clock.elapsedTime * 0.5;
+      earth.current.rotation.y = state.clock.elapsedTime * animateSpeed;
   });
 
   return (
