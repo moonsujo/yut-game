@@ -149,7 +149,7 @@ export function useFireworksShader() {
             
             let randomRotation = generateRandomNumberInRange(0, Math.PI/16)
             points.rotation.copy(new THREE.Euler(0, randomRotation, randomRotation))
-            let scale = Math.random() * 0.2 + 0.4
+            let scale = Math.random() * 0.4 + 0.4
             points.scale.copy(new THREE.Vector3(scale, scale, scale))
             const destroy = () => { // may need to run on component unmount as well
                 scene.remove(points)
@@ -195,7 +195,7 @@ export function useFireworksShader() {
                 0, 
                 randomRotation
             ))
-            let scale = Math.random() * 0.4 + 0.5
+            let scale = Math.random() * 0.5 + 0.7
             points.scale.copy(new THREE.Vector3(scale, scale, scale))
             const destroy = () => { // may need to run on component unmount as well
                 scene.remove(points)

@@ -23,6 +23,7 @@ import DisconnectModal from './DisconnectModal';
 import useMusicPlayer from './hooks/useMusicPlayer';
 import axios from 'axios';
 import useQueryLogs from './hooks/useQueryLogs';
+import * as THREE from 'three';
 
 export default function Home2() {
 

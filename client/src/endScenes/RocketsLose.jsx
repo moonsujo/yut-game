@@ -15,8 +15,6 @@ import FragmentShader from '../shader/ufoBeam/fragment.glsl'
 import VertexShader from '../shader/ufoBeam/vertex.glsl'
 import gsap from "gsap";
 import UfoNewBoss from "../meshes/UfoNewBoss";
-import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
-import { TextureLoader } from 'three/src/loaders/TextureLoader'
 
 // add falling rocket parts in the background
 export default function RocketsLose() {
@@ -288,10 +286,6 @@ export default function RocketsLose() {
     config: { tension: 70, friction: 20 },
   }))
 
-  // grey "meteors" fall in the background
-  // spawn a few at start
-  const meteorShaderColor = new THREE.Color();
-  meteorShaderColor.setHSL(0, 0.10, 0.1)
   return <group>
     {/* camera */}
     <group name='setup'>
@@ -438,7 +432,6 @@ export default function RocketsLose() {
           <cylinderGeometry args={[1, 3, 13, 32]}/>
         </animated.mesh>
       </group>
-
     </group>
     {/* room id and buttons */}
     <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
@@ -521,19 +514,5 @@ export default function RocketsLose() {
         </Text3D>
       </group>
     </group>
-    {/* <MeteorsRealShader
-      position={[5, 0, 0]}
-      intervalMs={2000} 
-      speedXBase={1.0}
-      speedYBase={0.8}
-      speedXRandom={0.6}
-      speedYRandom={0}
-      durationBase={20.0}
-      durationRandom={1.0}
-      color={meteorShaderColor}
-      textures={[
-        useLoader(TextureLoader, '/textures/particles/3.png'),
-      ]}
-    /> */}
   </group>
 }

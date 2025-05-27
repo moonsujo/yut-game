@@ -9,7 +9,7 @@ import RocketsWin from "./RocketsWin.jsx";
 import UfosWin from "./UfosWin.jsx";
 import RocketsWin2 from "./endScenes/RocketsWin2.jsx";
 import RocketsLose from "./endScenes/RocketsLose.jsx";
-import UfosWin2 from "./endScenes/UfosWin2.jsx";
+import UfosWin2New from "./endScenes/UfosWin2New.jsx";
 import UfosLose from "./endScenes/UfosLose.jsx";
 
 export default function Experience() {
@@ -19,7 +19,6 @@ export default function Experience() {
   const client = useAtomValue(clientAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams()
-
 
   useEffect(() => {
     if (connectedToServer) {
@@ -39,7 +38,7 @@ export default function Experience() {
     {/* win screen experience */}
     { gamePhase === 'finished' && client.team === 0 && winner === 0 && <RocketsWin2/> }
     { gamePhase === 'finished' && client.team === 0 && winner === 1 && <RocketsLose/> }
-    { gamePhase === 'finished' && client.team === 1 && winner === 1 && <UfosWin2/> }
+    { gamePhase === 'finished' && client.team === 1 && winner === 1 && <UfosWin2New/> }
     { gamePhase === 'finished' && client.team === 1 && winner === 0 && <UfosLose/> }
   </>
 }

@@ -10,6 +10,7 @@ import Team from "./Team.jsx";
 import GameCamera from "./GameCamera.jsx";
 import DisconnectModal from "./DisconnectModal.jsx";
 import JoinTeamModal from "./JoinTeamModal.jsx";
+import * as THREE from 'three';
 
 // three js
 // import { Leva, useControls } from "leva"

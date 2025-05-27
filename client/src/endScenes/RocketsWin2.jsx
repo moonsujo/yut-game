@@ -33,7 +33,7 @@ export default function RocketsWin2() {
   const rocket2 = useRef()
   const rocket3 = useRef()
 
-  // Animation
+  // Animation - Ufos lose
   const ufos = []
   const numUfos = 5
   const resetTime = 17
