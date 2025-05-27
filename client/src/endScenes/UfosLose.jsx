@@ -15,6 +15,7 @@ import layout from "../layout";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
 import UfoNewBoss from "../meshes/UfoNewBoss";
 import UfoNewBossSmall from "../meshes/UfoNewBossSmall";
+import Menhir from "../meshes/Menhir";
 
 export default function UfosLose() {
   console.log('ufos lose')
@@ -45,6 +46,15 @@ export default function UfosLose() {
   for (let i = 0; i < numUfos; i++) {
     ufos.push(useRef())
   }
+  const asteroids = []
+  const numAsteroidsRow = 10
+  const numAsteroidsColumn = 10
+  const asteroidResetTime = 10
+  const asteroidRowSpace = 7
+  const asteroidColumnSpace = 8
+  for (let i = 0; i < numAsteroidsRow * numAsteroidsColumn; i++) {
+    asteroids.push(useRef())
+  }
 
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
@@ -69,13 +79,13 @@ export default function UfosLose() {
           // resetTime - 1 = max
           // resetTime - 1 - t
           // 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.x = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.y = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.z = 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.x = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.y = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
+          ufo.current.scale.z = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
         } else {
-          ufo.current.scale.x = Math.max(resetTime - t - 0.5, 0)
-          ufo.current.scale.y = Math.max(resetTime - t - 0.5, 0)
-          ufo.current.scale.z = Math.max(resetTime - t - 0.5, 0)
+          ufo.current.scale.x = Math.max(resetTime - t - 0.7, 0)
+          ufo.current.scale.y = Math.max(resetTime - t - 0.7, 0)
+          ufo.current.scale.z = Math.max(resetTime - t - 0.7, 0)
         }
         ufo.current.position.x = -Math.cos(timeSlowed) * 7 * Math.exp(-0.2 * timeSlowed)
         ufo.current.position.y = Math.sin(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
@@ -85,6 +95,15 @@ export default function UfosLose() {
         ufo.current.rotation.x = timeSlowed / 4
         ufo.current.rotation.z = -timeSlowed / 16
         // ufo.current.rotation.x = timeSlowed / 8
+      }
+    }
+
+    // Asteroid
+    for (let i = 0; i < numAsteroidsRow; i++) {
+      for (let j = 0; j < numAsteroidsColumn; j++) {
+        const asteroid = asteroids[i*numAsteroidsRow+j]
+        asteroid.current.position.x = -time % asteroidResetTime + i * asteroidRowSpace + j * 3
+        asteroid.current.position.z = (time % asteroidResetTime) / 2 + j * asteroidColumnSpace
       }
     }
   })
@@ -295,6 +314,14 @@ export default function UfosLose() {
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
+    </group>
+    {/* background */}
+    <group name='asteroids' position={[-7, 0, -7]}>
+      { asteroids.map((value, index) => 
+        <group ref={value}>
+          <Menhir scale={[0.02, 0.02, 0.07]} rotation={[Math.PI/2, 0, Math.PI/3]} position={[0, -1, 0]}/>
+        </group>
+      )}
     </group>
   </group>
 }
