@@ -15,6 +15,8 @@ import FragmentShader from '../shader/ufoBeam/fragment.glsl'
 import VertexShader from '../shader/ufoBeam/vertex.glsl'
 import gsap from "gsap";
 import UfoNewBoss from "../meshes/UfoNewBoss";
+import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
+import Asteroids from "../Asteroids";
 
 // add falling rocket parts in the background
 export default function RocketsLose() {
@@ -286,6 +288,8 @@ export default function RocketsLose() {
     config: { tension: 70, friction: 20 },
   }))
 
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
     {/* camera */}
     <group name='setup'>
@@ -514,7 +518,7 @@ export default function RocketsLose() {
         </Text3D>
       </group>
     </group>
-    {/* add asteroids */}
-    {/* add meteors */}
+    <Asteroids scale={1.3} position={[-10, -5, -20]}/>
+    <MeteorsRealShader color={meteorShaderColor}/>
   </group>
 }

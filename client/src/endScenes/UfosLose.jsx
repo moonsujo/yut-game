@@ -17,6 +17,7 @@ import UfoNewBoss from "../meshes/UfoNewBoss";
 import UfoNewBossSmall from "../meshes/UfoNewBossSmall";
 import Menhir from "../meshes/Menhir";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
+import Asteroids from "../Asteroids";
 
 export default function UfosLose() {
   console.log('ufos lose')
@@ -47,36 +48,6 @@ export default function UfosLose() {
   for (let i = 0; i < numUfos; i++) {
     ufos.push(useRef())
   }
-
-  // Asteroids
-  // speed ratio: 2 : 1
-  const asteroids = []
-  const asteroidInfos = []
-  const asteroidsNumRow = 10
-  const asteroidsNumColumn = 20
-  const asteroidResetTime = 30
-  const asteroidSpaceX = 7
-  const asteroidSpaceZ = 7
-  for (let i = 0; i < asteroidsNumRow; i++) {
-    for (let j = 0; j < asteroidsNumColumn; j++) {
-      const origin = [
-        j * asteroidSpaceX + Math.random() * 0.8 * (Math.random() < 0.5 ? 1 : -1), 
-        0, 
-        i * asteroidSpaceZ + Math.random() * 0.8 * (Math.random() < 0.5 ? 1 : -1)
-      ]
-      const timeShift = i
-      const speedX = 1.0 + Math.random() * 0.2 * (Math.random() < 0.5 ? 1 : -1)
-      const speedZ = 0.5 + Math.random() * 0.1 * (Math.random() < 0.5 ? 1 : -1)
-      asteroids.push(useRef())
-      asteroidInfos.push({
-        origin,
-        timeShift,
-        speedX,
-        speedZ
-      })
-    }
-  }
-  console.log(asteroids)
 
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
@@ -119,23 +90,10 @@ export default function UfosLose() {
         // ufo.current.rotation.x = timeSlowed / 8
       }
     }
-
-    // Asteroids
-    // traversal order: left to right, top to bottom
-    for (let i = 0; i < asteroidsNumRow; i++) {
-      for (let j = 0; j < asteroidsNumColumn; j++) {
-        const asteroid = asteroids[i * asteroidsNumColumn + j]
-        const asteroidInfo = asteroidInfos[i * asteroidsNumColumn + j]
-        asteroid.current.position.x = asteroidInfo.origin[0] - ((time + asteroidInfo.timeShift) % asteroidResetTime) * asteroidInfo.speedX
-        asteroid.current.position.z = asteroidInfo.origin[2] + ((time + asteroidInfo.timeShift) % asteroidResetTime) * asteroidInfo.speedZ
-        asteroid.current.rotation.y = time + asteroidInfo.timeShift
-      }
-    }
   })
 
   const meteorShaderColor = new THREE.Color();
   meteorShaderColor.setHSL(0.05, 0.7, 0.4)
-
   return <group>
     <group name='setup'>
       <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]} controlsEnabled/>
@@ -344,13 +302,7 @@ export default function UfosLose() {
       </group>
     </group>
     {/* background */}
-    <group name='asteroids' position={[-10, -1, -20]}>
-      { asteroids.map((value, index) => {
-        return <group ref={value}>
-          <Menhir scale={[0.01, 0.01, 0.02]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
-        </group>
-      })}
-    </group>
+    <Asteroids position={[-10, -5, -20]} scale={1}/>
     <MeteorsRealShader color={meteorShaderColor}/>
   </group>
 }
