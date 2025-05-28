@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import layout from './layout';
-import { useAtom, useAtomValue } from 'jotai';
-import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom, deviceAtom } from './GlobalState';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { joinTeamAtom, clientAtom, teamsAtom, gamePhaseAtom, hostAtom, turnAtom, deviceAtom, showGalaxyBackgroundAtom } from './GlobalState';
 import { Html, MeshDistortMaterial, Text3D } from '@react-three/drei';
 import Piece from './components/Piece';
 import { formatName, tileType } from './helpers/helpers';
@@ -272,7 +272,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
           >
             { value.type === 'human' ? formatName(value.name, layout[device].game[`team${team}`].names.maxLength)
             + (host && value.socketId === host.socketId ? ' (h)' : '')
-            + (value.name === client.name ? ' ★' : '')
+            + (value.name === client.name ? ' (u)' : '')
             + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]].name === value.name ? AIPlayingText() : formatName(value.name, layout[device].game[`team${team}`].names.maxLength) }
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>

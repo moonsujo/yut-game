@@ -11,7 +11,6 @@ function calcZoom() {
     return newZoom
   } else {
     const zoomMin = 20;
-    // const zoomMin = 20;
     const newZoom = zoomMin * (window.innerWidth / mediaValues.landscapeCutoff)
     return newZoom
   }

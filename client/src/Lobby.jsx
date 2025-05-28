@@ -29,6 +29,10 @@ import {
   connectedToServerAtom,
   guestBeingEdittedAtom,
   seatChosenAtom,
+  showGalaxyBackgroundAtom,
+  showBlackholeAtom,
+  showRedGalaxyAtom,
+  showBlackhole2Atom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -70,6 +74,17 @@ export default function Lobby() {
   const device = useAtomValue(deviceAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams();
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
+
+  useEffect(() => {
+    setShowGalaxy(true)
+    setShowBlackhole(false)
+    setShowRedGalaxy(false)
+    setShowBlackhole2(false)
+  }, [])
 
   useEffect(() => {
     async function log() {

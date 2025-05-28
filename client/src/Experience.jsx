@@ -14,13 +14,15 @@ import UfosLose from "./endScenes/UfosLose.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
-  // const winner = useAtomValue(winnerAtom)
+  const winner = useAtomValue(winnerAtom)
   const client = useAtomValue(clientAtom)
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const params = useParams()
   // test
-  client.team = 1
-  const winner = 1
+  // client.team = 1
+  // const client = { team: 0 }
+  // const gamePhase = 'finished'
+  // const winner = 1
 
   useEffect(() => {
     if (connectedToServer) {

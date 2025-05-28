@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import layout from "./layout.js";
 import { useSpring, animated } from '@react-spring/three';
+import * as THREE from 'three';
 
 import Board from "./Board.jsx";
 import PiecesSection from "./PiecesSection.jsx";
@@ -47,6 +48,10 @@ import {
   showFinishMovesAtom,
   showBonusAtom,
   musicAtom,
+  showGalaxyBackgroundAtom,
+  showBlackholeAtom,
+  showRedGalaxyAtom,
+  showBlackhole2Atom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -79,6 +84,17 @@ export default function Game() {
   const connectedToServer = useAtomValue(connectedToServerAtom)
   const gamePhase = useAtomValue(gamePhaseAtom)
   const pauseGame = useAtomValue(pauseGameAtom)
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
+
+  useEffect(() => {
+    setShowGalaxy(true)
+    setShowBlackhole(false)
+    setShowRedGalaxy(false)
+    setShowBlackhole2(false)
+  }, [])
 
   // Animations
   const { gameScale } = useSpring({
@@ -517,6 +533,8 @@ export default function Game() {
   }
   const yutAnimation = useAtomValue(yootAnimationAtom)
 
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}

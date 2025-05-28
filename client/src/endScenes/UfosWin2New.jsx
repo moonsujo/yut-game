@@ -1,8 +1,8 @@
 import { Float, Text3D } from "@react-three/drei";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
-import { useAtomValue } from "jotai";
-import { teamsAtom } from "../GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, generateRandomNumberInRange, getScore } from "../helpers/helpers";
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -23,6 +23,7 @@ import Barn from "../meshes/Barn";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
 import { Llama } from "../meshes/Llama";
 import Ruby from "../meshes/Ruby";
+import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 
 // add falling rocket parts in the background
 export default function UfosWin2New() {
@@ -32,6 +33,10 @@ export default function UfosWin2New() {
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
   let ufosScore = getScore(teamUfos)
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
 
   // Ref
   const ufoBoss = useRef()
@@ -233,6 +238,11 @@ export default function UfosWin2New() {
       const speed = 15.0 + Math.random() * 5.0 * (Math.random() > 0.5 ? 1 : -1);
       CreateBeamDust({ position, size, speed });
     }, 70)
+
+    setShowGalaxy(true)
+    setShowBlackhole(false)
+    setShowRedGalaxy(false)
+    setShowBlackhole2(false)
     return (() => {
       clearInterval(intervalFireworks);
       clearInterval(intervalBeamDust);
@@ -302,6 +312,8 @@ export default function UfosWin2New() {
     }
   })
 
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
     {/* camera */}
     <group name='setup'>
@@ -521,5 +533,6 @@ export default function UfosWin2New() {
         </Text3D>
       </group>
     </group>
+    {/* <MeteorsRealShader/> */}
   </group>
 }

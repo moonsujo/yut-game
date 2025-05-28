@@ -1,8 +1,8 @@
 import { Float, OrthographicCamera, Text3D } from "@react-three/drei";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
-import { useAtomValue } from "jotai";
-import { teamsAtom } from "../GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, getScore } from "../helpers/helpers";
 import UfoNew from "../meshes/UfoNew";
 import Earth from "../meshes/Earth";
@@ -26,6 +26,10 @@ export default function RocketsLose() {
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
   let ufosScore = getScore(teamUfos)
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
 
   // Ref
   const ufo0 = useRef()
@@ -213,6 +217,10 @@ export default function RocketsLose() {
         shaderMaterial.uniforms.uProgress.value = p
       }
     })
+    setShowGalaxy(false)
+    setShowBlackhole(false)
+    setShowRedGalaxy(true)
+    setShowBlackhole2(false)
   }, [])
   
   const turquoise = new THREE.Color('turquoise')
@@ -225,7 +233,7 @@ export default function RocketsLose() {
     depthWrite: true,
     uniforms:
     {
-      uOpacity: { value: 0.7 },
+      uOpacity: { value: 0.5 },
       uColor: {
         value: new THREE.Vector3(
           turquoise.r,
@@ -519,6 +527,6 @@ export default function RocketsLose() {
       </group>
     </group>
     <Asteroids scale={1.3} position={[-10, -5, -20]}/>
-    <MeteorsRealShader color={meteorShaderColor}/>
+    {/* <MeteorsRealShader color={meteorShaderColor}/> */}
   </group>
 }

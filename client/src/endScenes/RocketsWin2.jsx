@@ -1,6 +1,6 @@
 import { Float, Text3D } from "@react-three/drei";
-import { useAtomValue } from "jotai";
-import { teamsAtom } from "../GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, getScore } from "../helpers/helpers";
 import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
@@ -13,6 +13,7 @@ import Portal from "../Portal";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
+import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 
 export default function RocketsWin2() {
   // Displays / Test
@@ -32,6 +33,10 @@ export default function RocketsWin2() {
   const rocket1 = useRef()
   const rocket2 = useRef()
   const rocket3 = useRef()
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
 
   // Animation - Ufos lose
   const ufos = []
@@ -74,7 +79,7 @@ export default function RocketsWin2() {
           ufo.current.scale.z = Math.max(resetTime - t - 0.5, 0)
         }
         ufo.current.position.x = Math.cos(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
-        ufo.current.position.y = Math.sin(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
+        ufo.current.position.y = -Math.sin(timeSlowed) * 5 * Math.exp(-0.2 * timeSlowed)
         ufo.current.position.z = 0
         // ufo.current.rotation.x = Math.PI/2 // removing this makes scene awesome
         ufo.current.rotation.y = timeSlowed
@@ -129,11 +134,17 @@ export default function RocketsWin2() {
         }
       }
     }, 200)
+    setShowGalaxy(true)
+    setShowBlackhole(false)
+    setShowRedGalaxy(false)
+    setShowBlackhole2(true)
     return (() => {
       clearInterval(intervalFireworks);
     })
   }, [])
 
+  const meteorShaderColor = new THREE.Color();
+  meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
     <group name='setup'>
       <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
@@ -215,7 +226,7 @@ export default function RocketsWin2() {
     </group>
     {/* scene 0 on the left */}
     { scene0On && <group name='scene-0' position={[-9, -5, 0]} scale={0.8}>
-      <group name='pieces' position={[0.4, -1.9, 0.8]} rotation={[-Math.PI/2, 0, 0]}>
+      <group name='pieces' position={[0.4, -1.9, -1]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
           return <group ref={value}>
             <Ufo position={[0, 0, 0]}/>
@@ -223,7 +234,7 @@ export default function RocketsWin2() {
           </group>
         })}
       </group>
-      <MilkyWay name='milky-way'// will not show without a camera
+      {/* <MilkyWay name='milky-way'// will not show without a camera
         rotation={[-Math.PI/2, 0, 0]} 
         position={[0, -2, 0]}
         scale={2}
@@ -232,7 +243,7 @@ export default function RocketsWin2() {
         colorTint3={new THREE.Vector4(1.0, 1.0, 1.0, 0.7)} // medium
         colorTint2={new THREE.Vector4(1.0, 1.0, 1.0, 0.5)} // large
       />
-      <Portal position={[0, 0.3, -3]} scale={1} rotation={[-Math.PI/2, 0, 0]}/>
+      <Portal position={[0, 0.3, -3]} scale={1} rotation={[-Math.PI/2, 0, 0]}/> */}
     </group> }
     {/* scene 1 in the middle */}
     <group name='scene-1' scale={1} position={[0, 0, 0.5]}>
@@ -341,5 +352,6 @@ export default function RocketsWin2() {
         </Text3D>
       </group>
     </group>
+    <MeteorsRealShader color={meteorShaderColor}/>
   </group>
 }

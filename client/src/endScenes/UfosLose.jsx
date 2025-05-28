@@ -1,6 +1,6 @@
 import { Float, Text3D } from "@react-three/drei";
-import { useAtomValue } from "jotai";
-import { teamsAtom } from "../GlobalState";
+import { useAtomValue, useSetAtom } from "jotai";
+import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, getScore } from "../helpers/helpers";
 import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
@@ -18,6 +18,7 @@ import UfoNewBossSmall from "../meshes/UfoNewBossSmall";
 import Menhir from "../meshes/Menhir";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import Asteroids from "../Asteroids";
+import Blackhole from "../Blackhole";
 
 export default function UfosLose() {
   console.log('ufos lose')
@@ -39,6 +40,10 @@ export default function UfosLose() {
   const rocket1 = useRef()
   const rocket2 = useRef()
   const rocket3 = useRef()
+  const setShowGalaxy = useSetAtom(showGalaxyBackgroundAtom)
+  const setShowBlackhole = useSetAtom(showBlackholeAtom)
+  const setShowRedGalaxy = useSetAtom(showRedGalaxyAtom)
+  const setShowBlackhole2 = useSetAtom(showBlackhole2Atom)
 
   // Animation - Ufos lose
   const ufos = []
@@ -48,6 +53,13 @@ export default function UfosLose() {
   for (let i = 0; i < numUfos; i++) {
     ufos.push(useRef())
   }
+
+  useEffect(() => {
+    setShowGalaxy(false)
+    setShowBlackhole(true)
+    setShowRedGalaxy(false)
+    setShowBlackhole2(false)
+  }, [])
 
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
@@ -209,16 +221,6 @@ export default function UfosLose() {
           </group>
         })}
       </group>
-      <MilkyWay name='milky-way'// will not show without a camera
-        rotation={[-Math.PI/2, 0, 0]} 
-        position={[0, -2, 0]}
-        scale={2}
-        brightness={0.7}
-        colorTint1={new THREE.Vector4(0.80, 0.49, 0.19, 1.0)} // small
-        colorTint3={new THREE.Vector4(1.0, 1.0, 1.0, 0.7)} // medium
-        colorTint2={new THREE.Vector4(1.0, 1.0, 1.0, 0.5)} // large
-      />
-      <Portal position={[0, 0.3, -3]} scale={1} rotation={[-Math.PI/2, 0, 0]}/>
     </group> }
     {/* room id and buttons */}
     <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
@@ -302,7 +304,7 @@ export default function UfosLose() {
       </group>
     </group>
     {/* background */}
-    <Asteroids position={[-10, -5, -20]} scale={1}/>
+    <Asteroids position={[-10, -5, -20]} scale={1.5}/>
     <MeteorsRealShader color={meteorShaderColor}/>
   </group>
 }

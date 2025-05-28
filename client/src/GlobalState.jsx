@@ -136,6 +136,10 @@ export const musicPlayingAtom = atom(false)
 export const musicVolumeAtom = atom(0)
 export const lastYutAtom = atom(null)
 export const seatChosenAtom = atom(null) // [team, seatIndex]
+export const showGalaxyBackgroundAtom = atom(true)
+export const showBlackholeAtom = atom(false)
+export const showRedGalaxyAtom = atom(false)
+export const showBlackhole2Atom = atom(false)
 
 const deepPieceEquals = (prev, next) => {
   let result;
