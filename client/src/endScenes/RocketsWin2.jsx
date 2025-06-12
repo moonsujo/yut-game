@@ -12,6 +12,9 @@ import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useFireworksShader } from "../shader/fireworks/FireworksShader";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
+import ShareLinkButton from "./ShareLinkButton";
+import PlayAgainButton from "./PlayAgainButton";
+import DiscordButton from "./DiscordButton";
 
 export default function RocketsWin2() {
   // Displays / Test
@@ -284,71 +287,9 @@ export default function RocketsWin2() {
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
-      <group name='run-it-back-button' rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}>
-        {/* background-outer */}
-        {/* background-inner */}
-        {/* text */}
-        <mesh>
-          <boxGeometry args={[4.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[4.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          size={0.5}
-          height={0.03} 
-          position={[-1.85, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          PLAY AGAIN
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <group name='share-results-button' rotation={[-Math.PI/2, 0, 0]} position={[2.6, 0, 2.4]}>
-        {/* background-outer */}
-        {/* background-inner */}
-        {/* text */}
-        <mesh>
-          <boxGeometry args={[5.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[5.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          rotation={[0, 0, 0]}
-          size={0.5}
-          height={0.03} 
-          position={[-2.35, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          SHARE GAME
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <group name='discord-button' rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}>
-        <mesh>
-          <boxGeometry args={[3.2, 1, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[3.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          rotation={[0, 0, 0]}
-          size={0.5}
-          height={0.03} 
-          position={[-1.3, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          DISCORD
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
+      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
+      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
+      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
     </group>
     <MeteorsRealShader color={meteorShaderColor}/>
   </group>

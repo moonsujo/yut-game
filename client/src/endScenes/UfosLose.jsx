@@ -19,11 +19,14 @@ import Menhir from "../meshes/Menhir";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import Asteroids from "../Asteroids";
 import Blackhole from "../Blackhole";
+import PlayAgainButton from "./PlayAgainButton";
+import ShareLinkButton from "./ShareLinkButton";
+import DiscordButton from "./DiscordButton";
+import { useParams } from "wouter";
 
 export default function UfosLose() {
-  console.log('ufos lose')
-  // Displays / Test
-  const scene1On = true
+  
+  const params = useParams();
 
   // Hooks
   const [CreateFirework] = useFireworksShader();
@@ -70,37 +73,35 @@ export default function UfosLose() {
     rocket3.current.position.y = Math.cos(time) * 0.05
 
     // Ufos
-    if (scene1On) {
-      for (let i = 0; i < numUfos; i++) {
-        let t = (time + i * shiftTime) % resetTime
-        let timeSlowed = t / 2
-        const ufo = ufos[i]
-        // scale
-        if (t < 1) {
-          ufo.current.scale.x = Math.min(t, 1)
-          ufo.current.scale.y = Math.min(t, 1)
-          ufo.current.scale.z = Math.min(t, 1)
-        } else if (t < (resetTime - 1)) {
-          // resetTime - 1 = max
-          // resetTime - 1 - t
-          // 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.x = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.y = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
-          ufo.current.scale.z = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
-        } else {
-          ufo.current.scale.x = Math.max(resetTime - t - 0.7, 0)
-          ufo.current.scale.y = Math.max(resetTime - t - 0.7, 0)
-          ufo.current.scale.z = Math.max(resetTime - t - 0.7, 0)
-        }
-        ufo.current.position.x = -Math.cos(timeSlowed * 2) * 7 * Math.exp(-0.2 * timeSlowed)
-        ufo.current.position.y = Math.sin(timeSlowed * 2) * 5 * Math.exp(-0.2 * timeSlowed)
-        ufo.current.position.z = 0
-        // ufo.current.rotation.x = Math.PI/2 // removing this makes scene awesome
-        ufo.current.rotation.y = -timeSlowed
-        ufo.current.rotation.x = timeSlowed / 4
-        ufo.current.rotation.z = -timeSlowed / 16
-        // ufo.current.rotation.x = timeSlowed / 8
+    for (let i = 0; i < numUfos; i++) {
+      let t = (time + i * shiftTime) % resetTime
+      let timeSlowed = t / 2
+      const ufo = ufos[i]
+      // scale
+      if (t < 1) {
+        ufo.current.scale.x = Math.min(t, 1)
+        ufo.current.scale.y = Math.min(t, 1)
+        ufo.current.scale.z = Math.min(t, 1)
+      } else if (t < (resetTime - 1)) {
+        // resetTime - 1 = max
+        // resetTime - 1 - t
+        // 1 - 0.5 * ((t - 1) / (resetTime - 1 - 1))
+        ufo.current.scale.x = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
+        ufo.current.scale.y = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
+        ufo.current.scale.z = 1 - 0.7 * ((t - 1) / (resetTime - 1 - 1))
+      } else {
+        ufo.current.scale.x = Math.max(resetTime - t - 0.7, 0)
+        ufo.current.scale.y = Math.max(resetTime - t - 0.7, 0)
+        ufo.current.scale.z = Math.max(resetTime - t - 0.7, 0)
       }
+      ufo.current.position.x = -Math.cos(timeSlowed * 1.1) * 7 * Math.exp(-0.2 * timeSlowed)
+      ufo.current.position.y = Math.sin(timeSlowed * 1.1) * 5 * Math.exp(-0.2 * timeSlowed)
+      ufo.current.position.z = 0
+      // ufo.current.rotation.x = Math.PI/2 // removing this makes scene awesome
+      ufo.current.rotation.y = -timeSlowed
+      ufo.current.rotation.x = timeSlowed / 4
+      ufo.current.rotation.z = -timeSlowed / 16
+      // ufo.current.rotation.x = timeSlowed / 8
     }
   })
 
@@ -212,7 +213,7 @@ export default function UfosLose() {
       </Float>
     </group>
     {/* scene 1 in the middle*/}
-    { scene1On && <group name='scene-1' position={[0, 0, -1]} scale={1.3}>
+    <group name='scene-1' position={[0, 0, -1]} scale={1.3}>
       <group name='pieces' position={[-1, -1.5, 0]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
           return <group ref={value}>
@@ -221,7 +222,7 @@ export default function UfosLose() {
           </group>
         })}
       </group>
-    </group> }
+    </group>
     {/* room id and buttons */}
     <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
       <group name='room-id' >
@@ -237,71 +238,9 @@ export default function UfosLose() {
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
-      <group name='run-it-back-button' rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}>
-        {/* background-outer */}
-        {/* background-inner */}
-        {/* text */}
-        <mesh>
-          <boxGeometry args={[4.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[4.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          size={0.5}
-          height={0.03} 
-          position={[-1.85, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          PLAY AGAIN
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <group name='share-results-button' rotation={[-Math.PI/2, 0, 0]} position={[2.6, 0, 2.4]}>
-        {/* background-outer */}
-        {/* background-inner */}
-        {/* text */}
-        <mesh>
-          <boxGeometry args={[5.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[5.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          rotation={[0, 0, 0]}
-          size={0.5}
-          height={0.03} 
-          position={[-2.35, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          SHARE GAME
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
-      <group name='discord-button' rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}>
-        <mesh>
-          <boxGeometry args={[3.2, 1, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
-        </mesh>
-        <mesh>
-          <boxGeometry args={[3.1, 0.9, 0.02]}/>
-          <meshStandardMaterial color='black'/>
-        </mesh>
-        <Text3D
-          font="/fonts/Luckiest Guy_Regular.json"
-          rotation={[0, 0, 0]}
-          size={0.5}
-          height={0.03} 
-          position={[-1.3, -0.25, 0]} // camera is shifted up (y-axis)
-        >
-          DISCORD
-          <meshStandardMaterial color='yellow'/>
-        </Text3D>
-      </group>
+      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
+      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
+      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
     </group>
     {/* background */}
     <Asteroids position={[-10, -5, -20]} scale={1.5}/>
