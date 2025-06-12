@@ -1,6 +1,6 @@
 import { Float, Text3D } from "@react-three/drei";
 import { useAtomValue, useSetAtom } from "jotai";
-import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
+import { deviceAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, getScore } from "../helpers/helpers";
 import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
@@ -23,17 +23,21 @@ import PlayAgainButton from "./PlayAgainButton";
 import ShareLinkButton from "./ShareLinkButton";
 import DiscordButton from "./DiscordButton";
 import { useParams } from "wouter";
+import useResponsiveSetting from "../hooks/useResponsiveSetting";
 
 export default function UfosLose() {
   
-  const params = useParams();
-
-  // Hooks
-  const [CreateFirework] = useFireworksShader();
-  // attach rocks in front of the meteor
 
   // State
-  const device = 'landscapeDesktop'
+  useResponsiveSetting();
+  const device = useAtomValue(deviceAtom)
+  // positions in layout
+  // apply in components
+  // title, team scores, names
+  // center scene
+  // action buttons
+  // asteroids stay the same
+  const params = useParams();
   const teamRockets = useAtomValue(teamsAtom)[0]
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
