@@ -317,7 +317,7 @@ export default function UfosWin2New() {
   return <group>
     {/* camera */}
     <group name='setup'>
-      <GameCamera controlsEnabled position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
+      <GameCamera position={layout[device].camera.position}/>
     </group>
     {/* title */}
     <Text3D name='title'
@@ -508,7 +508,7 @@ export default function UfosWin2New() {
           height={0.03} 
           position={[-2.35, -0.25, 0]} // camera is shifted up (y-axis)
         >
-          SHARE RESULTS
+          SHARE GAME
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>

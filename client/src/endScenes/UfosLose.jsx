@@ -108,7 +108,7 @@ export default function UfosLose() {
   meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
     <group name='setup'>
-      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]} controlsEnabled/>
+      <GameCamera position={layout[device].camera.position}/>
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
@@ -233,7 +233,7 @@ export default function UfosLose() {
           height={0.03} 
           position={[0, 0, 0]} // camera is shifted up (y-axis)
         >
-          ROOM ID: ABCD
+          ROOM ID: {`${params.id}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
@@ -278,7 +278,7 @@ export default function UfosLose() {
           height={0.03} 
           position={[-2.35, -0.25, 0]} // camera is shifted up (y-axis)
         >
-          SHARE RESULTS
+          SHARE GAME
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>

@@ -1797,7 +1797,6 @@ export default function Lobby() {
         }))
         function handlePointerUp(e) {
           e.stopPropagation()
-          console.log('[CopyLinkButton] click')
           copyURLToClipboard()
           api.start({
             from: {

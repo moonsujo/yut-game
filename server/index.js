@@ -213,9 +213,7 @@ async function addUser(socket, name, roomId, savedClient) {
         if (savedClient.team === 0 || savedClient.team === 1) {
           await User.deleteOne({ roomId: savedClient.roomId, name: savedClient.name })
           let room = await Room.findOne({ shortId: savedClient.roomId })
-          if (!room) {
-            throw new Error('room does not exist')
-          } else {
+          if (room) {
             let roomPlayerIndex = room.teams[savedClient.team].players.findIndex((player) => {
               return player._id.valueOf() === savedClient._id.valueOf()
             })
@@ -2080,7 +2078,8 @@ io.on("connect", async (socket) => {
       let room = await Room.findOne({ shortId: roomId })
       if (!room) {
         throw new Error('room with short id', roomId, 'not found')
-      } else if (room.gamePhase !== 'finished' && room.host._id.valueOf() !== clientId) {
+      } else if (room.host._id.valueOf() !== clientId) {
+        console.log('[reset] roomId', roomId, 'clientId', clientId)
         throw new Error('only host can reset the game')
       } 
       // if (room.gamePhase === 'finished') {

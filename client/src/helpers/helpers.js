@@ -184,3 +184,25 @@ export function getScore(team) {
   }
   return score
 }
+
+export function copyURLToClipboard() {
+  const url = window.location.href;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    // Modern browsers with Clipboard API support
+    navigator.clipboard.writeText(url)
+      .then(() => {
+      })
+      .catch(err => {
+        console.error("Failed to copy URL: ", err);
+      });
+  } else {
+    // Fallback for older browsers
+    const tempInput = document.createElement("input");
+    document.body.appendChild(tempInput);
+    tempInput.value = url;
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+  }
+}

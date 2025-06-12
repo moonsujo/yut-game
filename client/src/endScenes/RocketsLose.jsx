@@ -1,12 +1,12 @@
-import { Float, OrthographicCamera, Text3D } from "@react-three/drei";
+import { Float, MeshDistortMaterial, OrthographicCamera, Text3D } from "@react-three/drei";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useAtomValue, useSetAtom } from "jotai";
-import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
-import { formatName, getScore } from "../helpers/helpers";
+import { clientAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
+import { copyURLToClipboard, formatName, getScore } from "../helpers/helpers";
 import UfoNew from "../meshes/UfoNew";
 import Earth from "../meshes/Earth";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from 'three';
 import { animated, useSpring } from "@react-spring/three";
@@ -17,6 +17,9 @@ import gsap from "gsap";
 import UfoNewBoss from "../meshes/UfoNewBoss";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import Asteroids from "../Asteroids";
+import { socket } from "../SocketManager";
+import { useParams } from "wouter";
+import axios from "axios";
 
 // add falling rocket parts in the background
 export default function RocketsLose() {
@@ -296,12 +299,128 @@ export default function RocketsLose() {
     config: { tension: 70, friction: 20 },
   }))
 
+  // Play Again button
+  const playAgainTextMaterialRef = useRef()
+  const playAgainBoxMaterialRef = useRef()
+  function handlePlayAgainPointerEnter(e) {
+    e.stopPropagation()
+    playAgainTextMaterialRef.current.color = new THREE.Color('green')
+    playAgainBoxMaterialRef.current.color = new THREE.Color('green')
+    document.body.style.cursor = "pointer";
+  }
+  function handlePlayAgainPointerLeave(e) {
+    e.stopPropagation()
+    playAgainTextMaterialRef.current.color = new THREE.Color('yellow')
+    playAgainBoxMaterialRef.current.color = new THREE.Color('yellow')
+    document.body.style.cursor = "default";
+  }
+  const params = useParams();
+  const client = useAtomValue(clientAtom)
+  async function handlePlayAgainPointerUp(e) {
+    e.stopPropagation()
+
+    console.log('[handlePlayingAgainPointerUp] client', client)
+    socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
+    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+      eventName: 'buttonClick',
+      timestamp: new Date(),
+      payload: {
+        'button': 'restartGame'
+      }
+    })
+    console.log('[RestartGame][RocketsWin] post log response', response)
+  }
+
+  // Share Link button
+  const shareLinkTextMaterialRef = useRef()
+  const shareLinkBoxMaterialRef = useRef()
+  function handleShareLinkPointerEnter(e) {
+    e.stopPropagation()
+    shareLinkTextMaterialRef.current.color = new THREE.Color('green')
+    shareLinkBoxMaterialRef.current.color = new THREE.Color('green')
+    document.body.style.cursor = "pointer";
+  }
+  function handleShareLinkPointerLeave(e) {
+    e.stopPropagation()
+    shareLinkTextMaterialRef.current.color = new THREE.Color('yellow')
+    shareLinkBoxMaterialRef.current.color = new THREE.Color('yellow')
+    document.body.style.cursor = "default";
+  }
+  const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+  const [springs, apiCopyLink] = useSpring(() => ({        
+    from: {
+      opacity: 0, 
+    }
+  }))
+  async function handleShareLinkPointerUp(e) {
+    e.stopPropagation()
+    copyURLToClipboard()
+    apiCopyLink.start({
+      from: {
+        opacity: 1
+      },
+      to: [
+        {
+          opacity: 1
+        },
+        { 
+          opacity: 0,
+          delay: 500,
+          config: {
+            tension: 170,
+            friction: 26
+          }
+        }
+      ]
+    })
+
+    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+      eventName: 'buttonClick',
+      timestamp: new Date(),
+      payload: {
+        'button': 'shareLink'
+      }
+    })
+    console.log('[RocketsWin] post log response', response)
+  }
+
+  // Discord button
+  const discordTextMaterialRef = useRef()
+  const discordBoxMaterialRef = useRef()
+  function handleDiscordPointerEnter(e) {
+    e.stopPropagation()
+    discordTextMaterialRef.current.color = new THREE.Color('green')
+    discordBoxMaterialRef.current.color = new THREE.Color('green')
+    document.body.style.cursor = "pointer";
+  }
+  function handleDiscordPointerLeave(e) {
+    e.stopPropagation()
+    discordTextMaterialRef.current.color = new THREE.Color('yellow')
+    discordBoxMaterialRef.current.color = new THREE.Color('yellow')
+    document.body.style.cursor = "default";
+  }
+  async function handleDiscordPointerUp(e) {
+    e.stopPropagation()
+    
+    // open discord link
+    window.open('https://discord.gg/2nTCGhYG', "_blank", "noreferrer");
+
+    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+      eventName: 'buttonClick',
+      timestamp: new Date(),
+      payload: {
+        'button': 'restartGame'
+      }
+    })
+    console.log('[RestartGame][RocketsWin] post log response', response)
+  }
+
   const meteorShaderColor = new THREE.Color();
   meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
     {/* camera */}
     <group name='setup'>
-      <GameCamera controlsEnabled position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
+      <GameCamera position={layout[device].camera.position}/>
     </group>
     {/* title */}
     <Text3D name='title'
@@ -357,6 +476,7 @@ export default function RocketsLose() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
+              key={index}
             >
               {formatName(value.name)}
               <meshStandardMaterial color='red'/>
@@ -371,6 +491,7 @@ export default function RocketsLose() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
+              key={index}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='turquoise'/>
@@ -385,7 +506,7 @@ export default function RocketsLose() {
       <group ref={ufo0}>
         <UfoNew position={[0, 7, -1]} scale={3}/>
         {rings.map((value, index) => {
-          return <group ref={value} rotation={[Math.PI/3, 0, 0]} position={[0, 0, 0]}>
+          return <group key={index} ref={value} rotation={[Math.PI/3, 0, 0]} position={[0, 0, 0]}>
             <mesh>
               <torusGeometry args={[1, 0.01, 24, 100]} />
               <meshStandardMaterial color='turquoise' transparent opacity={0.5} blending={THREE.NormalBlending} depthWrite={false}/>
@@ -396,7 +517,7 @@ export default function RocketsLose() {
       <group ref={ufo1}>
         <UfoNew position={[1, 5, 3]} scale={1.5}/>
         {rings1.map((value, index) => {
-          return <group ref={value} rotation={[Math.PI/3, 0, 0]} position={[0, 0, 0]}>
+          return <group key={index} ref={value} rotation={[Math.PI/3, 0, 0]} position={[0, 0, 0]}>
             <mesh>
               <torusGeometry args={[1, 0.01, 24, 100]} />
               <meshStandardMaterial color='turquoise' transparent opacity={0.5} blending={THREE.NormalBlending} depthWrite={false}/>
@@ -456,7 +577,7 @@ export default function RocketsLose() {
           height={0.03} 
           position={[0, 0, 0]} // camera is shifted up (y-axis)
         >
-          ROOM ID: ABCD
+          ROOM ID: {`${params.id}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
@@ -466,11 +587,20 @@ export default function RocketsLose() {
         {/* text */}
         <mesh>
           <boxGeometry args={[4.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial ref={playAgainBoxMaterialRef} color='yellow'/>
         </mesh>
         <mesh>
           <boxGeometry args={[4.1, 0.9, 0.02]}/>
           <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh
+          name='play-again-button-wrapper'
+          onPointerEnter={(e) => handlePlayAgainPointerEnter(e)}
+          onPointerLeave={(e) => handlePlayAgainPointerLeave(e)}
+          onPointerUp={(e) => handlePlayAgainPointerUp(e)}
+        >
+          <boxGeometry args={[4.2, 1.0, 0.02]}/>
+          <meshStandardMaterial color="grey" transparent opacity={0}/>
         </mesh>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
@@ -479,40 +609,75 @@ export default function RocketsLose() {
           position={[-1.85, -0.25, 0]} // camera is shifted up (y-axis)
         >
           PLAY AGAIN
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial ref={playAgainTextMaterialRef} color='yellow' />
         </Text3D>
       </group>
-      <group name='share-results-button' rotation={[-Math.PI/2, 0, 0]} position={[2.6, 0, 2.4]}>
+      <group name='share-link-button' rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}>
         {/* background-outer */}
         {/* background-inner */}
         {/* text */}
         <mesh>
-          <boxGeometry args={[5.2, 1.0, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
+          <boxGeometry args={[4.2, 1.0, 0.01]}/>
+          <meshStandardMaterial ref={shareLinkBoxMaterialRef} color='yellow'/>
         </mesh>
         <mesh>
-          <boxGeometry args={[5.1, 0.9, 0.02]}/>
+          <boxGeometry args={[4.1, 0.9, 0.02]}/>
           <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh
+          name='share-link-button-wrapper'
+          onPointerEnter={(e) => handleShareLinkPointerEnter(e)}
+          onPointerLeave={(e) => handleShareLinkPointerLeave(e)}
+          onPointerUp={(e) => handleShareLinkPointerUp(e)}
+        >
+          <boxGeometry args={[4.2, 1.0, 0.02]}/>
+          <meshStandardMaterial color="grey" transparent opacity={0}/>
         </mesh>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[0, 0, 0]}
           size={0.5}
           height={0.03} 
-          position={[-2.35, -0.25, 0]} // camera is shifted up (y-axis)
+          position={[-1.8, -0.25, 0]} // camera is shifted up (y-axis)
         >
-          SHARE RESULTS
-          <meshStandardMaterial color='yellow'/>
+          SHARE LINK
+          <meshStandardMaterial ref={shareLinkTextMaterialRef} color='yellow'/>
+        </Text3D>
+        <Text3D 
+          name='copied-tooltip'
+          font="/fonts/Luckiest Guy_Regular.json"
+          position={[-4.3,0,-0.4]}
+          rotation={[0, 0, 0]}
+          size={0.4}
+          height={0.01}
+        >
+          copied!
+          <AnimatedMeshDistortMaterial
+            speed={5}
+            distort={0}
+            color='limegreen'
+            transparent
+            opacity={springs.opacity}
+          />
         </Text3D>
       </group>
       <group name='discord-button' rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}>
         <mesh>
           <boxGeometry args={[3.2, 1, 0.01]}/>
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial ref={discordBoxMaterialRef} color='yellow'/>
         </mesh>
         <mesh>
           <boxGeometry args={[3.1, 0.9, 0.02]}/>
           <meshStandardMaterial color='black'/>
+        </mesh>
+        <mesh
+          name='discord-button-wrapper'
+          onPointerEnter={(e) => handleDiscordPointerEnter(e)}
+          onPointerLeave={(e) => handleDiscordPointerLeave(e)}
+          onPointerUp={(e) => handleDiscordPointerUp(e)}
+        >
+          <boxGeometry args={[3.2, 1.0, 0.02]}/>
+          <meshStandardMaterial color="grey" transparent opacity={0}/>
         </mesh>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
@@ -522,11 +687,10 @@ export default function RocketsLose() {
           position={[-1.3, -0.25, 0]} // camera is shifted up (y-axis)
         >
           DISCORD
-          <meshStandardMaterial color='yellow'/>
+          <meshStandardMaterial ref={discordTextMaterialRef} color='yellow'/>
         </Text3D>
       </group>
     </group>
     <Asteroids scale={1.3} position={[-10, -5, -20]}/>
-    {/* <MeteorsRealShader color={meteorShaderColor}/> */}
   </group>
 }

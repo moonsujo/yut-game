@@ -51,7 +51,7 @@ export default function Asteroids({ position=[-10, -1, -20], scale=1 }) {
 
   return <group name='asteroids' position={position}>
     { asteroids.map((value, index) => {
-      return <group ref={value} scale={scale}>
+      return <group ref={value} scale={scale} key={index}>
         <Menhir scale={[0.01, 0.01, 0.02]} rotation={[Math.PI/2, 0, Math.PI/3]}/>
       </group>
     })}

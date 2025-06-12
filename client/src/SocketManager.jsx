@@ -368,7 +368,10 @@ export const SocketManager = () => {
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
       setBonusExists(false)
-      setWinner(0)
+      // test
+      // setClient({ team: 0 })
+      // setGamePhase('finished')
+      // setWinner(1)
     })
 
     socket.on('passTurn', ({ newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, content, newGameLogs, gamePhase, paused }) => {
@@ -942,6 +945,7 @@ export const SocketManager = () => {
     })
 
     socket.on('reset', () => {
+      console.log('reset')
       setGamePhase('lobby');
       setTiles(initialState.initialTiles);
       setTurn(initialState.initialTurn);

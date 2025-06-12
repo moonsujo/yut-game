@@ -538,7 +538,7 @@ export default function Game() {
   return (<>
       {/* <Perf/> */}
       {/* <Leva hidden /> */}
-      <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
+      <GameCamera position={layout[device].camera.position}/>
       { (gamePhase === 'pregame' || gamePhase === 'game') && <animated.group scale={gameScale}>
         <Team 
           position={layout[device].game.team0.position}
