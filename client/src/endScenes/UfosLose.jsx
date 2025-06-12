@@ -6,19 +6,12 @@ import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import Ufo from "../meshes/Ufo";
-import MilkyWay from "../shader/MilkyWay";
 import * as THREE from 'three';
-import Portal from "../Portal";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
-import { useFireworksShader } from "../shader/fireworks/FireworksShader";
-import UfoNewBoss from "../meshes/UfoNewBoss";
 import UfoNewBossSmall from "../meshes/UfoNewBossSmall";
-import Menhir from "../meshes/Menhir";
 import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import Asteroids from "../Asteroids";
-import Blackhole from "../Blackhole";
 import PlayAgainButton from "./PlayAgainButton";
 import ShareLinkButton from "./ShareLinkButton";
 import DiscordButton from "./DiscordButton";
@@ -27,7 +20,6 @@ import useResponsiveSetting from "../hooks/useResponsiveSetting";
 
 export default function UfosLose() {
   
-
   // State
   useResponsiveSetting();
   const device = useAtomValue(deviceAtom)
@@ -117,16 +109,19 @@ export default function UfosLose() {
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[-Math.PI/2, 0, 0]}
-      size={0.5} 
+      size={layout[device].ufoLoseScene.title.fontSize} 
       height={0.003} 
-      position={[-12.5, 14, 0]} // camera is shifted up (y-axis)
+      position={layout[device].ufoLoseScene.title.position}
+      rotation={layout[device].ufoLoseScene.title.rotation}
     >
       {`LOST IN SPACE!`}
       <meshStandardMaterial color='yellow'/>
     </Text3D>
     {/* team score and names */}
-    <group name='teams' position={[-12.5, 12, 0]}>
+    <group name='teams' 
+    position={layout[device].ufoLoseScene.teams.position}
+    scale={layout[device].ufoLoseScene.teams.scale}
+    >
       <group name='score' position={[0, 0, 0]}>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
@@ -135,7 +130,7 @@ export default function UfosLose() {
           height={0.003} 
           position={[0, 0, 0]} // camera is shifted up (y-axis)
         >
-          {`ROCKETS   ${rocketsScore}`}
+          {`ROCKETS     ${rocketsScore}`}
           <meshStandardMaterial color='red'/>
         </Text3D>
         <Text3D
@@ -143,7 +138,7 @@ export default function UfosLose() {
           rotation={[-Math.PI/2, 0, 0]}
           size={0.4} 
           height={0.003} 
-          position={[3, 0, 0]} // camera is shifted up (y-axis)
+          position={[3.3, 0, 0]} // camera is shifted up (y-axis)
         >
           {`:`}
           <meshStandardMaterial color='yellow'/>
@@ -153,9 +148,9 @@ export default function UfosLose() {
           rotation={[-Math.PI/2, 0, 0]}
           size={0.4} 
           height={0.003} 
-          position={[3.1, 0, 0]} // camera is shifted up (y-axis)
+          position={[3.5, 0, 0]} // camera is shifted up (y-axis)
         >
-          {`   ${ufosScore}   UFOS`}
+          {`   ${ufosScore}     UFOS`}
           <meshStandardMaterial color='turquoise'/>
         </Text3D>
       </group>
@@ -167,7 +162,7 @@ export default function UfosLose() {
               rotation={[-Math.PI/2, 0, 0]}
               size={0.4} 
               height={0.003} 
-              position={[0, 0, 0]} // camera is shifted up (y-axis)
+              position={[0, 0, index * 0.5]}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='red'/>
@@ -181,7 +176,7 @@ export default function UfosLose() {
               rotation={[-Math.PI/2, 0, 0]}
               size={0.4} 
               height={0.003} 
-              position={[0, 0, 0]} // camera is shifted up (y-axis)
+              position={[0, 0, index * 0.5]}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='turquoise'/>
@@ -191,7 +186,9 @@ export default function UfosLose() {
       </group>
     </group>
     {/* scene 0 on the left */}
-    <group name='scene-0' scale={1.5} position={[-13, 0, 7]}>
+    <group name='scene-0' 
+    position={layout[device].ufoLoseScene.scene0.position} 
+    scale={layout[device].ufoLoseScene.scene0.scale}>
       <group name='earth-wrapper' rotation={[-Math.PI/2, 0, Math.PI/16]} ref={earth}>
         <Earth scale={2} rotation={[0, 0, 0]} position={[0, 0, 0]} showParticles={false} animate animateSpeed={0.2}/>
       </group>
@@ -217,7 +214,9 @@ export default function UfosLose() {
       </Float>
     </group>
     {/* scene 1 in the middle*/}
-    <group name='scene-1' position={[0, 0, -1]} scale={1.3}>
+    <group name='scene-1' 
+    position={layout[device].ufoLoseScene.scene1.position} 
+    scale={layout[device].ufoLoseScene.scene1.scale}>
       <group name='pieces' position={[-1, -1.5, 0]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
           return <group ref={value}>
@@ -228,23 +227,34 @@ export default function UfosLose() {
       </group>
     </group>
     {/* room id and buttons */}
-    <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
-      <group name='room-id' >
+    <group name='action-buttons' 
+    position={layout[device].ufoLoseScene.actionButtons.position} 
+    scale={layout[device].ufoLoseScene.actionButtons.scale}>
+      <group name='room-id'>
         {/* text */}
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          rotation={[-Math.PI/2, 0, 0]}
-          size={0.5}
+          position={layout[device].endSceneActionButtons.roomId.position}
+          rotation={layout[device].endSceneActionButtons.roomId.rotation}
+          size={layout[device].endSceneActionButtons.roomId.fontSize}
           height={0.03} 
-          position={[0, 0, 0]} // camera is shifted up (y-axis)
         >
           ROOM ID: {`${params.id}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
-      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
-      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
-      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
+      <PlayAgainButton 
+      position={layout[device].endSceneActionButtons.playAgainButton.position} 
+      rotation={layout[device].endSceneActionButtons.playAgainButton.rotation} 
+      device={device}/>
+      <ShareLinkButton 
+      position={layout[device].endSceneActionButtons.shareLinkButton.position} 
+      rotation={layout[device].endSceneActionButtons.shareLinkButton.rotation} 
+      device={device}/>
+      <DiscordButton
+      position={layout[device].endSceneActionButtons.discordButton.position}
+      rotation={layout[device].endSceneActionButtons.discordButton.rotation}
+      device={device}/>
     </group>
     {/* background */}
     <Asteroids position={[-10, -5, -20]} scale={1.5}/>

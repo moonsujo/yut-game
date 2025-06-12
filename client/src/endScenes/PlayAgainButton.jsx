@@ -6,8 +6,9 @@ import { useParams } from "wouter";
 import { clientAtom } from "../GlobalState";
 import { socket } from "../SocketManager";
 import axios from "axios";
+import layout from "../layout";
 
-export default function PlayAgainButton({ rotation, position }) {
+export default function PlayAgainButton({ rotation, position, device='landscapeDesktop' }) {
   
   const playAgainTextMaterialRef = useRef()
   const playAgainBoxMaterialRef = useRef()
@@ -39,13 +40,13 @@ export default function PlayAgainButton({ rotation, position }) {
     console.log('[RestartGame][RocketsWin] post log response', response)
   }
 
-  return <group name='run-it-back-button' rotation={rotation} position={position}>
+  return <group name='play-again-button' rotation={rotation} position={position}>
     <mesh>
-      <boxGeometry args={[4.2, 1.0, 0.01]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.playAgainButton.outerBox.args}/>
       <meshStandardMaterial ref={playAgainBoxMaterialRef} color='yellow'/>
     </mesh>
     <mesh>
-      <boxGeometry args={[4.1, 0.9, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.playAgainButton.innerBox.args}/>
       <meshStandardMaterial color='black'/>
     </mesh>
     <mesh
@@ -54,14 +55,14 @@ export default function PlayAgainButton({ rotation, position }) {
       onPointerLeave={(e) => handlePlayAgainPointerLeave(e)}
       onPointerUp={(e) => handlePlayAgainPointerUp(e)}
     >
-      <boxGeometry args={[4.2, 1.0, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.playAgainButton.wrapper.args}/>
       <meshStandardMaterial color="grey" transparent opacity={0}/>
     </mesh>
     <Text3D
       font="/fonts/Luckiest Guy_Regular.json"
-      size={0.5}
+      size={layout[device].endSceneActionButtons.playAgainButton.text.fontSize}
       height={0.03} 
-      position={[-1.85, -0.25, 0]} // camera is shifted up (y-axis)
+      position={layout[device].endSceneActionButtons.playAgainButton.text.position}
     >
       PLAY AGAIN
       <meshStandardMaterial ref={playAgainTextMaterialRef} color='yellow' />

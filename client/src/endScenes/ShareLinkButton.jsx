@@ -4,8 +4,9 @@ import * as THREE from 'three'
 import { animated, useSpring } from "@react-spring/three"
 import { copyURLToClipboard } from "../helpers/helpers"
 import axios from 'axios'
+import layout from "../layout"
 
-export default function ShareLinkButton({ rotation, position }) {
+export default function ShareLinkButton({ rotation, position, device='landscapeDesktop' }) {
 
   const shareLinkTextMaterialRef = useRef()
   const shareLinkBoxMaterialRef = useRef()
@@ -61,11 +62,11 @@ export default function ShareLinkButton({ rotation, position }) {
 
   return <group name='share-link-button' rotation={rotation} position={position}>
     <mesh>
-      <boxGeometry args={[4.2, 1.0, 0.01]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.shareLinkButton.outerBox.args}/>
       <meshStandardMaterial ref={shareLinkBoxMaterialRef} color='yellow'/>
     </mesh>
     <mesh>
-      <boxGeometry args={[4.1, 0.9, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.shareLinkButton.innerBox.args}/>
       <meshStandardMaterial color='black'/>
     </mesh>
     <mesh
@@ -74,15 +75,14 @@ export default function ShareLinkButton({ rotation, position }) {
       onPointerLeave={(e) => handleShareLinkPointerLeave(e)}
       onPointerUp={(e) => handleShareLinkPointerUp(e)}
     >
-      <boxGeometry args={[4.2, 1.0, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.shareLinkButton.wrapper.args}/>
       <meshStandardMaterial color="grey" transparent opacity={0}/>
     </mesh>
     <Text3D
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[0, 0, 0]}
-      size={0.5}
+      size={layout[device].endSceneActionButtons.shareLinkButton.text.fontSize}
       height={0.03} 
-      position={[-1.8, -0.25, 0]} // camera is shifted up (y-axis)
+      position={layout[device].endSceneActionButtons.shareLinkButton.text.position}
     >
       SHARE LINK
       <meshStandardMaterial ref={shareLinkTextMaterialRef} color='yellow'/>
@@ -90,9 +90,8 @@ export default function ShareLinkButton({ rotation, position }) {
     <Text3D 
       name='copied-tooltip'
       font="/fonts/Luckiest Guy_Regular.json"
-      position={[-4.3,0,-0.4]}
-      rotation={[0, 0, 0]}
-      size={0.4}
+      position={layout[device].endSceneActionButtons.shareLinkButton.copiedText.position}
+      size={layout[device].endSceneActionButtons.shareLinkButton.copiedText.fontSize}
       height={0.01}
     >
       copied!

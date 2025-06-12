@@ -1545,6 +1545,95 @@ export default {
           z: 3
         }
       }
+    },
+    ufoLoseScene: {
+      title: {
+        position: [-5.4, 0, -9],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 1.0
+      },
+      teams: {
+        position: [-5.4, 0, -7.5],
+        scale: 1.5
+      },
+      scene0: {
+        position: [-13, 0, 9],
+        scale: 1.5
+      },
+      scene1: {
+        position: [0, 0, 1],
+        scale: 1.3
+      },
+      actionButtons: {
+        position: [0, 0, 5],
+        scale: 1.1
+      }
+    },
+    endSceneActionButtons: {
+      playAgainButton: {
+        outerBox: {
+          args: [10.2, 1.3, 0.01]
+        },
+        innerBox: {
+          args: [10.1, 1.2, 0.02]
+        },
+        wrapper: {
+          args: [10.2, 1.3, 0.02]
+        },
+        text: {
+          position: [-1.85, -0.25, 0],
+          fontSize: 0.5
+        },
+        position: [0, 0, 1.5],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      shareLinkButton: {
+        outerBox: {
+          args: [10.2, 1.3, 0.01]
+        },
+        innerBox: {
+          args: [10.1, 1.2, 0.02]
+        },
+        wrapper: {
+          args: [10.2, 1.0, 0.02]
+        },
+        text: {
+          position: [-1.8, -0.25, 0],
+          fontSize: 0.5
+        },
+        copiedText: {
+          position: [-4.3,0,-0.4],
+          fontSize: 0.4
+        },
+        position: [0, 0, 3],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      discordButton: {
+        outerBox: {
+          args: [10.2, 1.3, 0.01]
+        },
+        innerBox: {
+          args: [10.1, 1.2, 0.02]
+        },
+        wrapper: {
+          args: [10.2, 1.0, 0.02]
+        },
+        text: {
+          position: [-1.6, -0.25, 0],
+          fontSize: 0.5
+        },
+        logo: {
+          position: [1.5, -0.04, 0],
+          scale: 0.4
+        },
+        position: [0, 0, 4.5],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      roomId: {
+        position: [0.5, 0, 0.5],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 0.5
+      }
     }
   },
   landscapeDesktop: {
@@ -3139,6 +3228,95 @@ export default {
           y: 1,
           z: 3
         }
+      }
+    },
+    ufoLoseScene: {
+      title: {
+        position: [-12.5, 14, 0],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 0.5
+      },
+      teams: {
+        position: [-12.5, 12, 0],
+        scale: 1
+      },
+      scene0: {
+        position: [-13, 0, 7],
+        scale: 1.5
+      },
+      scene1: {
+        position: [0, 0, -1],
+        scale: 1.3
+      },
+      actionButtons: {
+        position: [7.5, 0, 2],
+        scale: 0.9
+      }
+    },
+    endSceneActionButtons: {
+      playAgainButton: {
+        outerBox: {
+          args: [4.4, 1, 0.01]
+        },
+        innerBox: {
+          args: [4.3, 0.9, 0.02]
+        },
+        wrapper: {
+          args: [4.4, 1.0, 0.02]
+        },
+        text: {
+          position: [-1.9, -0.25, 0],
+          fontSize: 0.5
+        },
+        position: [2.2, 0, 1],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      shareLinkButton: {
+        outerBox: {
+          args: [4.2, 1.0, 0.01]
+        },
+        innerBox: {
+          args: [4.1, 0.9, 0.02]
+        },
+        wrapper: {
+          args: [4.2, 1.0, 0.02]
+        },
+        text: {
+          position: [-1.8, -0.25, 0],
+          fontSize: 0.5
+        },
+        copiedText: {
+          position: [-4.3,0,-0.4],
+          fontSize: 0.4
+        },
+        position: [2.1, 0, 2.4],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      discordButton: {
+        outerBox: {
+          args: [4.2, 1, 0.01]
+        },
+        innerBox: {
+          args: [4.1, 0.9, 0.02]
+        },
+        wrapper: {
+          args: [4.2, 1.0, 0.02]
+        },
+        text: {
+          position: [-1.8, -0.25, 0],
+          fontSize: 0.5
+        },
+        logo: {
+          position: [1.4, -0.04, 0],
+          scale: 0.4
+        },
+        position: [2.1, 0, 3.8],
+        rotation: [-Math.PI/2, 0, 0]
+      },
+      roomId: {
+        position: [0, 0, 0],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 0.5
       }
     }
   },

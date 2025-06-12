@@ -1,8 +1,13 @@
-import { Text3D } from "@react-three/drei"
+import { Image, Text3D } from "@react-three/drei"
 import { useRef } from "react"
 import * as THREE from 'three';
+import layout from "../layout";
+import DiscordLogo from "../meshes/DiscordLogo";
 
-export default function DiscordButton({ rotation, position }) {
+export default function DiscordButton({ rotation, position, device='landscapeDesktop' }) {
+
+  // in mobile, stretch it out
+  // don't display room id
 
   const discordTextMaterialRef = useRef()
   const discordBoxMaterialRef = useRef()
@@ -34,13 +39,13 @@ export default function DiscordButton({ rotation, position }) {
     console.log('[RestartGame][RocketsWin] post log response', response)
   }
 
-  return <group name='discord-button' rotation={rotation} position={position}>
+  return <group name='discord-button' position={position} rotation={rotation}>
     <mesh>
-      <boxGeometry args={[3.2, 1, 0.01]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.discordButton.outerBox.args}/>
       <meshStandardMaterial ref={discordBoxMaterialRef} color='yellow'/>
     </mesh>
     <mesh>
-      <boxGeometry args={[3.1, 0.9, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.discordButton.innerBox.args}/>
       <meshStandardMaterial color='black'/>
     </mesh>
     <mesh
@@ -49,18 +54,21 @@ export default function DiscordButton({ rotation, position }) {
       onPointerLeave={(e) => handleDiscordPointerLeave(e)}
       onPointerUp={(e) => handleDiscordPointerUp(e)}
     >
-      <boxGeometry args={[3.2, 1.0, 0.02]}/>
+      <boxGeometry args={layout[device].endSceneActionButtons.discordButton.wrapper.args}/>
       <meshStandardMaterial color="grey" transparent opacity={0}/>
     </mesh>
     <Text3D
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[0, 0, 0]}
-      size={0.5}
+      size={layout[device].endSceneActionButtons.discordButton.text.fontSize}
       height={0.03} 
-      position={[-1.3, -0.25, 0]} // camera is shifted up (y-axis)
+      position={layout[device].endSceneActionButtons.discordButton.text.position}
     >
       DISCORD
       <meshStandardMaterial ref={discordTextMaterialRef} color='yellow'/>
     </Text3D>
+    <DiscordLogo 
+    position={layout[device].endSceneActionButtons.discordButton.logo.position} 
+    scale={layout[device].endSceneActionButtons.discordButton.logo.scale} 
+    color='#545FD2'/>
   </group>
 }
