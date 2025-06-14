@@ -2,7 +2,7 @@ import { Float, MeshDistortMaterial, OrthographicCamera, Text3D } from "@react-t
 import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useAtomValue, useSetAtom } from "jotai";
-import { clientAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
+import { clientAtom, deviceAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, getScore } from "../helpers/helpers";
 import UfoNew from "../meshes/UfoNew";
 import Earth from "../meshes/Earth";
@@ -22,11 +22,13 @@ import axios from "axios";
 import DiscordButton from "./DiscordButton";
 import ShareLinkButton from "./ShareLinkButton";
 import PlayAgainButton from "./PlayAgainButton";
+import useResponsiveSetting from "../hooks/useResponsiveSetting";
 
-// add falling rocket parts in the background
 export default function RocketsLose() {
+
   // State
-  const device = 'landscapeDesktop'
+  useResponsiveSetting();
+  const device = useAtomValue(deviceAtom)
   const teamRockets = useAtomValue(teamsAtom)[0]
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
@@ -255,7 +257,7 @@ export default function RocketsLose() {
     const time = state.clock.elapsedTime
     ufo0.current.position.z = Math.cos(time) * 0.3
     ufo1.current.position.z = Math.cos(time + Math.PI/4) * 0.15
-    ufoBoss.current.position.z = Math.cos(time + Math.PI/4) * 0.15
+    ufoBoss.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + layout[device].rocketsLoseScene.scene1.position[2]
 
     // rings ufo0
     for (let i = 0; i < numRings; i++) {
@@ -312,17 +314,19 @@ export default function RocketsLose() {
     {/* title */}
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[-Math.PI/2, 0, 0]}
-      size={0.5} 
+      position={layout[device].rocketsLoseScene.title.position}
+      rotation={layout[device].rocketsLoseScene.title.rotation}
+      size={layout[device].rocketsLoseScene.title.fontSize} 
       height={0.003} 
-      position={[-12.5, 14, 0]} // camera is shifted up (y-axis)
     >
       {`MISSION ABORT!`}
       <meshStandardMaterial color='yellow'/>
     </Text3D>
     {/* score and player names */}
-    <group name='teams' position={[-12.5, 12, 0]}>
-      <group name='score' position={[0, 0, 0]}>
+    <group name='teams' 
+    position={layout[device].rocketsLoseScene.teams.position} 
+    scale={layout[device].rocketsLoseScene.teams.scale}>
+      <group name='score'>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
@@ -388,7 +392,9 @@ export default function RocketsLose() {
       </group>
     </group>
     {/* scene 0 */}
-    <group name='scene-0' position={[-11.8, 0, 5.5]} scale={0.8}>
+    <group name='scene-0' 
+    position={layout[device].rocketsLoseScene.scene0.position} 
+    scale={layout[device].rocketsLoseScene.scene0.scale}>
       <Earth showParticles={false} animate={false} scale={2.3} rotation={[-Math.PI/2, 0, 0]}/>
       <group ref={ufo0}>
         <UfoNew position={[0, 7, -1]} scale={3}/>
@@ -414,7 +420,10 @@ export default function RocketsLose() {
       </group>
     </group>
     {/* scene 1 */}
-    <group name='scene-1' ref={ufoBoss}>
+    <group name='scene-1' 
+    position={layout[device].rocketsLoseScene.scene1.position}
+    scale={layout[device].rocketsLoseScene.scene1.scale}
+    ref={ufoBoss}>
       <animated.group name='rocket-group' scale={rocketGroupScale} position={rocketGroupPosition}>
         <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[-0.8, -2.8, -1]}>
           <Rocket rotation={[Math.PI/6, 0, -Math.PI/2]} animate={false} scale={1.5}/>
@@ -454,8 +463,10 @@ export default function RocketsLose() {
       </group>
     </group>
     {/* room id and buttons */}
-    <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
-      <group name='room-id' >
+    <group name='action-buttons' 
+    position={layout[device].rocketsLoseScene.actionButtons.position} 
+    scale={layout[device].rocketsLoseScene.actionButtons.scale}>
+      { device === 'landscapeDesktop' && <group name='room-id' >
         {/* text */}
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
@@ -467,10 +478,19 @@ export default function RocketsLose() {
           ROOM ID: {`${params.id}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-      </group>
-      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
-      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
-      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
+      </group> }
+      <PlayAgainButton 
+      position={layout[device].endSceneActionButtons.playAgainButton.position} 
+      rotation={layout[device].endSceneActionButtons.playAgainButton.rotation} 
+      device={device}/>
+      <ShareLinkButton 
+      position={layout[device].endSceneActionButtons.shareLinkButton.position} 
+      rotation={layout[device].endSceneActionButtons.shareLinkButton.rotation} 
+      device={device}/>
+      <DiscordButton
+      position={layout[device].endSceneActionButtons.discordButton.position}
+      rotation={layout[device].endSceneActionButtons.discordButton.rotation}
+      device={device}/>
     </group>
     <Asteroids scale={1.3} position={[-10, -5, -20]}/>
   </group>
