@@ -3,6 +3,7 @@ import { useRef } from "react"
 import * as THREE from 'three';
 import layout from "../layout";
 import DiscordLogo from "../meshes/DiscordLogo";
+import axios from "axios";
 
 export default function DiscordButton({ rotation, position, device='landscapeDesktop' }) {
 

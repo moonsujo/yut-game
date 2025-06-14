@@ -109,10 +109,10 @@ export default function UfosLose() {
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
-      size={layout[device].ufoLoseScene.title.fontSize} 
-      height={0.003} 
       position={layout[device].ufoLoseScene.title.position}
       rotation={layout[device].ufoLoseScene.title.rotation}
+      size={layout[device].ufoLoseScene.title.fontSize} 
+      height={0.003} 
     >
       {`LOST IN SPACE!`}
       <meshStandardMaterial color='yellow'/>

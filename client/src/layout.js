@@ -1569,6 +1569,33 @@ export default {
         scale: 1.1
       }
     },
+    ufoWinScene: {
+      title: {
+        position: [-5.4, 0, -9],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 1.0
+      },
+      teams: {
+        position: [-5.4, 0, -7.5],
+        scale: 1.5
+      },
+      scene0: {
+        position: [-4, 0, -2],
+        scale: 0.5
+      },
+      scene00: {
+        position: [4, 0, -2],
+        scale: 0.5
+      },
+      scene1: {
+        position: [0, 0, 1],
+        scale: 0.7
+      },
+      actionButtons: {
+        position: [0, 3, 6.5],
+        scale: 1.1
+      }
+    },
     endSceneActionButtons: {
       playAgainButton: {
         outerBox: {
@@ -3246,6 +3273,29 @@ export default {
       },
       scene1: {
         position: [0, 0, -1],
+        scale: 1.3
+      },
+      actionButtons: {
+        position: [7.5, 0, 2],
+        scale: 0.9
+      }
+    },
+    ufoWinScene: {
+      title: {
+        position: [-12.5, 14, 0],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 0.5
+      },
+      teams: {
+        position: [-12.5, 12, 0],
+        scale: 1
+      },
+      scene0: {
+        position: [-10.5, 0, 0],
+        scale: 0.5
+      },
+      scene1: {
+        position: [0, 0, 0],
         scale: 1.3
       },
       actionButtons: {

@@ -2,7 +2,7 @@ import { Float, Text3D } from "@react-three/drei";
 import GameCamera from "../GameCamera";
 import layout from "../layout";
 import { useAtomValue, useSetAtom } from "jotai";
-import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
+import { deviceAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
 import { formatName, generateRandomNumberInRange, getScore } from "../helpers/helpers";
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -27,11 +27,14 @@ import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import PlayAgainButton from "./PlayAgainButton";
 import ShareLinkButton from "./ShareLinkButton";
 import DiscordButton from "./DiscordButton";
+import useResponsiveSetting from "../hooks/useResponsiveSetting";
 
 // add falling rocket parts in the background
 export default function UfosWin2New() {
+
   // State
-  const device = 'landscapeDesktop'
+  useResponsiveSetting();
+  const device = useAtomValue(deviceAtom)
   const teamRockets = useAtomValue(teamsAtom)[0]
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
@@ -43,6 +46,7 @@ export default function UfosWin2New() {
 
   // Ref
   const ufoBoss = useRef()
+  const ufoBoss00 = useRef()
   const scene1 = useRef()
 
   // Hooks - particles
@@ -278,9 +282,12 @@ export default function UfosWin2New() {
   const beamBrightness = 0.2
   useFrame((state, delta) => {
     const time = state.clock.elapsedTime
-    ufoBoss.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + 3
+    ufoBoss.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + 3 + layout[device].ufoWinScene.scene0.position[2]
     shaderMaterialBeam2.uniforms.uOpacity.value = Math.sin(time * 3) * 0.05 + beamBrightness
     scene1.current.position.z = Math.cos(time + Math.PI/4) * 0.15
+    if (ufoBoss00.current) {
+      ufoBoss00.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + 3 + layout[device].ufoWinScene.scene0.position[2]
+    }
   })
 
   // Spring Animation
@@ -325,17 +332,19 @@ export default function UfosWin2New() {
     {/* title */}
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[-Math.PI/2, 0, 0]}
-      size={0.5} 
+      position={layout[device].ufoWinScene.title.position}
+      rotation={layout[device].ufoWinScene.title.rotation}
+      size={layout[device].ufoWinScene.title.fontSize} 
       height={0.003} 
-      position={[-12.5, 14, 0]} // camera is shifted up (y-axis)
     >
       {`ALIEN INVASION!`}
       <meshStandardMaterial color='yellow'/>
     </Text3D>
     {/* score and player names */}
-    <group name='teams' position={[-12.5, 12, 0]}>
-      <group name='score' position={[0, 0, 0]}>
+    <group name='teams' 
+    position={layout[device].ufoWinScene.teams.position}
+    scale={layout[device].ufoLoseScene.teams.scale}>
+      <group name='score'>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
@@ -376,6 +385,7 @@ export default function UfosWin2New() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
+              key={index}
             >
               {formatName(value.name)}
               <meshStandardMaterial color='red'/>
@@ -390,6 +400,7 @@ export default function UfosWin2New() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, 0]} // camera is shifted up (y-axis)
+              key={index}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='turquoise'/>
@@ -399,7 +410,10 @@ export default function UfosWin2New() {
       </group>
     </group>
     {/* scene 0 */}
-    <group name='scene-0' position={[-10.5, 0, 0]} scale={0.5} ref={ufoBoss}>
+    <group name='scene-0' 
+    position={layout[device].ufoWinScene.scene0.position} 
+    scale={layout[device].ufoWinScene.scene0.scale} 
+    ref={ufoBoss}>
       <animated.group name='rocket-group' scale={rocketGroupScale} position={rocketGroupPosition}>
         <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[-0.8, -2.8, -1]}>
           <Rocket rotation={[Math.PI/6, 0, -Math.PI/2]} animate={false} scale={1.5}/>
@@ -423,8 +437,38 @@ export default function UfosWin2New() {
         </mesh>
       </group>
     </group>
+    { device === 'portrait' && <group name='scene-00' 
+    position={layout[device].ufoWinScene.scene00.position} 
+    scale={layout[device].ufoWinScene.scene00.scale} 
+    ref={ufoBoss00}>
+      <animated.group name='rocket-group' scale={rocketGroupScale} position={rocketGroupPosition}>
+        <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[-0.8, -2.8, -1]}>
+          <Rocket rotation={[Math.PI/6, 0, -Math.PI/2]} animate={false} scale={1.5}/>
+        </Float>
+        <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[0.8, -2.8, -1]}>
+          <Rocket rotation={[Math.PI/4, 0, Math.PI/18]} animate={false} scale={1.3}/>
+        </Float>
+        <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[1, -2.8, 1]}>
+          <Rocket rotation={[-Math.PI/6, -Math.PI/6, -Math.PI/3]} animate={false} scale={1.7}/>
+        </Float>
+        <Float speed={5} rotationIntensity={2} floatIntensity={1} floatingRange={[1, 2]} position={[-1, -2.8, 1]}>
+          <Rocket rotation={[-Math.PI/6, 0, -Math.PI/2]} animate={false} scale={1.5}/>
+        </Float>
+      </animated.group>
+      <group>
+        <UfoNewBoss position={[0, 0, -4]} rotation={[-Math.PI/4, 0, 0]} scale={5} animate glassColor='turquoise'/>
+        {/* has to be turned. one side of the lateral plane is where the ends of the plane meet;*/}
+        {/* the other side is the center*/}
+        <mesh name='beam' rotation={[-Math.PI/2 + Math.PI/9, Math.PI, 0]} position={[0, -2.2, 3.3]} scale={1} material={shaderMaterialBeam2}>
+          <cylinderGeometry args={[1, 3, 13, 32]}/>
+        </mesh>
+      </group>
+    </group>}
     {/* scene 1 */}
-    <group name='scene-1' ref={scene1}>
+    <group name='scene-1' 
+    position={layout[device].ufoWinScene.scene1.position} 
+    scale={layout[device].ufoWinScene.scene1.scale}
+    ref={scene1}>
       <UfoNewBoss position={[0, 1, -4]} rotation={[-Math.PI/4, 0, 0]} scale={5} animate glassColor='turquoise'/>
       {/* beam */}
       <mesh position={[0, 0, 2]} rotation={[-Math.PI/2 + Math.PI/32, 0, 0]} material={shaderMaterialBeam2}>
@@ -456,9 +500,10 @@ export default function UfosWin2New() {
       </Float>
     </group>
     {/* room id and buttons */}
-    <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
-      <group name='room-id' >
-        {/* text */}
+    <group name='action-buttons' 
+    position={layout[device].ufoWinScene.actionButtons.position} 
+    scale={layout[device].ufoWinScene.actionButtons.scale}>
+      {/* <group name='room-id'>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
@@ -469,11 +514,19 @@ export default function UfosWin2New() {
           ROOM ID: ABCD
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-      </group>
-      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
-      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
-      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
+      </group> */}
+      <PlayAgainButton 
+      position={layout[device].endSceneActionButtons.playAgainButton.position} 
+      rotation={layout[device].endSceneActionButtons.playAgainButton.rotation} 
+      device={device}/>
+      <ShareLinkButton 
+      position={layout[device].endSceneActionButtons.shareLinkButton.position} 
+      rotation={layout[device].endSceneActionButtons.shareLinkButton.rotation} 
+      device={device}/>
+      <DiscordButton
+      position={layout[device].endSceneActionButtons.discordButton.position}
+      rotation={layout[device].endSceneActionButtons.discordButton.rotation}
+      device={device}/>
     </group>
-    {/* <MeteorsRealShader/> */}
   </group>
 }

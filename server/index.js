@@ -926,13 +926,13 @@ io.on("connect", async (socket) => {
       } else {
         newTurn = await getHostTurn(room)
       }
-      room.turn = newTurn
-      room.teams[newTurn.team].throws = 1
-      room.gamePhase = "pregame"
+      // room.turn = newTurn
+      // room.teams[newTurn.team].throws = 1
+      // room.gamePhase = "pregame"
       // testing
-      // room.gamePhase = "game" 
-      // room.turn.team = 1
-      // room.teams[room.turn.team].throws = 0
+      room.gamePhase = "game" 
+      room.turn.team = 0
+      room.teams[room.turn.team].throws = 0
       
       // Game logs
       let gameLog = {
