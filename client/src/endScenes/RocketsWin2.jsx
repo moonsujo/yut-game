@@ -1,7 +1,7 @@
 import { Float, Text3D } from "@react-three/drei";
 import { useAtomValue, useSetAtom } from "jotai";
-import { showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
-import { formatName, getScore } from "../helpers/helpers";
+import { deviceAtom, showBlackhole2Atom, showBlackholeAtom, showGalaxyBackgroundAtom, showRedGalaxyAtom, teamsAtom } from "../GlobalState";
+import { formatName, generateRandomNumberInRange, getScore } from "../helpers/helpers";
 import Rocket from "../meshes/Rocket";
 import Earth from "../meshes/Earth";
 import { useEffect, useRef } from "react";
@@ -15,16 +15,16 @@ import MeteorsRealShader from "../shader/meteorsReal/MeteorsRealShader";
 import ShareLinkButton from "./ShareLinkButton";
 import PlayAgainButton from "./PlayAgainButton";
 import DiscordButton from "./DiscordButton";
+import useResponsiveSetting from "../hooks/useResponsiveSetting";
 
 export default function RocketsWin2() {
-  // Displays / Test
-  const scene0On = true
 
   // Hooks
   const [CreateFirework] = useFireworksShader();
+  useResponsiveSetting();
+  const device = useAtomValue(deviceAtom)
 
   // State
-  const device = 'landscapeDesktop'
   const teamRockets = useAtomValue(teamsAtom)[0]
   const teamUfos = useAtomValue(teamsAtom)[1]
   let rocketsScore = getScore(teamRockets)
@@ -57,11 +57,11 @@ export default function RocketsWin2() {
     rocket3.current.position.y = Math.cos(time) * 0.05
 
     // Ufos
-    if (scene0On) {
-      for (let i = 0; i < numUfos; i++) {
-        let t = (time + i * shiftTime) % resetTime
-        let timeSlowed = t / 2
-        const ufo = ufos[i]
+    for (let i = 0; i < numUfos; i++) {
+      let t = (time + i * shiftTime) % resetTime
+      let timeSlowed = t / 2
+      const ufo = ufos[i]
+      if (ufo.current) {
         // scale
         if (t < 1) {
           ufo.current.scale.x = Math.min(t, 1)
@@ -144,6 +144,14 @@ export default function RocketsWin2() {
     })
   }, [])
 
+  useEffect(() => {
+    if (device === 'landscapeDesktop') {
+      setShowBlackhole2(true)
+    } else {
+      setShowBlackhole2(false)
+    }
+  }, [device])
+
   const meteorShaderColor = new THREE.Color();
   meteorShaderColor.setHSL(0.05, 0.7, 0.4)
   return <group>
@@ -152,16 +160,20 @@ export default function RocketsWin2() {
     </group>
     <Text3D name='title'
       font="/fonts/Luckiest Guy_Regular.json"
-      rotation={[-Math.PI/2, 0, 0]}
-      size={0.5} 
+      position={layout[device].rocketsWinScene.title.position}
+      rotation={layout[device].rocketsWinScene.title.rotation}
+      size={layout[device].rocketsWinScene.title.fontSize} 
       height={0.003} 
-      position={[-12.5, 14, 0]} // camera is shifted up (y-axis)
+      lineHeight={0.7}
     >
-      {`MISSION ACCOMPLISHED!`}
+      {layout[device].rocketsWinScene.title.text}
       <meshStandardMaterial color='yellow'/>
     </Text3D>
     {/* team score and names */}
-    <group name='teams' position={[-12.5, 12, 0]}>
+    <group name='teams' 
+    position={layout[device].rocketsWinScene.teams.position}
+    scale={layout[device].rocketsWinScene.teams.scale}
+    >
       <group name='score' position={[0, 0, 0]}>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
@@ -226,10 +238,12 @@ export default function RocketsWin2() {
       </group>
     </group>
     {/* scene 0 on the left */}
-    { scene0On && <group name='scene-0' position={[-9, -5, 0]} scale={0.8}>
+    { device === 'landscapeDesktop' && <group name='scene-0' 
+    position={layout[device].rocketsWinScene.scene0.position} 
+    scale={layout[device].rocketsWinScene.scene0.scale}>
       <group name='pieces' position={[0.4, -1.9, -1]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
-          return <group ref={value}>
+          return <group ref={value} key={index}>
             <Ufo position={[0, 0, 0]}/>
             {/* <Ufo position={[0, 0, 0]} smiling={false} scale={[4, 4, 4]}/> */}
           </group>
@@ -247,7 +261,9 @@ export default function RocketsWin2() {
       <Portal position={[0, 0.3, -3]} scale={1} rotation={[-Math.PI/2, 0, 0]}/> */}
     </group> }
     {/* scene 1 in the middle */}
-    <group name='scene-1' scale={1} position={[0, 0, 0.5]}>
+    <group name='scene-1' 
+    position={layout[device].rocketsWinScene.scene1.position}
+    scale={layout[device].rocketsWinScene.scene1.scale}>
       <group name='earth-wrapper' rotation={[-Math.PI/2, 0, Math.PI/16]} ref={earth}>
         <Earth scale={2} rotation={[0, 0, 0]} position={[0, 0, 0]} showParticles={false}/>
       </group>
@@ -273,23 +289,33 @@ export default function RocketsWin2() {
       </Float>
     </group>
     {/* room id and buttons */}
-    <group name='action-buttons' position={[7.5, 0, 2]} scale={0.9}>
-      <group name='room-id' >
-        {/* text */}
+    <group name='action-buttons' 
+    position={layout[device].rocketsWinScene.actionButtons.position} 
+    scale={layout[device].rocketsWinScene.actionButtons.scale}>
+      { device === 'landscapeDesktop' && <group name='room-id' >
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
           height={0.03} 
-          position={[0, 0, 0]} // camera is shifted up (y-axis)
+          position={[0, 0, 0]}
         >
           ROOM ID: ABCD
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-      </group>
-      <PlayAgainButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 1]}/>
-      <ShareLinkButton rotation={[-Math.PI/2, 0, 0]} position={[2.1, 0, 2.4]}/>
-      <DiscordButton rotation={[-Math.PI/2, 0, 0]} position={[1.6, 0, 3.8]}/>
+      </group> }
+      <PlayAgainButton 
+      position={layout[device].endSceneActionButtons.playAgainButton.position} 
+      rotation={layout[device].endSceneActionButtons.playAgainButton.rotation} 
+      device={device}/>
+      <ShareLinkButton 
+      position={layout[device].endSceneActionButtons.shareLinkButton.position} 
+      rotation={layout[device].endSceneActionButtons.shareLinkButton.rotation} 
+      device={device}/>
+      <DiscordButton
+      position={layout[device].endSceneActionButtons.discordButton.position}
+      rotation={layout[device].endSceneActionButtons.discordButton.rotation}
+      device={device}/>
     </group>
     <MeteorsRealShader color={meteorShaderColor}/>
   </group>

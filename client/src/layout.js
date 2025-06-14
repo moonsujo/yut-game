@@ -1616,7 +1616,37 @@ export default {
       },
       actionButtons: {
         position: [0, 3, 6.5],
-        scale: 1.1
+        scale: 1.1,
+        roomId: {
+          position: [0.5, 0, 0.5]
+        }
+      }
+    },
+    rocketsWinScene: {
+      title: {
+        position: [-5.4, 0, -9.5],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 1.0,
+        text: 'MISSION\nACCOMPLISHED!'
+      },
+      teams: {
+        position: [-5.4, 0, -7.1],
+        scale: 1.5
+      },
+      scene0: {
+        position: [-9, -5, 0],
+        scale: 1
+      },
+      scene1: {
+        position: [0, 0, 1],
+        scale: 1.2
+      },
+      actionButtons: {
+        position: [0, 3, 6.5],
+        scale: 1.1,
+        roomId: {
+          position: [0.5, 0, 0.5]
+        }
       }
     },
     endSceneActionButtons: {
@@ -3342,6 +3372,30 @@ export default {
       },
       scene1: {
         position: [0, 0, 0],
+        scale: 1
+      },
+      actionButtons: {
+        position: [7.5, 0, 2],
+        scale: 0.9
+      }
+    },
+    rocketsWinScene: {
+      title: {
+        position: [-12.5, 14, 0],
+        rotation: [-Math.PI/2, 0, 0],
+        fontSize: 0.5,
+        text: 'MISSION ACCOMPLISHED!'
+      },
+      teams: {
+        position: [-12.5, 12, 0],
+        scale: 1
+      },
+      scene0: {
+        position: [-9, -5, 0],
+        scale: 0.8
+      },
+      scene1: {
+        position: [0, 0, 0.5],
         scale: 1
       },
       actionButtons: {
