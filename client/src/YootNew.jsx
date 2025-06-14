@@ -14,7 +14,7 @@ import { useSpring, animated } from '@react-spring/three';
 
 export default function YootNew({ animation, scale, position, rotation=[0,0,0] }) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('/models/yoot-animation-2-shorter.glb')
+  const { nodes, materials, animations } = useGLTF('/models/yoot-animation-2-korean.glb')
   // const { nodes, materials, animations } = useGLTF('/models/yoot-animation-3.glb')
   const { actions, mixer } = useAnimations(animations, group)
 
@@ -40,8 +40,8 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
           receiveShadow
           geometry={nodes.yoot1.geometry}
           material={materials['material-disabled']}
-          position={[19.534, 15.094, 21.846]}
-          rotation={[0.116, -0.574, -1.317]}
+          position={[18.462, 18.952, 25.28]}
+          rotation={[0.124, 0.688, -1.594]}
         />
         <mesh
           name="yoot0"
@@ -49,8 +49,8 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
           receiveShadow
           geometry={nodes.yoot0.geometry}
           material={materials['Material.006']}
-          position={[16.01, 14.715, 19.09]}
-          rotation={[0.074, -1.309, -1.29]}
+          position={[21.891, 19.815, 24.858]}
+          rotation={[2.989, -0.578, 1.338]}
         />
         <mesh
           name="yoot2"
@@ -58,8 +58,8 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
           receiveShadow
           geometry={nodes.yoot2.geometry}
           material={materials['Material.002']}
-          position={[19.534, 15.094, 14.766]}
-          rotation={[0.068, -0.334, -1.363]}
+          position={[17.553, 19.724, 22.361]}
+          rotation={[0.089, 0.217, -1.491]}
         />
         <mesh
           name="yoot3"
@@ -67,8 +67,8 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
           receiveShadow
           geometry={nodes.yoot3.geometry}
           material={materials['Material.008']}
-          position={[23.029, 15.094, 18.171]}
-          rotation={[0.116, -0.753, -1.391]}
+          position={[20.853, 18.429, 21.136]}
+          rotation={[-0.205, 0.372, -1.518]}
         />
       </group>
     </group>
