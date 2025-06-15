@@ -163,6 +163,7 @@ export default function UfosLose() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, index * 0.5]}
+              key={index}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='red'/>
@@ -177,6 +178,7 @@ export default function UfosLose() {
               size={0.4} 
               height={0.003} 
               position={[0, 0, index * 0.5]}
+              key={index}
             >
               {formatName(value.name, 10)}
               <meshStandardMaterial color='turquoise'/>
@@ -219,7 +221,7 @@ export default function UfosLose() {
     scale={layout[device].ufoLoseScene.scene1.scale}>
       <group name='pieces' position={[-1, -1.5, 0]} rotation={[-Math.PI/2, 0, 0]}>
         {ufos.map((value, index) => {
-          return <group ref={value}>
+          return <group ref={value} key={index}>
             <UfoNewBossSmall position={[0, 0, 0]} enlightened={false} smiling={false}/>
             {/* <Ufo position={[0, 0, 0]} smiling={false} scale={[4, 4, 4]}/> */}
           </group>

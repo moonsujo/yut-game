@@ -3349,7 +3349,7 @@ export default {
       },
       scene1: {
         position: [0, 0, 0],
-        scale: 1.3
+        scale: 1
       },
       actionButtons: {
         position: [7.5, 0, 2],

@@ -28,11 +28,13 @@ import PlayAgainButton from "./PlayAgainButton";
 import ShareLinkButton from "./ShareLinkButton";
 import DiscordButton from "./DiscordButton";
 import useResponsiveSetting from "../hooks/useResponsiveSetting";
+import { useParams } from "wouter";
 
 // add falling rocket parts in the background
 export default function UfosWin2New() {
 
   // State
+  const params = useParams();
   useResponsiveSetting();
   const device = useAtomValue(deviceAtom)
   const teamRockets = useAtomValue(teamsAtom)[0]
@@ -284,7 +286,7 @@ export default function UfosWin2New() {
     const time = state.clock.elapsedTime
     ufoBoss.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + 3 + layout[device].ufoWinScene.scene0.position[2]
     shaderMaterialBeam2.uniforms.uOpacity.value = Math.sin(time * 3) * 0.05 + beamBrightness
-    scene1.current.position.z = Math.cos(time + Math.PI/4) * 0.15
+    scene1.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + layout[device].ufoWinScene.scene1.position[2]
     if (ufoBoss00.current) {
       ufoBoss00.current.position.z = Math.cos(time + Math.PI/4) * 0.15 + 3 + layout[device].ufoWinScene.scene0.position[2]
     }
@@ -503,7 +505,7 @@ export default function UfosWin2New() {
     <group name='action-buttons' 
     position={layout[device].ufoWinScene.actionButtons.position} 
     scale={layout[device].ufoWinScene.actionButtons.scale}>
-      {/* <group name='room-id'>
+      { device === 'landscapeDesktop' && <group name='room-id'>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
           rotation={[-Math.PI/2, 0, 0]}
@@ -511,10 +513,10 @@ export default function UfosWin2New() {
           height={0.03} 
           position={[0, 0, 0]} // camera is shifted up (y-axis)
         >
-          ROOM ID: ABCD
+          ROOM ID: {`${params.id}`}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
-      </group> */}
+      </group> }
       <PlayAgainButton 
       position={layout[device].endSceneActionButtons.playAgainButton.position} 
       rotation={layout[device].endSceneActionButtons.playAgainButton.rotation} 
