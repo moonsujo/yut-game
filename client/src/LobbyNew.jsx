@@ -68,7 +68,7 @@ import { formatName } from "./helpers/helpers.js";
 import GameRules from "./GameRules.jsx";
 import axios from "axios";
 
-export default function Lobby() {
+export default function LobbyNew() {
 
   useResponsiveSetting();
   const device = useAtomValue(deviceAtom)
@@ -410,7 +410,6 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius - 0.5
         ]}>
-          <Star scale={0.4} color={ seat1Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[0] && host.socketId === teams[0].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[0] && client.socketId === teams[0].players[0].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -432,7 +431,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat1Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
@@ -440,18 +439,18 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[-3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
             </mesh>
             <mesh 
-            name='wrapper' 
-            position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
-            onPointerEnter={e => handleSeat1Team0PointerEnter(e)}
-            onPointerLeave={e => handleSeat1Team0PointerLeave(e)}
-            onPointerUp={e => handleSeatPointerUp(e, 0, 0)}
+              name='wrapper' 
+              position={[-3.2, 0, 0]} 
+              scale={[7.8, 0.02, 1.3]}
+              onPointerEnter={e => handleSeat1Team0PointerEnter(e)}
+              onPointerLeave={e => handleSeat1Team0PointerLeave(e)}
+              onPointerUp={e => handleSeatPointerUp(e, 0, 0)}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0}/>
@@ -462,11 +461,10 @@ export default function Lobby() {
         name='rocket-seat-2'
         scale={0.6} 
         position={[
-          -Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius + 0.3, 
+          -Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius, 
           5, 
-          -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius - 0.2
+          -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color={ seat2Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[1] && host.socketId === teams[0].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[1] && client.socketId === teams[0].players[1].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -488,7 +486,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat2Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
@@ -496,7 +494,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[-3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -518,11 +516,10 @@ export default function Lobby() {
         name='rocket-seat-3'
         scale={0.6} 
         position={[
-          -Math.cos(0 - Math.PI/8) * radius + 0.3, 
+          -Math.cos(0 - Math.PI/8) * radius, 
           5, 
-          -Math.sin(0 - Math.PI/8) * radius - 0.2
+          -Math.sin(0 - Math.PI/8) * radius + 0.1
         ]}>
-          <Star scale={0.4} color={ seat3Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[2] && host.socketId === teams[0].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[2] && client.socketId === teams[0].players[2].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -544,7 +541,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat3Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
@@ -552,7 +549,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[-3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -560,7 +557,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[-2.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat3Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat3Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0, 2)}
@@ -574,11 +571,10 @@ export default function Lobby() {
         name='rocket-seat-4'
         scale={0.6} 
         position={[
-          -Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius, 
+          -Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius - 0.2, 
           5, 
-          -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.2
+          -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.6
         ]}>
-          <Star scale={0.4} color={ seat4Team0Hover ? 'orange' : 'red' } onBoard offset={0.2}/>
           { teams[0].players[3] && host.socketId === teams[0].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[0].players[3] && client.socketId === teams[0].players[3].socketId && <group>
             <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
@@ -600,7 +596,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat4Team0Hover ? 'orange' : 'red' } transparent opacity={0.1}/>
@@ -608,7 +604,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[-3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -616,7 +612,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[-3.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat4Team0PointerEnter(e)}
             onPointerLeave={e => handleSeat4Team0PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 0, 3)}
@@ -634,7 +630,6 @@ export default function Lobby() {
           5, 
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius - 0.5
         ]}>
-          <Star scale={0.4} color={ seat1Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[0] && host.socketId === teams[1].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[0] && client.socketId === teams[1].players[0].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -643,7 +638,7 @@ export default function Lobby() {
           </group>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[ 0.7, 0.02, 0.3]}
+            position={[ -0.3, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
             height={0.01}
@@ -656,7 +651,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat1Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
@@ -664,7 +659,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -672,7 +667,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[2.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat1Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat1Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1, 0)}
@@ -686,11 +681,10 @@ export default function Lobby() {
         name='ufo-seat-2'
         scale={0.6} 
         position={[
-          Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius - 0.3, 
+          Math.cos(Math.PI * 2 / 8 - Math.PI/8) * radius, 
           5, 
-          -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius - 0.2
+          -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
-          <Star scale={0.4} color={ seat2Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[1] && host.socketId === teams[1].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[1] && client.socketId === teams[1].players[1].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -699,7 +693,7 @@ export default function Lobby() {
           </group>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[ 0.7, 0.02, 0.3]}
+            position={[ -0.3, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
             height={0.01}
@@ -712,7 +706,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat2Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
@@ -720,7 +714,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -728,7 +722,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat2Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat2Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1, 1)}
@@ -742,11 +736,10 @@ export default function Lobby() {
         name='ufo-seat-3'
         scale={0.6} 
         position={[
-          Math.cos(0 - Math.PI/8) * radius - 0.3, 
+          Math.cos(0 - Math.PI/8) * radius, 
           5, 
-          -Math.sin(0 - Math.PI/8) * radius - 0.2
+          -Math.sin(0 - Math.PI/8) * radius + 0.1
         ]}>
-          <Star scale={0.4} color={ seat3Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[2] && host.socketId === teams[1].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[2] && client.socketId === teams[1].players[2].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -755,7 +748,7 @@ export default function Lobby() {
           </group>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[ 0.7, 0.02, 0.3]}
+            position={[ -0.3, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
             height={0.01}
@@ -768,7 +761,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat3Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
@@ -776,7 +769,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -784,7 +777,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat3Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat3Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1, 2)}
@@ -798,11 +791,10 @@ export default function Lobby() {
         name='ufo-seat-4'
         scale={0.6} 
         position={[
-          Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius, 
+          Math.cos(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.2, 
           5, 
-          -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.2
+          -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.6
         ]}>
-          <Star scale={0.4} color={ seat4Team1Hover ? 'green' : 'turquoise' } onBoard offset={0.2}/>
           { teams[1].players[3] && host.socketId === teams[1].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
           { teams[1].players[3] && client.socketId === teams[1].players[3].socketId && <group>
             <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
@@ -811,7 +803,7 @@ export default function Lobby() {
           </group>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
-            position={[0.7, 0.02, 0.3]}
+            position={[ -0.3, 0.02, 0.3]}
             rotation={[-Math.PI/2, 0, 0]}
             size={0.6}
             height={0.01}
@@ -824,7 +816,7 @@ export default function Lobby() {
             <mesh 
             name='background-outer' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.01, 1.3]}
+            scale={[7.8, 0.01, 1.5]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color={ seat4Team1Hover ? 'green' : 'turquoise' } transparent opacity={0.1}/>
@@ -832,7 +824,7 @@ export default function Lobby() {
             <mesh 
             name='background-inner' 
             position={[3.2, 0, 0]} 
-            scale={[7.7, 0.02, 1.2]}
+            scale={[7.7, 0.02, 1.4]}
             >
               <boxGeometry args={[1, 1, 1]}/>
               <meshStandardMaterial color='black' transparent opacity={0.3}/>
@@ -840,7 +832,7 @@ export default function Lobby() {
             <mesh 
             name='wrapper' 
             position={[3.2, 0, 0]} 
-            scale={[7.8, 0.02, 1.3]}
+            scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat4Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat4Team1PointerLeave(e)}
             onPointerUp={e => handleSeatPointerUp(e, 1, 3)}
@@ -1432,9 +1424,9 @@ export default function Lobby() {
       <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[-2.3,5,-2.7]}
+          position={[-3.2,5,-2.7]}
           rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
+          size={0.5}
           height={0.01}
           lineHeight={0.7}
         >
@@ -1443,16 +1435,17 @@ export default function Lobby() {
         </Text3D>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[0.5,5,-2.7]}
+          position={[0.6,5,-2.7]}
           rotation={[-Math.PI/2, 0, 0]}
-          size={0.4}
+          size={0.5}
           height={0.01}
           lineHeight={0.7}
         >
           {`TEAM\nUFO`}
           <meshStandardMaterial color={ 'turquoise' }/>
         </Text3D>
-        <YootDisplay scale={0.14} position={[-0.15, 5, 1]} rotation={[0, Math.PI/2, 0]}/>
+        
+        <YootDisplay scale={0.2} position={[-0.15, 5, 1.1]} rotation={[0, Math.PI/2, 0]}/>
         {/* <YootDisplay scale={spring.boomScaleYut} position={[-0.15, 5, 0]} rotation={[0, Math.PI/2, 0]}/> */}
         <Seats position={[0, 0, 1]} scale={1}/>
       </group>
@@ -1488,13 +1481,17 @@ export default function Lobby() {
       const [hover, setHover] = useState(false)
       function handlePointerEnter(e) {
         e.stopPropagation()
-        document.body.style.cursor = 'pointer'
-        setHover(true)
+        if (readyToStart) {
+          document.body.style.cursor = 'pointer'
+          setHover(true)
+        }
       }
       function handlePointerLeave(e) {
         e.stopPropagation()
-        document.body.style.cursor = 'default'
-        setHover(false)
+        if (readyToStart) {
+          document.body.style.cursor = 'default'
+          setHover(false)
+        }
       }
       async function handlePointerUp (e) {
         e.stopPropagation()
@@ -1519,7 +1516,7 @@ export default function Lobby() {
       return <group name='start-game-button' position={position} scale={scale}>
         <mesh name='background-outer' scale={[4.5, 0.01, 0.9]}>
           <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          <meshStandardMaterial color={ readyToStart ? (hover ? 'green' : 'yellow') : 'grey' }/>
         </mesh> 
         <mesh name='background-inner' scale={[4.45, 0.02, 0.85]}>
           <boxGeometry args={[1, 1, 1]}/>
@@ -1542,7 +1539,7 @@ export default function Lobby() {
           position={[-1.6, 0.02, 0.19]}
         >
           START GAME!
-          <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          <meshStandardMaterial color={ readyToStart ? (hover ? 'green' : 'yellow') : 'grey' }/>
         </Text3D>
       </group>
     }
@@ -1616,7 +1613,7 @@ export default function Lobby() {
         </Text3D>
       </group>
       <PlayersParty position={[1, 0, -0.2]} scale={0.55}/>
-      { readyToStart && <StartGameButton position={[0.9, 4, 5.7]} scale={0.9}/> }
+      <StartGameButton position={[0.9, 4, 6]} scale={0.9}/>
       {/* { isHost && !readyToStart && <WaitingForCrewSign position={[0.9,0,5]} scale={0.8}/> }
       { !isHost && <HostWillStartSign position={[0.9,0,5]} scale={0.8}/> } */}
     </group>

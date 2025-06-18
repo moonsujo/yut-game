@@ -11,6 +11,7 @@ import RocketsWin2 from "./endScenes/RocketsWin2.jsx";
 import RocketsLose from "./endScenes/RocketsLose.jsx";
 import UfosWin2New from "./endScenes/UfosWin2New.jsx";
 import UfosLose from "./endScenes/UfosLose.jsx";
+import LobbyNew from "./LobbyNew.jsx";
 
 export default function Experience() {
   const gamePhase = useAtomValue(gamePhaseAtom)
@@ -36,7 +37,7 @@ export default function Experience() {
   }, [connectedToServer])
 
   return <>
-    { gamePhase === 'lobby' && <Lobby/> }
+    { gamePhase === 'lobby' && <LobbyNew/> }
     { (gamePhase === 'pregame' || gamePhase === 'game') && <Game/> }
     {/* win screen experience */}
     { gamePhase === 'finished' && client.team === 0 && winner === 0 && <RocketsWin2/> }

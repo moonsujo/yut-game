@@ -9,7 +9,7 @@ export default function YootDisplay({position, rotation, scale}) {
     rotation={rotation}
     scale={scale}
   >
-    <Float floatIntensity={0.001} floatingRange={[0.05, 0.05]} speed={2} rotationIntensity={0.3}>
+    <Float floatIntensity={0.5} floatingRange={[0.1, 0.1]} speed={2} rotationIntensity={1}>
       <YootMesh scale={0.9} position={[0,0,-2.1]} rotation={[-Math.PI/8, Math.PI/16, -Math.PI/2 + Math.PI]}/>
       <YootMesh scale={0.9} position={[0.5,0,0]} rotation={[0, 0, -Math.PI/2 + Math.PI/16 + Math.PI]} />
       <YootMesh scale={0.9} position={[0.5,1.0,2]} rotation={[Math.PI/32, -Math.PI/32, -Math.PI/2 + Math.PI]} />
