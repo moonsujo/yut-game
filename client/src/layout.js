@@ -2775,7 +2775,26 @@ export default {
       teamSwitchButtonUfo: {
         position: [1.7,0,0],
         scale: 2
-      }
+      },
+      chat: {
+        position: [5.6,0,1.8],
+        rotation: [-Math.PI/2, 0, 0],
+        scale: 0.5,
+        box: {
+          borderRadius: '5px',
+          height: '270px',
+          width: '450px',
+          padding: '10px',
+          fontSize: '24px',
+        },
+        input: {
+          height: '15px',
+          fontSize: '20px',
+          borderRadius: '5px',
+          padding: '10px',
+          border: 0,
+        }
+      },
     },
     game: {
       letsPlayButton: {
@@ -2936,7 +2955,7 @@ export default {
       chat: {
         position: [-11.05,0,3.3],
         rotation: [-Math.PI/2, 0, 0],
-        scale: [0.5, 0.5, 0.5],
+        scale: [1, 1, 1],
         box: {
           borderRadius: '5px',
           height: '230px',

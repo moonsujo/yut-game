@@ -33,6 +33,7 @@ import {
   showBlackholeAtom,
   showRedGalaxyAtom,
   showBlackhole2Atom,
+  settingsOpenAtom,
 } from "./GlobalState.jsx";
 import MoveList from "./MoveList.jsx";
 import PiecesOnBoard from "./PiecesOnBoard.jsx";
@@ -67,6 +68,8 @@ import Ufo from "./meshes/Ufo.jsx";
 import { formatName } from "./helpers/helpers.js";
 import GameRules from "./GameRules.jsx";
 import axios from "axios";
+import Chatbox from "./Chatbox.jsx";
+import Settings from "./Settings.jsx";
 
 export default function LobbyNew() {
 
@@ -1424,7 +1427,7 @@ export default function LobbyNew() {
       <group ref={partyRef} scale={1.6} position={[0, 2, 4.3]}>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[-3.2,5,-2.7]}
+          position={[-3.2,5,-3]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
           height={0.01}
@@ -1435,7 +1438,7 @@ export default function LobbyNew() {
         </Text3D>
         <Text3D
           font="/fonts/Luckiest Guy_Regular.json"
-          position={[0.6,5,-2.7]}
+          position={[0.6,5,-3]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.5}
           height={0.01}
@@ -1895,6 +1898,173 @@ export default function LobbyNew() {
     </group>
   }
 
+  function ThirdSectionNew({ position }) {
+
+    const [inviteFriendsVisible, setInviteFriendsVisible] = useState(true)
+    const [settingsVisible, setSettingsVisible] = useState(false)
+    function InviteFriends() {
+      function CopyLinkButton({ position, scale=1 }) {
+        const [hover, setHover] = useState(false)
+        function handlePointerEnter(e) {
+          e.stopPropagation()
+          document.body.style.cursor = 'pointer'
+          setHover(true)
+        }
+        function handlePointerLeave(e) {
+          e.stopPropagation()
+          document.body.style.cursor = 'default'
+          setHover(false)
+        }
+        function copyURLToClipboard() {
+          const url = window.location.href;
+        
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            // Modern browsers with Clipboard API support
+            navigator.clipboard.writeText(url)
+              .then(() => {
+              })
+              .catch(err => {
+                console.error("Failed to copy URL: ", err);
+              });
+          } else {
+            // Fallback for older browsers
+            const tempInput = document.createElement("input");
+            document.body.appendChild(tempInput);
+            tempInput.value = url;
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+          }
+        }
+        const AnimatedMeshDistortMaterial = animated(MeshDistortMaterial)
+        const [springs, api] = useSpring(() => ({        
+          from: {
+            opacity: 0, 
+          }
+        }))
+        function handlePointerUp(e) {
+          e.stopPropagation()
+          copyURLToClipboard()
+          api.start({
+            from: {
+              opacity: 1
+            },
+            to: [
+              {
+                opacity: 1
+              },
+              { 
+                opacity: 0,
+                delay: 500,
+                config: {
+                  tension: 170,
+                  friction: 26
+                }
+              }
+            ]
+          })
+        }
+        return <group name='copy-link-button' position={position} scale={scale}>
+          <mesh name='background-outer' scale={[5.7, 0.01, 0.75]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </mesh> 
+          <mesh name='background-inner' scale={[5.65, 0.02, 0.7]}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color={MeshColors.spaceDark}/>
+          </mesh>
+          <mesh 
+          name='wrapper' 
+          scale={[3, 0.02, 0.75]}
+          onPointerEnter={e => handlePointerEnter(e)}
+          onPointerLeave={e => handlePointerLeave(e)}
+          onPointerUp={e => handlePointerUp(e)}>
+            <boxGeometry args={[1, 1, 1]}/>
+            <meshStandardMaterial color='yellow' transparent opacity={0}/>
+          </mesh>
+          <Text3D
+            font="/fonts/Luckiest Guy_Regular.json"
+            size={0.4}
+            height={0.01}
+            rotation={[-Math.PI/2, 0, 0]}
+            position={[-2.55, 0.02, 0.19]}
+          >
+            COPY LINK TO SHARE
+            <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
+          </Text3D>
+          <Text3D 
+            name='copied-tooltip'
+            font="/fonts/Luckiest Guy_Regular.json"
+            position={[-1,0,-0.6]}
+            rotation={[-Math.PI/2, 0, 0]}
+            size={0.4}
+            height={0.01}
+          >
+            copied!
+            <AnimatedMeshDistortMaterial
+              speed={5}
+              distort={0}
+              color='limegreen'
+              transparent
+              opacity={springs.opacity}
+            />
+          </Text3D>
+        </group>
+      }
+
+      // get image before download
+      // display it as drei-image
+      return <group>
+        <QrCode3d 
+        text={window.location.href} 
+        position={[8.5, 0.02, -3]} 
+        scale={0.8} 
+        rotation={[-Math.PI/2,0,0]}/>
+        <Text3D
+        font="/fonts/Luckiest Guy_Regular.json"
+        position={[5.6,0,0]}
+        rotation={[-Math.PI/2,0,0]}
+        size={0.35}
+        height={0.01}
+        lineHeight={0.9}>
+          {`SCAN THE QR CODE TO JOIN`}
+          <meshStandardMaterial color='yellow'/>
+        </Text3D>
+        <CopyLinkButton position={[8.5, 0.02, 0.9]} scale={0.9}/>
+      </group>
+    }
+
+    return <group name='third-section' position={position}>
+      <InviteFriends/>
+      <Chatbox 
+      device='landscapeDesktop' 
+      position={layout.landscapeDesktop.lobby.chat.position} 
+      rotation={layout.landscapeDesktop.lobby.chat.rotation}
+      scale={layout.landscapeDesktop.lobby.chat.scale}
+      boxHeight={layout.landscapeDesktop.lobby.chat.box.height}
+      boxWidth={layout.landscapeDesktop.lobby.chat.box.width}
+      />
+      <ThirdSection2 position={[0,0,0]} scale={1}/>
+    </group>
+  }
+
+  function ThirdSection2(props) {
+    const setSettingsOpen = useSetAtom(settingsOpenAtom)
+    useEffect(() => {
+      setSettingsOpen(true)
+    }, [])
+    function RulebookButton() {
+      // manipulate root state to display rulebook on click
+      return <></>
+    }
+    // in root, place Rulebook component
+    // it displays whenever RulebookButton is clicked.
+    // use spring to shift main component and rulebook component
+    return <group {...props}>
+      <Settings position={[0, 0, 0]} scale={3}/>
+    </group>
+  }
+
   function TopSection({ position }) {
     const host = useAtomValue(hostAtom)
     const client = useAtomValue(clientAtom)
@@ -2247,9 +2417,9 @@ export default function LobbyNew() {
   return <animated.group>
     <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     { device === 'landscapeDesktop' && <group>
-      <FirstSectionNew position={[-6, 0, 0]} />
+      <FirstSectionNew position={[-9, 0, 0]} />
       {/* <SecondSection position={[0, 0, 0]}/> */}
-      <ThirdSection position={[-4, 0, 0]}/>
+      <ThirdSectionNew position={[-7, 0, 0]}/>
       {/* chat */}
       {/* button to rulebook */}
       

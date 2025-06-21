@@ -7,7 +7,14 @@ import { useParams } from "wouter";
 import layout from "./layout";
 import { messagesAtom } from "./GlobalState"
 
-export default function Chatbox({ position=[0,0,0], rotation=[0,0,0], scale=1, device }) {
+export default function Chatbox({ 
+  position=[0,0,0], 
+  rotation=[0,0,0], 
+  scale=1, 
+  device='landscapeDesktop',
+  boxHeight='300px',
+  boxWidth='500px'
+}) {
   const [messages] = useAtom(messagesAtom);
   const [message, setMessage] = useState('');
   const params = useParams();
@@ -61,8 +68,8 @@ export default function Chatbox({ position=[0,0,0], rotation=[0,0,0], scale=1, d
     }}>
       <div style={{
         borderRadius: layout[device].game.chat.box.borderRadius,
-        height: layout[device].game.chat.box.height,
-        width: layout[device].game.chat.box.width,
+        height: boxHeight,
+        width: boxWidth,
         padding: layout[device].game.chat.box.padding,
         fontSize: layout[device].game.chat.box.fontSize,
         'background': 'rgba(128, 128, 128, 0.3)',
@@ -87,7 +94,7 @@ export default function Chatbox({ position=[0,0,0], rotation=[0,0,0], scale=1, d
             borderRadius: layout[device].game.chat.input.borderRadius,
             padding: layout[device].game.chat.input.padding,
             border: layout[device].game.chat.input.border,
-            width: layout[device].game.chat.box.width,
+            width: boxWidth,
             fontSize: layout[device].game.chat.input.fontSize
           }} 
           onChange={e => setMessage(e.target.value)} 

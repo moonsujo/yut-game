@@ -33,12 +33,11 @@ import GameRules from "./GameRules"
 import MeshColors from "./MeshColors"
 import useMusicPlayer from "./hooks/useMusicPlayer"
 
-export default function Settings({ position, rotation=[0,0,0], scale }) {
+export default function Settings({ position=[0,0,0], rotation=[0,0,0], scale=1 }) {
   // #region state setters and getters
   const device = useAtomValue(deviceAtom)
   const client = useAtomValue(clientAtom)
   const host = useAtomValue(hostAtom)
-  const gamePhase = useAtomValue(gamePhaseAtom)
   const pauseGame = useAtomValue(pauseGameAtom)
   const params = useParams()
 
