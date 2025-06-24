@@ -2418,11 +2418,8 @@ export default function LobbyNew() {
     <GameCamera position={layout[device].camera.position} lookAtOffset={[0,0,0]}/>
     { device === 'landscapeDesktop' && <group>
       <FirstSectionNew position={[-9, 0, 0]} />
-      {/* <SecondSection position={[0, 0, 0]}/> */}
-      <ThirdSectionNew position={[-7, 0, 0]}/>
-      {/* chat */}
-      {/* button to rulebook */}
-      
+      <SecondSection position={[0.5, 0, 0]}/>
+      <ThirdSection position={[0, 0, 0]}/>
     </group> }
     { device === 'portrait' && <group>
       <TopSection position={[-2.3, 0, -9.7]}/>
