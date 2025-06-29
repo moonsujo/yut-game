@@ -4,6 +4,7 @@ import { deviceAtom, gameLogsAtom } from './GlobalState';
 import layout from './layout';
 import { useAtom } from 'jotai';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import useAutoScroll from './hooks/useAutoScroll';
 
 export default function GameLog({ 
   boxHeight,
@@ -232,15 +233,10 @@ export default function GameLog({
   }
 
   const messagesEndRef = useRef(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [logs]);
+  const container = useRef()
+
+  useAutoScroll(container, [logs]);
 
   // background
   // text
@@ -254,7 +250,7 @@ export default function GameLog({
     <div style={{
       position: 'absolute'
     }}>
-      <div style={{
+      <div ref={container} style={{
         borderRadius: borderRadius,
         height: boxHeight,
         width: boxWidth,
@@ -265,11 +261,8 @@ export default function GameLog({
         'wordWrap': 'break-word',
         'letterSpacing': '1.5px'
       }}>
-        
-        <ScrollToBottom className="game-logs">
-          {logs.map((log, index) => formatMessage(log, index))}
-          <div ref={messagesEndRef} />
-        </ScrollToBottom>
+        {logs.map((log, index) => formatMessage(log, index))}
+        <div ref={messagesEndRef}/>
       </div>
     </div>
   </Html>

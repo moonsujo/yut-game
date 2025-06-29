@@ -705,12 +705,12 @@ export default function Game() {
           rotation={layout[device].game.logs.button.rotation}
           scale={layout[device].game.logs.button.scale}/>
         { connectedToServer && (gamePhase === 'pregame' || gamePhase === 'game') && logDisplay === 'logs' && <GameLog
-          boxHeight={layout[device].game.chat.box.height}
-          boxWidth={layout[device].game.chat.box.width}
-          padding={layout[device].game.chat.box.padding}
-          fontSize={layout[device].game.chat.box.fontSize}
-          borderRadius={layout[device].game.chat.box.borderRadius}
-          position={layout[device].game.chat.position}
+          boxHeight={layout[device].game.logs.box.height}
+          boxWidth={layout[device].game.logs.box.width}
+          padding={layout[device].game.logs.box.padding}
+          fontSize={layout[device].game.logs.box.fontSize}
+          borderRadius={layout[device].game.logs.box.borderRadius}
+          position={layout[device].game.chat.position} 
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
@@ -720,7 +720,7 @@ export default function Game() {
           padding={layout[device].game.chat.box.padding}
           fontSize={layout[device].game.chat.box.fontSize}
           borderRadius={layout[device].game.chat.box.borderRadius}
-          position={layout[device].game.chat.position}
+          position={layout[device].game.chat.position} 
           rotation={layout[device].game.chat.rotation}
           scale={layout[device].game.chat.scale}
         /> }
