@@ -77,6 +77,7 @@ import Settings from "./Settings.jsx";
 import YutBonus from "./YutBonus.jsx";
 import useMusicPlayer from "./hooks/useMusicPlayer.jsx";
 import Chatbox from "./Chatbox.jsx";
+import ChatboxScroll from "./Chatbox.jsx";
 
 // There should be no state
 export default function Game() {

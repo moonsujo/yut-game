@@ -1,11 +1,11 @@
-import { Html, Scroll } from "@react-three/drei";
+import { Html, Scroll, ScrollControls } from "@react-three/drei";
 import { socket } from "./SocketManager";
 import { useAtomValue } from "jotai";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useParams } from "wouter";
 import layout from "./layout";
 import { messagesAtom } from "./GlobalState"
-import ScrollToBottom from 'react-scroll-to-bottom';
+import useAutoScroll from "./hooks/useAutoScroll";
 
 export default function Chatbox({ 
   position=[0,0,0], 
@@ -21,15 +21,10 @@ export default function Chatbox({
   const params = useParams();
 
   const messagesEndRef = useRef(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const container = useRef()
+
+  useAutoScroll(container, [messages]);
   
   function onMessageSubmit(e) {
     e.preventDefault();
@@ -52,57 +47,52 @@ export default function Chatbox({
     }
   }
 
-  return <Html 
-    position={position}
-    rotation={rotation}
-    scale={scale}
-    transform
-  >
-    <div style={{
-      position: 'absolute'
-    }}>
-      <div style={{
-        borderRadius: layout[device].game.chat.box.borderRadius,
-        height: boxHeight,
-        width: boxWidth,
-        padding: layout[device].game.chat.box.padding,
-        fontSize: layout[device].game.chat.box.fontSize,
-        'background': 'rgba(128, 128, 128, 0.3)',
-        'overflowY': 'auto',
-        'wordWrap': 'break-word',
-        'letterSpacing': '1.5px'
-      }}>
-        <ScrollToBottom className="messages">
-        {messages.map((value, index) => 
-          <p style={{
+  return <Html   
+  position={position} 
+  rotation={rotation}
+  scale={scale}>
+      <div>
+        <form onSubmit={(e) => onMessageSubmit(e)}>
+        <div ref={container} style={{
+          borderRadius: layout[device].game.chat.box.borderRadius,
+          height: boxHeight,
+          width: boxWidth,
+          padding: layout[device].game.chat.box.padding,
+          fontSize: layout[device].game.chat.box.fontSize,
+          'background': 'rgba(128, 128, 128, 0.3)',
+          'overflowY': 'scroll',
+          'wordWrap': 'break-word',
+          'letterSpacing': '1.5px'
+        }}>
+          {messages.map((value, index) => <p style={{
             color: 'white', 
-            margin: 0,
-            fontFamily: 'Luckiest Guy'
-            }} key={index}>
+            fontFamily: 'Luckiest Guy',
+            margin: '5px'
+            }} 
+            key={index}
+            >
             <span style={{color: getColorByTeam(value.team)}}>{value.name}: </span> 
             {value.text}
           </p>
-        )}
-        <div ref={messagesEndRef} />
-        </ScrollToBottom>
+          )}
+          <div ref={messagesEndRef}/>
+          </div>
+          <input 
+            id='input-message'
+            style={{ 
+              height: layout[device].game.chat.input.height,
+              borderRadius: layout[device].game.chat.input.borderRadius,
+              padding: layout[device].game.chat.input.padding,
+              border: layout[device].game.chat.input.border,
+              width: boxWidth,
+              fontSize: layout[device].game.chat.input.fontSize,
+              fontFamily: 'Luckiest Guy'
+            }} 
+            onChange={e => setMessage(e.target.value)} 
+            value={message}
+            placeholder="say something..."
+          />
+        </form>
       </div>
-      <form onSubmit={(e) => onMessageSubmit(e)}>
-        <input 
-          id='input-message'
-          style={{ 
-            height: layout[device].game.chat.input.height,
-            borderRadius: layout[device].game.chat.input.borderRadius,
-            padding: layout[device].game.chat.input.padding,
-            border: layout[device].game.chat.input.border,
-            width: boxWidth,
-            fontSize: layout[device].game.chat.input.fontSize,
-            fontFamily: 'Luckiest Guy'
-          }} 
-          onChange={e => setMessage(e.target.value)} 
-          value={message}
-          placeholder="say something..."
-        />
-      </form>
-    </div>
   </Html>
 }
