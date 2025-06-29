@@ -100,6 +100,7 @@ const roomSchema = new mongoose.Schema(
     messages: [{
       _id: false,
       name: String,
+      team: Number,
       text: String
     }],
     gameLogs: [{
@@ -456,6 +457,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               roomPlayerIndex: serverEvent.content.roomPlayerIndex,
               roomPlayerTeam: serverEvent.content.roomPlayerTeam
             })
+          } else if (serverEvent.name === 'sendMessage') {
+            io.to(userSocketId).emit("sendMessage", {...serverEvent.content})
           } else {
             io.to(userSocketId).emit('room', roomPopulated)
           }
@@ -975,13 +978,20 @@ io.on("connect", async (socket) => {
   })
 
   socket.on("sendMessage", async ({ message, roomId }, callback) => {
+    console.log('[sendMessage] message', message, 'roomId', roomId)
     try {
       let room = await Room.findOne({ shortId: roomId });
+      let user = await User.findOne({ socketId: socket.id })
       message = {
-        name: room.users.get(socket.id).name,
+        name: user.name,
+        team: user.team,
         text: message
       }
       room.messages.push(message)
+      room.serverEvent = {
+        name: 'sendMessage',
+        content: {...message}
+      }
       await room.save();
       return callback({ joinRoomId: roomId })
     } catch (err) {

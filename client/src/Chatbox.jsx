@@ -1,11 +1,11 @@
 import { Html, Scroll } from "@react-three/drei";
 import { socket } from "./SocketManager";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import React, { useState, useRef, useEffect } from "react";
-import ScrollToBottom from 'react-scroll-to-bottom';
 import { useParams } from "wouter";
 import layout from "./layout";
 import { messagesAtom } from "./GlobalState"
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 export default function Chatbox({ 
   position=[0,0,0], 
@@ -13,13 +13,25 @@ export default function Chatbox({
   scale=1, 
   device='landscapeDesktop',
   boxHeight='300px',
-  boxWidth='500px'
+  boxWidth='500px',
 }) {
-  const [messages] = useAtom(messagesAtom);
+
+  const messages = useAtomValue(messagesAtom)
   const [message, setMessage] = useState('');
   const params = useParams();
 
-  function onMessageSubmit (e) {
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+  
+  function onMessageSubmit(e) {
     e.preventDefault();
     socket.emit("sendMessage", { message, roomId: params.id.toUpperCase() }, ({ joinRoomId, error }) => {
       if (error) {
@@ -29,26 +41,9 @@ export default function Chatbox({
       }
     })
   }
-  
-  // const messagesEndRef = useRef(null);
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({
-  //     behavior: "smooth",
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   // scrollToBottom();
-  // }, [messages]);
-
-  // useEffect(() => {
-  //   // scrollToBottom();
-  // }, []); // must be a child component to scroll on load
-  // must be disabled, or it will disappear when a new blender-created
-  // mesh is loaded
 
   function getColorByTeam(team) {
-    if (team == undefined) {
+    if (team === undefined) {
       return 'grey'
     } else if (team == 0) {
       return 'red'
@@ -75,15 +70,20 @@ export default function Chatbox({
         'background': 'rgba(128, 128, 128, 0.3)',
         'overflowY': 'auto',
         'wordWrap': 'break-word',
+        'letterSpacing': '1.5px'
       }}>
         <ScrollToBottom className="messages">
         {messages.map((value, index) => 
-          <p style={{color: 'white', margin: 0}} key={index}>
+          <p style={{
+            color: 'white', 
+            margin: 0,
+            fontFamily: 'Luckiest Guy'
+            }} key={index}>
             <span style={{color: getColorByTeam(value.team)}}>{value.name}: </span> 
             {value.text}
           </p>
         )}
-        {/* <div ref={messagesEndRef} /> */}
+        <div ref={messagesEndRef} />
         </ScrollToBottom>
       </div>
       <form onSubmit={(e) => onMessageSubmit(e)}>
@@ -95,7 +95,8 @@ export default function Chatbox({
             padding: layout[device].game.chat.input.padding,
             border: layout[device].game.chat.input.border,
             width: boxWidth,
-            fontSize: layout[device].game.chat.input.fontSize
+            fontSize: layout[device].game.chat.input.fontSize,
+            fontFamily: 'Luckiest Guy'
           }} 
           onChange={e => setMessage(e.target.value)} 
           value={message}

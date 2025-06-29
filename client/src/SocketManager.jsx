@@ -1188,6 +1188,13 @@ export const SocketManager = () => {
       }
     })
 
+    socket.on('sendMessage', ({ name, team, text }) => {
+      setMessages((messages) => {
+        const newMessage = { name, team, text }
+        return [...messages, newMessage]
+      })
+    })
+
     socket.on('disconnect', () => {
       console.log('[SocketManager][disconnect]') // runs on component unmount
       setSettingsOpen(false)

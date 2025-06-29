@@ -2955,7 +2955,7 @@ export default {
       chat: {
         position: [-11.05,0,3.3],
         rotation: [-Math.PI/2, 0, 0],
-        scale: [1, 1, 1],
+        scale: [0.5, 0.5, 0.5],
         box: {
           borderRadius: '5px',
           height: '230px',
@@ -2969,7 +2969,43 @@ export default {
           borderRadius: '5px',
           padding: '10px',
           border: 0,
+        },
+        button: {
+          position: [-8.8,0,2.9],
+          rotation: [0, 0, 0],
+          outerBox: {
+            args: [1.4, 0.03, 0.55]
+          },
+          innerBox: {
+            args: [1.35, 0.04, 0.5]
+          },
+          text: {
+            position: [-0.5, 0.025, 0.15],
+            rotation: [-Math.PI/2, 0, 0],
+            size: 0.3,
+            height: 0.01,
+          },
+          scale: 1
         }
+      },
+      logs: {
+        button: {
+          position: [-10.3,0,2.9],
+          rotation: [0, 0, 0],
+          outerBox: {
+            args: [1.4, 0.03, 0.55]
+          },
+          innerBox: {
+            args: [1.35, 0.04, 0.5]
+          },
+          text: {
+            position: [-0.5, 0.025, 0.15],
+            rotation: [-Math.PI/2, 0, 0],
+            size: 0.3,
+            height: 0.01,
+          },
+          scale: 1,
+        },
       },
       invite: {
         position: [-10.7, 0, 3.8],

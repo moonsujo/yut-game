@@ -5,10 +5,18 @@ import layout from './layout';
 import { useAtom } from 'jotai';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-export default function GameLog({ position, rotation, scale }) {
+export default function GameLog({ 
+  boxHeight,
+  boxWidth,
+  padding,
+  fontSize,
+  borderRadius,
+  scale,
+  position,
+  rotation
+}) {
 
   // instead of putting 'device' in 'Game', put it here
-  const [device] = useAtom(deviceAtom)
   const [logs] = useAtom(gameLogsAtom)
 
   function formatMessage(log, index) {
@@ -247,11 +255,11 @@ export default function GameLog({ position, rotation, scale }) {
       position: 'absolute'
     }}>
       <div style={{
-        borderRadius: layout[device].game.chat.box.borderRadius,
-        height: layout[device].game.chat.box.height,
-        width: layout[device].game.chat.box.width,
-        padding: layout[device].game.chat.box.padding,
-        fontSize: layout[device].game.chat.box.fontSize,
+        borderRadius: borderRadius,
+        height: boxHeight,
+        width: boxWidth,
+        padding: padding,
+        fontSize: fontSize,
         'background': 'rgba(128, 128, 128, 0.3)',
         'overflowY': 'auto',
         'wordWrap': 'break-word',
