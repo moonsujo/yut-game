@@ -6,6 +6,7 @@ import { useParams } from "wouter";
 import layout from "./layout";
 import { logDisplayAtom, messagesAtom } from "./GlobalState"
 import useAutoScroll from "./hooks/useAutoScroll";
+import DOMPurify from 'dompurify';
 
 export default function Chatbox({ 
   position=[0,0,0], 
@@ -32,13 +33,16 @@ export default function Chatbox({
   
   function onMessageSubmit(e) {
     e.preventDefault();
-    socket.emit("sendMessage", { message, roomId: params.id.toUpperCase() }, ({ joinRoomId, error }) => {
-      if (error) {
-        console.log('[sendMessage] error sending message to room', joinRoomId)
-      } else {
-        setMessage('')
-      }
-    })
+    const sanitizedMessage = DOMPurify.sanitize(message);
+    if (sanitizedMessage) {
+      socket.emit("sendMessage", { message: sanitizedMessage, roomId: params.id.toUpperCase() }, ({ joinRoomId, error }) => {
+        if (error) {
+          console.log('[sendMessage] error sending message to room', joinRoomId)
+        } else {
+          setMessage('')
+        }
+      })
+    }
   }
 
   function getColorByTeam(team) {

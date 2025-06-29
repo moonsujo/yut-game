@@ -2953,12 +2953,12 @@ export default {
         scale: [1.5, 1.5, 1.5]
       },
       chat: {
-        position: [-11, 0, 3.3],
+        position: [-11, 0, 2.9],
         rotation: [-Math.PI/2, 0, 0],
         scale: [0.5, 0.5, 0.5],
         box: {
           borderRadius: '5px',
-          height: '200px',
+          height: '240px',
           width: '420px',
           padding: '10px',
           fontSize: '24px',
