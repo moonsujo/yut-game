@@ -403,6 +403,14 @@ export default function LobbyNew() {
         }
       }
 
+      function YouStars({ position, rotation, scale, team }) {
+        return <group position={position} rotation={rotation} scale={scale}>
+          <Star scale={0.3}  position={[-7, 0, -0.5]} color={ team === 0 ? 'red' : 'turquoise'}/>
+          <Star scale={0.2}  position={[-6.75, 0, -0.7]} color={ team === 0 ? 'red' : 'turquoise'}/>
+          <Star scale={0.15}  position={[-6.5, 0, -0.8]} color={ team === 0 ? 'red' : 'turquoise'}/>
+        </group>
+      }
+
       // Players are in seat by their index in the teams[team].players array
       return <group position={position} scale={scale}>
         <animated.group 
@@ -414,11 +422,7 @@ export default function LobbyNew() {
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius - 0.5
         ]}>
           { teams[0].players[0] && host.socketId === teams[0].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[0].players[0] && client.socketId === teams[0].players[0].socketId && <group>
-            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
-            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
-            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
-          </group>}
+          { teams[0].players[0] && client.socketId === teams[0].players[0].socketId && <YouStars team={0}/> }
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -6.7, 0.02, 0.3]}
@@ -427,7 +431,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[0].players[0] ? formatName(teams[0].players[0].name, 8) : `CLICK TO SIT`}
+            {teams[0].players[0] ? formatName(teams[0].players[0].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[0].players[0] && !teams[0].players[0].connectedToRoom) ? 'grey' : seat1Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
@@ -469,11 +473,7 @@ export default function LobbyNew() {
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
           { teams[0].players[1] && host.socketId === teams[0].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[0].players[1] && client.socketId === teams[0].players[1].socketId && <group>
-            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
-            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
-            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
-          </group>}
+          { teams[0].players[1] && client.socketId === teams[0].players[1].socketId && <YouStars team={0}/> }
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -6.7, 0.02, 0.3]}
@@ -482,7 +482,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[0].players[1] ? formatName(teams[0].players[1].name, 8) : `CLICK TO SIT`}
+            {teams[0].players[1] ? formatName(teams[0].players[1].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[0].players[1] && !teams[0].players[1].connectedToRoom) ? 'grey' : seat2Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
@@ -524,11 +524,7 @@ export default function LobbyNew() {
           -Math.sin(0 - Math.PI/8) * radius + 0.1
         ]}>
           { teams[0].players[2] && host.socketId === teams[0].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[0].players[2] && client.socketId === teams[0].players[2].socketId && <group>
-            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
-            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
-            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
-          </group>}
+          { teams[0].players[2] && client.socketId === teams[0].players[2].socketId && <YouStars team={0}/> }
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -6.7, 0.02, 0.3]}
@@ -537,7 +533,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[0].players[2] ? formatName(teams[0].players[2].name, 8) : `CLICK TO SIT`}
+            {teams[0].players[2] ? formatName(teams[0].players[2].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[0].players[2] && !teams[0].players[2].connectedToRoom) ? 'grey' : seat3Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
@@ -579,11 +575,7 @@ export default function LobbyNew() {
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.6
         ]}>
           { teams[0].players[3] && host.socketId === teams[0].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[0].players[3] && client.socketId === teams[0].players[3].socketId && <group>
-            <Star scale={0.3}  position={[-5, 0, -0.5]} color='red'/>
-            <Star scale={0.2}  position={[-4.75, 0, -0.7]} color='red'/>
-            <Star scale={0.15}  position={[-4.5, 0, -0.8]} color='red'/>
-          </group>}
+          { teams[0].players[3] && client.socketId === teams[0].players[3].socketId && <YouStars team={0}/> }
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -6.7, 0.02, 0.3]}
@@ -592,7 +584,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[0].players[3] ? formatName(teams[0].players[3].name, 8) : `CLICK TO SIT`}
+            {teams[0].players[3] ? formatName(teams[0].players[3].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[0].players[3] && !teams[0].players[3].connectedToRoom) ? 'grey' : seat4Team0Hover ? 'orange' : 'red' }/>
           </Text3D>
           <group name='background'>
@@ -633,12 +625,8 @@ export default function LobbyNew() {
           5, 
           -Math.sin(Math.PI * 2 / 8 + Math.PI/8) * radius - 0.5
         ]}>
-          { teams[1].players[0] && host.socketId === teams[1].players[0].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[1].players[0] && client.socketId === teams[1].players[0].socketId && <group>
-            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
-            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
-            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
-          </group>}
+          { teams[1].players[0] && host.socketId === teams[1].players[0].socketId && <Star scale={0.45} position={[6.4, 0, 0]} color='yellow'/> }
+          { teams[1].players[0] && client.socketId === teams[1].players[0].socketId && <YouStars position={[6.4, 0, 0]} team={1}/> }
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -0.3, 0.02, 0.3]}
@@ -669,7 +657,7 @@ export default function LobbyNew() {
             </mesh>
             <mesh 
             name='wrapper' 
-            position={[2.2, 0, 0]} 
+            position={[3.2, 0, 0]} 
             scale={[7.8, 0.02, 1.5]}
             onPointerEnter={e => handleSeat1Team1PointerEnter(e)}
             onPointerLeave={e => handleSeat1Team1PointerLeave(e)}
@@ -688,12 +676,8 @@ export default function LobbyNew() {
           5, 
           -Math.sin(Math.PI * 2 / 8 - Math.PI/8) * radius
         ]}>
-          { teams[1].players[1] && host.socketId === teams[1].players[1].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[1].players[1] && client.socketId === teams[1].players[1].socketId && <group>
-            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
-            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
-            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
-          </group>}
+          { teams[1].players[1] && host.socketId === teams[1].players[1].socketId && <Star scale={0.45} position={[6.4, 0, 0]} color='yellow'/> }
+          { teams[1].players[1] && client.socketId === teams[1].players[1].socketId && <YouStars position={[6.4, 0, 0]} team={1}/>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -0.3, 0.02, 0.3]}
@@ -702,7 +686,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[1].players[1] ? formatName(teams[1].players[1].name, 8) : `CLICK TO SIT`}
+            {teams[1].players[1] ? formatName(teams[1].players[1].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[1].players[1] && !teams[1].players[1].connectedToRoom) ? 'grey' : seat2Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
@@ -743,12 +727,8 @@ export default function LobbyNew() {
           5, 
           -Math.sin(0 - Math.PI/8) * radius + 0.1
         ]}>
-          { teams[1].players[2] && host.socketId === teams[1].players[2].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[1].players[2] && client.socketId === teams[1].players[2].socketId && <group>
-            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
-            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
-            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
-          </group>}
+          { teams[1].players[2] && host.socketId === teams[1].players[2].socketId && <Star scale={0.45} position={[6.4, 0, 0]} color='yellow'/> }
+          { teams[1].players[2] && client.socketId === teams[1].players[2].socketId && <YouStars position={[6.4, 0, 0]} team={1}/>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -0.3, 0.02, 0.3]}
@@ -757,7 +737,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[1].players[2] ? formatName(teams[1].players[2].name, 8) : `CLICK TO SIT`}
+            {teams[1].players[2] ? formatName(teams[1].players[2].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[1].players[2] && !teams[1].players[2].connectedToRoom) ? 'grey' : seat3Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>
@@ -798,12 +778,8 @@ export default function LobbyNew() {
           5, 
           -Math.sin(-Math.PI * 2 / 8 - Math.PI/8) * radius + 0.6
         ]}>
-          { teams[1].players[3] && host.socketId === teams[1].players[3].socketId && <Star scale={0.45} position={[0, 0, 0]} color='yellow'/> }
-          { teams[1].players[3] && client.socketId === teams[1].players[3].socketId && <group>
-            <Star scale={0.3}  position={[-0.7, 0, -0.5]} color='turquoise'/>
-            <Star scale={0.2}  position={[-0.45, 0, -0.7]} color='turquoise'/>
-            <Star scale={0.15}  position={[-0.2, 0, -0.8]} color='turquoise'/>
-          </group>}
+          { teams[1].players[3] && host.socketId === teams[1].players[3].socketId && <Star scale={0.45} position={[6.4, 0, 0]} color='yellow'/> }
+          { teams[1].players[3] && client.socketId === teams[1].players[3].socketId && <YouStars position={[6.4, 0, 0]} team={1}/>}
           <Text3D
             font="/fonts/Luckiest Guy_Regular.json"
             position={[ -0.3, 0.02, 0.3]}
@@ -812,7 +788,7 @@ export default function LobbyNew() {
             height={0.01}
             lineHeight={0.7}
           >
-            {teams[1].players[3] ? formatName(teams[1].players[3].name, 8) : `CLICK TO SIT`}
+            {teams[1].players[3] ? formatName(teams[1].players[3].name, 15) : `CLICK TO SIT`}
             <meshStandardMaterial color={ (teams[1].players[3] && !teams[1].players[3].connectedToRoom) ? 'grey' : seat4Team1Hover ? 'green' : 'turquoise' }/>
           </Text3D>
           <group name='background'>

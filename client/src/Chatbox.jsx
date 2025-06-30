@@ -33,7 +33,7 @@ export default function Chatbox({
   
   function onMessageSubmit(e) {
     e.preventDefault();
-    const sanitizedMessage = DOMPurify.sanitize(message);
+    const sanitizedMessage = DOMPurify.sanitize(message).trimStart().trimEnd();
     if (sanitizedMessage) {
       socket.emit("sendMessage", { message: sanitizedMessage, roomId: params.id.toUpperCase() }, ({ joinRoomId, error }) => {
         if (error) {
