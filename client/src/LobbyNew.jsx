@@ -1495,7 +1495,7 @@ export default function LobbyNew() {
       return <group name='start-game-button' position={position} scale={scale}>
         <mesh name='background-outer' scale={[4.5, 0.01, 0.9]}>
           <boxGeometry args={[1, 1, 1]}/>
-          <meshStandardMaterial color={ readyToStart ? (hover ? 'green' : 'yellow') : 'grey' }/>
+          <meshStandardMaterial color={ (readyToStart && isHost) ? (hover ? 'green' : 'yellow') : 'grey' }/>
         </mesh> 
         <mesh name='background-inner' scale={[4.45, 0.02, 0.85]}>
           <boxGeometry args={[1, 1, 1]}/>
@@ -1518,7 +1518,7 @@ export default function LobbyNew() {
           position={[-1.6, 0.02, 0.19]}
         >
           START GAME!
-          <meshStandardMaterial color={ readyToStart ? (hover ? 'green' : 'yellow') : 'grey' }/>
+          <meshStandardMaterial color={ (readyToStart && isHost) ? (hover ? 'green' : 'yellow') : 'grey' }/>
         </Text3D>
       </group>
     }

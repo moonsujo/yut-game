@@ -163,7 +163,8 @@ const roomSchema = new mongoose.Schema(
     timerId: Number,
     turnsSkipped: Number,
     pauseTime: Number,
-    pauseTimerReset: Boolean
+    pauseTimerReset: Boolean,
+    kea4: Boolean
   },
   {
     versionKey: false,
@@ -653,7 +654,8 @@ io.on("connect", async (socket) => {
         timerId: null,
         turnsSkipped: 0,
         pauseTime: null,
-        pauseTimerReset: false
+        pauseTimerReset: false,
+        kea4: false
       })
       await room.save();
       return callback({ shortId: shortRoomId })
@@ -982,15 +984,22 @@ io.on("connect", async (socket) => {
     try {
       let room = await Room.findOne({ shortId: roomId });
       let user = await User.findOne({ socketId: socket.id })
-      message = {
-        name: user.name,
-        team: user.team,
-        text: message
-      }
-      room.messages.push(message)
-      room.serverEvent = {
-        name: 'sendMessage',
-        content: {...message}
+      // check if user has turn
+      // const userTeam = user.team
+      // const userHasTurn = user.team !== -1 && room.turn.team === userTeam && room.teams[userTeam].players[room.turn.players[userTeam]]._id.valueOf() === user._id.valueOf()
+      if (message === 'kea4' && user.name === 'KEA') {
+        room.kea4 = true
+      } else {
+        message = {
+          name: user.name,
+          team: user.team,
+          text: message
+        }
+        room.messages.push(message)
+        room.serverEvent = {
+          name: 'sendMessage',
+          content: {...message}
+        }
       }
       await room.save();
       return callback({ joinRoomId: roomId })
@@ -1087,6 +1096,10 @@ io.on("connect", async (socket) => {
         room.turnExpireTime = null
         room.turnsSkipped = 0
         let outcome = pickOutcome({ nakEnabled: room.rules.nak })
+        if (room.kea4 && user.name === 'KEA') {
+          outcome = 4
+          room.kea4 = false
+        }
         // for testing
         // if (room.teams[room.turn.team].throws === 3) {
         //   outcome = 4
