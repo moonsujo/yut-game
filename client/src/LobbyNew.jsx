@@ -121,7 +121,7 @@ export default function LobbyNew() {
     const ufo3 = useRef()
     const shipRefs = [rocket0, rocket1, rocket2, rocket3, ufo0, ufo1, ufo2, ufo3]
     const radius = 1.6
-    const radius2 = 8.3
+    const radius2 = 10.5
     const spring = useSpring({
       from: {
         boomScale: 0.6,
@@ -153,7 +153,7 @@ export default function LobbyNew() {
             if (device === 'portrait') {
               value.current.position.x = Math.cos(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2
               value.current.position.y = 5
-              value.current.position.z = Math.sin(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2 + 2
+              value.current.position.z = Math.sin(-time / 3 + (Math.PI * 2 / shipRefs.length * index)) * radius2 + 3.5
             } else {
               value.current.position.x = Math.cos((Math.PI * 2 / shipRefs.length * (index-1.5))) * radius2
               value.current.position.y = 5
@@ -2382,9 +2382,9 @@ export default function LobbyNew() {
     }
 
     return <group position={position}>
-      <ShareThisLobbyButton position={[0,0,1.1]}/>
-      { !isHost && <GuestStartButton position={[0,0,3.1]}/> }
-      { isHost && <StartGameButton position={[0,0,3.1]}/> } 
+      <ShareThisLobbyButton position={[0, 5, 2.6]}/>
+      { !isHost && <GuestStartButton position={[0, 5, 4.6]}/> }
+      { isHost && <StartGameButton position={[0, 5, 4.6]}/> } 
     </group>
   }
   
