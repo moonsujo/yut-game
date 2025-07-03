@@ -746,7 +746,8 @@ export default function Settings({ position=[0,0,0], rotation=[0,0,0], scale=1 }
       <EditGuestsButton/>,
       <ResetGameButton/>,
       <PauseGameButton/>,
-      <SetGameRulesButton/>,
+      // <SetGameRulesButton/>,
+      <ViewGameRulesButton/>,
       <AudioButton/>,
       <LanguageButton/>
     ]
@@ -755,7 +756,8 @@ export default function Settings({ position=[0,0,0], rotation=[0,0,0], scale=1 }
       // <SetAwayButton/>,
       <ResetGameButton/>,
       <PauseGameButton/>,
-      <SetGameRulesButton/>,
+      // <SetGameRulesButton/>,
+      <ViewGameRulesButton/>,
       <AudioButton/>,
       <LanguageButton/>
     ]

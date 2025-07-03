@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai"
-import { backdoLaunchAtom, clientAtom, hostAtom, nakAtom, timerAtom, yutMoCatchAtom } from "./GlobalState"
+import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hostAtom, nakAtom, timerAtom, yutMoCatchAtom } from "./GlobalState"
 import { useState } from "react"
 import { socket } from "./SocketManager"
 import { useParams } from "wouter"
@@ -10,6 +10,7 @@ import MeshColors from "./MeshColors"
 export default function GameRules({ position=[0,0,0], scale=1 }) {
   const host = useAtomValue(hostAtom)
   const client = useAtomValue(clientAtom)
+  const gamePhase = useAtomValue(gamePhaseAtom)
   const isHost = client.socketId === host.socketId
   const params = useParams()
 
@@ -35,13 +36,13 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
     setting3ToggleBackgroundColor,
   } = useSpring({
     setting0TogglePosition: !backdoLaunch ? [0,0,0] : [0.4, 0, 0],
-    setting0ToggleBackgroundColor: !isHost ? '#454200' : !backdoLaunch ? '#5C5800' : 'green',
+    setting0ToggleBackgroundColor: !isHost ? '#454200' : (gamePhase !== 'lobby' && !backdoLaunch) ? '#5C5800' : 'green',
     setting1TogglePosition: !timer ? [0,0,0] : [0.4, 0, 0],
-    setting1ToggleBackgroundColor: !isHost ? '#454200' : !timer ? '#5C5800' : 'green',
+    setting1ToggleBackgroundColor: !isHost ? '#454200' : (gamePhase !== 'lobby' && !timer) ? '#5C5800' : 'green',
     setting2TogglePosition: !nak ? [0,0,0] : [0.4, 0, 0],
-    setting2ToggleBackgroundColor: !isHost ? '#454200' : !nak ? '#5C5800' : 'green',
+    setting2ToggleBackgroundColor: !isHost ? '#454200' : (gamePhase !== 'lobby' && !nak) ? '#5C5800' : 'green',
     setting3TogglePosition: !yutMoCatch ? [0,0,0] : [0.4, 0, 0],
-    setting3ToggleBackgroundColor: !isHost ? '#454200' : !yutMoCatch ? '#5C5800' : 'green',
+    setting3ToggleBackgroundColor: !isHost ? '#454200' : (gamePhase !== 'lobby' && !yutMoCatch) ? '#5C5800' : 'green',
     config: {
       tension: 170,
       friction: 26
@@ -51,21 +52,21 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
   // #region pointerHandlers
   function handleSetting0PointerEnter(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'pointer'
       setSetting0Hover(true)
     }
   }
   function handleSetting0PointerLeave(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'default'
       setSetting0Hover(false)
     }
   }
   function handleSetting0PointerUp(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       if (!backdoLaunch) {
         socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'backdoLaunch', flag: true }))
       } else {
@@ -75,21 +76,21 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
   }
   function handleSetting1PointerEnter(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'pointer'
       setSetting1Hover(true)
     }
   }
   function handleSetting1PointerLeave(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'default'
       setSetting1Hover(false)
     }
   }
   function handleSetting1PointerUp(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       if (!timer) {
         socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'timer', flag: true }))
       } else {
@@ -99,21 +100,21 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
   }
   function handleSetting2PointerEnter(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'pointer'
       setSetting2Hover(true)
     }
   }
   function handleSetting2PointerLeave(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'default'
       setSetting2Hover(false)
     }
   }
   function handleSetting2PointerUp(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       if (!nak) {
         socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'nak', flag: true }))
       } else {
@@ -123,21 +124,21 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
   }
   function handleSetting3PointerEnter(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'pointer'
       setSetting3Hover(true)
     }
   }
   function handleSetting3PointerLeave(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       document.body.style.cursor = 'default'
       setSetting3Hover(false)
     }
   }
   function handleSetting3PointerUp(e) {
     e.stopPropagation()
-    if (isHost) {
+    if (isHost && gamePhase === 'lobby') {
       if (!yutMoCatch) {
         socket.emit('setGameRule', ({ roomId: params.id.toUpperCase(), clientId: client._id, rule: 'yutMoCatch', flag: true }))
       } else {
@@ -152,7 +153,7 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
   return <group position={position} scale={scale}>
     <group name='setting-0' position={[5.2, 0, -3.2]}>
       <group name='setting-0-background'>
-        { isHost && <mesh
+        { isHost && gamePhase === 'lobby' && <mesh
         name='setting-0-background-outer'
         position={[3.25, 0, 0]}
         scale={[7.1, 0.05, 2.9]}>
@@ -254,7 +255,7 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
     </group>
     <group name='setting-1' position={[5.2, 0, -0.9]}>
       <group name='setting-1-background'>
-        { isHost && <mesh
+        { isHost && gamePhase === 'lobby' && <mesh
         name='setting-1-background-outer'
         position={[3.25, 0, 0]}
         scale={[7.1, 0.05, 1.5]}>
@@ -356,7 +357,7 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
     </group>
     <group name='setting-2' position={[5.2, 0, 0.95]}>
       <group name='setting-2-background'>
-        { isHost && <mesh
+        { isHost && gamePhase === 'lobby' && <mesh
         name='setting-2-background-outer'
         position={[3.25, 0, 0]}
         scale={[7.1, 0.05, 2]}>
@@ -458,7 +459,7 @@ export default function GameRules({ position=[0,0,0], scale=1 }) {
     </group>
     <group name='setting-3' position={[5.2, 0, 3.05]}>
       <group name='setting-3-background'>
-        { isHost && <mesh
+        { isHost && gamePhase === 'lobby' && <mesh
         name='setting-3-background-outer'
         position={[3.25, 0, 0]}
         scale={[7.1, 0.05, 2]}>
