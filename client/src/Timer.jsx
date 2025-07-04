@@ -6,8 +6,8 @@ import { socket } from "./SocketManager";
 import { useAnimationPlaying } from "./hooks/useAnimationPlaying";
 
 export default function Timer({ position, scale, boxArgs, heightMultiplier }) {
-  const [turnStartTime, setTurnStartTime] = useAtom(turnStartTimeAtom)
-  const [turnExpireTime, setTurnExpireTime] = useAtom(turnExpireTimeAtom)
+  const turnStartTime = useAtomValue(turnStartTimeAtom)
+  const turnExpireTime = useAtomValue(turnExpireTimeAtom)
   const [remainingTime, setRemainingTime] = useAtom(remainingTimeAtom)
   const paused = useAtomValue(pauseGameAtom)
   const timer = useAtomValue(timerAtom)
@@ -15,7 +15,7 @@ export default function Timer({ position, scale, boxArgs, heightMultiplier }) {
   
   useFrame(() => {
     if (turnExpireTime) {
-      if (!paused) {
+      if (!paused && turnExpireTime > turnStartTime) {
         setRemainingTime(Math.max(turnExpireTime - Date.now(), 0))
       }
     }
@@ -26,7 +26,7 @@ export default function Timer({ position, scale, boxArgs, heightMultiplier }) {
   return turnExpireTime && timer && !animationPlaying && <group>
     <mesh name='time-left' scale={scale} position={[position[0], position[1], position[2] + heightMultiplier * positionZMultiplier * (1 - remainingTime / (turnExpireTime - turnStartTime))]}>
       <boxGeometry args={[boxArgs[0], boxArgs[1], heightMultiplier * boxArgs[2] * remainingTime / (turnExpireTime - turnStartTime)]}/>
-      <meshStandardMaterial color={ remainingTime < (0.2 * (turnExpireTime - turnStartTime)) ? 'red' : 'yellow' }/>
+      <meshStandardMaterial color={ remainingTime < (0.2 * (turnExpireTime - turnStartTime)) ? 'red' : 'yellow' } transparent opacity={remainingTime <= 0 ? 0 : 1}/>
     </mesh>
   </group>
 }

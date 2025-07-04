@@ -347,7 +347,7 @@ export const SocketManager = () => {
       }
     })
 
-    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog }) => {
+    socket.on('gameStart', ({ gamePhase, newTeam, newPlayer, throwCount, turnStartTime, turnExpireTime, newGameLog, timer }) => {
       setGamePhase(gamePhase)
       setTurn(turn => {
         turn.team = newTeam;
@@ -368,6 +368,7 @@ export const SocketManager = () => {
       setRemainingTime(turnExpireTime - turnStartTime)
       setGameLogs(gameLogs => [...gameLogs, newGameLog])
       setBonusExists(false)
+      setTimer(timer)
       // test
       // setClient({ team: 0 })
       // setGamePhase('finished')
@@ -588,6 +589,7 @@ export const SocketManager = () => {
           audio.play();
         }
       }
+
 
       setTurnStartTime(turnStartTime)
       setTurnExpireTime(turnExpireTime)
