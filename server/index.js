@@ -844,7 +844,8 @@ io.on("connect", async (socket) => {
         room.pregameOutcome = outcomePregame
         const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
-        room.paused = pause
+        if (pause) 
+          room.paused = pause
         room.teams[room.turn.team].throws = 1 // New team
         // outcome, turn
         newTurnStartTime += 2 * ALERT_TIME
@@ -855,7 +856,8 @@ io.on("connect", async (socket) => {
         room.teams[1].pregameRoll = null
         const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
-        room.paused = pause
+        if (pause) 
+          room.paused = pause
         room.teams[room.turn.team].throws = 1 // New team
         gameLog = {
           logType: 'pregameResult',
@@ -872,7 +874,8 @@ io.on("connect", async (socket) => {
         // 'outcomePregame' is the winning team index
         const [newTurn, pause] = await setTurn(room.turn, outcomePregame, room.teams)
         room.turn = newTurn
-        room.paused = pause
+        if (pause) 
+          room.paused = pause
         room.pregameOutcome = outcomePregame.toString()
         room.gamePhase = 'game'
         room.teams[outcomePregame].throws = 1
@@ -891,7 +894,8 @@ io.on("connect", async (socket) => {
     } else {
       const [newTurn, pause] = await passTurn(room.turn, room.teams)
       room.turn = newTurn
-      room.paused = pause
+      if (pause) 
+        room.paused = pause
       room.teams[room.turn.team].throws = 1 // New team
       newTurnStartTime += 2 * ALERT_TIME
     }
@@ -904,8 +908,8 @@ io.on("connect", async (socket) => {
       // Stop timer
       clearTimeout(room.timerId)
     } else {
-      room.turnStartTime = Date.now() + newTurnStartTime
-      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME
+      room.turnStartTime = Date.now()
+      room.turnExpireTime = room.turnStartTime + BASE_TURN_EXPIRE_TIME + newTurnStartTime
       startTimer(room)
     }
     room.serverEvent = serverEvent
@@ -1170,7 +1174,8 @@ io.on("connect", async (socket) => {
                 serverEvent.content.prevTeam = room.turn.team
                 const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
-                room.paused = pause
+                if (pause) 
+                  room.paused = pause
                 room.pregameOutcome = outcomePregame
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
@@ -1189,7 +1194,8 @@ io.on("connect", async (socket) => {
               } else if (outcomePregame === "tie") {
                 const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
-                room.paused = pause
+                if (pause) 
+                  room.paused = pause
                 room.pregameOutcome = outcomePregame
                 room.teams[0].pregameRoll = null
                 room.teams[1].pregameRoll = null
@@ -1219,7 +1225,8 @@ io.on("connect", async (socket) => {
                 // 'outcomePregame' is the winning team index
                 const [newTurn, pause] = await setTurn(room.turn, outcomePregame, room.teams)
                 room.turn = newTurn
-                room.paused = pause
+                if (pause) 
+                  room.paused = pause
                 room.pregameOutcome = outcomePregame.toString()
                 room.gamePhase = 'game'
                 room.teams[outcomePregame].throws++
@@ -1283,7 +1290,8 @@ io.on("connect", async (socket) => {
               (!room.rules.backdoLaunch && isBackdoMovesWithoutPieces(room.teams[user.team].moves.toObject(), room.teams[user.team].pieces))) ) {
                 const [newTurn, pause] = await passTurn(room.turn, room.teams)
                 room.turn = newTurn
-                room.paused = pause
+                if (pause) 
+                  room.paused = pause
                 room.teams[user.team].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
                 room.teams[newTurn.team].throws++
                 turnStartTimeDelay += 2 * ALERT_TIME
@@ -1681,7 +1689,8 @@ io.on("connect", async (socket) => {
       if (throws === 0 && isEmptyMoves(moves.toObject())) {
         const [newTurn, pause] = await passTurn(room.turn, room.teams)
         room.turn = newTurn
-        room.paused = pause
+        if (pause) 
+          room.paused = pause
         room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
         room.teams[newTurn.team].throws = 1
         serverEvent.content.throws = 1
@@ -1756,7 +1765,7 @@ io.on("connect", async (socket) => {
   
   async function passTurn(currentTurn, teams, sameTeam=false) {
     let currentTeam = currentTurn.team
-    let pause = false;
+    let pause = null;
 
     if (!sameTeam) {
       if (currentTeam === (teams.length - 1)) {
@@ -1770,26 +1779,17 @@ io.on("connect", async (socket) => {
       pause = true
       currentTurn.players[currentTeam] = 0 // Someone can join the team to play (host can assign to team)
     } else if (teams[currentTeam].players.length === 1) {
-      const player = await User.findById(teams[currentTeam].players[0])
-      if (player && player.status !== 'playing') {
-        pause = true
-      }
       currentTurn.players[currentTeam] = 0
     } else {
       let currentPlayerIndex = currentTurn.players[currentTeam]
       const players = teams[currentTeam].players
       let nextPlayerIndex = await getNextPlayer(players, currentPlayerIndex, currentPlayerIndex+1)
       if (nextPlayerIndex === -1) {
-        const currentPlayer = await User.findById(teams[currentTeam].players[currentPlayerIndex])
-        if (currentPlayer.status === 'playing') {
-          nextPlayerIndex = currentPlayerIndex
+        pause = true
+        if (currentPlayerIndex === players.length-1) {
+          nextPlayerIndex = 0
         } else {
-          pause = true
-          if (currentPlayerIndex === players.length-1) {
-            nextPlayerIndex = 0
-          } else {
-            nextPlayerIndex = currentPlayerIndex+1
-          }
+          nextPlayerIndex = currentPlayerIndex+1
         }
       }
       currentTurn.players[currentTeam] = nextPlayerIndex
@@ -1807,31 +1807,22 @@ io.on("connect", async (socket) => {
     }
     
     let currentTeam = currentTurn.team
-    let pause = false;
+    let pause = null;
     if (teams[currentTeam].players.length === 0) {
       pause = true
       currentTurn.players[currentTeam] = 0 // Someone can join the team to play (host can assign to team)
     } else if (teams[currentTeam].players.length === 1) {
-      const player = await User.findById(teams[currentTeam].players[0])
-      if (player && player.status !== 'playing') {
-        pause = true
-      }
       currentTurn.players[currentTeam] = 0
     } else {
       let currentPlayerIndex = currentTurn.players[currentTeam]
       const players = teams[currentTeam].players
       let nextPlayerIndex = await getNextPlayer(players, currentPlayerIndex, currentPlayerIndex+1)
       if (nextPlayerIndex === -1) {
-        const currentPlayer = await User.findById(teams[currentTeam].players[currentPlayerIndex])
-        if (currentPlayer.status === 'playing') {
-          nextPlayerIndex = currentPlayerIndex
+        pause = true
+        if (currentPlayerIndex === players.length-1) {
+          nextPlayerIndex = 0
         } else {
-          pause = true
-          if (currentPlayerIndex === players.length-1) {
-            nextPlayerIndex = 0
-          } else {
-            nextPlayerIndex = currentPlayerIndex+1
-          }
+          nextPlayerIndex = currentPlayerIndex+1
         }
       }
       currentTurn.players[currentTeam] = nextPlayerIndex
@@ -2034,7 +2025,8 @@ io.on("connect", async (socket) => {
         if (throws === 0 && (isEmptyMoves(moves.toObject()) || isBackdoMovesWithoutPieces(moves.toObject(), room.teams[movingTeam].pieces))) { // check backdoLaunch rule
           const [newTurn, pause] = await passTurn(room.turn, room.teams)
           room.turn = newTurn
-          room.paused = pause
+          if (pause) 
+            room.paused = pause
           room.teams[movingTeam].moves = JSON.parse(JSON.stringify(initialState.initialMoves))
           room.teams[newTurn.team].throws = 1
           serverEvent.content.throws = 1
@@ -2421,7 +2413,8 @@ io.on("connect", async (socket) => {
       if (room.gamePhase === 'pregame' || room.gamePhase === 'game') {
         const [nextTurn, pause] = await passTurn(room.turn, room.teams, true)
         room.turn = nextTurn
-        room.paused = pause
+        if (pause) 
+          room.paused = pause
       }
       
       await room.save()
@@ -2453,12 +2446,18 @@ io.on("connect", async (socket) => {
         // add to start and expire time
         if (room.rules.timer) {
           const passedTime = Date.now() - room.pauseTime
-          room.turnStartTime += passedTime
+          // room.turnStartTime += passedTime
           room.turnExpireTime += passedTime
 
           room.turnsSkipped = 0
           startTimer(room)
         }
+
+        // if ai is playing
+        // aiMove based on state
+        
+        // prevent aiMove if game is paused
+        // on turn time expired, call aiMove
       }
       room.serverEvent = {
         'name': 'pause',
