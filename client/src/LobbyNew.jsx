@@ -395,6 +395,7 @@ export default function LobbyNew() {
               isHost: false,
               team: player.team,
               status: player.status,
+              type: player.type,
               _id: player._id,
             })
           }
@@ -1073,17 +1074,35 @@ export default function LobbyNew() {
       function handlePointerLeave(e) {
         e.stopPropagation()
       }
+      
+      // position={[0, 0.02, (-0.8) + (1 + 0.1) * 0]}
+      // position={[0, 0.02, (-0.8) + (1 + 0.1) * 1]}
+      // position={[0, 0.02, (-0.8) + (1 + 0.1) * 2]}
+      const seatModalButtons = []
+      if (guestBeingEditted.type === 'ai') {
+        seatModalButtons.push(<KickButton/>)
+      } else {
+        seatModalButtons.push(<SetSpectatorButton/>)
+        seatModalButtons.push(<AssignHostButton/>)
+        seatModalButtons.push(<KickButton/>)
+      }
+      const backgroundDimensions = {
+        position: [0, 0, 0.1 + 0.5 * (seatModalButtons.length - 3.5)],
+        scaleOuter: [9, 0.01, 1 * seatModalButtons.length + 1],
+        scaleInner: [8.9, 0.02, 1 * seatModalButtons.length + 0.9]
+      }
+
       return <group position={position} scale={scale}>
         {/* background */}
-        <group name='background'
-        onPointerEnter={e=>handlePointerEnter(e)}
-        onPointerLeave={e=>handlePointerLeave(e)}
+        <group name='background' position={backgroundDimensions.position}
+          onPointerEnter={e=>handlePointerEnter(e)}
+          onPointerLeave={e=>handlePointerLeave(e)}
         >
-          <mesh name='background-outer' scale={[9, 0.01, 4.3]}>
+          <mesh name='background-outer' scale={backgroundDimensions.scaleOuter}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='yellow'/>
           </mesh>
-          <mesh name='background-inner' scale={[8.9, 0.02, 4.2]}>
+          <mesh name='background-inner' scale={backgroundDimensions.scaleInner}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial color='black'/>
           </mesh>
@@ -1114,11 +1133,11 @@ export default function LobbyNew() {
         {/* navigation */}
         <CloseButton position={[3.5, 0.02, -1.725]}/>
         {/* action buttons */}
-        <group name='player-buttons'>
-          <SetSpectatorButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 0]}/>
-          <AssignHostButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 1]}/>
-          <KickButton position={[0, 0.02, (-0.8) + (1 + 0.1) * 2]}/>
-        </group>
+        { seatModalButtons.map((value, index) => {
+          return <group position={[0, 0.02, 1 * index-0.8]} key={index}>
+            {value}
+          </group>
+        }) }
       </group>
     }
 
@@ -1347,14 +1366,14 @@ export default function LobbyNew() {
             size={0.45}
             height={0.01}
           >
-            ADD AI - SMART
+            ADD AI
             <meshStandardMaterial color={ hover ? 'green' : 'yellow' }/>
           </Text3D>
         </group>
       }
       const seatModalButtons = [
         <TakeSeatButton/>,
-        <AddAIEZButton/>,
+        // <AddAIEZButton/>,
         <AddAISmartButton/>,
       ]
       const backgroundDimensions = {

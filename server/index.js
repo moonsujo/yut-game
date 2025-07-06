@@ -502,7 +502,8 @@ async function createUniqueAIName(level) {
     if (level === 'random') {
       name += 'AIBOT-EZ-'
     } else if (level === 'smart') {
-      name += 'AIBOT-SMART-'
+      name += 'AIBOT-'
+      // name += 'AIBOT-SMART-'
     }
     name += makeId(5, false, true)
     exists = await User.findOne({ name }).exec(); // Check for collisions
