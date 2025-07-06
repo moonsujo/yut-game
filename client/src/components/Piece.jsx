@@ -22,8 +22,8 @@ export default function Piece ({
   selected=false,
   onBoard=false,
 }) {
-  const [selection] = useAtom(selectionAtom);
-  const [legalTiles] = useAtom(legalTilesAtom)
+  const [selection, setSelection] = useAtom(selectionAtom);
+  const [legalTiles, setLegalTiles] = useAtom(legalTilesAtom)
   const [client] = useAtom(clientAtom)
   const [teams] = useAtom(teamsAtom);
   const [gamePhase] = useAtom(gamePhaseAtom)
@@ -73,12 +73,24 @@ export default function Piece ({
           const audio2 = new Audio('sounds/effects/legalTile.mp3');
           audio2.volume = 0.5;
           audio2.play();
+
+          // update client
+          setSelection({ tile, pieces })
+          setLegalTiles(legalTiles)
+
+          // update other clients
           socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
         }
       } else {
         if (selection.tile != tile && tile in legalTiles) {
           socket.emit("move", { roomId: params.id.toUpperCase(), tile, playerName: client.name });
         } else { // deselect
+          
+          // update client
+          setSelection(null)
+          setLegalTiles({})
+          
+          // update other clients
           socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
           const audio = new Audio('sounds/effects/deselect.mp3');
           audio.volume = 0.5;

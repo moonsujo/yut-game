@@ -3,7 +3,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { socket } from "../SocketManager";
 import React from "react";
 import { useFrame, useGraph } from "@react-three/fiber";
-import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, pauseGameAtom, selectionAtom, showFinishMovesAtom, teamsAtom, tilesAtom, turnAtom } from "../GlobalState";
+import { backdoLaunchAtom, clientAtom, gamePhaseAtom, hasTurnAtom, legalTilesAtom, pauseGameAtom, selectionAtom, showFinishMovesAtom, teamsAtom, tilesAtom, turnAtom } from "../GlobalState";
 import { useParams } from "wouter";
 import { getLegalTiles } from "../helpers/legalTiles";
 import * as THREE from 'three';
@@ -29,7 +29,8 @@ export default function Tile({
   interactive=false
 }) {
 
-  const selection = useAtomValue(selectionAtom);
+  const [selection, setSelection] = useAtom(selectionAtom);
+  const setLegalTiles = useSetAtom(legalTilesAtom)
   const hasTurn = useAtomValue(hasTurnAtom)
   const tiles = useAtomValue(tilesAtom)
   const teams = useAtomValue(teamsAtom)
@@ -67,6 +68,11 @@ export default function Tile({
           let history = tiles[tile][0].history
           let legalTiles = getLegalTiles(tile, teams[team].moves, teams[team].pieces, history, backdoLaunch)
           if (!(Object.keys(legalTiles).length === 0)) {
+            // update client
+            setSelection({ tile, pieces })
+            setLegalTiles(legalTiles)
+
+            // update other clients
             socket.emit("select", { roomId: params.id.toUpperCase(), selection: { tile, pieces }, legalTiles })
           }
         }
@@ -79,6 +85,11 @@ export default function Tile({
         audio.volume = 1;
         audio.play();
       } else {
+        // update client
+        setSelection(null)
+        setLegalTiles({})
+          
+        // update other clients
         socket.emit("select", { roomId: params.id.toUpperCase(), selection: null, legalTiles: {} });
       }
     }

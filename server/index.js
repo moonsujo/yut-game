@@ -353,10 +353,12 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
               paused: room.paused
             })
           } else if (serverEvent.name === "select") {
-            io.to(userSocketId).emit("select", {
-              selection: data.fullDocument.selection,
-              legalTiles: data.fullDocument.legalTiles // should emit an array of tile indices
-            })
+            if (userSocketId !== serverEvent.userSocketId) {
+              io.to(userSocketId).emit("select", {
+                selection: data.fullDocument.selection,
+                legalTiles: data.fullDocument.legalTiles // should emit an array of tile indices
+              })
+            }
           } else if (serverEvent.name === 'throwYut') {
             io.to(userSocketId).emit('throwYut', { 
               yootOutcome: data.fullDocument.yootOutcome, 
@@ -1916,6 +1918,7 @@ io.on("connect", async (socket) => {
             'legalTiles': legalTiles,
             'serverEvent': {
               name: 'select',
+              userSocketId: socket.id,
               content: {}
             }
           }
