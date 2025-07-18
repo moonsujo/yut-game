@@ -27,11 +27,7 @@ export default function YootNew({ animation, scale, position, rotation=[0,0,0] }
     }
   }, [animation])
 
-  const { yutScale } = useSpring({
-    yutScale: animation ? 1 : 0
-  })
-
-  return <animated.group scale={yutScale}>
+  return <animated.group>
     <group ref={group} scale={scale} position={position} rotation={rotation} dispose={null}>
       <group name="Scene">
         <mesh

@@ -25,7 +25,7 @@ export default {
     },
     title: {
       camera: {
-        position: [0,17,7],
+        position: [0,25,7],
         lookAt: [0, 0, 0]
       },
       text: {
@@ -294,9 +294,9 @@ export default {
           scale: 0.9
         },
         yut: {
-          initialYutPosition: [-4.5,8,9],
+          initialYutPosition: [-6.5,9,11],
           initialYutRotation: [Math.PI/16,Math.PI/2+Math.PI/32,-Math.PI/2],
-          animationYutPosition: [-2,-1.5,-3],
+          animationYutPosition: [-2,0,-3],
           animationYutRotation: [0,0,0],
         },
         yootButtonModel: {
@@ -2046,7 +2046,7 @@ export default {
           scale: 1
         },
         yut: {
-          initialYutPosition: [-5.5,8,9],
+          initialYutPosition: [-6.5, 8, 11],
           initialYutRotation: [Math.PI/16,Math.PI/2+Math.PI/32,-Math.PI/2],
           animationYutPosition: [-2,0,-3],
           animationYutRotation: [0,0,0],
