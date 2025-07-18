@@ -11,7 +11,7 @@ import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
 import { socket } from "./SocketManager"
 import { useParams } from "wouter"
 
-export default function YutBonus({ position, scale }) {
+export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow=false }) {
   
   const [showBonus, setShowBonus] = useAtom(showBonusAtom)
   const animationPlaying = useAnimationPlaying()
@@ -19,7 +19,7 @@ export default function YutBonus({ position, scale }) {
   const params = useParams()
 
   const { yutBonusScale } = useSpring({
-    yutBonusScale: (showBonus && !animationPlaying) ? 0.9 : 0,
+    yutBonusScale: (alwaysShow || (showBonus && !animationPlaying)) ? 0.9 : 0,
   })
 
   const yutSprings = useSpring({
@@ -79,7 +79,7 @@ export default function YutBonus({ position, scale }) {
     function handlePointerUp(e) {
       e.stopPropagation()
       document.body.style.cursor = 'default'
-      if (showBonus) {
+      if (alwaysShow || showBonus) {
         setYootAnimationPlaying(true)
         socket.emit('throwYut', { roomId: params.id.toUpperCase() })
         setShowBonus(false)
@@ -102,16 +102,17 @@ export default function YutBonus({ position, scale }) {
         </mesh>
         <Text3D
           font="fonts/Luckiest Guy_Regular.json"
-          position={[-0.5, 0.025, 0.13]}
+          position={alwaysShow ? [-0.53, 0.025, 0.13] : [-0.55, 0.025, 0.13]}
           rotation={[-Math.PI/2, 0, 0]}
           size={0.24}
           height={0.01}
         >
-          BONUS
+          { alwaysShow ? `THROW` : `BONUS` }
           <meshStandardMaterial color={ hover ? 'green' : '#EE9E26' }/>
         </Text3D>
       </group>
       <mesh 
+        name='wrapper'
         position={[0.5, 0, 0]} 
         onPointerEnter={e=>handlePointerEnter(e)} 
         onPointerLeave={e=>handlePointerLeave(e)} 
@@ -123,14 +124,14 @@ export default function YutBonus({ position, scale }) {
     </group>
   }
 
-  return <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={position}>
+  return <animated.group name='yut-bonus-animation-wrapper' scale={yutBonusScale} position={position} rotation={rotation}>
     <Float rotationIntensity={0.2} speed={7} floatIntensity={3} floatingRange={[-0.1, 0.1]}>
       <group name='yut-bonus' scale={scale}>
         <YootMeshUnrotated scale={0.2} position={yutSprings.yut0Position} rotation={yutSprings.yut0Rotation}/>
         <YootMesh scale={0.2} position={yutSprings.yut1Position} rotation={yutSprings.yut1Rotation}/>
         <YootMesh scale={0.2} position={yutSprings.yut2Position} rotation={yutSprings.yut2Rotation}/>
         <YootRhino scale={0.2} position={yutSprings.yut3Position} rotation={yutSprings.yut3Rotation}/>
-        <SparkleYutShader texturePath={'./textures/particles/8.png'}/>
+        { !alwaysShow && <SparkleYutShader texturePath={'./textures/particles/8.png'}/> }
         <Label/>
       </group>
     </Float>

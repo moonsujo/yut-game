@@ -12,7 +12,6 @@ import { animated, useSpring } from '@react-spring/three';
 import Check from './meshes/Check';
 import useShakeDetector from './hooks/useShakeDetector';
 import axios from 'axios';
-import YutBonus from './YutBonus';
 
 export default function YootButtonNew({ position, rotation, scale }) {
   const { nodes } = useGLTF("/models/rounded-rectangle.glb");
@@ -209,7 +208,7 @@ export default function YootButtonNew({ position, rotation, scale }) {
     scale={scale}
     ref={buttonRef}
   >
-    { !enabled &&     <group scale={0.9}>
+    <group>
       <mesh
         castShadow
         receiveShadow
@@ -273,8 +272,7 @@ export default function YootButtonNew({ position, rotation, scale }) {
         <boxGeometry args={[3, 0.2, 2]}/>
         <meshStandardMaterial transparent opacity={0}/>
       </mesh> 
-    </group> }
-      {enabled && <YutBonus alwaysShow={true} position={[0, 0, -0.4]} rotation={[0, -Math.PI/2, 0]}/>}
+    </group>
     { client.team === turn.team && <ThrowCount 
       position={layout[device].game.throwCount.position}
       orientation={layout[device].game.throwCount.orientation}

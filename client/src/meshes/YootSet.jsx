@@ -2,7 +2,6 @@
 // arrange shape to match
 
 import { animated } from '@react-spring/three';
-import React from 'react';
 import YootMesh from './YootMesh';
 import YootRhino from './YootRhino';
 

@@ -188,7 +188,7 @@ export default function HowToPlay({
         size={layout[device].howToPlay.throwingTheDicePage.text.size}
         height={layout[device].howToPlay.throwingTheDicePage.text.height}
       >
-        {`THROW THE YUT TO DETERMINE HOW MANY\nSTARS TO JUMP. COUNT THE STARS ON THE\nFLAT SIDE OF THE BARS.`}
+        {`THROW THE YUT TO DETERMINE HOW MANY\nSTARS TO JUMP. EACH WHITE SIDE COUNTS\nAS ONE.`}
         <meshStandardMaterial color='yellow'/>
       </Text3D>
       <animated.group
@@ -1370,7 +1370,7 @@ export default function HowToPlay({
           size={layout[device].howToPlay.readingTheDicePage.text.size}
           height={layout[device].howToPlay.readingTheDicePage.text.height}
         >
-          {'COUNT THE STARS. IF YOU THROW A YUT OR\nMO, YOU GET ANOTHER TURN!'}
+          {'COUNT THE WHITE SIDES. IF YOU THROW A YUT\nOR MO, YOU GET ANOTHER TURN!'}
           <meshStandardMaterial color='yellow'/>
         </Text3D>
       </group>
