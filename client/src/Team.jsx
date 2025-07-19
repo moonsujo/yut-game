@@ -115,8 +115,7 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
 
   function ScoredPiece({ position }) {
     return <mesh position={position}>
-      <sphereGeometry args={[0.2]} />
-      <meshStandardMaterial color={team == 0 ? "red" : "green"} />
+      <Star color={team == 0 ? "red" : "green"} scale={0.3}/>
     </mesh>
   }
 

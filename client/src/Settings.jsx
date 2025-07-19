@@ -379,7 +379,8 @@ export default function Settings({ position=[0,0,0], rotation=[0,0,0], scale=1 }
         setHover(false)
         document.body.style.cursor = 'default'
       }
-      function handlePointerUp() {
+      function handlePointerUp(e) {
+        e.stopPropagation()
         if (!pauseGame)
           socket.emit('pauseGame', { roomId: params.id.toUpperCase(), clientId: client._id, flag: true });
         else 
@@ -442,9 +443,9 @@ export default function Settings({ position=[0,0,0], rotation=[0,0,0], scale=1 }
           </mesh>
           <mesh name='background-wrapper' 
           scale={[5.5, 0.02, 0.9]}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-          onPointerUp={handlePointerUp}>
+          onPointerEnter={e=>handlePointerEnter(e)}
+          onPointerLeave={e=>handlePointerLeave(e)}
+          onPointerUp={e=>handlePointerUp(e)}>
             <boxGeometry args={[1,1,1]}/>
             <meshStandardMaterial transparent opacity={0}/>
           </mesh>

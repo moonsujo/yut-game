@@ -1373,18 +1373,18 @@ export default {
         scale: 1.2
       },
       yootButton: {
-        position: [3.9, 0, 9.1],
+        position: [4, 0, 9.2],
         rotation: [0, Math.PI/2, 0],
         scale: 1.4
       },
       timer: {
         position: [5.6,0,10],
         scaleX: 1,
-        heightMultiplier: 0.6,
+        heightMultiplier: 0.5,
         boxArgs: [0.25, 0.03, 4],
       },
       throwCount: {
-        position: [-1.2, 0, 1.25],
+        position: [-1.2, 0, -0.82],
         // position: [1.7, 0, -0.8],
         orientation: 'downUp'
         // orientation: 'leftRight'
@@ -3201,18 +3201,18 @@ export default {
         position: [9, 0, 3],
       },
       yootButton: {
-        position: [9, 0, 4.8],
+        position: [9.1, 0, 4.6],
         rotation: [0, Math.PI/2, 0],
         scale: 1.2
       },
       timer: {
-        position: [10.5,0,5.1],
+        position: [10.7,0,5.1],
         scaleX: 1,
-        heightMultiplier: 0.7,
+        heightMultiplier: 0.5,
         boxArgs: [0.3, 0.03, 4],
       },
       throwCount: {
-        position: [-1.2, 0, -1.3],
+        position: [-1.0, 0, -1.1],
         orientation: 'downUp'
       },
       scoreButtons: {

@@ -11,9 +11,10 @@ import { useAnimationPlaying } from "./hooks/useAnimationPlaying"
 import { socket } from "./SocketManager"
 import { useParams } from "wouter"
 
-export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow=false }) {
+export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow=false, enableClick=true }) {
   
   const [showBonus, setShowBonus] = useAtom(showBonusAtom)
+  const paused = useAtomValue(pauseGameAtom)
   const animationPlaying = useAnimationPlaying()
   const setYootAnimationPlaying = useSetAtom(yootAnimationPlayingAtom)
   const params = useParams()
@@ -25,7 +26,7 @@ export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow
   const yutSprings = useSpring({
     from: {
       yut0Position: [0, 0.2, 0],
-      yut0Rotation: [0, 0, 0],
+      yut0Rotation: [Math.PI/16, Math.PI/32, -Math.PI/8],
       // yut0Rotation: quaternion0,
       yut1Position: [0.4, 0, -0.2],
       yut1Rotation: [Math.PI/2+Math.PI/16, Math.PI/2+Math.PI/8, Math.PI/16],
@@ -49,7 +50,7 @@ export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow
       // Return to 0 (first position)
       {
         yut0Position: [0, 0.2, 0],
-        yut0Rotation: [0, 0, 0],
+        yut0Rotation: [Math.PI/16, Math.PI/32, -Math.PI/8],
         // yut0Rotation: quaternion0,
         yut1Position: [0.4, 0, -0.2],
         yut1Rotation: [Math.PI/2+Math.PI/16, Math.PI/2+Math.PI/8, Math.PI/16],
@@ -77,17 +78,19 @@ export default function YutBonus({ position, scale, rotation=[0,0,0], alwaysShow
       document.body.style.cursor = 'default'
     }
     function handlePointerUp(e) {
-      e.stopPropagation()
-      document.body.style.cursor = 'default'
-      if (alwaysShow || showBonus) {
-        setYootAnimationPlaying(true)
-        socket.emit('throwYut', { roomId: params.id.toUpperCase() })
-        setShowBonus(false)
-      }
+      if (enableClick && !paused) {
+        e.stopPropagation()
+        document.body.style.cursor = 'default'
+        if (alwaysShow || showBonus) {
+          setYootAnimationPlaying(true)
+          socket.emit('throwYut', { roomId: params.id.toUpperCase() })
+          setShowBonus(false)
+        }
 
-      const audio = new Audio('sounds/effects/yut-bonus.mp3');
-      audio.volume = 1;
-      audio.play();
+        const audio = new Audio('sounds/effects/yut-bonus.mp3');
+        audio.volume = 1;
+        audio.play();
+      }
     }
 
     return <group>

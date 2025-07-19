@@ -61,15 +61,16 @@ export default function YootButtonNew({ position, rotation, scale }) {
 
   const DEBOUNCE_DELAY = 300
   async function handleClick(e) {
+
     e.stopPropagation();
 
+    // Prevent multiple clicks
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
     timeoutRef.current = setTimeout(async () => {
       if (enabled && !paused) {
         setYootAnimationPlaying(true)
         socket.emit('throwYut', { roomId: params.id.toUpperCase() })
-        console.log('click event emitted')
         const audio = new Audio('sounds/effects/throw-yut-2.mp3');
         audio.volume=1
         audio.play();
@@ -209,7 +210,7 @@ export default function YootButtonNew({ position, rotation, scale }) {
     scale={scale}
     ref={buttonRef}
   >
-    { !enabled &&     <group scale={0.9}>
+    { !enabled && <group scale={0.9}>
       <mesh
         castShadow
         receiveShadow
@@ -274,7 +275,11 @@ export default function YootButtonNew({ position, rotation, scale }) {
         <meshStandardMaterial transparent opacity={0}/>
       </mesh> 
     </group> }
-      {enabled && <YutBonus alwaysShow={true} position={[0, 0, -0.4]} rotation={[0, -Math.PI/2, 0]}/>}
+    { enabled && <YutBonus 
+      alwaysShow={true} 
+      position={[0, 0, -0.4]} 
+      rotation={[0, -Math.PI/2, 0]}
+    />}
     { client.team === turn.team && <ThrowCount 
       position={layout[device].game.throwCount.position}
       orientation={layout[device].game.throwCount.orientation}

@@ -512,7 +512,7 @@ export const SocketManager = () => {
           setAlerts([yootOutcomeAlertName])
         }
         setThrowCount(teams[turnUpdate.team].throws)
-        if (teams[turnUpdate.team].throws > 0) {
+        if (teams[turnUpdate.team].throws > 0 && turnUpdate.team === turnPrev.team) {
           setBonusExists(true)
         } else {
           setBonusExists(false)

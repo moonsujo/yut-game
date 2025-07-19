@@ -5,6 +5,7 @@ import layout from './layout';
 import Piece from './components/Piece';
 import { hasValidMoveHome, pieceSelected, tileType } from './helpers/helpers';
 import MeshColors from './MeshColors';
+import Star from './meshes/Star';
 
 export default function PiecesSection({ 
   position=[0,0,0], 
@@ -41,7 +42,7 @@ export default function PiecesSection({
       return <mesh
         position={position}
       >
-        <sphereGeometry args={[0.2, 32, 16]} />
+        <Star color='grey' scale={0.3}/>
       </mesh>
     }
 
@@ -49,8 +50,7 @@ export default function PiecesSection({
       return <mesh
         position={position}
       >
-        <sphereGeometry args={[0.2]} />
-        <meshStandardMaterial color={team == 0 ? "red" : "green"} />
+        <Star color={team == 0 ? "red" : "green"} scale={0.3}/>
       </mesh>
     }
 

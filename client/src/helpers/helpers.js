@@ -69,11 +69,11 @@ export function hasValidMoveHome(pieces, moves, backdoLaunch) {
   }
 
   if (!pieceOnBoard) {
-    if (backdoLaunch) {
-      for (const move in moves) {
-        if (parseInt(move) !== 0 && moves[move] > 0) {
-          return true;
-        }
+    for (const move in moves) {
+      if (!backdoLaunch && parseInt(move) === -1) {
+        continue
+      } else if (parseInt(move) !== 0 && moves[move] > 0) {
+        return true;
       }
     }
     return false;

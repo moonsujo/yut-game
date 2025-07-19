@@ -13,7 +13,7 @@ export default function YootMeshUnrotated({
 }) {
 
   const { scene, materials } = useGLTF(
-    "/models/yoot-v3-regular.glb"
+    "/models/yut-v3-regular-darker-more.glb"
   );
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);
