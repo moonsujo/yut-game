@@ -107,23 +107,22 @@ export function useFireworksShader() {
             let nodes, materials, animations, geometry
             let shape = Math.random()
             if (shape < 0.25) {
-                let model = useGLTF('models/aries-constellation-thin.glb')
+                let model = useGLTF('/models/aries-constellation-thin.glb', false, false)
                 nodes = model.nodes
                 geometry = nodes.BezierCurve001.geometry
             } else if (shape < 0.5) {
-                let model = useGLTF('models/bull-constellation-thin.glb')
+                let model = useGLTF('/models/bull-constellation-thin.glb')
                 nodes = model.nodes
                 geometry = nodes.BezierCurve001.geometry
             } else if (shape < 0.75) {
-                let model = useGLTF('models/rhino-constellation-thin.glb')
+                let model = useGLTF('/models/rhino-constellation-thin.glb')
                 nodes = model.nodes
                 geometry = nodes.rhino.geometry
             } else {
-                let model = useGLTF('models/wolf-constellation-thin-3.glb')
+                let model = useGLTF('/models/wolf-constellation-thin-3.glb')
                 nodes = model.nodes
                 geometry = nodes.wolf.geometry
             }
-            console.log('nodes', nodes, 'geometry', geometry)
             
             texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]
             texture.flipY = false;
@@ -164,7 +163,7 @@ export function useFireworksShader() {
 
             scene.add(points)
         } else if (type === 'planet') { // refactor to use the constellation shader
-            const { nodes, materials } = useGLTF("models/planet-joined.glb");
+            const { nodes, materials } = useGLTF("/models/planet-joined.glb");
             
             geometry = nodes.Sphere002.geometry
             texture = fireworkTextures[Math.floor(Math.random() * fireworkTextures.length)]

@@ -30,34 +30,58 @@ export default function ShareLinkButton({ rotation, position, device='landscapeD
   }))
   async function handleShareLinkPointerUp(e) {
     e.stopPropagation()
-    copyURLToClipboard()
-    apiCopyLink.start({
-      from: {
-        opacity: 1
-      },
-      to: [
-        {
+    if (device === 'portrait') {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Yut Nori',
+            text: "Let's play a game!",
+            url: window.location.href,
+          })
+
+          const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+            eventName: 'buttonClick',
+            timestamp: new Date(),
+            payload: {
+              'button': 'shareLobby'
+            }
+          })
+          console.log('[ShareThisLobby] post log response', response)
+        } catch (err) {
+          console.error('Error sharing:', err)
+        }
+      } else {
+        alert('Web Share API is not supported. Copy the URL to share.')
+      }
+    } else {
+      copyURLToClipboard()
+      apiCopyLink.start({
+        from: {
           opacity: 1
         },
-        { 
-          opacity: 0,
-          delay: 500,
-          config: {
-            tension: 170,
-            friction: 26
+        to: [
+          {
+            opacity: 1
+          },
+          { 
+            opacity: 0,
+            delay: 500,
+            config: {
+              tension: 170,
+              friction: 26
+            }
           }
-        }
-      ]
-    })
+        ]
+      })
+    }
 
-    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+    await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
       eventName: 'buttonClick',
       timestamp: new Date(),
       payload: {
         'button': 'shareLink'
       }
     })
-    console.log('[RocketsWin] post log response', response)
   }
 
   return <group name='share-link-button' rotation={rotation} position={position}>

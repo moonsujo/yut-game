@@ -22,8 +22,7 @@ export default function UfoNewBoss({
   glassColor='grey',
   rightEyeScale=[1, 1, 1]
 }) {
-  const { scene, materials } = useGLTF("models/ufo-eyes-separate.glb");
-  // const { scene, materials } = useGLTF("models/ufo.glb");
+  const { scene, materials } = useGLTF("/models/ufo-eyes-separate.glb");
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);

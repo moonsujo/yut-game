@@ -22,8 +22,7 @@ export default function UfoNewBossSmall({
   rightEyeScale=[1, 1, 1],
   enlightened=true
 }) {
-  const { scene, materials } = useGLTF("models/ufo-eyes-separate.glb");
-  // const { scene, materials } = useGLTF("models/ufo.glb");
+  const { scene, materials } = useGLTF("/models/ufo-eyes-separate.glb");
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);

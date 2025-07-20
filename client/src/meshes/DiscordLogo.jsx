@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export default function DiscordLogo(props) {
-  const { nodes, materials } = useGLTF('./models/discord-logo.glb')
+  const { nodes } = useGLTF('./models/discord-logo.glb')
   return (
     <group {...props} dispose={null}>
       <mesh

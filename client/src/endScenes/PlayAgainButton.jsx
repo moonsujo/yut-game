@@ -30,14 +30,13 @@ export default function PlayAgainButton({ rotation, position, device='landscapeD
     e.stopPropagation()
 
     socket.emit('reset', { roomId: params.id.toUpperCase(), clientId: client._id })
-    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+    await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
       eventName: 'buttonClick',
       timestamp: new Date(),
       payload: {
         'button': 'restartGame'
       }
     })
-    console.log('[RestartGame][RocketsWin] post log response', response)
   }
 
   return <group name='play-again-button' rotation={rotation} position={position}>

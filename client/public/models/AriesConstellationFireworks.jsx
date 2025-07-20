@@ -11,7 +11,7 @@ import { useGLTF } from "@react-three/drei";
 
 export default function AriesConstellation(props) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('models/aries-constellation-thin.glb')
+  const { nodes, materials, animations } = useGLTF('/models/aries-constellation-thin.glb')
 
   const { gl } = useThree();
   gl.setPixelRatio(Math.min(window.devicePixelRatio, 2))

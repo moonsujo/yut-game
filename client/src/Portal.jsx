@@ -17,7 +17,7 @@ const PortalMaterial = shaderMaterial(
 extend({ PortalMaterial })
 
 export default function Portal({ position, scale, rotation }) {    
-  const { nodes } = useGLTF('./models/portal.glb')
+  const { nodes } = useGLTF('/models/portal.glb')
 
   const portalMaterial = useRef()
   useFrame((state, delta) =>

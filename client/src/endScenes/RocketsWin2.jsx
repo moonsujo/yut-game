@@ -129,7 +129,7 @@ export default function RocketsWin2() {
         if (type < constellationChance) {
           CreateFirework({ count, position, size, radius, color, type: 'constellation' });
         } else if (type > constellationChance && type < planetChance) {
-          CreateFirework({ count, position, size, radius, color, type: 'planet' });
+          // CreateFirework({ count, position, size, radius, color, type: 'planet' });
         } else {
           CreateFirework({ count, position, size, radius, color });
         }
@@ -210,6 +210,7 @@ export default function RocketsWin2() {
         <group name='player-names-rockets' position={[0, 0, 0]}>
           { teamRockets.players.map((value, index) => 
             <Text3D
+              key={index}
               font="/fonts/Luckiest Guy_Regular.json"
               rotation={[-Math.PI/2, 0, 0]}
               size={0.4} 
@@ -224,6 +225,7 @@ export default function RocketsWin2() {
         <group name='player-names-ufos' position={[3.9, 0, 0]}>
           { teamUfos.players.map((value, index) => 
             <Text3D
+              key={index}
               font="/fonts/Luckiest Guy_Regular.json"
               rotation={[-Math.PI/2, 0, 0]}
               size={0.4} 

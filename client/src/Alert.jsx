@@ -1,5 +1,5 @@
 import { useFrame, useLoader } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text3D } from "@react-three/drei";
 import Rocket from "./meshes/Rocket";
 import Ufo from "./meshes/Ufo";
@@ -725,6 +725,7 @@ export default function Alert({ position, rotation }) {
       ]
       const nameRef = useRef();
       const nameContainerRef = useRef();
+      const [centered, setCentered] = useState(false)
   
       useFrame((state, delta) => {
         for (let i = 0; i < borderMeshRefs.length; i++) {      
@@ -738,6 +739,7 @@ export default function Alert({ position, rotation }) {
         if (nameRef.current && nameRef.current.geometry.boundingSphere) {
           const centerX = nameRef.current.geometry.boundingSphere.center.x
           nameContainerRef.current.position.z = -centerX
+          setCentered(true)
         }
       })
 
@@ -759,7 +761,7 @@ export default function Alert({ position, rotation }) {
             height={0.1}
             ref={nameRef}
           >
-            {formatName(currentPlayerName, 9)}
+            {centered ? formatName(currentPlayerName, 9) : ''}
             <meshStandardMaterial color={ turn.team === 0 ? 'red': 'turquoise' }/>
           </Text3D>
         </group>

@@ -28,16 +28,15 @@ export default function DiscordButton({ rotation, position, device='landscapeDes
     e.stopPropagation()
     
     // open discord link
-    window.open('https://discord.gg/2nTCGhYG', "_blank", "noreferrer");
+    window.open('https://discord.gg/RwbTfezXu7', "_blank", "noreferrer");
 
-    const response = await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
+    await axios.post('https://yqpd9l2hjh.execute-api.us-west-2.amazonaws.com/dev/sendLog', {
       eventName: 'buttonClick',
       timestamp: new Date(),
       payload: {
         'button': 'restartGame'
       }
     })
-    console.log('[RestartGame][RocketsWin] post log response', response)
   }
 
   return <group name='discord-button' position={position} rotation={rotation}>

@@ -275,10 +275,10 @@ export default function Team({ position=[0,0,0], scale=1, team }) {
             + (value.status === 'away' ? ' (away)' : '') : teams[turn.team].players[turn.players[turn.team]].name === value.name ? AIPlayingText() : formatName(value.name, layout[device].game[`team${team}`].names.maxLength) }
             <meshStandardMaterial color={ value.roomId === params.id.toUpperCase() && value.connectedToRoom ? team === 0 ? 'red' : 'turquoise' : 'gray' }/>
           </Text3D>
-          {/* { teams[team].players[index].name === client.name && <group name='you-indicator' ref={youIndicatorRef}>
-            <Star rotation={[Math.PI/2, 0, 0]} scale={0.23} color={ team === 0 ? 'red' : 'turquoise' }/>
-          </group> } */}
-          { turn.team === team && turn.players[turn.team] === index && <group position={[-0.4, 0.17, 0]} scale={0.8}>
+          { turn.team === team && turn.players[turn.team] === index && <group 
+          name='current-player-indicator' 
+          position={[-0.4, 0.17, 0 - index * 1.2]} 
+          scale={0.8}>
             <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04}/>
             <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.1, 0, 0]}/>
             <YootMesh rotation={[0, Math.PI/2, 0]} scale={0.04} position={[0.2, 0, 0]}/>

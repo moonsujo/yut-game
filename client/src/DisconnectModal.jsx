@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text3D } from '@react-three/drei';
 import { Color, MeshStandardMaterial } from 'three';
 
@@ -27,13 +27,44 @@ export default function DisconnectModal({ position=[0,0,0], rotation=[0,0,0] }) 
     buttonMaterial.color = new Color('yellow')
   }
 
+  function ReconnectingText() {
+    const [text, setText] = useState('Disconnected from\nserver. Reconnecting . . .') // Initial display before timer starts
+    const [count, setCount] = useState(1)
+
+    useEffect(() => {
+
+      const interval = setInterval(() => {
+        setText(() => {
+          let newText = 'Disconnected from\nserver. Reconnecting'
+          for (let i = 0; i < count; i++) {
+            newText += ' .'
+          }
+          setCount(count => {
+            let newCount = count+1
+            if (count === 3) {
+              newCount = 1
+            }
+            return newCount
+          })
+          return newText
+        })
+      }, 800)
+
+      return () => {
+        clearInterval(interval)
+      }
+    })
+    
+    return text
+  }
+
   return <group position={position} rotation={rotation}>
     <mesh>
-      <boxGeometry args={[5.5, 0.01, 3]}/>
+      <boxGeometry args={[5.5, 0.01, 2.5]}/>
       <meshStandardMaterial color='yellow'/>
     </mesh>
     <mesh>
-      <boxGeometry args={[5.4, 0.02, 2.9]}/>
+      <boxGeometry args={[5.4, 0.02, 2.4]}/>
       <meshStandardMaterial color='black'/>
     </mesh>
     <mesh name='modal-wrapper'>
@@ -43,14 +74,14 @@ export default function DisconnectModal({ position=[0,0,0], rotation=[0,0,0] }) 
     <Text3D
       font="/fonts/Luckiest Guy_Regular.json"
       rotation={[Math.PI/2, Math.PI, Math.PI]}
-      position={[-2.5,0.02,-0.9]}
+      position={[-2.5,0.02,-0.7]}
       size={0.3}
       height={0.01}
     >
-      {`disconnected from\nserver. Please Refresh\nthe page to reconnect.`}
+      {ReconnectingText()}
       <meshStandardMaterial color='yellow'/>
     </Text3D>
-    <group name='button' position={[0, 0.02, 0.9]}>
+    <group name='button' position={[0, 0.02, 0.6]}>
       <mesh material={buttonMaterial}>
         <boxGeometry args={[2, 0.01, 0.8]}/>
       </mesh>
