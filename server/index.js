@@ -412,8 +412,8 @@ Room.watch([], { fullDocument: 'updateLookup' }).on('change', async (data) => {
             })
           } else if (serverEvent.name === "playerDisconnect") {
             io.to(userSocketId).emit("playerDisconnect", { 
-              team: serverEvent.team,
-              name: serverEvent.name,
+              team: serverEvent.content.team,
+              name: serverEvent.content.name,
             })
           } else if (serverEvent.name === "playerDisconnectLobby") {
             io.to(userSocketId).emit("playerDisconnectLobby", { 
@@ -513,7 +513,7 @@ async function createUniqueAIName(level) {
   return name;
 }
 
-const BASE_TURN_EXPIRE_TIME = 15000 // add time for expired alert // 60000
+const BASE_TURN_EXPIRE_TIME = 60000 // add time for expired alert // 60000
 const ALERT_TIME = 2500
 const JUMP_TIME = 1000
 const NUM_TURNS_SKIPPED_TO_PAUSE = 5
@@ -2240,8 +2240,10 @@ io.on("connect", async (socket) => {
         } else {
           room.serverEvent = {
             name: 'playerDisconnect',
-            team: user.team,
-            name: user.name
+            content: {
+              team: user.team,
+              name: user.name
+            }
           }
         }
         await user.save()
