@@ -164,18 +164,27 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   for (let friendlyTile of Object.keys(friendlyTiles)) {
     friendlyTile = parseInt(friendlyTile)
     if (friendlyTile === -1) {
-      // longest to compare distance. same destination, same algorithm. shorter the better
-      friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0, shortcutOptions) * friendlyTiles[friendlyTile].length)
+      // longest to compare distance. shorter the better
+      friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
     } else {
-      friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0, shortcutOptions)
+      if (friendlyTile > 0 && friendlyTile < 4) {
+        // Heuristic: Escape the first row. Don't dedup score so it prioritizes exit
+        // Higher means worse 
+        // between length of longest path from first shortcut and second shortcut (star 6)
+        // case: ship at 2, ship at 4. ge. piggyback at 4 or send ship at 4 to 6. if no piggyback, sending ship to 6 is worse because the path is longer.
+        const penalizeFirstRow = 5 * friendlyTiles[friendlyTile].length 
+        friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length) + penalizeFirstRow
+      } else {
+        friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0)
+      }
     }
   }
   for (let enemyTile of Object.keys(enemyTiles)) {
     enemyTile = parseInt(enemyTile)
     if (enemyTile === -1) {
-      enemyDistanceScore += (startCalculateLongestPathHome(enemyTile, 0, shortcutOptions) * enemyTiles[enemyTile].length)
+      enemyDistanceScore += (startCalculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
     } else {
-      enemyDistanceScore += startCalculateLongestPathHome(enemyTile, 0, shortcutOptions)
+      enemyDistanceScore += startCalculateLongestPathHome(enemyTile, 0)
     }
   }
 
@@ -226,15 +235,16 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
       '5': 1,
       '-1': 0
     },
-    '-1': { // backdo move
-      '0': 0,
-      '1': 0, 
-      '2': 0, 
-      '3': 0, 
-      '4': 0,
-      '5': 0,
-      '-1': 1
-    }
+    // Commented: don't count backdo in future move calculation
+    // '-1': { // backdo move
+    //   '0': 0,
+    //   '1': 0, 
+    //   '2': 0, 
+    //   '3': 0, 
+    //   '4': 0,
+    //   '5': 0,
+    //   '-1': 1
+    // }
   }
   const proximityScore = {
     '1': 3,
@@ -242,7 +252,8 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
     '3': 4,
     '4': 2,
     '5': 1,
-    '-1': 1
+    // Commented: don't count backdo in future move calculation
+    // '-1': 1 
   }
 
   // measure 2: enemies behind you within catch range
@@ -259,20 +270,22 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
       // count piggyback pieces only once
       // technically, pieces at home are piggybacked
       for (const move of Object.keys(moveSets)) {
-        const legalTiles = getLegalTiles(enemyTile, moveSets[move], enemyPieces, history, backdoLaunch)
-        // check how many friendlies are on it
-        // multiply score by that number
-        if (Object.keys(legalTiles).length > 0) {
-          let numMostTokens = 0
-          for (const legalTile of Object.keys(legalTiles)) {
-            if (legalTile !== 29) {
-              // if you're on a shortcut, count the legal tile with the most pieces to catch
-              if (friendlyTiles[legalTile] && friendlyTiles[legalTile].length > numMostTokens) {
-                numMostTokens = friendlyTiles[legalTile].length
+        if (move !== '-1') { // don't count backdo to anticipate future move
+          const legalTiles = getLegalTiles(enemyTile, moveSets[move], enemyPieces, history, backdoLaunch)
+          // check how many friendlies are on it
+          // multiply score by that number
+          if (Object.keys(legalTiles).length > 0) {
+            let numMostTokens = 0
+            for (const legalTile of Object.keys(legalTiles)) {
+              if (legalTile !== 29) {
+                // if you're on a shortcut, count the legal tile with the most pieces to catch
+                if (friendlyTiles[legalTile] && friendlyTiles[legalTile].length > numMostTokens) {
+                  numMostTokens = friendlyTiles[legalTile].length
+                }
               }
             }
+            enemyProximityScore += (proximityScore[move] * numMostTokens)
           }
-          enemyProximityScore += (proximityScore[move] * numMostTokens)
         }
       }
     }
@@ -296,7 +309,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
     // count piggyback pieces only once
     // technically, pieces at home are piggybacked
     for (const move of Object.keys(moveSets)) {
-      if (parseInt(move) !== 0) {
+      if (parseInt(move) !== 0 && move !== -1) { // don't count backdo to anticipate future move
         const legalTiles = getLegalTiles(friendlyTile, moveSets[move], pieces, history, backdoLaunch)
         // console.log('move', move, 'legalTiles', legalTiles)
         // check how many enemies are on it
@@ -340,6 +353,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   // heuristic 1: prioritize catch if all remaining enemies are on the board
   // get the shortest distance between enemy and friendly
   // add it to score - algorithm selects lowest score
+  /* 
   let catchPrioritizeScore = 100
   if (allPiecesOut({ pieces: enemyPieces }) && friendlyDistanceScore > enemyDistanceScore && enemyCatchScore === 0) {
     let enemyFound = false
@@ -407,6 +421,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   } else {
     catchPrioritizeScore = -1 // it can be 0 if potential enemy tile and friendly tile overlap
   }
+  */
 
   console.log('friendlyDistanceScore', friendlyDistanceScore)
   console.log('enemyDistanceScore', enemyDistanceScore)
@@ -414,19 +429,20 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
   console.log('piggybackScore', piggybackScore)
   console.log('enemyCatchScore', enemyCatchScore)
   console.log('throwsEarnedScore', throwsEarnedScore)
-  console.log('catchPrioritizeScore', catchPrioritizeScore)
-  if (catchPrioritizeScore > -1) {
-    score = catchPrioritizeScore
-  } else {
-    score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
-  }
+  // console.log('catchPrioritizeScore', catchPrioritizeScore)
+  // if (catchPrioritizeScore > -1) {
+  //   score = catchPrioritizeScore
+  // } else {
+  //   score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
+  // }
+  score = friendlyDistanceScore - enemyDistanceScore + enemyProximityScore - piggybackScore - enemyCatchScore - throwsEarnedScore
   console.log('final score', score)
   return score
 }
 
 // force tile 10, 25, 26, and 22 to the shortcut distance
 // instead of taking the long way from the moon
-function startCalculateLongestPathHome(tile, longestDistance, shortcutOptions) {
+function startCalculateLongestPathHome(tile, longestDistance) {
   if (tile === 29) { // scored
     return 0 
   } else if (tile === 10) { // Saturn - take shortcut over long path
@@ -440,17 +456,18 @@ function startCalculateLongestPathHome(tile, longestDistance, shortcutOptions) {
   } else if (tile === 5) { // Mars - take shortcut over long path
     return 12 
   } else {
-    return calculateLongestPathHome(tile, longestDistance, shortcutOptions)
+    return calculateLongestPathHome(tile, longestDistance)
   }
 }
 
 // dfs
 // longest distance from start is 22 because of the path from saturn to moon and neptune
-export function calculateLongestPathHome(tile, longestDistance, shortcutOptions) {
+export function calculateLongestPathHome(tile, longestDistance) {
   
   longestDistance+=1
 
-  const nextTiles = checkFinishRule(getNextTiles(tile, true, shortcutOptions))
+  const nextTiles = checkFinishRule(getNextTiles(tile, true, true)) // shortcutOptions enabled to calculate the longest path
+  // caller (startCalculateLongestPathHome) accounts for starting from shortcut
   
   // base case
   if (nextTiles[0] === 29) {
@@ -458,7 +475,7 @@ export function calculateLongestPathHome(tile, longestDistance, shortcutOptions)
   } else {
     let nextLongestDistance = 0
     for (const nextTile of nextTiles) {
-      const candidate = calculateLongestPathHome(nextTile, longestDistance, shortcutOptions)
+      const candidate = calculateLongestPathHome(nextTile, longestDistance)
       if (candidate > nextLongestDistance) {
         nextLongestDistance = candidate
       }
