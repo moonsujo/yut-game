@@ -9,7 +9,7 @@ import { checkFinishRule, getNextTiles, getStartAndEndVertices, tileType } from 
 //     { destination: 29, "move": 2, "path": [28, 29]}
 //   ]
 // }
-export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
+export function getLegalTiles(tile, moves, pieces, history, backdoLaunch, shortcutOptions) {
   try {
     let legalTiles = {}
     if (typeof moves !== 'object') {
@@ -30,7 +30,7 @@ export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
           } else {
     
             let forward = parseInt(move) > 0 ? true: false
-            let forks = getNextTiles(tile, forward)
+            let forks = getNextTiles(tile, forward, shortcutOptions)
             if (forward) {
               // If you're on Earth, there's a path to score and path to tile 1. Eliminate the path to tile 1
               forks = checkFinishRule(forks) 
@@ -43,7 +43,7 @@ export function getLegalTiles(tile, moves, pieces, history, backdoLaunch) {
               
               // Initialize path
               let path = tileType(tile) === 'home' ? [0] : [tile]
-              let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path)
+              let destination = getDestination(forks[i], Math.abs(parseInt(move))-1, forward, path, shortcutOptions)
               
               let forkHistory = makeNewHistory(
                 history, 
@@ -96,7 +96,7 @@ function checkBackdoFork(forks, history) {
   }
 }
 
-function getDestination(tile, steps, forward, path) {
+function getDestination(tile, steps, forward, path, shortcutOptions) {
   
   path.push(tile)
   if (steps == 0 || tile == 29) {
@@ -107,14 +107,14 @@ function getDestination(tile, steps, forward, path) {
   for (const edge of edgeList) {
     if (edge[start] === tile) {
       let nextTile;
-      let forks = getNextTiles(tile, forward);
+      let forks = getNextTiles(tile, forward, shortcutOptions);
       if (forks.length > 1) {
         nextTile = chooseTileFromFork(path, forks)
       } else {
         nextTile = edge[end]
       }
       steps--; // Update value AFTER reading
-      return getDestination(nextTile, steps, forward, path)
+      return getDestination(nextTile, steps, forward, path, shortcutOptions)
     }
   }
 }

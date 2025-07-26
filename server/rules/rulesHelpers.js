@@ -37,7 +37,7 @@ export function hasTokenOnBoard({ pieces }) {
 }
 
 // if first step, keep forks; else, go straight
-export function getNextTiles(tile, forward) {
+export function getNextTiles(tile, forward, shortcutOptions) {
   let nextTiles = [];
   if (tile === -1 && forward) {
     return [1]
@@ -46,7 +46,15 @@ export function getNextTiles(tile, forward) {
   // on board
   let [start, end] = getStartAndEndVertices(forward);
   for (const edge of edgeList) {
-    if (edge[start] === tile) {
+    if (shortcutOptions && edge[start] === tile) {
+      nextTiles.push(edge[end]);
+    } else if (tile === 5) { // you can only go on the short path.
+      return [20]
+    } else if (tile === 10) {
+      return [25]
+    } else if (tile === 22) {
+      return [27]
+    } else if (edge[start] === tile) {
       nextTiles.push(edge[end]);
     }
   }

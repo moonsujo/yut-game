@@ -3,7 +3,7 @@ import { getLegalTiles } from '../rules/legalTiles.js'
 
 // return: { sequence, score }
 // sequence: [{ token id, move }]
-export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens, throwsEarned }) {
+export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveSequence, backdoLaunch, numTokens, throwsEarned, shortcutOptions }) {
 
   // base case
   if (isEmptyMoves(moves) || winCheck(friendlyPieces)) {
@@ -14,7 +14,8 @@ export function pickBestMoveSequence({ moves, friendlyPieces, enemies, bestMoveS
       pieces: friendlyPieces, 
       enemyPieces: enemies, 
       backdoLaunch,
-      throwsEarned
+      throwsEarned,
+      shortcutOptions
     })
 
     return { sequence: bestMoveSequence.sequence, score }
@@ -141,7 +142,8 @@ export function calculateSmartMoveSequence({ room, team }) {
     bestMoveSequence: { sequence: [], score: 100 },
     backdoLaunch: room.rules.backdoLaunch,
     numTokens: room.rules.numTokens,
-    throwsEarned: 0
+    throwsEarned: 0,
+    shortcutOptions: room.rules.shortcutOptions
   }).sequence
 
   return bestMoveSequence
@@ -149,7 +151,7 @@ export function calculateSmartMoveSequence({ room, team }) {
 
 // should favor getting closer than advancing the one in front
 // add additional points for number of throws
-export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned }) {
+export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned, shortcutOptions }) {
   // get long distance from piece's tile to finish
   let score;
   // depth first search
@@ -163,17 +165,17 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
     friendlyTile = parseInt(friendlyTile)
     if (friendlyTile === -1) {
       // longest to compare distance. same destination, same algorithm. shorter the better
-      friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0) * friendlyTiles[friendlyTile].length)
+      friendlyDistanceScore += (startCalculateLongestPathHome(friendlyTile, 0, shortcutOptions) * friendlyTiles[friendlyTile].length)
     } else {
-      friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0)
+      friendlyDistanceScore += startCalculateLongestPathHome(friendlyTile, 0, shortcutOptions)
     }
   }
   for (let enemyTile of Object.keys(enemyTiles)) {
     enemyTile = parseInt(enemyTile)
     if (enemyTile === -1) {
-      enemyDistanceScore += (startCalculateLongestPathHome(enemyTile, 0) * enemyTiles[enemyTile].length)
+      enemyDistanceScore += (startCalculateLongestPathHome(enemyTile, 0, shortcutOptions) * enemyTiles[enemyTile].length)
     } else {
-      enemyDistanceScore += startCalculateLongestPathHome(enemyTile, 0)
+      enemyDistanceScore += startCalculateLongestPathHome(enemyTile, 0, shortcutOptions)
     }
   }
 
@@ -352,7 +354,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
       } else {
         history = enemyTiles[enemyTile][0].history
       }
-      const legalTiles = getLegalTiles(enemyTile, moveSets['3'], enemyPieces, history, backdoLaunch)
+      const legalTiles = getLegalTiles(enemyTile, moveSets['3'], enemyPieces, history, backdoLaunch, shortcutOptions)
       console.log('legal tiles', Object.keys(legalTiles))
       let shortestDistanceTile
       if (Object.keys(legalTiles).length > 0) {
@@ -361,7 +363,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
         let shortestDistanceHome = 100
         for (let tile of Object.keys(legalTiles)) {
           tile = parseInt(tile)
-          candidate = startCalculateLongestPathHome(tile, 0)
+          candidate = startCalculateLongestPathHome(tile, 0, shortcutOptions)
           console.log('candidate', candidate)
           if (candidate < shortestDistanceHome) {
             shortestDistanceHome = candidate
@@ -424,7 +426,7 @@ export function calculateScore({ pieces, enemyPieces, backdoLaunch, throwsEarned
 
 // force tile 10, 25, 26, and 22 to the shortcut distance
 // instead of taking the long way from the moon
-function startCalculateLongestPathHome(tile, longestDistance) {
+function startCalculateLongestPathHome(tile, longestDistance, shortcutOptions) {
   if (tile === 29) { // scored
     return 0 
   } else if (tile === 10) { // Saturn - take shortcut over long path
@@ -438,17 +440,17 @@ function startCalculateLongestPathHome(tile, longestDistance) {
   } else if (tile === 5) { // Mars - take shortcut over long path
     return 12 
   } else {
-    return calculateLongestPathHome(tile, longestDistance)
+    return calculateLongestPathHome(tile, longestDistance, shortcutOptions)
   }
 }
 
 // dfs
 // longest distance from start is 22 because of the path from saturn to moon and neptune
-export function calculateLongestPathHome(tile, longestDistance) {
+export function calculateLongestPathHome(tile, longestDistance, shortcutOptions) {
   
   longestDistance+=1
 
-  const nextTiles = checkFinishRule(getNextTiles(tile, true))
+  const nextTiles = checkFinishRule(getNextTiles(tile, true, shortcutOptions))
   
   // base case
   if (nextTiles[0] === 29) {
@@ -456,7 +458,7 @@ export function calculateLongestPathHome(tile, longestDistance) {
   } else {
     let nextLongestDistance = 0
     for (const nextTile of nextTiles) {
-      const candidate = calculateLongestPathHome(nextTile, longestDistance)
+      const candidate = calculateLongestPathHome(nextTile, longestDistance, shortcutOptions)
       if (candidate > nextLongestDistance) {
         nextLongestDistance = candidate
       }
@@ -475,7 +477,7 @@ export function calculateLongestPathDestination(start, longestDistance, end) {
   
   longestDistance+=1
 
-  const nextTiles = checkFinishRule(getNextTiles(start, true))
+  const nextTiles = checkFinishRule(getNextTiles(start, true, shortcutOptions))
   
   // base case
   if (nextTiles[0] === 29) {

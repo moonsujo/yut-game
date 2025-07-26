@@ -156,7 +156,8 @@ const roomSchema = new mongoose.Schema(
       timer: Boolean,
       nak: Boolean,
       yutMoCatch: Boolean,
-      numTokens: Number
+      shortcutOptions: Boolean,
+      numTokens: Number,
     },
     turnStartTime: Number,
     turnExpireTime: Number,
@@ -647,11 +648,12 @@ io.on("connect", async (socket) => {
         },
         paused: false,
         rules: {
-          backdoLaunch: true,
+          backdoLaunch: false,
           timer: true,
           // timer: false,
           nak: true,
-          yutMoCatch: true,
+          yutMoCatch: false,
+          shortcutOptions: false,
           numTokens: 4
         },
         turnStartTime: null,
@@ -1416,7 +1418,7 @@ io.on("connect", async (socket) => {
       history = room.tiles[tile][0].history // go back the way you came from of the first token
       selectedPieces = room.tiles[tile];
     }
-    let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch)
+    let legalTiles = getLegalTiles(tile, moves, pieces, history, room.rules.backdoLaunch, room.rules.shortcutOptions)
     if (!(Object.keys(legalTiles).length === 0)) {
       room.selection = { tile, pieces: selectedPieces }
       room.legalTiles = legalTiles
