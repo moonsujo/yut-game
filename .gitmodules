@@ -4,3 +4,6 @@
 [submodule "client"]
 	path = client
 	url = https://beatrhinostudio-admin@bitbucket.org/beatrhinostudio/yut-game-client.git
+[submodule "server"]
+	path = server
+	url = https://github.com/moonsujo/yut-game-server.git
