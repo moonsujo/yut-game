@@ -1,2 +1,2 @@
 # YUT NORI - WEB MULTIPLAYER
-Classic Korean board game that can be played with multiple devices on the web
+Classic Korean board game that can be played with multiple devices
