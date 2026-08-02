@@ -1,5 +1,6 @@
 i want to refactor the client.
 4. piecesOnBoard. there's a ton of repetition because i thought each piece on both teams had to have its own state to be able to be animated. it's complicated and deterring me from enhancing it. i want this to be simplified.
+- rewrite with gsap to prevent copying code over tokens
 6. screen responsiveness and camera zoom. when the screen turns orientation in mobile, tokens don't return to their original position. there should be one scale for both orientations.
 
 goal of the client refactor is to simplify adding new features and being able to easily find where code goes wrong.
